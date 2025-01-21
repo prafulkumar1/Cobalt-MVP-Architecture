@@ -11,7 +11,7 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
 //import {  Check, ChevronDownIcon, CircleIcon } from 'lucide-react-native';
-import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
@@ -26,44 +26,117 @@ import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, Accordio
 import { commonStyles } from './style';
 class cbAccordion extends React.Component {
   constructor(props) {
-    super();
+    super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
-    // console.log(props.AccordionData);
+    this.state = {
+      expandedIndex: null, // Initialize expandedIndex
+    };
   }
 
+  handleReadMoreToggle = (index) => {
+    this.setState((prevState) => ({
+      expandedIndex: prevState.expandedIndex === index ? null : index,
+    }));
+  };
+
   render() {
-    const componentdata =  this.AccordionData;
+    const componentdata = this.AccordionData;
+    const { expandedIndex } = this.state;
+
     return (
-      <Accordion  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
-      {componentdata.map((item, index) => (
-        <AccordionItem key={item.value} value={item.value}>
-          <AccordionHeader>
-            <AccordionTrigger>
-              {({ isExpanded }) => (
-                <>
-                  <AccordionTitleText>{item.title}</AccordionTitleText>
-                  {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
-                  ) : (
-                    <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
-                  )}
-                </>
-              )}
-            </AccordionTrigger>
-          </AccordionHeader>
-          <AccordionContent>
-              {item.image && (
-              <Image alt="image" source={{ uri: item.image }} style={{ width: 150, height: 150, marginBottom: 10 }} />
-            )}
-            <AccordionContentText>{item.content}</AccordionContentText>
-            {item.hasButton && <Button />}
-          </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+      <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
+        {componentdata && componentdata.map((item) => (
+          <AccordionItem key={item.value} value={item.value}>
+            <AccordionHeader>
+              <AccordionTrigger>
+                {({ isExpanded }) => (
+                  <>
+                    <AccordionTitleText>{item.title}</AccordionTitleText>
+                    {isExpanded ? (
+                      <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
+                    ) : (
+                      <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
+                    )}
+                  </>
+                )}
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent>
+              {item.boxComponents &&
+                item.boxComponents.map((box, index) => ( // Correctly using 'index' here
+                  <Box
+                    key={index}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: 20,
+                    }}
+                  >
+                    <Box style={{ flex: 1, paddingRight: 20 }}>
+                    <AccordionContentText
+                        numberOfLines={expandedIndex === index ? undefined : 2} // Compare with index
+                        style={{
+                          fontSize: 14,
+                          lineHeight: 20,
+                          color: '#333',
+                        }}
+                        >
+                        {box.content}
+                        </AccordionContentText>
+                        {box.content.length > 100 && ( // Show "Read More" only if the content is long
+                        <AccordionContentText
+                          onPress={() => this.handleReadMoreToggle(index)} // Use the correct index
+                          style={{
+                            color: '#007BFF',
+                            marginTop: 5,
+                            textDecorationLine: 'underline',
+                          }}
+                        >
+                          {expandedIndex === index ? 'Show Less' : 'Read More'}
+                        </AccordionContentText>
+                        )}
+                    </Box>
+                    {box.image && (
+                      <Box style={{ position: 'relative' }}>
+                        <Image
+                          alt="image"
+                          source={{ uri: box.image }}
+                          style={{
+                            width: 250,
+                            height: 150,
+                            borderRadius: 8,
+                          }}
+                        />
+                        {box.hasButton && (
+                          <Button
+                            style={{
+                              width: 20,
+                              position: 'absolute',
+                              bottom: 15,
+                              left: 50,
+                              borderColor: '#5773A2',
+                              borderWidth: 1,
+                              backgroundColor: '#fff',
+                              elevation: 5,
+                            }}
+                          >
+                            <Icon as={AddIcon} color="#5773A2" />
+                          </Button>
+                        )}
+                      </Box>
+                    )}
+                  </Box>
+                ))}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     );
   }
 }
+
 
 
 

@@ -22,27 +22,72 @@ const genderOptions=[
   {label:'FeMale', value:'female'},
   {label:'Others', value:'others'},
 ]
-const AccordionData = [
+const Menu = [
   {
+    subMenuID:1,
     value: 'a',
     title: 'How do I place an order?',
-    content: 'To place an order, simply select the products you want, proceed to checkout, provide shipping and payment information, and finalize your purchase.',
-    hasButton: false,
-    image: 'https://images.pexels.com/photos/371589/pexels-photo-371589.jpeg?cs=srgb&dl=clouds-conifer-daylight-371589.jpg&fm=jpg', 
+    Items: [
+      {
+        content:
+          'To place an order, simply select the products you want, proceed to checkout, provide shipping and payment information, and finalize your purchase.',
+        hasButton: true,
+        image:
+          'https://images.pexels.com/photos/371589/pexels-photo-371589.jpeg?cs=srgb&dl=clouds-conifer-daylight-371589.jpg&fm=jpg',
+      },
+      {
+        content: 'Track your order in real-time using our tracking tool.reeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+        hasButton: true,
+        image:
+          'https://th.bing.com/th/id/OIP.hKF-QDQbOe-0GEQyJoHfGAHaE8?w=768&h=512&rs=1&pid=ImgDetMain',          
+      },
+    ],
   },
   {
+    subMenuID:2,
     value: 'b',
     title: 'What payment methods do you accept?',
-    content: 'We accept all major credit cards, including Visa, Mastercard, and American Express. We also support payments through PayPal.',
-    hasButton: true,
-    buttonProps: { id: 'login', variant: 'solid', text: 'Sign In' },
-    image: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80", 
+    Items: [
+      {
+        content:
+          'We accept all major credit cards, including Visa, Mastercard, and American Express. We also support payments through PayPal.',
+        hasButton: true,
+        image:
+          'https://th.bing.com/th/id/OIP.sMwRMBSUdMnT1mtw6hPV6gHaDt?rs=1&pid=ImgDetMain',
+      },
+      {
+        content: 'Learn about our secure payment systems for your protection.rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr',
+        hasButton: true,
+        image:
+          'https://th.bing.com/th/id/OIP.lMIicWhX0zFIcOTsyVB9cAHaER?rs=1&pid=ImgDetMain',
+      },
+    ],
   },
   {
+    subMenuID:3,
     value: 'c',
     title: 'Do you offer international shipping?',
-    content: 'Yes, we offer international shipping to most countries worldwide. Additional fees may apply.',
-    hasButton: false,
+    Items: [
+      {
+        content:
+          'Yes, we offer international shipping to most countries worldwide. Additional fees may apply.',
+        hasButton: true,
+        image:
+          'https://th.bing.com/th/id/OIP.-TPjwxLKsCJqi_CMvIEDvAHaHv?rs=1&pid=ImgDetMain',
+      },
+      {
+        content: 'Check our shipping rates and delivery times for your region.',
+        hasButton: true,
+        image:
+          'https://images.unsplash.com/photo-1556740714-a8395b3bf30e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      },
+      {
+        content: 'Understand our international shipping policies in detail.',
+        hasButton: true,
+        image:
+          'https://images.unsplash.com/photo-1556745755-8d76bdb6984b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      },
+    ],
   },
 ];
     return (
@@ -57,7 +102,7 @@ const AccordionData = [
         <UI.cbRadioButton id='gender' />
         <UI.cbButton id='login' variant='solid' text='signin'/>
         <UI.cbButton id='cancel' variant='link'/>
-         <UI.cbAccordion AccordionData={AccordionData} />
+        <UI.cbAccordion MenuList={Menu} />
         </UI.cbVStack>
         </UI.ScrollView>
         </UI.cbImageBackground>
