@@ -48,6 +48,6 @@ export { Image } from '@/components/ui/image';
 // export {cbImage} from '@/components/cobalt/ui'
 // export {cbBox} from '@/components/cobalt/ui'
 // export {cbVStack} from '@/components/cobalt/ui'
-export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, cbAccordion } from '@/components/cobalt/ui'
+export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, cbAccordion,cbFlatList } from '@/components/cobalt/ui'
 
 

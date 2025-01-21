@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { ImageBackground, StyleSheet,} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -46,22 +46,22 @@ class cbAccordion extends React.Component {
     return (
       <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
-          <AccordionItem key={item.value} value={item.value}>
-            <AccordionHeader>
-              <AccordionTrigger>
-                {({ isExpanded }) => (
-                  <>
-                    <AccordionTitleText>{item.title}</AccordionTitleText>
-                    {isExpanded ? (
-                      <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
-                    ) : (
-                      <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
-                    )}
-                  </>
-                )}
-              </AccordionTrigger>
-            </AccordionHeader>
-            <AccordionContent>
+        <AccordionItem key={item.value} value={item.value}>
+          <AccordionHeader>
+            <AccordionTrigger>
+              {({ isExpanded }) => (
+                <>
+                  <AccordionTitleText>{item.title}</AccordionTitleText>
+                  {isExpanded ? (
+                    <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
+                  ) : (
+                    <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
+                  )}
+                </>
+              )}
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionContent>
               {item.boxComponents &&
                 item.boxComponents.map((box, index) => ( // Correctly using 'index' here
                   <Box
@@ -129,10 +129,10 @@ class cbAccordion extends React.Component {
                     )}
                   </Box>
                 ))}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
     );
   }
 }
@@ -397,6 +397,68 @@ class cbVStack extends React.Component {
   }
 }
 
+class cbFlatList extends React.Component{
+  constructor(props) {
+    super();
+    this.id=props.id;
+    this.children=props.children;
+    this.space = props.space || 'md'; 
+    this.flatlistData = props.flatlistData || []
+    this.numColumns = props.numColumns || 0
+    this.initialNumToRender = props.initialNumToRender || 10
+    this.bounces = props.bounces || false
+    this.horizontal = props.horizontal || false
+    this.inverted = props.inverted || false
+    this.contentContainerStyle = props.contentContainerStyle || {}
+    this.ref = props.ref
+    this.emptyListText = props.emptyListText || ""
+    this.showsHorizontalScrollIndicator = props.showsHorizontalScrollIndicator || false
+    this.showsVerticalScrollIndicator = props.showsVerticalScrollIndicator || false
+    this.customStyles = props.customStyles || {}
+  }
+     renderEmptyList = () => {
+      return(
+        <VStack>
+          <Text>{this.emptyListText}</Text>
+        </VStack>
+      )
+     }
+  render(){
+    const { children } = this.props; 
+    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+    const spaceprop = inputArray?.space  || this.space;
+    const ITEM_HEIGHT = 100
+    return (
+      <FlatList
+        ref={this.ref}
+        data={this.flatlistData}
+        renderItem={this.children}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={this.numColumns}
+        ListEmptyComponent={this.renderEmptyList}
+        initialNumToRender={10}
+        ListFooterComponent={this.ListFooterComponent}
+        bounces={this.bounces}
+        horizontal={this.horizontal}
+        inverted={this.inverted}
+        contentContainerStyle={this.contentContainerStyle}
+        maxToRenderPerBatch={10}
+        showsHorizontalScrollIndicator={this.showsHorizontalScrollIndicator}
+        showsVerticalScrollIndicator={this.showsVerticalScrollIndicator}
+        style={this.customStyles}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={100}
+        windowSize={21}
+        onEndReachedThreshold={0.1}
+      />
+    );
+  }
+}
 
 
 cbButton.displayName='cbButton';
@@ -408,7 +470,8 @@ cbRadioButton.displayName='cbRadioButton';
 cbVStack.displayName='cbVStack';
 cbForm.displayName='cbForm';
 cbAccordion.displayName='cbAccordion';
+cbFlatList.displayName = "cbFlatList"
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion, };
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion,cbFlatList };
 
 
