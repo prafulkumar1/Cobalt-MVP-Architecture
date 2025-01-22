@@ -36,7 +36,7 @@ export { Accordion,
 //   SelectBackdrop,
 // } from '@/components/ui/select';
 // export { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
-// export { Icon } from '@/components/ui/icon';
+ export { Icon } from '@/components/ui/icon';
 // export { HollowCircleIcon, FilledCircleIcon,} from '@/assets/icons';
 // export {  CheckIcon, ChevronDownIcon  } from 'lucide-react-native';
 export { Box } from '@/components/ui/box';
@@ -48,6 +48,6 @@ export { Image } from '@/components/ui/image';
 // export {cbImage} from '@/components/cobalt/ui'
 // export {cbBox} from '@/components/cobalt/ui'
 // export {cbVStack} from '@/components/cobalt/ui'
-export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, cbAccordion } from '@/components/cobalt/ui'
+export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, cbAccordion,cbHeader,cbSearchbox } from '@/components/cobalt/ui'
 
 

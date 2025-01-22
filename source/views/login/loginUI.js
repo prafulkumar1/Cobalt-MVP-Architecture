@@ -4,16 +4,17 @@ import * as UI from '@/components/cobalt/importUI';
 import { useFormContextProvider,useFormContext } from '@/components/cobalt/event';
 import {  CheckIcon, ChevronDownIcon,ChevronUpIcon, CircleIcon, Icon } from '@/components/ui/icon';
 //import { Icon } from 'lucide-react-native';
+import {useLoginLogic} from '../../controller/login/login';
 
 
 const pageId='Login';
-export default function LoginScreen() {
+export default function LoginScreen(props) {
 
  let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
 
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
 
-  // const {  handleLogin } = useLoginLogic();
+   const {  handleLogin } = useLoginLogic();
   const {getFormFieldData,setFormFieldData}= useFormContext();
   const departments =[
     {label:'Dining', value:'dining'},
@@ -104,7 +105,7 @@ export default function LoginScreen() {
     <UI.cbCheckBox id='rememberme' customStyles={{  CheckIcon:{color:'white'}, }}/>
     <UI.cbSelect id="department"/>
     <UI.cbRadioButton id='gender' />
-    <UI.cbButton id='login' variant='solid' text='signin'/>
+    <UI.cbButton id='login' variant='solid' text='signin' onPress={()=>handleLogin(props)}/>
     <UI.cbButton id='cancel' variant='link'/>
     <UI.cbAccordion AccordionData={AccordionData} />
     </UI.cbVStack>

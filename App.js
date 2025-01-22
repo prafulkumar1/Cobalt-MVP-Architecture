@@ -6,6 +6,8 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
+import MenuScreen from '@/source/views/Menu/menu';
+
 import { UseFormContextProvider } from '@/components/cobalt/event';
 
 // Global Configurations
@@ -29,6 +31,11 @@ export default function App() {
             <Stack.Screen 
               name="Login" 
               component={LoginScreen} 
+              options={{ headerShown: false }} 
+            />
+             <Stack.Screen 
+              name="Menu" 
+              component={MenuScreen} 
               options={{ headerShown: false }} 
             />
           </Stack.Navigator>

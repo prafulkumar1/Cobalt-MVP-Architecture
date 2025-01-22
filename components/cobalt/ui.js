@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { ImageBackground, StyleSheet,} from 'react-native';
+import { ImageBackground, StyleSheet,TouchableOpacity} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -10,8 +10,8 @@ import {
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
-//import {  Check, ChevronDownIcon, CircleIcon } from 'lucide-react-native';
-import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon } from '@/components/ui/icon';
+import {  House, } from 'lucide-react-native';
+import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
@@ -24,6 +24,7 @@ import { Text, View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { commonStyles } from './style';
+import { navigateToScreen } from '@/source/constants/Navigations'
 class cbAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -136,7 +137,99 @@ class cbAccordion extends React.Component {
     );
   }
 }
+class cbSearchbox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showSearchInput: false, 
+      searchValue: "", 
+    };
+  }
+  handleSearchClick = () => {
+    this.setState({ showSearchInput: true });
+  };
+  handelClearClick =() =>{
+    const { searchValue } = this.state;
+    if (searchValue.trim()) {
+      // If text is present, clear the input field
+      this.setState({ searchValue: "" });
+    } else {
+      // If no text, close the search box
+      this.setState({ showSearchInput: false });
+    }
+  }
 
+  handleInputChange = (value) => {
+    this.setState({ searchValue: value });
+  };
+
+  handleCloseClick = () => {
+    this.setState({ showSearchInput: false, searchValue: "" });
+  };
+  render() {
+    const { showSearchInput,searchValue } = this.state;
+    return (
+      <Box style={{width: showSearchInput ? '100%' : 35,height:  35, display: 'flex', justifyContent: 'center',  alignItems: 'center',   backgroundColor: showSearchInput ? '#f0f0f0' : 'white',  }} >
+        {showSearchInput ? (
+          <Box  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',    width: '100%',  height: '100%', }} > 
+          <TouchableOpacity onPress={this.handleCloseClick} style={{ marginLeft: 5 }}>
+          <Icon as={ArrowLeftIcon} size="md" style={{ color: '#5773A2', marginRight: 5 }} />    
+            </TouchableOpacity>   
+            <Input style={{ flex: 1,  borderColor: 'transparent', borderWidth: 0,  borderRadius: 5, backgroundColor: '#f0f0f0', }}>
+              <InputField value={searchValue} placeholder="Items"  onChangeText={this.handleInputChange}></InputField>
+            </Input>           
+            <TouchableOpacity onPress={this.handelClearClick} style={{ marginLeft: 5 }}>
+              <Icon as={CloseIcon} size="md" style={{ color: '#5773A2' }} />
+            </TouchableOpacity>
+          </Box>
+        ) : (
+          // Search box icon
+          <TouchableOpacity onPress={this.handleSearchClick}>
+            <Icon as={SearchIcon} size="xl" style={{ color: '#5773A2' }} />
+          </TouchableOpacity>
+        )}
+      </Box>
+    );
+  }
+}
+
+class cbHeader extends React.Component {
+  constructor(props) {
+    super(props);
+    this.headerText = props.headerText || "Header";
+    this.isHomeEnable = props.isHomeEnable !== false; 
+  }
+
+  render() {
+    const headerText = this.headerText;
+    const isHomeEnable = this.isHomeEnable;
+    
+
+    return (
+      <Box
+        style={{
+          display: "flex",    
+          flexDirection: "row",      
+          justifyContent: "space-between",
+          padding: 10,
+          borderBottom: 1,
+          backgroundColor: 'white',
+        }}
+      >
+         <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
+            <Icon as={ChevronsLeftIcon} size='xl' style={{ color:'#5773A2' ,top:5, }} />
+          </TouchableOpacity>
+          
+          <Text style={{ right:97, fontSize: 20}}>{headerText}</Text>
+        {isHomeEnable && (
+          <TouchableOpacity onPress={()=>navigateToScreen(this.props,'Login')}>
+          <Icon as={House} size='xl'  style={{ top:7, fontSize:30,color:'#5773A2', cursor: "pointer" }} />
+          </TouchableOpacity>
+        )}
+      </Box>
+    );
+  }
+}
 
 
 
@@ -408,7 +501,9 @@ cbRadioButton.displayName='cbRadioButton';
 cbVStack.displayName='cbVStack';
 cbForm.displayName='cbForm';
 cbAccordion.displayName='cbAccordion';
+cbHeader.displayName='cbHeader';
+cbSearchbox.displayName='cbSearchbox';
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion, };
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion,cbHeader,cbSearchbox };
 
 
