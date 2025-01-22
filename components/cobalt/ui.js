@@ -24,6 +24,7 @@ import { Text, View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { commonStyles } from './style';
+import uuid from  "react-native-uuid"
 class cbAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -46,12 +47,12 @@ class cbAccordion extends React.Component {
     return (
       <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
-        <AccordionItem key={item.value} value={item.value}>
+        <AccordionItem key={item.lunch_sub_category_title} value={item.lunch_sub_category_title}>
           <AccordionHeader>
             <AccordionTrigger>
               {({ isExpanded }) => (
                 <>
-                  <AccordionTitleText>{item.title}</AccordionTitleText>
+                  <AccordionTitleText>{item.lunch_sub_category_title}</AccordionTitleText>
                   {isExpanded ? (
                     <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
                   ) : (
@@ -62,8 +63,8 @@ class cbAccordion extends React.Component {
             </AccordionTrigger>
           </AccordionHeader>
           <AccordionContent>
-              {item.boxComponents &&
-                item.boxComponents.map((box, index) => ( // Correctly using 'index' here
+              {item.lunch_sub_category_data &&
+                item.lunch_sub_category_data.map((box, index) => ( // Correctly using 'index' here
                   <Box
                     key={index}
                     style={{
@@ -83,9 +84,9 @@ class cbAccordion extends React.Component {
                           color: '#333',
                         }}
                         >
-                        {box.content}
+                        {box.dish_description}
                         </AccordionContentText>
-                        {box.content.length > 100 && ( // Show "Read More" only if the content is long
+                        {box.dish_description.length > 100 && ( // Show "Read More" only if the content is long
                         <AccordionContentText
                           onPress={() => this.handleReadMoreToggle(index)} // Use the correct index
                           style={{
@@ -109,7 +110,7 @@ class cbAccordion extends React.Component {
                             borderRadius: 8,
                           }}
                         />
-                        {box.hasButton && (
+                        {box.is_subcategroy_item_open && (
                           <Button
                             style={{
                               width: 20,
@@ -433,7 +434,7 @@ class cbFlatList extends React.Component{
         ref={this.ref}
         data={this.flatlistData}
         renderItem={this.children}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(_) => uuid.v1()}
         numColumns={this.numColumns}
         ListEmptyComponent={this.renderEmptyList}
         initialNumToRender={10}
