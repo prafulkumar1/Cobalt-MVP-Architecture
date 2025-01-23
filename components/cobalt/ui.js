@@ -82,7 +82,7 @@ class cbAccordion extends React.Component {
     const { expandedIndex } = this.state;
 
     return (
-      <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
+      <Accordion defaultValue={componentdata?.map((item) => item.sub_category_title)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
         <AccordionItem key={item.sub_category_title} value={item.sub_category_title}>
           <AccordionHeader style={{marginBottom:10}}>
@@ -104,7 +104,7 @@ class cbAccordion extends React.Component {
                 item.sub_category_data.map((box, index) => (
                   <Box
                     key={index}
-                    style={styles.subContainer}
+                    style={[styles.subContainer,{opacity:box.is_subcategroy_item_open?1:0.6}]}
                   >
                     <Box style={styles.contentContainer}>
                     <AccordionContentText
@@ -141,11 +141,7 @@ class cbAccordion extends React.Component {
                           source={{ uri: box.image }}
                           style={styles.mealTypeImg}
                         />
-                        {box.is_subcategroy_item_open && (
-                          <>
-                          {this.renderAddToCartBtn(box.quantity)}
-                          </>
-                        )}
+                        {this.renderAddToCartBtn(box.quantity)}
                       </Box>
                     )}
                   </Box>
@@ -436,6 +432,7 @@ class cbFlatList extends React.Component{
     this.showsHorizontalScrollIndicator = props.showsHorizontalScrollIndicator || false
     this.showsVerticalScrollIndicator = props.showsVerticalScrollIndicator || false
     this.customStyles = props.customStyles || {}
+    this.extraData = props.extraData || []
   }
      renderEmptyList = () => {
       return(
@@ -476,6 +473,7 @@ class cbFlatList extends React.Component{
         updateCellsBatchingPeriod={100}
         windowSize={21}
         onEndReachedThreshold={0.1}
+        extraData = {this.props.extraData}
       />
     );
   }

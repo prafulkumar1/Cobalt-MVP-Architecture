@@ -1,17 +1,8 @@
 import * as UI from "@/components/cobalt/importUI";
 import {
-  useFormContextProvider,
   useFormContext,
 } from "@/components/cobalt/event";
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronUpIcon,
-  CircleIcon,
-  Icon,
-} from "@/components/ui/icon";
 import {  TouchableOpacity } from "react-native";
-import { foodOrderData } from "@/source/constants/commonData";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen() {
@@ -22,9 +13,7 @@ export default function MenuOrderScreen() {
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
 
-  const {} = useFormContext();
-
-
+  const {menuOrderData,setMealType,setMealCategory} = useFormContext();
 
   const renderMenuCategoryList = ({item,index}) =>{
         return (
@@ -32,6 +21,7 @@ export default function MenuOrderScreen() {
         <TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
+          onPress={()=> setMealCategory(item.id)}
         >
           <UI.Text style={styles.categoryText}>
             {item.recepies_category?.toUpperCase()}
@@ -50,6 +40,7 @@ export default function MenuOrderScreen() {
         <TouchableOpacity
           activeOpacity={0.6}
           style={[item.is_enable ? styles.activeMenuType:styles.inactiveMenuType]}
+          onPress={() => setMealType(item.id)}
         >
           <UI.Text style={[styles.mealTypeTxt,{color:item.is_enable?"#fff":"#000"}]}>
             {item.meal_type}
@@ -61,55 +52,42 @@ export default function MenuOrderScreen() {
       </UI.Box>
     );
   }
-  const renderListItem = ({ item, index }) => {
-    return (
+  return (
+      <UI.ScrollView contentContainerStyle={styles.scrollContent}>
       <UI.cbFlatList
-        flatlistData={item.meal_category}
-        children={(mealList) => renderMealTypeList(mealList)}
+        key={menuOrderData.id}
+        flatlistData={menuOrderData.meal_category}
+        children={renderMealTypeList}
         horizontal={true}
         contentContainerStyle={styles.categoryBottomContainer}
       />
-    )
-  };
-  return (
-      <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-        <UI.cbFlatList
-          flatlistData={foodOrderData}
-          children={renderListItem}
-          horizontal={false}
-          contentContainerStyle={styles.categoryBottomContainer}
-        />
       {
-        foodOrderData?.map((items) => {
-          return items.meal_category?.map((mealCategory) => {
-            if(mealCategory.is_enable){
-              return (
-                <UI.cbFlatList
-                   flatlistData={mealCategory.meal_type_category}
-                   children={renderMenuCategoryList}
-                   horizontal={true}
-                   contentContainerStyle={styles.subCategoryContainer}
-                 />
-             )
-            }
-          })
-        })
+       menuOrderData.meal_category?.map((mealCategory) => {
+        if(mealCategory.is_enable){
+          return (
+            <UI.cbFlatList
+               flatlistData={mealCategory.meal_type_category}
+               children={renderMenuCategoryList}
+               horizontal={true}
+               contentContainerStyle={styles.subCategoryContainer}
+             />
+         )
+        }
+      })
       }
-        {
-        foodOrderData?.map((items) => {
-          return items.meal_category.map((mealCategory) => {
-            if(mealCategory.is_enable){
-              return mealCategory.meal_type_category.map((categoryList) => {
-                if(categoryList.is_recepies_category_selected){
-                  return  (
-                    <UI.Box style={{padding:15}}>
-                      <UI.cbAccordion AccordionData={categoryList.recepies_list} />
-                    </UI.Box>
-                  )
-                }
-              })
-            }
-          })
+      {
+        menuOrderData.meal_category.map((mealCategory) => {
+          if(mealCategory.is_enable){
+            return mealCategory.meal_type_category.map((categoryList) => {
+              if(categoryList.is_recepies_category_selected){
+                return  (
+                  <UI.Box style={{padding:15}}>
+                    <UI.cbAccordion AccordionData={categoryList.recepies_list}/>
+                  </UI.Box>
+                
+            )}
+            })
+          }
         })
       }
     </UI.ScrollView>
