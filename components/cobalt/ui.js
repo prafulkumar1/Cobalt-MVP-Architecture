@@ -99,7 +99,7 @@ class cbAccordion extends React.Component {
               )}
             </AccordionTrigger>
           </AccordionHeader>
-          <AccordionContent style={{marginTop:10}}>
+          <AccordionContent style={{marginTop:10}} >
               {item.sub_category_data &&
                 item.sub_category_data.map((box, index) => (
                   <Box
