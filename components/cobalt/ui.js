@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -11,26 +11,25 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
 //import {  Check, ChevronDownIcon, CircleIcon } from 'lucide-react-native';
-import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
-import { Image } from '@/components/ui/image';
 import { Icon } from '@/components/ui/icon';
 import {useFormContext} from './event';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Text, View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
-import { commonStyles } from './style';
+import { commonStyles, styles } from './style';
 import uuid from  "react-native-uuid"
 class cbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
     this.state = {
-      expandedIndex: null, // Initialize expandedIndex
+      expandedIndex: null,
     };
   }
 
@@ -40,6 +39,44 @@ class cbAccordion extends React.Component {
     }));
   };
 
+  renderAddToCartBtn = (quantity) => {
+    if (quantity === 0) {
+      return (
+        <TouchableOpacity
+          style={styles.addItemToCartBtn}
+          activeOpacity={0.5}
+          onPress={() => this.handleCountIncrement()}
+        >
+          <Icon as={AddIcon} color="#5773a2" />
+        </TouchableOpacity>
+      )
+    } else if (quantity === 1) {
+      return (
+        <Box style={styles.operationBtn}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={TrashIcon} color="#5773a2" size={18} />
+          </TouchableOpacity>
+          <Text style={styles.quantityTxt}>{quantity}</Text>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={AddIcon} color="#5773a2" size={20} />
+          </TouchableOpacity>
+        </Box>
+      )
+    } else {
+      return (
+        <Box style={styles.operationBtn}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={RemoveIcon} color="#5773a2" size={18} />
+          </TouchableOpacity>
+          <Text style={styles.quantityTxt}>{quantity}</Text>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={AddIcon} color="#5773a2" size={20} />
+          </TouchableOpacity>
+        </Box>
+      )
+    }
+  }
+
   render() {
     const componentdata = this.AccordionData;
     const { expandedIndex } = this.state;
@@ -47,84 +84,67 @@ class cbAccordion extends React.Component {
     return (
       <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
-        <AccordionItem key={item.lunch_sub_category_title} value={item.lunch_sub_category_title}>
-          <AccordionHeader>
+        <AccordionItem key={item.sub_category_title} value={item.sub_category_title}>
+          <AccordionHeader style={{marginBottom:10}}>
             <AccordionTrigger>
               {({ isExpanded }) => (
                 <>
-                  <AccordionTitleText>{item.lunch_sub_category_title}</AccordionTitleText>
+                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.sub_category_title}</AccordionTitleText>
                   {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
+                    <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
                   ) : (
-                    <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
+                    <AccordionIcon as={ChevronDownIcon} width={20} height={20} className="ml-3" />
                   )}
                 </>
               )}
             </AccordionTrigger>
           </AccordionHeader>
-          <AccordionContent>
-              {item.lunch_sub_category_data &&
-                item.lunch_sub_category_data.map((box, index) => ( // Correctly using 'index' here
+          <AccordionContent style={{marginTop:10}}>
+              {item.sub_category_data &&
+                item.sub_category_data.map((box, index) => (
                   <Box
                     key={index}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: 20,
-                    }}
+                    style={styles.subContainer}
                   >
-                    <Box style={{ flex: 1, paddingRight: 20 }}>
+                    <Box style={styles.contentContainer}>
                     <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2} // Compare with index
-                        style={{
-                          fontSize: 14,
-                          lineHeight: 20,
-                          color: '#333',
-                        }}
+                        numberOfLines={expandedIndex === index ? undefined : 2}
+                        style={styles.mealTypeTitle}
+                        >
+                        {box.dish_title}
+                        </AccordionContentText>
+                        <AccordionContentText
+                        numberOfLines={expandedIndex === index ? undefined : 2}
+                        style={styles.priceTxt}
+                        >
+                        {box.price}
+                        </AccordionContentText>
+                    <AccordionContentText
+                        numberOfLines={expandedIndex === index ? undefined : 1}
+                        style={styles.descriptionTxt}
                         >
                         {box.dish_description}
                         </AccordionContentText>
-                        {box.dish_description.length > 100 && ( // Show "Read More" only if the content is long
+                        {box.dish_description.length > 100 && (
                         <AccordionContentText
-                          onPress={() => this.handleReadMoreToggle(index)} // Use the correct index
-                          style={{
-                            color: '#007BFF',
-                            marginTop: 5,
-                            textDecorationLine: 'underline',
-                          }}
+                          onPress={() => this.handleReadMoreToggle(index)}
+                          style={styles.underLineTxt}
                         >
                           {expandedIndex === index ? 'Show Less' : 'Read More'}
                         </AccordionContentText>
                         )}
                     </Box>
                     {box.image && (
-                      <Box style={{ position: 'relative' }}>
+                      <Box>
                         <Image
                           alt="image"
                           source={{ uri: box.image }}
-                          style={{
-                            width: 250,
-                            height: 150,
-                            borderRadius: 8,
-                          }}
+                          style={styles.mealTypeImg}
                         />
                         {box.is_subcategroy_item_open && (
-                          <Button
-                            style={{
-                              width: 20,
-                              position: 'absolute',
-                              bottom: 15,
-                              left: 50,
-                              borderColor: '#5773A2',
-                              borderWidth: 1,
-                              backgroundColor: '#fff',
-                              elevation: 5,
-                            }}
-                          >
-                            <Icon as={AddIcon} color="#5773A2" />
-                          </Button>
+                          <>
+                          {this.renderAddToCartBtn(box.quantity)}
+                          </>
                         )}
                       </Box>
                     )}

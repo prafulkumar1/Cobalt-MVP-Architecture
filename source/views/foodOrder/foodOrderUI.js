@@ -1,5 +1,4 @@
 import * as UI from "@/components/cobalt/importUI";
-import uuid from "react-native-uuid";
 import {
   useFormContextProvider,
   useFormContext,
@@ -11,7 +10,8 @@ import {
   CircleIcon,
   Icon,
 } from "@/components/ui/icon";
-import { TouchableOpacity } from "react-native";
+import {  TouchableOpacity } from "react-native";
+import { foodOrderData } from "@/source/constants/commonData";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen() {
@@ -24,179 +24,7 @@ export default function MenuOrderScreen() {
 
   const {} = useFormContext();
 
-  const foodOrderData = [
-    {
-      id: uuid.v4(),
-      meal_category: [
-        {
-          meal_type: "BREAKFAST",
-          is_enable: false,
-          time_duration: "06:30 am - 11:30 am",
-          meal_type_category: [
-            {
-              id: uuid.v4(),
-              breakfast_recepies_category: "Appetizers",
-              is_recepies_category_selected: false,
-              breakfast_recepies_list: [
-                {
-                  id: uuid.v4(),
-                  breakfast_sub_category_title: "Hot",
-                  breakfast_sub_category_data: [
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Dosa",
-                      price: "$10.00",
-                      dish_description:
-                        "A delicious and healthy option with fresh dosa",
-                      is_subcategroy_item_open: false,
-                      image:
-                        "https://images.pexels.com/photos/371589/pexels-photo-371589.jpeg?cs=srgb&dl=clouds-conifer-daylight-371589.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          meal_type: "LUNCH",
-          is_enable: true,
-          time_duration: "12:00 pm - 4:30 pm",
-          meal_type_category: [
-            {
-              id: uuid.v4(),
-              lunch_recepies_category: "Appetizers",
-              is_recepies_category_selected: true,
-              lunch_recepies_list: [
-                {
-                  id: uuid.v4(),
-                  lunch_sub_category_title: "Hot",
-                  lunch_sub_category_data: [
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Seared Salmon Salad",
-                      price: "$25.00",
-                      dish_description:
-                        "A delicious and healthy option with fresh seared salmon salad",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Coconut Shrimp",
-                      price: "$45.00",
-                      dish_description:
-                        "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                  ],
-                },
-                {
-                  id: uuid.v4(),
-                  lunch_sub_category_title: "Cold",
-                  lunch_sub_category_data: [
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Seared Salmon Salad",
-                      price: "$25.00",
-                      dish_description:
-                        "A delicious and healthy option with fresh seared salmon salad",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Coconut Shrimp",
-                      price: "$45.00",
-                      dish_description:
-                        "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                  ],
-                },
-                {
-                  id: uuid.v4(),
-                  lunch_sub_category_title: "Seafood",
-                  lunch_sub_category_data: [
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Seared Salmon Salad",
-                      price: "$25.00",
-                      dish_description:
-                        "A delicious and healthy option with fresh seared salmon salad",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Coconut Shrimp",
-                      price: "$45.00",
-                      dish_description:
-                        "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                      is_subcategroy_item_open: true,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              id: uuid.v4(),
-              lunch_recepies_category: "Entrees",
-              is_lunch_recepies_category_selected: false,
-              lunch_recepies_list: [
-                {
-                  id: uuid.v4(),
-                  lunch_sub_category_title: "Grilled",
-                  lunch_sub_category_data: [
-                    {
-                      id: uuid.v4(),
-                      dish_title: "Grilled Chicken Breast",
-                      price: "$30.00",
-                      dish_description:
-                        "Perfectly grilled chicken served with a side of steamed vegetables.",
-                      is_subcategroy_item_open: false,
-                      image:
-                        "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                      is_dish_available: true,
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          meal_type: "DINNER",
-          is_enable: false,
-          time_duration: "7:30 pm - 11:30 pm",
-          meal_type_category: [
-            {
-              id: uuid.v4(),
-              dinner_recepies_category: "Desserts",
-              is_recepies_category_selected: false,
-            },
-          ],
-        },
-      ],
-      is_meal_category_required: true,
-    },
-  ];
+
 
   const renderMenuCategoryList = ({item,index}) =>{
         return (
@@ -206,7 +34,7 @@ export default function MenuOrderScreen() {
           activeOpacity={0.6}
         >
           <UI.Text style={styles.categoryText}>
-            {item.lunch_recepies_category.toUpperCase()}
+            {item.recepies_category?.toUpperCase()}
           </UI.Text>
           {
             item.is_recepies_category_selected && 
@@ -216,7 +44,7 @@ export default function MenuOrderScreen() {
       </UI.Box>
     );
   }
-  const renderMealTypeList = ({item,index}) => {
+  const renderMealTypeList = ({item}) => {
      return (
       <UI.Box>
         <TouchableOpacity
@@ -237,14 +65,14 @@ export default function MenuOrderScreen() {
     return (
       <UI.cbFlatList
         flatlistData={item.meal_category}
-        children={(mealList) => renderMealTypeList(mealList, item.meal_category.length - 1)}
+        children={(mealList) => renderMealTypeList(mealList)}
         horizontal={true}
         contentContainerStyle={styles.categoryBottomContainer}
       />
     )
   };
   return (
-    <UI.ScrollView contentContainerStyle={styles.scrollContent}>
+      <UI.ScrollView contentContainerStyle={styles.scrollContent}>
         <UI.cbFlatList
           flatlistData={foodOrderData}
           children={renderListItem}
@@ -252,8 +80,8 @@ export default function MenuOrderScreen() {
           contentContainerStyle={styles.categoryBottomContainer}
         />
       {
-        foodOrderData?.map((items, index) => {
-          return items.meal_category.map((mealCategory) => {
+        foodOrderData?.map((items) => {
+          return items.meal_category?.map((mealCategory) => {
             if(mealCategory.is_enable){
               return (
                 <UI.cbFlatList
@@ -268,15 +96,14 @@ export default function MenuOrderScreen() {
         })
       }
         {
-        foodOrderData?.map((items, index) => {
+        foodOrderData?.map((items) => {
           return items.meal_category.map((mealCategory) => {
             if(mealCategory.is_enable){
               return mealCategory.meal_type_category.map((categoryList) => {
                 if(categoryList.is_recepies_category_selected){
-                  console.log(JSON.stringify(categoryList.lunch_recepies_list),"===n")
                   return  (
                     <UI.Box style={{padding:15}}>
-                      <UI.cbAccordion AccordionData={categoryList.lunch_recepies_list} />
+                      <UI.cbAccordion AccordionData={categoryList.recepies_list} />
                     </UI.Box>
                   )
                 }
@@ -285,8 +112,6 @@ export default function MenuOrderScreen() {
           })
         })
       }
-       
-       
     </UI.ScrollView>
   );
 }
@@ -294,7 +119,6 @@ export default function MenuOrderScreen() {
 const styles = UI.StyleSheet.create({
   scrollContent: {
     paddingTop: 60,
-    borderEndColor: "red",
     backgroundColor:"#fff",
   },
   categoryText: {
@@ -334,18 +158,18 @@ const styles = UI.StyleSheet.create({
     justifyContent:"center",
     alignItems:"center",
     alignSelf:"center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 22,
     paddingVertical:2,
     alignSelf:"center",
     marginHorizontal:5,
     borderRadius:5
   },
   inactiveMenuType:{
-    backgroundColor: "#fff",
+    backgroundColor: "#ececec",
     justifyContent:"center",
     alignItems:"center",
     alignSelf:"center",
-    paddingHorizontal: 16,
+    paddingHorizontal: 22,
     paddingVertical:2,
     alignSelf:"center",
     marginHorizontal:5,
