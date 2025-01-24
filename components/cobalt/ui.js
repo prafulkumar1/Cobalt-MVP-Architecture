@@ -25,6 +25,10 @@ import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { commonStyles } from './style';
 import { navigateToScreen } from '@/source/constants/Navigations'
+
+
+
+import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 class cbAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -137,61 +141,90 @@ class cbAccordion extends React.Component {
     );
   }
 }
+
+
 class cbSearchbox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showSearchInput: false, 
-      searchValue: "", 
+      showSearchInput: false,
+      searchValue: "",
     };
   }
-  handleSearchClick = () => {
-    this.setState({ showSearchInput: true });
-  };
-  handelClearClick =() =>{
-    const { searchValue } = this.state;
-    if (searchValue.trim()) {
-      // If text is present, clear the input field
-      this.setState({ searchValue: "" });
-    } else {
-      // If no text, close the search box
-      this.setState({ showSearchInput: false });
-    }
-  }
 
-  handleInputChange = (value) => {
-    this.setState({ searchValue: value });
-  };
-
-  handleCloseClick = () => {
-    this.setState({ showSearchInput: false, searchValue: "" });
-  };
   render() {
-    const { showSearchInput,searchValue } = this.state;
+    const { showSearchInput, searchValue } = this.state;
     return (
-      <Box style={{width: showSearchInput ? '100%' : 35,height:  35, display: 'flex', justifyContent: 'center',  alignItems: 'center',   backgroundColor: showSearchInput ? '#f0f0f0' : 'white',  }} >
+      <Box
+        style={{
+          width: showSearchInput ? "100%" : 34,
+          height: 31,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+        }}
+      >
         {showSearchInput ? (
-          <Box  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',    width: '100%',  height: '100%', }} > 
-          <TouchableOpacity onPress={this.handleCloseClick} style={{ marginLeft: 5 }}>
-          <Icon as={ArrowLeftIcon} size="md" style={{ color: '#5773A2', marginRight: 5 }} />    
-            </TouchableOpacity>   
-            <Input style={{ flex: 1,  borderColor: 'transparent', borderWidth: 0,  borderRadius: 5, backgroundColor: '#f0f0f0', }}>
-              <InputField value={searchValue} placeholder="Items"  onChangeText={this.handleInputChange}></InputField>
-            </Input>           
-            <TouchableOpacity onPress={this.handelClearClick} style={{ marginLeft: 5 }}>
-              <Icon as={CloseIcon} size="md" style={{ color: '#5773A2' }} />
+          <Box
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() =>
+                handleCloseClick(this.setState.bind(this), this.props.onSearchActivate)
+              }
+              style={{ marginLeft: 5 }}
+            >
+              <Icon as={ArrowLeftIcon} size="md" style={{ color: "#5773A2", marginRight: 5 }} />
+            </TouchableOpacity>
+            <Input
+              style={{
+                flex: 1,
+                borderColor: "transparent",
+                borderWidth: 0,
+                borderRadius: 5,
+                backgroundColor: "#f0f0f0",
+              }}
+            >
+              <InputField
+                value={searchValue}
+                placeholder="Items"
+                onChangeText={(value) => this.setState({ searchValue: value })}
+              />
+            </Input>
+            <TouchableOpacity
+              onPress={() =>
+                handleClearClick(
+                  this.setState.bind(this),
+                  this.state.searchValue,
+                  this.props.onSearchActivate
+                )
+              }
+              style={{ marginLeft: 5 }}
+            >
+              <Icon as={CloseIcon} size="md" style={{ color: "#5773A2" }} />
             </TouchableOpacity>
           </Box>
         ) : (
-          // Search box icon
-          <TouchableOpacity onPress={this.handleSearchClick}>
-            <Icon as={SearchIcon} size="xl" style={{ color: '#5773A2' }} />
+          <TouchableOpacity
+            onPress={() =>
+              handleSearchClick(this.setState.bind(this), this.props.onSearchActivate)
+            }
+          >
+            <Icon as={SearchIcon} size="xl" style={{ color: "#5773A2" }} />
           </TouchableOpacity>
         )}
       </Box>
     );
   }
 }
+
 
 class cbHeader extends React.Component {
   constructor(props) {
@@ -414,7 +447,8 @@ class cbInput extends React.Component {
     this.isInvalid=props.isInvalid || false;
     // const {getFormFieldData,setFormFieldData}= useFormContext();
     this.setFormFieldData=props.setFormFieldData;
-    // this.getFormFieldData= useFormContext();
+     //this.getFormFieldData= props.getFormFieldData;
+     console.log("-------->12345",props.formId);
   }
 
   render() {
@@ -427,6 +461,9 @@ class cbInput extends React.Component {
     const isDisabledprop = inputArray?.isDisabled === 1 || this.isDisabled;
     const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
     const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
+    //const {getFormFieldData}= useFormContext();
+  
+   //const fieldData =this.getFormFieldData(this.formId,this.id); 
     
     return (
       <FormControl  isDisabled={isDisabledprop}   isReadOnly={isReadOnlyprop}   isRequired={isRequiredprop}   >
@@ -440,7 +477,7 @@ class cbInput extends React.Component {
           id={this.id}
           placeholder={placeholderprop} 
           type={typeprop} 
-          // value={fieldData.value} 
+          //value={fieldData.value} 
           onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
         />
       </Input>

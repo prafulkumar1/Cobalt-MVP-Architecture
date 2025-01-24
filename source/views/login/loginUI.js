@@ -98,10 +98,10 @@ export default function LoginScreen(props) {
     
   <UI.cbImageBackground id='loginBackground' source={require('@/assets/images/loginapp.png')}> 
    <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-  <UI.cbForm formId={pageId} setFormFieldData={setFormFieldData}>
+  <UI.cbForm formId={pageId} setFormFieldData={setFormFieldData} getFormFieldData={getFormFieldData}>
   <UI.cbVStack id='VStack1'>      
-    <UI.cbInput  id='username' setFormFieldData={setFormFieldData}/>
-     <UI.cbInput  id='password' setFormFieldData={setFormFieldData} />
+    <UI.cbInput  id='username' />
+     <UI.cbInput  id='password' />
     <UI.cbCheckBox id='rememberme' customStyles={{  CheckIcon:{color:'white'}, }}/>
     <UI.cbSelect id="department"/>
     <UI.cbRadioButton id='gender' />
