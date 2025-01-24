@@ -1,8 +1,11 @@
 import { useState,useContext } from 'react';
 import { useFormContextProvider,useFormContext } from '@/components/cobalt/event';
+import { navigateToScreen } from '@/source/constants/Navigations';
+// import { useNavigation } from '@react-navigation/native';
 const pageId='Login';
 export const useLoginLogic = () => {
-    
+  // const navigation = useNavigation();
+
     const {getFormFieldData,setFormFieldData }= useFormContext();
    
   // const handleValidation = () => {
@@ -39,11 +42,9 @@ export const useLoginLogic = () => {
   };
   
 
-  const handleLogin = () => {
-   
-  if (handleValidation()) {
-     alert('Login successful');
-    } 
+  const handleLogin = (props) => {
+  
+    navigateToScreen(props,"Menu")
   };
 
   return {

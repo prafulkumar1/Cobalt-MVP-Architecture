@@ -6,6 +6,9 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
+import MenuScreen from '@/source/views/Menu/menu';
+import RecentordersScreen from '@/source/views/Recentorders/recentorders';
+
 import { UseFormContextProvider } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 
@@ -31,6 +34,16 @@ export default function App() {
             <Stack.Screen 
               name="MenuOrder" 
               component={MenuOrderScreen} 
+              options={{ headerShown: false }} 
+            />
+             <Stack.Screen 
+              name="Menu" 
+              component={MenuScreen} 
+              options={{ headerShown: false }} 
+            />
+            <Stack.Screen 
+              name="Recentorders" 
+              component={RecentordersScreen} 
               options={{ headerShown: false }} 
             />
           </Stack.Navigator>

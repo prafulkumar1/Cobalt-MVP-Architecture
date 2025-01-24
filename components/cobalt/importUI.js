@@ -1,6 +1,6 @@
 import React , { useState } from 'react';
 import "@/global.css";
-export { StyleSheet, ImageBackground,View,ScrollView } from 'react-native';
+export { StyleSheet, ImageBackground,View,ScrollView,TouchableOpacity } from 'react-native';
 export { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 export { VStack } from '@/components/ui/vstack';
 export { HStack } from '@/components/ui/hstack';
@@ -36,7 +36,7 @@ export { Accordion,
 //   SelectBackdrop,
 // } from '@/components/ui/select';
 // export { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
-// export { Icon } from '@/components/ui/icon';
+ export { Icon,  } from '@/components/ui/icon';
 // export { HollowCircleIcon, FilledCircleIcon,} from '@/assets/icons';
 // export {  CheckIcon, ChevronDownIcon  } from 'lucide-react-native';
 export { Box } from '@/components/ui/box';
@@ -48,6 +48,6 @@ export { Image } from '@/components/ui/image';
 // export {cbImage} from '@/components/cobalt/ui'
 // export {cbBox} from '@/components/cobalt/ui'
 // export {cbVStack} from '@/components/cobalt/ui'
-export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, CbAccordion,CbFlatList,cbCategoryList } from '@/components/cobalt/ui'
+export { cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, CbAccordion,CbFlatList,cbCategoryList,cbHeader,cbSearchbox } from '@/components/cobalt/ui'
 
 
