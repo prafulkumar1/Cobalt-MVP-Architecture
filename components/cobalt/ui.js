@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacityTouchableOpacity} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -719,7 +719,9 @@ CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbHeader.displayName='cbHeader';
 cbSearchbox.displayName='cbSearchbox';
+cbCategoryList.displayName = "cbCategoryList"
+cbHeader.displayName = "cbHeader"
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryListcbHeader,cbSearchbox };
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbHeader,cbSearchbox };
 
 
