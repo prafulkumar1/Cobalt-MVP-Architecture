@@ -22,9 +22,10 @@ import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/comp
 import { Text, View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
-import { commonStyles, styles } from './style';
+import {  styles } from './style';
 import uuid from  "react-native-uuid"
-class cbAccordion extends React.Component {
+import { FormContext } from './event';
+class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
@@ -39,15 +40,14 @@ class cbAccordion extends React.Component {
     }));
   };
 
-  renderAddToCartBtn = (quantity) => {
+  renderAddToCartBtn = (quantity,is_subcategroy_item_open) => {
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={styles.addItemToCartBtn}
+          style={[styles.addItemToCartBtn,{borderColor:is_subcategroy_item_open?"#5773a2":"#4B515469"}]}
           activeOpacity={0.5}
-          onPress={() => this.handleCountIncrement()}
         >
-          <Icon as={AddIcon} color="#5773a2" />
+          <Icon as={AddIcon} color={is_subcategroy_item_open?"#5773a2":"#4B515469"} />
         </TouchableOpacity>
       )
     } else if (quantity === 1) {
@@ -77,6 +77,10 @@ class cbAccordion extends React.Component {
     }
   }
 
+  showActiveAvailableColor = (isAvailable) => {
+    return {color:isAvailable?"#4B5154":"#4B515469"}
+  }
+
   render() {
     const componentdata = this.AccordionData;
     const { expandedIndex } = this.state;
@@ -104,24 +108,24 @@ class cbAccordion extends React.Component {
                 item.sub_category_data.map((box, index) => (
                   <Box
                     key={index}
-                    style={[styles.subContainer,{opacity:box.is_subcategroy_item_open?1:0.6}]}
+                    style={[styles.subContainer,{opacity:box.is_subcategroy_item_open?1:0.8}]}
                   >
                     <Box style={styles.contentContainer}>
                     <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={styles.mealTypeTitle}
+                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
                         >
                         {box.dish_title}
                         </AccordionContentText>
                         <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={styles.priceTxt}
+                        style={[styles.priceTxt,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
                         >
                         {box.price}
                         </AccordionContentText>
                     <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 1}
-                        style={styles.descriptionTxt}
+                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
                         >
                         {box.dish_description}
                         </AccordionContentText>
@@ -135,26 +139,24 @@ class cbAccordion extends React.Component {
                         )}
                     </Box>
                     {box.image && (
-                      <Box>
-                        <Image
-                          alt="image"
+                      <Box>                                   
+                           <Image
                           source={{ uri: box.image }}
-                          style={styles.mealTypeImg}
+                          style={[styles.mealTypeImg,!box.is_subcategroy_item_open && {filter:'grayscale(100%)'}]}
                         />
-                        {this.renderAddToCartBtn(box.quantity)}
+                     
+                        {this.renderAddToCartBtn(box.quantity,box.is_subcategroy_item_open)}
                       </Box>
                     )}
                   </Box>
                 ))}
-          </AccordionContent>
+        </AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>
     );
   }
 }
-
-
 
 
 class cbButton extends React.Component {
@@ -336,9 +338,7 @@ class cbInput extends React.Component {
     this.isDisabled=props.isDisabled || false;
     this.isRequired=props.isRequired || false;
     this.isInvalid=props.isInvalid || false;
-    // const {getFormFieldData,setFormFieldData}= useFormContext();
     this.setFormFieldData=props.setFormFieldData;
-    // this.getFormFieldData= useFormContext();
   }
 
   render() {
@@ -414,7 +414,7 @@ class cbVStack extends React.Component {
   }
 }
 
-class cbFlatList extends React.Component{
+class CbFlatList extends React.Component{
   constructor(props) {
     super();
     this.id=props.id;
@@ -478,6 +478,102 @@ class cbFlatList extends React.Component{
     );
   }
 }
+class cbCategoryList extends React.Component {
+  constructor(props) {
+    super();
+    this.id = props.id;
+  }
+  renderMenuCategoryList = ({ item }, setMealCategory) => {
+    return (
+      <Box>
+        <TouchableOpacity
+          style={styles.categoryBtn}
+          activeOpacity={0.6}
+          onPress={() => setMealCategory(item.id)}
+        >
+          <Text style={styles.categoryText}>
+            {item.recepies_category?.toUpperCase()}
+          </Text>
+          {
+            item.is_recepies_category_selected &&
+            <Box style={styles.bottomStyle} />
+          }
+        </TouchableOpacity>
+      </Box>
+    );
+  }
+  renderMealTypeList = ({item},setMealType) => {
+    return (
+     <Box>
+       <TouchableOpacity
+         activeOpacity={0.6}
+         style={[item.is_enable ? styles.activeMenuType:styles.inactiveMenuType]}
+         onPress={() => setMealType(item.id)}
+       >
+         <Text style={[styles.mealTypeTxt,{color:item.is_enable?"#ffffff":"#717171"}]}>
+           {item.meal_type}
+         </Text>
+         <Text style={[styles.timeDurationTxt,{color:item.is_enable?"#fff":"#000"}]}>
+           {item.time_duration}
+         </Text>
+         </TouchableOpacity>
+     </Box>
+   );
+ }
+
+  render() {
+    return (
+      <FormContext.Consumer>
+        {({ menuOrderData, setMealCategory ,setMealType}) => {
+          const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
+
+          return (
+            <>
+            <CbFlatList
+                    key={menuOrderData.id}
+                    flatlistData={menuOrderData.meal_category}
+                    children={(item) => this.renderMealTypeList(item,setMealType)}
+                    horizontal={true}
+                    contentContainerStyle={styles.categoryBottomContainer}
+                  />
+              {
+                menuOrderData.meal_category?.map((mealCategory) => {
+                  if (mealCategory.is_enable) {
+                    return (
+                      <CbFlatList
+                        flatlistData={mealCategory.meal_type_category}
+                        children={(items) => this.renderMenuCategoryList(items, setMealCategory)}
+                        horizontal={true}
+                        contentContainerStyle={styles.subCategoryContainer}
+                      />
+                    )
+                  }
+                })
+              }
+              {
+                menuOrderData.meal_category?.map((mealCategory) => {
+                  if (mealCategory.is_enable) {
+                    return mealCategory.meal_type_category.map((categoryList) => {
+                      if (categoryList.is_recepies_category_selected) {
+                        return (
+                          <Box>
+                            <CbAccordion AccordionData={categoryList.recepies_list} />
+                          </Box>
+                        )
+                      }
+                    })
+                  }
+                })
+              }
+            </>
+          );
+        }}
+      </FormContext.Consumer>
+    );
+  }
+}
 
 
 cbButton.displayName='cbButton';
@@ -488,9 +584,10 @@ cbImageBackground.displayName='cbImageBackground';
 cbRadioButton.displayName='cbRadioButton';
 cbVStack.displayName='cbVStack';
 cbForm.displayName='cbForm';
-cbAccordion.displayName='cbAccordion';
-cbFlatList.displayName = "cbFlatList"
+CbAccordion.displayName='CbAccordion';
+CbFlatList.displayName = "CbFlatList"
+cbCategoryList.displayName = "cbCategoryList"
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion,cbFlatList };
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList };
 
 

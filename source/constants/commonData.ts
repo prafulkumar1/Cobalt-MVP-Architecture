@@ -133,7 +133,7 @@ export const foodOrderData =
                   image:
                     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmvplXPaHMQ0UpdehnAJV644j3s5DumdtEnQ&s",
                   is_dish_available: true,
-                  quantity: 1,
+                  quantity: 0,
                 },
                 {
                   id: uuid.v4(),
@@ -248,6 +248,26 @@ export const foodOrderData =
           id: uuid.v4(),
           recepies_category: "Desserts",
           is_recepies_category_selected: true,
+          recepies_list: [
+            {
+              id: uuid.v4(),
+              sub_category_title: "Grilled",
+              sub_category_data: [
+                {
+                  id: uuid.v4(),
+                  dish_title: "Grilled Chicken Breast",
+                  price: "$30.00",
+                  dish_description:
+                    "Perfectly grilled chicken served with a side of steamed vegetables.",
+                    is_subcategroy_item_open: true,
+                  image:
+                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
+                  is_dish_available: true,
+                  quantity: 0,
+                },
+              ],
+            },
+          ],
         },
       ],
     },
