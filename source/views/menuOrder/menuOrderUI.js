@@ -14,11 +14,11 @@ export default function MenuOrderScreen() {
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
 
-  const {} = useFormContext();
+  const {menuOrderData} = useFormContext();
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-        <UI.cbCategoryList />
+        <UI.cbCategoryList menuOrderData={menuOrderData}/>
       </UI.ScrollView>
     </UI.Box>
   );

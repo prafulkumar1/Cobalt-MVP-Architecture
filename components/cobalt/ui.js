@@ -40,14 +40,14 @@ class CbAccordion extends React.Component {
     }));
   };
 
-  renderAddToCartBtn = (quantity,is_subcategroy_item_open) => {
+  renderAddToCartBtn = (quantity,IsAvailable) => {
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn,{borderColor:is_subcategroy_item_open?"#5773a2":"#4B515469"}]}
+          style={[styles.addItemToCartBtn,{borderColor:IsAvailable ===1?"#5773a2":"#4B515469"}]}
           activeOpacity={0.5}
         >
-          <Icon as={AddIcon} color={is_subcategroy_item_open?"#5773a2":"#4B515469"} />
+          <Icon as={AddIcon} color={IsAvailable ===1?"#5773a2":"#4B515469"} />
         </TouchableOpacity>
       )
     } else if (quantity === 1) {
@@ -78,7 +78,7 @@ class CbAccordion extends React.Component {
   }
 
   showActiveAvailableColor = (isAvailable) => {
-    return {color:isAvailable?"#4B5154":"#4B515469"}
+    return {color:isAvailable ===1?"#4B5154":"#4B515469"}
   }
 
   render() {
@@ -86,14 +86,14 @@ class CbAccordion extends React.Component {
     const { expandedIndex } = this.state;
 
     return (
-      <Accordion defaultValue={componentdata?.map((item) => item.sub_category_title)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
+      <Accordion defaultValue={componentdata?.map((item) => item.Submenu_Name)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
-        <AccordionItem key={item.sub_category_title} value={item.sub_category_title}>
+        <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
           <AccordionHeader style={{marginBottom:10}}>
             <AccordionTrigger>
               {({ isExpanded }) => (
                 <>
-                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.sub_category_title}</AccordionTitleText>
+                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.Submenu_Name}</AccordionTitleText>
                   {isExpanded ? (
                     <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
                   ) : (
@@ -104,32 +104,32 @@ class CbAccordion extends React.Component {
             </AccordionTrigger>
           </AccordionHeader>
           <AccordionContent style={{marginTop:10}} >
-              {item.sub_category_data &&
-                item.sub_category_data.map((box, index) => (
+              {item.Items &&
+                item.Items.map((box, index) => (
                   <Box
                     key={index}
-                    style={[styles.subContainer,{opacity:box.is_subcategroy_item_open?1:0.8}]}
+                    style={[styles.subContainer,{opacity:box.IsAvailable ===1 ?1:0.8}]}
                   >
                     <Box style={styles.contentContainer}>
                     <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
+                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.IsAvailable)]}
                         >
-                        {box.dish_title}
+                        {box.Item_Name}
                         </AccordionContentText>
                         <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.priceTxt,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
+                        style={[styles.priceTxt,this.showActiveAvailableColor(box.IsAvailable)]}
                         >
-                        {box.price}
+                        {`$${box.Price}.00`}
                         </AccordionContentText>
                     <AccordionContentText
                         numberOfLines={expandedIndex === index ? undefined : 1}
-                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.is_subcategroy_item_open)]}
+                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.IsAvailable)]}
                         >
-                        {box.dish_description}
+                        {box.Description}
                         </AccordionContentText>
-                        {box.dish_description.length > 100 && (
+                        {box.Description.length > 100 && (
                         <AccordionContentText
                           onPress={() => this.handleReadMoreToggle(index)}
                           style={styles.underLineTxt}
@@ -138,14 +138,14 @@ class CbAccordion extends React.Component {
                         </AccordionContentText>
                         )}
                     </Box>
-                    {box.image && (
+                    {box.Image && (
                       <Box>                                   
                            <Image
-                          source={{ uri: box.image }}
-                          style={[styles.mealTypeImg,!box.is_subcategroy_item_open && {filter:'grayscale(100%)'}]}
+                          source={{ uri: box.Image }}
+                          style={[styles.mealTypeImg,box.IsAvailable ===0 && {filter:'grayscale(100%)'}]}
                         />
                      
-                        {this.renderAddToCartBtn(box.quantity,box.is_subcategroy_item_open)}
+                        {this.renderAddToCartBtn(0,box.IsAvailable)}
                       </Box>
                     )}
                   </Box>
@@ -482,6 +482,7 @@ class cbCategoryList extends React.Component {
   constructor(props) {
     super();
     this.id = props.id;
+    this.menuOrderData = props.menuOrderData
   }
   renderMenuCategoryList = ({ item }, setMealCategory) => {
     return (
@@ -489,13 +490,13 @@ class cbCategoryList extends React.Component {
         <TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item.id)}
+          onPress={() => setMealCategory(item.Category_Id)}
         >
           <Text style={styles.categoryText}>
-            {item.recepies_category?.toUpperCase()}
+            {item.Category_Name?.toUpperCase()}
           </Text>
           {
-            item.is_recepies_category_selected &&
+            item.IsSelect ===1 &&
             <Box style={styles.bottomStyle} />
           }
         </TouchableOpacity>
@@ -503,18 +504,19 @@ class cbCategoryList extends React.Component {
     );
   }
   renderMealTypeList = ({item},setMealType) => {
+    console.log(item.IsSelect,"=====>>>item.IsSelect")
     return (
      <Box>
        <TouchableOpacity
          activeOpacity={0.6}
-         style={[item.is_enable ? styles.activeMenuType:styles.inactiveMenuType]}
-         onPress={() => setMealType(item.id)}
+         style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
+         onPress={() => setMealType(item.MealPeriod_Id)}
        >
-         <Text style={[styles.mealTypeTxt,{color:item.is_enable?"#ffffff":"#717171"}]}>
-           {item.meal_type}
+         <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
+           {item.MealPeriod_Name?.toUpperCase()}
          </Text>
-         <Text style={[styles.timeDurationTxt,{color:item.is_enable?"#fff":"#000"}]}>
-           {item.time_duration}
+         <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
+           {item.Time}
          </Text>
          </TouchableOpacity>
      </Box>
@@ -524,7 +526,7 @@ class cbCategoryList extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ menuOrderData, setMealCategory ,setMealType}) => {
+        {({ setMealType,setMealCategory }) => {
           const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
@@ -532,18 +534,17 @@ class cbCategoryList extends React.Component {
           return (
             <>
             <CbFlatList
-                    key={menuOrderData.id}
-                    flatlistData={menuOrderData.meal_category}
+                    flatlistData={this.menuOrderData.MenuItems}
                     children={(item) => this.renderMealTypeList(item,setMealType)}
                     horizontal={true}
                     contentContainerStyle={styles.categoryBottomContainer}
                   />
               {
-                menuOrderData.meal_category?.map((mealCategory) => {
-                  if (mealCategory.is_enable) {
+                this.menuOrderData.MenuItems?.map((mealCategory) => {
+                  if (mealCategory.IsSelect ===1) {
                     return (
                       <CbFlatList
-                        flatlistData={mealCategory.meal_type_category}
+                        flatlistData={mealCategory.Categories}
                         children={(items) => this.renderMenuCategoryList(items, setMealCategory)}
                         horizontal={true}
                         contentContainerStyle={styles.subCategoryContainer}
@@ -553,13 +554,13 @@ class cbCategoryList extends React.Component {
                 })
               }
               {
-                menuOrderData.meal_category?.map((mealCategory) => {
-                  if (mealCategory.is_enable) {
-                    return mealCategory.meal_type_category.map((categoryList) => {
-                      if (categoryList.is_recepies_category_selected) {
+                this.menuOrderData.MenuItems?.map((mealCategory) => {
+                  if (mealCategory.IsSelect ===1) {
+                    return mealCategory.Categories.map((categoryList) => {
+                      if (categoryList.IsSelect ===1) {
                         return (
                           <Box>
-                            <CbAccordion AccordionData={categoryList.recepies_list} />
+                            <CbAccordion AccordionData={categoryList.Submenu} />
                           </Box>
                         )
                       }

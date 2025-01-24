@@ -2,275 +2,187 @@ import uuid from "react-native-uuid";
 
 export const foodOrderData = 
 {
-  id: uuid.v4(),
-  meal_category: [
+  "ResponseCode": "Success",
+  "ResponseMessage": "",
+  "MenuItems": [
     {
-      id: uuid.v4(),
-      meal_type: "BREAKFAST",
-      is_enable: false,
-      time_duration: "06:30 am - 11:30 am",
-      meal_type_category: [
-        {
-          id: uuid.v4(),
-          recepies_category: "Appetizers",
-          is_recepies_category_selected: true,
-          recepies_list: [
-            {
-              id: uuid.v4(),
-              sub_category_title: "Hot",
-              sub_category_data: [
-                {
-                  id: uuid.v4(),
-                  dish_title: "Dosa",
-                  price: "$10.00",
-                  dish_description:
-                    "A delicious and healthy option with fresh dosa",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/371589/pexels-photo-371589.jpeg?cs=srgb&dl=clouds-conifer-daylight-371589.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 0,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: uuid.v4(),
-          recepies_category: "Main Course",
-          is_recepies_category_selected: false,
-          recepies_list: [
-            {
-              id: uuid.v4(),
-              sub_category_title: "Spicy",
-              sub_category_data: [
-                {
-                  id: uuid.v4(),
-                  dish_title: "Spaghetti Bolognese",
-                  price: "$12.99",
-                  dish_description: "A classic Italian pasta dish with rich tomato sauce.",
-                  is_subcategroy_item_open: true,
-                  image: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?cs=srgb&dl=pexels-engin-akyurt-1279330.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 3,
-                },
-                {
-                  id: uuid.v4(),
-                  dish_title: "Grilled Chicken",
-                  price: "$15.00",
-                  dish_description: "Perfectly seasoned grilled chicken served with sides.",
-                  is_subcategroy_item_open: true,
-                  image: "https://images.pexels.com/photos/410648/pexels-photo-410648.jpeg?cs=srgb&dl=pexels-pixabay-410648.jpg&fm=jpg",
-                  is_dish_available: false,
-                  quantity: 0,
-                },
-              ],
-            },
-            {
-              id: uuid.v4(),
-              sub_category_title: "Vegetarian",
-              sub_category_data: [
-                {
-                  id: uuid.v4(),
-                  dish_title: "Vegetable Stir Fry",
-                  price: "$9.99",
-                  dish_description: "A mix of fresh vegetables stir-fried in a tangy sauce.",
-                  is_subcategroy_item_open: true,
-                  image: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?cs=srgb&dl=pexels-engin-akyurt-1640777.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 2,
-                },
-                {
-                  id: uuid.v4(),
-                  dish_title: "Paneer Tikka",
-                  price: "$11.00",
-                  dish_description: "Chunks of paneer marinated and grilled to perfection.",
-                  is_subcategroy_item_open: true,
-                  image: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg?cs=srgb&dl=pexels-engin-akyurt-1640774.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 5,
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      "MealPeriod_Name": "Breakfast",
+      "MealPeriod_Id": "MP102",
+      "IsSelect": 0,
+      "IsEnabled": 1,
+      "Time": "06:00 AM - 10:30 AM",
+      "Categories": []
     },
     {
-      id: uuid.v4(),
-      meal_type: "LUNCH",
-      is_enable: true,
-      time_duration: "12:00 pm - 4:30 pm",
-      meal_type_category: [
+      "MealPeriod_Name": "Lunch",
+      "MealPeriod_Id": "MP101",
+      "IsSelect": 1,
+      "IsEnabled": 1,
+      "Time": "12:00 PM - 04:30 PM",
+      "Categories": [
         {
-          id: uuid.v4(),
-          recepies_category: "Appetizers",
-          is_recepies_category_selected: true,
-          recepies_list: [
+          "Category_Name": "Appetizers",
+          "Category_Id": "C201",
+          "IsSelect": 1,
+          "Submenu": [
             {
-              id: uuid.v4(),
-              sub_category_title: "Hot",
-              sub_category_data: [
+              "Submenu_Name": "Hot",
+              "Submenu_Id": "SM301",
+              "Items": [
                 {
-                  id: uuid.v4(),
-                  dish_title: "Seared Salmon Salad",
-                  price: "$25.00",
-                  dish_description:
-                    "A delicious and healthy option with fresh seared salmon salad",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG4y1uW-q4EcAQh1bPosVy298hwEXazLNmiw&s",
-                  is_dish_available: true,
-                  quantity: 0,
+                  "Item_Name": "Seared Salmon Salad",
+                  "Item_Id": "I301",
+                  "Description": "Savor the delicious Green salad.",
+                  "Price": 25.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 0
                 },
                 {
-                  id: uuid.v4(),
-                  dish_title: "Coconut Shrimp",
-                  price: "$45.00",
-                  dish_description:
-                    "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                  is_subcategroy_item_open: false,
-                  image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmvplXPaHMQ0UpdehnAJV644j3s5DumdtEnQ&s",
-                  is_dish_available: true,
-                  quantity: 0,
-                },
-                {
-                  id: uuid.v4(),
-                  dish_title: "Coconut Snap",
-                  price: "$40.00",
-                  dish_description:
-                    "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmvplXPaHMQ0UpdehnAJV644j3s5DumdtEnQ&s",
-                  is_dish_available: true,
-                  quantity: 6,
-                },
-              ],
+                  "Item_Name": "Coconut Shrimp",
+                  "Item_Id": "I302",
+                  "Description": "These coconut shrimp are dipped...",
+                  "Price": 45.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
             },
             {
-              id: uuid.v4(),
-              sub_category_title: "Cold",
-              sub_category_data: [
+              "Submenu_Name": "Cold",
+              "Submenu_Id": "SM302",
+              "Items": [
                 {
-                  id: uuid.v4(),
-                  dish_title: "Seared Salmon Salad",
-                  price: "$25.00",
-                  dish_description:
-                    "A delicious and healthy option with fresh seared salmon salad",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 0,
+                  "Item_Name": "Caprese Salad",
+                  "Item_Id": "I303",
+                  "Description": "Fresh mozzarella, tomatoes, and basil.",
+                  "Price": 18.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
                 },
                 {
-                  id: uuid.v4(),
-                  dish_title: "Coconut Shrimp",
-                  price: "$45.00",
-                  dish_description:
-                    "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 0,
-                },
-              ],
-            },
-            {
-              id: uuid.v4(),
-              sub_category_title: "Seafood",
-              sub_category_data: [
-                {
-                  id: uuid.v4(),
-                  dish_title: "Seared Salmon Salad",
-                  price: "$25.00",
-                  dish_description:
-                    "A delicious and healthy option with fresh seared salmon salad",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 8,
-                },
-                {
-                  id: uuid.v4(),
-                  dish_title: "Coconut Shrimp",
-                  price: "$45.00",
-                  dish_description:
-                    "Crispy and golden shrimp coated in a delicious coconut batter, served with a tangy and sweet dipping sauce for the perfect tropical flavor.",
-                  is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 12,
-                },
-              ],
-            },
-          ],
+                  "Item_Name": "Guacamole with Chips",
+                  "Item_Id": "I304",
+                  "Description": "A creamy guacamole served with crispy tortilla chips.",
+                  "Price": 12.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            }
+          ]
         },
         {
-          id: uuid.v4(),
-          recepies_category: "Entrees",
-          is_recepies_category_selected: false,
-          recepies_list: [
+          "Category_Name": "Salads",
+          "Category_Id": "C202",
+          "IsSelect": 0,
+          "Submenu": [
             {
-              id: uuid.v4(),
-              sub_category_title: "Grilled",
-              sub_category_data: [
+              "Submenu_Name": "Fresh",
+              "Submenu_Id": "SM303",
+              "Items": [
                 {
-                  id: uuid.v4(),
-                  dish_title: "Grilled Chicken Breast",
-                  price: "$30.00",
-                  dish_description:
-                    "Perfectly grilled chicken served with a side of steamed vegetables.",
-                  is_subcategroy_item_open: false,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 0,
+                  "Item_Name": "Caesar Salad",
+                  "Item_Id": "I305",
+                  "Description": "A classic Caesar with crisp romaine lettuce.",
+                  "Price": 15.00,
+                  "Image": "https://media.istockphoto.com/id/1457433817/photo/group-of-healthy-food-for-flexitarian-diet.jpg?s=612x612&w=0&k=20&c=v48RE0ZNWpMZOlSp13KdF1yFDmidorO2pZTu2Idmd3M=",
+                  "IsAvailable": 1
                 },
-              ],
+                {
+                  "Item_Name": "Greek Salad",
+                  "Item_Id": "I306",
+                  "Description": "Mixed greens with feta, olives, and dressing.",
+                  "Price": 18.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlfJWSz_pT9LgXvU37bHgwIpsmC3HLmIEu60h0nlVTN-MCBC0e9RNEeu-pqE-M9BhmdrY&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
             },
-          ],
+            {
+              "Submenu_Name": "Warm",
+              "Submenu_Id": "SM304",
+              "Items": [
+                {
+                  "Item_Name": "Warm Quinoa Salad",
+                  "Item_Id": "I307",
+                  "Description": "A mix of quinoa, roasted veggies, and a light vinaigrette.",
+                  "Price": 20.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
+                  "IsAvailable": 1
+                },
+                {
+                  "Item_Name": "Grilled Chicken Salad",
+                  "Item_Id": "I308",
+                  "Description": "Grilled chicken, mixed greens, and light dressing.",
+                  "Price": 22.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            }
+          ]
         },
-      ],
+        {
+          "Category_Name": "Entrees",
+          "Category_Id": "C203",
+          "IsSelect": 0,
+          "Submenu": [
+            {
+              "Submenu_Name": "Grilled",
+              "Submenu_Id": "SM305",
+              "Items": [
+                {
+                  "Item_Name": "Grilled Chicken Breast",
+                  "Item_Id": "I309",
+                  "Description": "Tender grilled chicken breast with spices.",
+                  "Price": 22.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                },
+                {
+                  "Item_Name": "Grilled Steak",
+                  "Item_Id": "I310",
+                  "Description": "Juicy grilled steak, seasoned perfectly.",
+                  "Price": 30.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            },
+            {
+              "Submenu_Name": "Vegetarian",
+              "Submenu_Id": "SM306",
+              "Items": [
+                {
+                  "Item_Name": "Vegetable Stir-Fry",
+                  "Item_Id": "I311",
+                  "Description": "A medley of vegetables stir-fried in a soy sauce.",
+                  "Price": 20.00,
+                  "Image": "https://media.gettyimages.com/id/1457889029/photo/group-of-food-with-high-content-of-dietary-fiber-arranged-side-by-side.jpg?s=612x612&w=gi&k=20&c=YiNatAP0CzFSalhnkzSUFyy6XpVhBe3WSnRpu1W3pV4=",
+                  "IsAvailable": 1
+                },
+                {
+                  "Item_Name": "Grilled Tofu",
+                  "Item_Id": "I312",
+                  "Description": "Grilled tofu served with sautéed vegetables.",
+                  "Price": 18.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
-      id: uuid.v4(),
-      meal_type: "DINNER",
-      is_enable: false,
-      time_duration: "7:30 pm - 11:30 pm",
-      meal_type_category: [
-        {
-          id: uuid.v4(),
-          recepies_category: "Desserts",
-          is_recepies_category_selected: true,
-          recepies_list: [
-            {
-              id: uuid.v4(),
-              sub_category_title: "Grilled",
-              sub_category_data: [
-                {
-                  id: uuid.v4(),
-                  dish_title: "Grilled Chicken Breast",
-                  price: "$30.00",
-                  dish_description:
-                    "Perfectly grilled chicken served with a side of steamed vegetables.",
-                    is_subcategroy_item_open: true,
-                  image:
-                    "https://images.pexels.com/photos/1049684/pexels-photo-1049684.jpeg?cs=srgb&dl=pexels-engin-akyurt-1049684.jpg&fm=jpg",
-                  is_dish_available: true,
-                  quantity: 0,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  is_meal_category_required: true,
+      "MealPeriod_Name": "Dinner",
+      "MealPeriod_Id": "MP103",
+      "IsSelect": 0,
+      "IsEnabled": 1,
+      "Time": "05:00 PM - 09:30 PM",
+      "Categories": [
+       ]
+    }
+  ]
 }

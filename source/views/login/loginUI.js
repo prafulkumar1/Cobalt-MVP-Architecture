@@ -106,7 +106,7 @@ export default function LoginScreen() {
     <UI.cbRadioButton id='gender' />
     <UI.cbButton id='login' variant='solid' text='signin'/>
     <UI.cbButton id='cancel' variant='link'/>
-    <UI.cbAccordion AccordionData={AccordionData} />
+    <UI.CbAccordion AccordionData={AccordionData} />
     </UI.cbVStack>
     </UI.cbForm>
     </UI.ScrollView>

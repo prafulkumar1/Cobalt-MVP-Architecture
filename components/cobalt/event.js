@@ -34,30 +34,32 @@ export const UseFormContextProvider = ({children}) => {
     };
 
     const setMealType = (id) => {
-      const updatedMealType = menuOrderData.meal_category.map((items) => ({
+      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
         ...items,
-        is_enable: items.id === id,
+        IsSelect: items.MealPeriod_Id === id?1:0,
       }));
     
       const foodMenuList = {
         ...menuOrderData,
-        meal_category: updatedMealType,
+        Categories: updatedMealType,
       };
+
+      console.log(JSON.stringify(foodMenuList),"======>>>>foodMenuListjjsjsjs")
     
       setMenuOrderData(foodMenuList);
     };
 
     const setMealCategory = (id) => {
-      const updatedMealCategory = menuOrderData.meal_category.map((items) => ({
+      const updatedMealCategory = menuOrderData.MenuItems.map((items) => ({
        ...items,
-        meal_type_category: items.meal_type_category.map((category) => ({
+        Categories: items.Categories.map((category) => ({
          ...category,
-          is_recepies_category_selected: category.id === id,
+         IsSelect: category.Category_Id === id ? 1:0,
         })),
       }));
       const foodMenuList = {
        ...menuOrderData,
-        meal_category: updatedMealCategory,
+       Submenu: updatedMealCategory,
       };
       setMenuOrderData(foodMenuList)
     }
