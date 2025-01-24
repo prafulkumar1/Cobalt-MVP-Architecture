@@ -18,7 +18,7 @@ export default function MenuOrderScreen() {
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-        <UI.cbCategoryList menuOrderData={menuOrderData}/>
+        <UI.cbCategoryList />
       </UI.ScrollView>
     </UI.Box>
   );

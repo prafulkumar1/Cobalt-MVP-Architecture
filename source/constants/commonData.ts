@@ -182,6 +182,57 @@ export const foodOrderData =
       "IsEnabled": 1,
       "Time": "05:00 PM - 09:30 PM",
       "Categories": [
+        {
+          "Category_Name": "Coconut",
+          "Category_Id": "C2013",
+          "IsSelect": 1,
+          "Submenu": [
+            {
+              "Submenu_Name": "Normal",
+              "Submenu_Id": "SM301",
+              "Items": [
+                {
+                  "Item_Name": "Seared Salmon Salad",
+                  "Item_Id": "I301",
+                  "Description": "Savor the delicious Green salad.",
+                  "Price": 25.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                },
+                {
+                  "Item_Name": "Coconut Shrimp",
+                  "Item_Id": "I302",
+                  "Description": "These coconut shrimp are dipped...",
+                  "Price": 45.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            },
+            {
+              "Submenu_Name": "Cold",
+              "Submenu_Id": "SM302",
+              "Items": [
+                {
+                  "Item_Name": "Caprese Salad",
+                  "Item_Id": "I303",
+                  "Description": "Fresh mozzarella, tomatoes, and basil.",
+                  "Price": 18.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 0
+                },
+                {
+                  "Item_Name": "Guacamole with Chips",
+                  "Item_Id": "I304",
+                  "Description": "A creamy guacamole served with crispy tortilla chips.",
+                  "Price": 12.00,
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "IsAvailable": 1
+                }
+              ]
+            }
+          ]
+        },
        ]
     }
   ]

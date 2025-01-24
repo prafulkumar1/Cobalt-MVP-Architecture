@@ -473,7 +473,7 @@ class CbFlatList extends React.Component{
         updateCellsBatchingPeriod={100}
         windowSize={21}
         onEndReachedThreshold={0.1}
-        extraData = {this.props.extraData}
+        extraData = {this.extraData}
       />
     );
   }
@@ -482,7 +482,6 @@ class cbCategoryList extends React.Component {
   constructor(props) {
     super();
     this.id = props.id;
-    this.menuOrderData = props.menuOrderData
   }
   renderMenuCategoryList = ({ item }, setMealCategory) => {
     return (
@@ -525,7 +524,7 @@ class cbCategoryList extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ setMealType,setMealCategory }) => {
+        {({ menuOrderData, setMealType,setMealCategory }) => {
           const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
@@ -533,13 +532,13 @@ class cbCategoryList extends React.Component {
           return (
             <>
             <CbFlatList
-                    flatlistData={this.menuOrderData.MenuItems}
+                    flatlistData={menuOrderData.MenuItems}
                     children={(item) => this.renderMealTypeList(item,setMealType)}
                     horizontal={true}
                     contentContainerStyle={styles.categoryBottomContainer}
                   />
               {
-                this.menuOrderData.MenuItems?.map((mealCategory) => {
+                menuOrderData.MenuItems?.map((mealCategory) => {
                   if (mealCategory.IsSelect ===1) {
                     return (
                       <CbFlatList
@@ -553,7 +552,7 @@ class cbCategoryList extends React.Component {
                 })
               }
               {
-                this.menuOrderData.MenuItems?.map((mealCategory) => {
+                menuOrderData.MenuItems?.map((mealCategory) => {
                   if (mealCategory.IsSelect ===1) {
                     return mealCategory.Categories.map((categoryList) => {
                       if (categoryList.IsSelect ===1) {
