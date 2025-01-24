@@ -34,18 +34,17 @@ export const UseFormContextProvider = ({children}) => {
     };
 
     const setMealType = (id) => {
-      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
-        ...items,
-        IsSelect: items.MealPeriod_Id === id?1:0,
-      }));
+      const updatedMealType = menuOrderData.MenuItems.map((items) => {
+        return {
+          ...items,
+          IsSelect: items.MealPeriod_Id === id?1:0,
+        }
+      });
     
       const foodMenuList = {
         ...menuOrderData,
-        Categories: updatedMealType,
+        MenuItems: updatedMealType,
       };
-
-      console.log(JSON.stringify(foodMenuList),"======>>>>foodMenuListjjsjsjs")
-    
       setMenuOrderData(foodMenuList);
     };
 
@@ -59,7 +58,7 @@ export const UseFormContextProvider = ({children}) => {
       }));
       const foodMenuList = {
        ...menuOrderData,
-       Submenu: updatedMealCategory,
+       MenuItems: updatedMealCategory,
       };
       setMenuOrderData(foodMenuList)
     }

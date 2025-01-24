@@ -504,7 +504,6 @@ class cbCategoryList extends React.Component {
     );
   }
   renderMealTypeList = ({item},setMealType) => {
-    console.log(item.IsSelect,"=====>>>item.IsSelect")
     return (
      <Box>
        <TouchableOpacity
