@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { ImageBackground, StyleSheet,TouchableOpacity} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacityTouchableOpacity} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -11,30 +11,31 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
 import {  House, } from 'lucide-react-native';
-import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
+import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
-import { Image } from '@/components/ui/image';
 import { Icon } from '@/components/ui/icon';
 import {useFormContext} from './event';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Text, View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
-import { commonStyles } from './style';
+import {  styles } from './style';
+import uuid from  "react-native-uuid"
+import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
 
 
 
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
-class cbAccordion extends React.Component {
+class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
     this.state = {
-      expandedIndex: null, // Initialize expandedIndex
+      expandedIndex: null,
     };
   }
 
@@ -44,100 +45,120 @@ class cbAccordion extends React.Component {
     }));
   };
 
+  renderAddToCartBtn = (quantity,IsAvailable) => {
+    if (quantity === 0) {
+      return (
+        <TouchableOpacity
+          style={[styles.addItemToCartBtn,{borderColor:IsAvailable ===1?"#5773a2":"#4B515469"}]}
+          activeOpacity={0.5}
+        >
+          <Icon as={AddIcon} color={IsAvailable ===1?"#5773a2":"#4B515469"} />
+        </TouchableOpacity>
+      )
+    } else if (quantity === 1) {
+      return (
+        <Box style={styles.operationBtn}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={TrashIcon} color="#5773a2" size={18} />
+          </TouchableOpacity>
+          <Text style={styles.quantityTxt}>{quantity}</Text>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={AddIcon} color="#5773a2" size={20} />
+          </TouchableOpacity>
+        </Box>
+      )
+    } else {
+      return (
+        <Box style={styles.operationBtn}>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={RemoveIcon} color="#5773a2" size={18} />
+          </TouchableOpacity>
+          <Text style={styles.quantityTxt}>{quantity}</Text>
+          <TouchableOpacity style={styles.iconBtn}>
+            <Icon as={AddIcon} color="#5773a2" size={20} />
+          </TouchableOpacity>
+        </Box>
+      )
+    }
+  }
+
+  showActiveAvailableColor = (isAvailable) => {
+    return {color:isAvailable ===1?"#4B5154":"#4B515469"}
+  }
+
   render() {
     const componentdata = this.AccordionData;
     const { expandedIndex } = this.state;
 
     return (
-      <Accordion variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
+      <Accordion defaultValue={componentdata?.map((item) => item.Submenu_Name)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
         {componentdata && componentdata.map((item) => (
-          <AccordionItem key={item.value} value={item.value}>
-            <AccordionHeader>
-              <AccordionTrigger>
-                {({ isExpanded }) => (
-                  <>
-                    <AccordionTitleText>{item.title}</AccordionTitleText>
-                    {isExpanded ? (
-                      <AccordionIcon as={ChevronUpIcon} width={16} height={16} className="ml-3" />
-                    ) : (
-                      <AccordionIcon as={ChevronDownIcon} width={16} height={16} className="ml-3" />
-                    )}
-                  </>
-                )}
-              </AccordionTrigger>
-            </AccordionHeader>
-            <AccordionContent>
-              {item.boxComponents &&
-                item.boxComponents.map((box, index) => ( // Correctly using 'index' here
+        <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
+          <AccordionHeader style={{marginBottom:10}}>
+            <AccordionTrigger>
+              {({ isExpanded }) => (
+                <>
+                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.Submenu_Name}</AccordionTitleText>
+                  {isExpanded ? (
+                    <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
+                  ) : (
+                    <AccordionIcon as={ChevronDownIcon} width={20} height={20} className="ml-3" />
+                  )}
+                </>
+              )}
+            </AccordionTrigger>
+          </AccordionHeader>
+          <AccordionContent style={{marginTop:10}} >
+              {item.Items &&
+                item.Items.map((box, index) => (
                   <Box
                     key={index}
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: 20,
-                    }}
+                    style={[styles.subContainer,{opacity:box.IsAvailable ===1 ?1:0.8}]}
                   >
-                    <Box style={{ flex: 1, paddingRight: 20 }}>
+                    <Box style={styles.contentContainer}>
                     <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2} // Compare with index
-                        style={{
-                          fontSize: 14,
-                          lineHeight: 20,
-                          color: '#333',
-                        }}
+                        numberOfLines={expandedIndex === index ? undefined : 2}
+                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.IsAvailable)]}
                         >
-                        {box.content}
+                        {box.Item_Name}
                         </AccordionContentText>
-                        {box.content.length > 100 && ( // Show "Read More" only if the content is long
                         <AccordionContentText
-                          onPress={() => this.handleReadMoreToggle(index)} // Use the correct index
-                          style={{
-                            color: '#007BFF',
-                            marginTop: 5,
-                            textDecorationLine: 'underline',
-                          }}
+                        numberOfLines={expandedIndex === index ? undefined : 2}
+                        style={[styles.priceTxt,this.showActiveAvailableColor(box.IsAvailable)]}
+                        >
+                        {`$${box.Price}.00`}
+                        </AccordionContentText>
+                    <AccordionContentText
+                        numberOfLines={expandedIndex === index ? undefined : 1}
+                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.IsAvailable)]}
+                        >
+                        {box.Description}
+                        </AccordionContentText>
+                        {box.Description.length > 100 && (
+                        <AccordionContentText
+                          onPress={() => this.handleReadMoreToggle(index)}
+                          style={styles.underLineTxt}
                         >
                           {expandedIndex === index ? 'Show Less' : 'Read More'}
                         </AccordionContentText>
                         )}
                     </Box>
-                    {box.image && (
-                      <Box style={{ position: 'relative' }}>
-                        <Image
-                          alt="image"
-                          source={{ uri: box.image }}
-                          style={{
-                            width: 250,
-                            height: 150,
-                            borderRadius: 8,
-                          }}
+                    {box.Image && (
+                      <Box>                                   
+                           <Image
+                          source={{ uri: box.Image }}
+                          style={[styles.mealTypeImg,box.IsAvailable ===0 && {filter:'grayscale(100%)'}]}
                         />
-                        {box.hasButton && (
-                          <Button
-                            style={{
-                              width: 20,
-                              position: 'absolute',
-                              bottom: 15,
-                              left: 50,
-                              borderColor: '#5773A2',
-                              borderWidth: 1,
-                              backgroundColor: '#fff',
-                              elevation: 5,
-                            }}
-                          >
-                            <Icon as={AddIcon} color="#5773A2" />
-                          </Button>
-                        )}
+                     
+                        {this.renderAddToCartBtn(0,box.IsAvailable)}
                       </Box>
                     )}
                   </Box>
                 ))}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+        </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
     );
   }
 }
@@ -445,10 +466,7 @@ class cbInput extends React.Component {
     this.isDisabled=props.isDisabled || false;
     this.isRequired=props.isRequired || false;
     this.isInvalid=props.isInvalid || false;
-    // const {getFormFieldData,setFormFieldData}= useFormContext();
     this.setFormFieldData=props.setFormFieldData;
-     //this.getFormFieldData= props.getFormFieldData;
-     console.log("-------->12345",props.formId);
   }
 
   render() {
@@ -527,6 +545,165 @@ class cbVStack extends React.Component {
   }
 }
 
+class CbFlatList extends React.Component{
+  constructor(props) {
+    super();
+    this.id=props.id;
+    this.children=props.children;
+    this.space = props.space || 'md'; 
+    this.flatlistData = props.flatlistData || []
+    this.numColumns = props.numColumns || 0
+    this.initialNumToRender = props.initialNumToRender || 10
+    this.bounces = props.bounces || false
+    this.horizontal = props.horizontal || false
+    this.inverted = props.inverted || false
+    this.contentContainerStyle = props.contentContainerStyle || {}
+    this.ref = props.ref
+    this.emptyListText = props.emptyListText || ""
+    this.showsHorizontalScrollIndicator = props.showsHorizontalScrollIndicator || false
+    this.showsVerticalScrollIndicator = props.showsVerticalScrollIndicator || false
+    this.customStyles = props.customStyles || {}
+    this.extraData = props.extraData || []
+  }
+     renderEmptyList = () => {
+      return(
+        <VStack>
+          <Text>{this.emptyListText}</Text>
+        </VStack>
+      )
+     }
+  render(){
+    const { children } = this.props; 
+    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+    const spaceprop = inputArray?.space  || this.space;
+    const ITEM_HEIGHT = 100
+    return (
+      <FlatList
+        ref={this.ref}
+        data={this.flatlistData}
+        renderItem={this.children}
+        keyExtractor={(_) => uuid.v1()}
+        numColumns={this.numColumns}
+        ListEmptyComponent={this.renderEmptyList}
+        initialNumToRender={10}
+        ListFooterComponent={this.ListFooterComponent}
+        bounces={this.bounces}
+        horizontal={this.horizontal}
+        inverted={this.inverted}
+        contentContainerStyle={this.contentContainerStyle}
+        maxToRenderPerBatch={10}
+        showsHorizontalScrollIndicator={this.showsHorizontalScrollIndicator}
+        showsVerticalScrollIndicator={this.showsVerticalScrollIndicator}
+        style={this.customStyles}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={100}
+        windowSize={21}
+        onEndReachedThreshold={0.1}
+        extraData = {this.extraData}
+      />
+    );
+  }
+}
+class cbCategoryList extends React.Component {
+  constructor(props) {
+    super();
+    this.id = props.id;
+  }
+  renderMenuCategoryList = ({ item }, setMealCategory) => {
+    return (
+      <Box>
+        <TouchableOpacity
+          style={styles.categoryBtn}
+          activeOpacity={0.6}
+          onPress={() => setMealCategory(item.Category_Id)}
+        >
+          <Text style={styles.categoryText}>
+            {item.Category_Name?.toUpperCase()}
+          </Text>
+          {
+            item.IsSelect ===1 &&
+            <Box style={styles.bottomStyle} />
+          }
+        </TouchableOpacity>
+      </Box>
+    );
+  }
+  renderMealTypeList = ({item},setMealType) => {
+    return (
+     <Box>
+       <TouchableOpacity
+         activeOpacity={0.6}
+         style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
+         onPress={() => setMealType(item.MealPeriod_Id)}
+       >
+         <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
+           {item.MealPeriod_Name?.toUpperCase()}
+         </Text>
+         <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
+           {item.Time}
+         </Text>
+         </TouchableOpacity>
+     </Box>
+   );
+ }
+
+  render() {
+    return (
+      <FormContext.Consumer>
+        {({ menuOrderData, setMealType,setMealCategory }) => {
+          const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
+
+          return (
+            <>
+            <CbFlatList
+                    flatlistData={menuOrderData.MenuItems}
+                    children={(item) => this.renderMealTypeList(item,setMealType)}
+                    horizontal={true}
+                    contentContainerStyle={styles.categoryBottomContainer}
+                  />
+              {
+                menuOrderData.MenuItems?.map((mealCategory) => {
+                  if (mealCategory.IsSelect ===1) {
+                    return (
+                      <CbFlatList
+                        flatlistData={mealCategory.Categories}
+                        children={(items) => this.renderMenuCategoryList(items, setMealCategory)}
+                        horizontal={true}
+                        contentContainerStyle={styles.subCategoryContainer}
+                      />
+                    )
+                  }
+                })
+              }
+              {
+                menuOrderData.MenuItems?.map((mealCategory) => {
+                  if (mealCategory.IsSelect ===1) {
+                    return mealCategory.Categories.map((categoryList) => {
+                      if (categoryList.IsSelect ===1) {
+                        return (
+                          <Box>
+                            <CbAccordion AccordionData={categoryList.Submenu} />
+                          </Box>
+                        )
+                      }
+                    })
+                  }
+                })
+              }
+            </>
+          );
+        }}
+      </FormContext.Consumer>
+    );
+  }
+}
 
 
 cbButton.displayName='cbButton';
@@ -537,10 +714,12 @@ cbImageBackground.displayName='cbImageBackground';
 cbRadioButton.displayName='cbRadioButton';
 cbVStack.displayName='cbVStack';
 cbForm.displayName='cbForm';
-cbAccordion.displayName='cbAccordion';
+CbAccordion.displayName='CbAccordion';
+CbFlatList.displayName = "CbFlatList"
+cbCategoryList.displayName = "cbCategoryList"
 cbHeader.displayName='cbHeader';
 cbSearchbox.displayName='cbSearchbox';
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, cbAccordion,cbHeader,cbSearchbox };
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryListcbHeader,cbSearchbox };
 
 

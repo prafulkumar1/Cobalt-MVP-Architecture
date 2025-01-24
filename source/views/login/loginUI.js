@@ -107,7 +107,7 @@ export default function LoginScreen(props) {
     <UI.cbRadioButton id='gender' />
     <UI.cbButton id='login' variant='solid' text='signin' onPress={()=>handleLogin(props)}/>
     <UI.cbButton id='cancel' variant='link'/>
-    <UI.cbAccordion AccordionData={AccordionData} />
+    <UI.CbAccordion AccordionData={AccordionData} />
     </UI.cbVStack>
     </UI.cbForm>
     </UI.ScrollView>
