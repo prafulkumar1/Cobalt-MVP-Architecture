@@ -1,16 +1,13 @@
-//  
-
-//import { useLoginLogic } from '@/source/controller/login/login';
 import * as UI from '@/components/cobalt/importUI';
 import { useState } from 'react';
 import {  CheckIcon, ChevronDownIcon,ChevronUpIcon,ChevronsRightIcon, CircleIcon, Icon,InfoIcon } from '@/components/ui/icon';
 import { ShoppingCart } from 'lucide-react';
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { useFormContext } from '@/components/cobalt/event';
-
+import { CartIcon } from '@/components/cobalt/ui.custom';
+import { height, width } from '@/source/constants/Matrices';
 
 export default function MenuScreen(props) { 
-  // const [isSearchActive, setIsSearchActive] = useState(false);
   const {isSearchActive,handleChangeState}= useFormContext();
 
 
@@ -35,8 +32,12 @@ export default function MenuScreen(props) {
                       <UI.Icon as={ChevronsRightIcon} size="lg"  style={{fontSize: 30, color: "#5773A2", cursor: "pointer",}}/>
                   </UI.TouchableOpacity>
                 </UI.Box>
-                )}
+                )}                
               </UI.Box>
+              <UI.Box style={{ width: 68, height: 68, backgroundColor:"#FF6F00",borderRadius:11,alignContent:"center" }}>
+              <CartIcon style={{ width: 28, height: 28, backgroundColor:"" }} color="#FF4C4C" />
+              </UI.Box>
+              <UI.FloatingButton />
             </UI.cbVStack>
           </UI.cbForm>
         </UI.ScrollView>

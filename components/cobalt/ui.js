@@ -26,11 +26,56 @@ import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
-
+import { CartIcon } from '@/components/cobalt/ui.custom';
 
 
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
-class CbAccordion extends React.Component {
+
+
+class FloatingButton extends React.Component {
+ 
+
+  render() {
+    return (
+      <View style={{position: 'absolute',    bottom: 20,   right: 20,}}>
+        <TouchableOpacity  style={{
+         width: 68,
+         height: 68,
+         backgroundColor: '#FF6F00',
+         borderRadius: 11,
+         justifyContent: 'center',
+         alignItems: 'center',
+         position: 'absolute',
+         bottom: 20,
+         right: 20,
+         shadowColor: '#000',
+         shadowOffset: { width: 0, height: 2 },
+         shadowOpacity: 0.25,
+         shadowRadius: 3.84,
+         elevation: 5,}}>
+         
+          <CartIcon color="#FFF" style={{width: 28,
+    height: 28,}} />
+    <Text style={{position: 'absolute',
+   bottom:31,
+    right: 2,    
+    color: '#FFFFFF', 
+    fontSize: 26,
+    fontWeight: 'bold',
+    padding: 4,
+    borderRadius: 20,
+    overflow: 'hidden',}}>3</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+
+
+
+
+class cbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
@@ -719,7 +764,7 @@ CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbHeader.displayName='cbHeader';
 cbSearchbox.displayName='cbSearchbox';
-
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryListcbHeader,cbSearchbox };
+FloatingButton.displayName='FloatingButton';
+ export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryListcbHeader,cbSearchbox,FloatingButton };
 
 
