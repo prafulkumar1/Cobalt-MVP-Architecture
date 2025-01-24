@@ -32,7 +32,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Seared Salmon Salad",
                   "Item_Id": "I301",
-                  "Description": "Savor the delicious Green salad.",
+                  "Description": "Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad.",
                   "Price": 25.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 0

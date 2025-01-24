@@ -666,53 +666,6 @@ class cbCategoryList extends React.Component {
 
           return (
             <>
-              {/* <CbFlatList
-                    flatlistData={menuOrderData.MenuItems}
-                    children={(item) => this.renderMealTypeList(item,setMealType)}
-                    horizontal={true}
-                    contentContainerStyle={styles.categoryBottomContainer}
-                  /> */}
-              <ScrollView
-                horizontal={false}
-                scrollEnabled={false}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ flexDirection: "row" }}
-              >
-                {menuOrderData.MenuItems?.map((item) =>
-                  this.renderMealTypeList(item, setMealType)
-                )}
-              </ScrollView>
-
-              {menuOrderData.MenuItems?.map((mealCategory) => {
-                if (mealCategory.IsSelect === 1) {
-                  return (
-                    <>
-                      <ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ flexDirection: "row" }}
-                      >
-                        {
-                          mealCategory.Categories.map((items) => {
-                            return this.renderMenuCategoryList(
-                              items,
-                              setMealCategory
-                            );
-                          })
-                          //   <CbFlatList
-                          //   flatlistData={mealCategory.Categories}
-                          //   children={(items) =>
-                          //     this.renderMenuCategoryList(items, setMealCategory)
-                          //   }
-                          //   horizontal={true}
-                          //   contentContainerStyle={styles.subCategoryContainer}
-                          // />
-                        }
-                      </ScrollView>
-                    </>
-                  );
-                }
-              })}
               {menuOrderData.MenuItems?.map((mealCategory) => {
                 if (mealCategory.IsSelect === 1) {
                   return mealCategory.Categories.map((categoryList) => {
