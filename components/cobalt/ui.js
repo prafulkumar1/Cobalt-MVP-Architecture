@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -614,7 +614,8 @@ class cbCategoryList extends React.Component {
     super();
     this.id = props.id;
   }
-  renderMenuCategoryList = ({ item }, setMealCategory) => {
+  renderMenuCategoryList = (categoryItem, setMealCategory) => {
+    let item = categoryItem
     return (
       <Box>
         <TouchableOpacity
@@ -633,9 +634,10 @@ class cbCategoryList extends React.Component {
       </Box>
     );
   }
-  renderMealTypeList = ({item},setMealType) => {
+  renderMealTypeList = (pureItems,setMealType) => {
+    let item = pureItems
     return (
-     <Box>
+     <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
        <TouchableOpacity
          activeOpacity={0.6}
          style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
@@ -655,48 +657,75 @@ class cbCategoryList extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ menuOrderData, setMealType,setMealCategory }) => {
-          const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+        {({ menuOrderData, setMealType, setMealCategory }) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
 
           return (
             <>
-            <CbFlatList
+              {/* <CbFlatList
                     flatlistData={menuOrderData.MenuItems}
                     children={(item) => this.renderMealTypeList(item,setMealType)}
                     horizontal={true}
                     contentContainerStyle={styles.categoryBottomContainer}
-                  />
-              {
-                menuOrderData.MenuItems?.map((mealCategory) => {
-                  if (mealCategory.IsSelect ===1) {
-                    return (
-                      <CbFlatList
-                        flatlistData={mealCategory.Categories}
-                        children={(items) => this.renderMenuCategoryList(items, setMealCategory)}
+                  /> */}
+              <ScrollView
+                horizontal={false}
+                scrollEnabled={false}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ flexDirection: "row" }}
+              >
+                {menuOrderData.MenuItems?.map((item) =>
+                  this.renderMealTypeList(item, setMealType)
+                )}
+              </ScrollView>
+
+              {menuOrderData.MenuItems?.map((mealCategory) => {
+                if (mealCategory.IsSelect === 1) {
+                  return (
+                    <>
+                      <ScrollView
                         horizontal={true}
-                        contentContainerStyle={styles.subCategoryContainer}
-                      />
-                    )
-                  }
-                })
-              }
-              {
-                menuOrderData.MenuItems?.map((mealCategory) => {
-                  if (mealCategory.IsSelect ===1) {
-                    return mealCategory.Categories.map((categoryList) => {
-                      if (categoryList.IsSelect ===1) {
-                        return (
-                          <Box>
-                            <CbAccordion AccordionData={categoryList.Submenu} />
-                          </Box>
-                        )
-                      }
-                    })
-                  }
-                })
-              }
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{ flexDirection: "row" }}
+                      >
+                        {
+                          mealCategory.Categories.map((items) => {
+                            return this.renderMenuCategoryList(
+                              items,
+                              setMealCategory
+                            );
+                          })
+                          //   <CbFlatList
+                          //   flatlistData={mealCategory.Categories}
+                          //   children={(items) =>
+                          //     this.renderMenuCategoryList(items, setMealCategory)
+                          //   }
+                          //   horizontal={true}
+                          //   contentContainerStyle={styles.subCategoryContainer}
+                          // />
+                        }
+                      </ScrollView>
+                    </>
+                  );
+                }
+              })}
+              {menuOrderData.MenuItems?.map((mealCategory) => {
+                if (mealCategory.IsSelect === 1) {
+                  return mealCategory.Categories.map((categoryList) => {
+                    if (categoryList.IsSelect === 1) {
+                      return (
+                        <Box>
+                          <CbAccordion AccordionData={categoryList.Submenu} />
+                        </Box>
+                      );
+                    }
+                  });
+                }
+              })}
             </>
           );
         }}

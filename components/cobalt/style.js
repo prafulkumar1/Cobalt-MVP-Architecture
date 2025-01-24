@@ -110,7 +110,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     alignSelf: "center",
-    marginHorizontal: 15,
     borderRadius: 5,
     width: 115,
     height: 40,
