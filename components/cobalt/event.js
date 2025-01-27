@@ -1,8 +1,7 @@
 import { foodOrderData } from '@/source/constants/commonData';
-import { Children, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 
 export const FormContext = createContext(); 
 
@@ -15,6 +14,7 @@ export const UseFormContextProvider = ({children}) => {
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
     const [isSearchActive, setIsSearchActive] = useState(false);
+    const [cartData, setCartData] = useState(null)
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -37,12 +37,14 @@ export const UseFormContextProvider = ({children}) => {
     };
 
     const setMealType = (id) => {
-      const updatedMealType = menuOrderData.MenuItems.map((items) => {
-        return {
-          ...items,
-          IsSelect: items.MealPeriod_Id === id?1:0,
-        }
-      });
+      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
+        ...items,
+        IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+        Categories: items.Categories.map((category, index) => ({
+          ...category,
+          IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+        })),
+      }));
     
       const foodMenuList = {
         ...menuOrderData,
@@ -69,39 +71,75 @@ export const UseFormContextProvider = ({children}) => {
     const handleChangeState = () => {
       setIsSearchActive(!isSearchActive)
     }
-    removeValue = async () => {
+    const getCartData = async () => {
       try {
-        await AsyncStorage.removeItem('cart_data')
-        
-      } catch(e) {
-      }
+        const value = await AsyncStorage.getItem('cart_data');
+        if (value !== null) {
+          setCartData(JSON.parse(value))
+        } else {
+          setCartData([])
+        }
+      } catch (error) {}
+    };
 
-    }
+    useEffect(() => {
+      getCartData()
+    },[])
 
-    const addItemToCartBtn = async(data,cartData) => {
-      // console.log(data,cartData,"====>datatattatata")
-      // if(cartData === null){
-      //   try {
-      //     const jsonValue = JSON.stringify([...cartData,{...data,quantity:1}]);
-      //     await AsyncStorage.setItem('cart_data', jsonValue);
-      //   } catch (e) {
-      //     // saving error
-      //   }
-      // }else{
-      //   // let getStorageData = await AsyncStorage.getItem("cart_data")
-      //   // if(getStorageData !==null){
-      //   //   let updatedData = getStorageData.find((items) => items.Item_Id === data.Item_Id)
-          
-      //   // }
-      // }
-     
+    const addItemToCartBtn = async (data) => {
+      try {
+        setCartData((prevCartData) => {
+          let updatedCartData = [...prevCartData];
+          const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
+    
+          if (itemIndex !== -1) {
+            updatedCartData[itemIndex].quantity += 1;
+          } else {
+            updatedCartData.push({ ...data, quantity: 1 });
+          }
+    
+          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+          return updatedCartData;
+        });
+      } catch (error) {}
+    };
+
+    const updateCartItemQuantity = async (mealItemDetails, newQuantity) => {
+      try {
+        setCartData((prevCartData) => {
+          let updatedCartData;
+    
+          if (newQuantity === 0) {
+            updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+          } else {
+            updatedCartData = prevCartData.map((item) =>
+              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity } : item
+            );
+          }
+    
+          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+          return updatedCartData;
+        });
+      } catch (error) {}
+    };
+    const initialValues = {
+      getFormFieldData,
+      setFormFieldData,
+      menuOrderData,
+      setMealType,
+      setMealCategory,
+      isSearchActive,
+      handleChangeState,
+      addItemToCartBtn,
+      updateCartItemQuantity,
+      cartData
     }
-    
-    
-    return(
-        <FormContext.Provider value={{getFormFieldData,setFormFieldData,menuOrderData,setMealType,setMealCategory,isSearchActive,handleChangeState,addItemToCartBtn}}>
-            {children}
-            </FormContext.Provider>
+    return (
+      <FormContext.Provider
+        value={initialValues}
+      >
+        {children}
+      </FormContext.Provider>
     );
     
   };

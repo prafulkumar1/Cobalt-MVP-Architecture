@@ -64,36 +64,49 @@ export default function MenuOrderScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.topContainer}
       >
-        {menuOrderData && menuOrderData.MenuItems?.map((item) => {
-          return renderMealTypeList(item, setMealType);
-        })}
+        {menuOrderData &&
+          menuOrderData.MenuItems?.map((item) => {
+            return renderMealTypeList(item, setMealType);
+          })}
       </UI.ScrollView>
 
       <UI.Box style={styles.subCategoryContainer}>
-        <UI.TouchableOpacity style={styles.backWardIcon} onPress={scrollToFirst}>
-          <Icon as={ChevronsLeftIcon} color="#5773a2" size={`xl`} />
-        </UI.TouchableOpacity>
-        <>
-          {menuOrderData && menuOrderData.MenuItems?.map((mealCategory) => {
+        {menuOrderData &&
+          menuOrderData.MenuItems?.map((mealCategory) => {
             if (mealCategory.IsSelect === 1) {
+              const categories = mealCategory?.Categories || [];
+              const categoryCount = categories.length;
+
               return (
-                <UI.ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.categoryListContainer}
-                  ref={categoryRef}
-                >
-                  {mealCategory?.Categories?.map((items) => {
-                    return renderMenuCategoryList(items);
-                  })}
-                </UI.ScrollView>
+                <>
+                  {categoryCount > 1 && (
+                    <UI.TouchableOpacity
+                      style={styles.backWardIcon}
+                      onPress={scrollToFirst}
+                    >
+                      <Icon as={ChevronsLeftIcon} color="#5773a2" size="xl" />
+                    </UI.TouchableOpacity>
+                  )}
+                  <UI.ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.categoryListContainer}
+                    ref={categoryRef}
+                  >
+                    {categories.map((items) => renderMenuCategoryList(items))}
+                  </UI.ScrollView>
+                  {categoryCount > 3 && (
+                    <UI.TouchableOpacity
+                      style={styles.forwardIcon}
+                      onPress={scrollToLast}
+                    >
+                      <Icon as={ChevronsRightIcon} color="#5773a2" size="xl" />
+                    </UI.TouchableOpacity>
+                  )}
+                </>
               );
             }
           })}
-        </>
-        <UI.TouchableOpacity style={styles.forwardIcon} onPress={scrollToLast}>
-            <Icon as={ChevronsRightIcon} color="#5773a2" size={`xl`} />
-        </UI.TouchableOpacity>
       </UI.Box>
       <UI.ScrollView contentContainerStyle={styles.scrollContent}>
         <UI.cbCategoryList />
