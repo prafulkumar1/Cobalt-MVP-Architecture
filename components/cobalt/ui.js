@@ -45,7 +45,6 @@ class CbAccordion extends React.Component {
   getCartData = async () => {
     try {
       const value = await AsyncStorage.getItem('cart_data');
-      console.log(value,"====>1112222")
       if (value !== null) {
         this.setState({cartData:value})
       }
@@ -57,10 +56,15 @@ class CbAccordion extends React.Component {
     this.getCartData()
   }
 
-  handleReadMoreToggle = (index) => {
-    this.setState((prevState) => ({
-      expandedIndex: prevState.expandedIndex === index ? null : index,
-    }));
+  handleReadMoreToggle = (id) => {
+    this.setState((prevState) => {
+      const isExpanded = prevState.expandedIds.includes(id);
+      return {
+        expandedIds: isExpanded
+          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
+          : [...prevState.expandedIds, id],
+      };
+    });
   };
   commonStyles = (isAvailable,primaryColor,secondaryColor) => {
     if(isAvailable ===1){
@@ -188,7 +192,7 @@ class CbAccordion extends React.Component {
             box.IsAvailable === 0 && { filter: "grayscale(100%)" },
           ]}
         />
-        {this.renderAddToCartBtn(0, box.IsAvailable)}
+        {this.renderAddToCartBtn(0, box)}
       </Box>
     )}
   </Box>
