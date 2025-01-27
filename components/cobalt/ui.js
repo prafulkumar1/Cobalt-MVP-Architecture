@@ -26,6 +26,7 @@ import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -34,9 +35,26 @@ class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
+    this.addItemToCartBtn = props.addItemToCartBtn
     this.state = {
       expandedIndex: null,
+      cartData:null
     };
+  }
+
+  getCartData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('cart_data');
+      console.log(value,"====>1112222")
+      if (value !== null) {
+        this.setState({cartData:value})
+      }
+    } catch (e) {
+    }
+  };
+
+  async componentDidMount(){
+    this.getCartData()
   }
 
   handleReadMoreToggle = (index) => {
@@ -44,34 +62,32 @@ class CbAccordion extends React.Component {
       expandedIndex: prevState.expandedIndex === index ? null : index,
     }));
   };
+  commonStyles = (isAvailable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1){
+      return primaryColor
+    }else{
+      return secondaryColor
+    }
+  }
 
-  renderAddToCartBtn = (quantity,IsAvailable) => {
+  renderAddToCartBtn = (quantity,mealItemDetails) => {
+    const IsAvailable = mealItemDetails.IsAvailable
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn,{borderColor:IsAvailable ===1?"#5773a2":"#4B515469"}]}
+          style={[styles.addItemToCartBtn, {borderColor:this.commonStyles(IsAvailable,"#5773a2","#4B515469")}]}
           activeOpacity={0.5}
+          onPress={() => this.addItemToCartBtn(mealItemDetails,this.state.cartData)}
+          disabled={IsAvailable===0?true : false}
         >
-          <Icon as={AddIcon} color={IsAvailable ===1?"#5773a2":"#4B515469"} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,"#5773a2","#4B515469")} />
         </TouchableOpacity>
       )
-    } else if (quantity === 1) {
+    } else{
       return (
         <Box style={styles.operationBtn}>
           <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={TrashIcon} color="#5773a2" size={18} />
-          </TouchableOpacity>
-          <Text style={styles.quantityTxt}>{quantity}</Text>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={AddIcon} color="#5773a2" size={20} />
-          </TouchableOpacity>
-        </Box>
-      )
-    } else {
-      return (
-        <Box style={styles.operationBtn}>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={RemoveIcon} color="#5773a2" size={18} />
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={18} />
           </TouchableOpacity>
           <Text style={styles.quantityTxt}>{quantity}</Text>
           <TouchableOpacity style={styles.iconBtn}>
@@ -98,7 +114,7 @@ class CbAccordion extends React.Component {
             <AccordionTrigger>
               {({ isExpanded }) => (
                 <>
-                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.Submenu_Name}</AccordionTitleText>
+                  <AccordionTitleText style={styles.accordionHeaderTxt}>{item.Submenu_Name}</AccordionTitleText>
                   {isExpanded ? (
                     <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
                   ) : (
@@ -108,12 +124,12 @@ class CbAccordion extends React.Component {
               )}
             </AccordionTrigger>
           </AccordionHeader>
-          <AccordionContent style={{marginTop:10}} >
-              {item.Items &&
+          <AccordionContent style={styles.bottomMainContent} >
+              {item?.Items &&
                 item.Items.map((box, index) => (
                   <Box
                     key={index}
-                    style={[styles.subContainer,{opacity:box.IsAvailable ===1 ?1:0.8}]}
+                    style={[styles.subContainer,{opacity:this.commonStyles(box.IsAvailable,1,0.8)}]}
                   >
                     <Box style={styles.contentContainer}>
                     <AccordionContentText
@@ -150,7 +166,7 @@ class CbAccordion extends React.Component {
                           style={[styles.mealTypeImg,box.IsAvailable ===0 && {filter:'grayscale(100%)'}]}
                         />
                      
-                        {this.renderAddToCartBtn(0,box.IsAvailable)}
+                        {this.renderAddToCartBtn(0,box)}
                       </Box>
                     )}
                   </Box>
@@ -614,50 +630,11 @@ class cbCategoryList extends React.Component {
     super();
     this.id = props.id;
   }
-  renderMenuCategoryList = (categoryItem, setMealCategory) => {
-    let item = categoryItem
-    return (
-      <Box>
-        <TouchableOpacity
-          style={styles.categoryBtn}
-          activeOpacity={0.6}
-          onPress={() => setMealCategory(item.Category_Id)}
-        >
-          <Text style={styles.categoryText}>
-            {item.Category_Name?.toUpperCase()}
-          </Text>
-          {
-            item.IsSelect ===1 &&
-            <Box style={styles.bottomStyle} />
-          }
-        </TouchableOpacity>
-      </Box>
-    );
-  }
-  renderMealTypeList = (pureItems,setMealType) => {
-    let item = pureItems
-    return (
-     <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-       <TouchableOpacity
-         activeOpacity={0.6}
-         style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
-         onPress={() => setMealType(item.MealPeriod_Id)}
-       >
-         <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
-           {item.MealPeriod_Name?.toUpperCase()}
-         </Text>
-         <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
-           {item.Time}
-         </Text>
-         </TouchableOpacity>
-     </Box>
-   );
- }
 
   render() {
     return (
       <FormContext.Consumer>
-        {({ menuOrderData, setMealType, setMealCategory }) => {
+        {({ menuOrderData,addItemToCartBtn}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -672,7 +649,7 @@ class cbCategoryList extends React.Component {
                     if (categoryList.IsSelect === 1) {
                       return (
                         <Box>
-                          <CbAccordion AccordionData={categoryList.Submenu} />
+                          <CbAccordion AccordionData={categoryList.Submenu} addItemToCartBtn={addItemToCartBtn}/>
                         </Box>
                       );
                     }
