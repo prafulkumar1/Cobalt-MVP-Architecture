@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -35,26 +35,31 @@ class CbAccordion extends React.Component {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
     this.state = {
-      expandedIndex: null,
+      expandedIds: [],
     };
   }
 
-  handleReadMoreToggle = (index) => {
-    this.setState((prevState) => ({
-      expandedIndex: prevState.expandedIndex === index ? null : index,
-    }));
+  handleReadMoreToggle = (id) => {
+    this.setState((prevState) => {
+      const isExpanded = prevState.expandedIds.includes(id);
+      return {
+        expandedIds: isExpanded
+          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
+          : [...prevState.expandedIds, id],
+      };
+    });
   };
 
-  renderAddToCartBtn = (quantity,IsAvailable) => {
+  renderAddToCartBtn = (quantity, IsAvailable) => {
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn,{borderColor:IsAvailable ===1?"#5773a2":"#4B515469"}]}
+          style={[styles.addItemToCartBtn, { borderColor: IsAvailable === 1 ? "#5773a2" : "#4B515469" }]}
           activeOpacity={0.5}
         >
-          <Icon as={AddIcon} color={IsAvailable ===1?"#5773a2":"#4B515469"} />
+          <Icon as={AddIcon} color={IsAvailable === 1 ? "#5773a2" : "#4B515469"} />
         </TouchableOpacity>
-      )
+      );
     } else if (quantity === 1) {
       return (
         <Box style={styles.operationBtn}>
@@ -66,7 +71,7 @@ class CbAccordion extends React.Component {
             <Icon as={AddIcon} color="#5773a2" size={20} />
           </TouchableOpacity>
         </Box>
-      )
+      );
     } else {
       return (
         <Box style={styles.operationBtn}>
@@ -78,87 +83,114 @@ class CbAccordion extends React.Component {
             <Icon as={AddIcon} color="#5773a2" size={20} />
           </TouchableOpacity>
         </Box>
-      )
+      );
     }
-  }
+  };
 
   showActiveAvailableColor = (isAvailable) => {
-    return {color:isAvailable ===1?"#4B5154":"#4B515469"}
-  }
+    return { color: isAvailable === 1 ? "#4B5154" : "#4B515469" };
+  };
 
   render() {
     const componentdata = this.AccordionData;
-    const { expandedIndex } = this.state;
+    const { expandedIds } = this.state;
 
     return (
-      <Accordion defaultValue={componentdata?.map((item) => item.Submenu_Name)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
-        {componentdata && componentdata.map((item) => (
-        <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
-          <AccordionHeader style={{marginBottom:10}}>
-            <AccordionTrigger>
-              {({ isExpanded }) => (
-                <>
-                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.Submenu_Name}</AccordionTitleText>
-                  {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
-                  ) : (
-                    <AccordionIcon as={ChevronDownIcon} width={20} height={20} className="ml-3" />
+      <ScrollView
+      showsVerticalScrollIndicator = {false}
+      showsHorizontalScrollIndicator = {false}
+  contentContainerStyle={{ flexGrow: 1, paddingBottom: '30%' }}
+  keyboardShouldPersistTaps="handled"
+>
+      <Accordion
+        defaultValue={componentdata?.map((item) => item.Submenu_Name)}
+        variant="filled"
+        type="multiple"
+        isCollapsible={true}
+        isDisabled={false}
+      >
+        {componentdata &&
+          componentdata.map((item) => (
+            <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
+              <AccordionHeader style={{ marginBottom: 10 }}>
+                <AccordionTrigger>
+                  {({ isExpanded }) => (
+                    <>
+                      <AccordionTitleText style={{ color: "#5773a2", fontSize: 16 }}>
+                        {item.Submenu_Name}
+                      </AccordionTitleText>
+                      {isExpanded ? (
+                        <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
+                      ) : (
+                        <AccordionIcon as={ChevronDownIcon} width={20} height={20} className="ml-3" />
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </AccordionTrigger>
-          </AccordionHeader>
-          <AccordionContent style={{marginTop:10}} >
-              {item.Items &&
-                item.Items.map((box, index) => (
-                  <Box
-                    key={index}
-                    style={[styles.subContainer,{opacity:box.IsAvailable ===1 ?1:0.8}]}
-                  >
-                    <Box style={styles.contentContainer}>
-                    <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.IsAvailable)]}
-                        >
-                        {box.Item_Name}
-                        </AccordionContentText>
-                        <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.priceTxt,this.showActiveAvailableColor(box.IsAvailable)]}
-                        >
-                        {`$${box.Price}.00`}
-                        </AccordionContentText>
-                    <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 1}
-                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.IsAvailable)]}
-                        >
-                        {box.Description}
-                        </AccordionContentText>
-                        {box.Description.length > 100 && (
-                        <AccordionContentText
-                          onPress={() => this.handleReadMoreToggle(index)}
-                          style={styles.underLineTxt}
-                        >
-                          {expandedIndex === index ? 'Show Less' : 'Read More'}
-                        </AccordionContentText>
-                        )}
-                    </Box>
-                    {box.Image && (
-                      <Box>                                   
-                           <Image
-                          source={{ uri: box.Image }}
-                          style={[styles.mealTypeImg,box.IsAvailable ===0 && {filter:'grayscale(100%)'}]}
-                        />
-                     
-                        {this.renderAddToCartBtn(0,box.IsAvailable)}
-                      </Box>
-                    )}
-                  </Box>
-                ))}
-        </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+                </AccordionTrigger>
+              </AccordionHeader>
+              <AccordionContent style={{ marginTop: 10 }}>
+                {item.Items &&
+                  item.Items.map((box) => {
+                    const isExpanded = expandedIds.includes(box.Item_Id);
+
+                    return (
+                      <Box
+  key={box.Item_Id}
+  style={[styles.subContainer, { opacity: box.IsAvailable === 1 ? 1 : 0.8 }]}
+>
+  <Box style={styles.rowContainer}>
+    <Box style={[styles.textContainer, { marginRight: 5 }]}>
+      <AccordionContentText
+        numberOfLines={isExpanded ? undefined : 2}
+        style={[styles.mealTypeTitle, this.showActiveAvailableColor(box.IsAvailable), { textAlign: 'justify' }]}
+      >
+        {box.Item_Name}
+      </AccordionContentText>
+      <AccordionContentText
+        numberOfLines={isExpanded ? undefined : 2}
+        style={[styles.priceTxt, this.showActiveAvailableColor(box.IsAvailable)]}
+      >
+        {`$${box.Price}.00`}
+      </AccordionContentText>
+      <AccordionContentText
+        numberOfLines={isExpanded ? undefined : 1}
+        style={[styles.descriptionTxt, this.showActiveAvailableColor(box.IsAvailable), { textAlign: 'left', letterSpacing: -0.5 }]} // Adjust as needed
+      >
+        {box.Description}
+      </AccordionContentText>
+      {box.Description.length > 100 && (
+        <AccordionContentText
+          onPress={() => this.handleReadMoreToggle(box.Item_Id)}
+          style={styles.underLineTxt}
+        >
+          {isExpanded ? "Show Less" : "Read More"}
+        </AccordionContentText>
+      )}
+    </Box>
+
+    {box.Image && (
+      <Box style={styles.imageContainer}>
+        <Image
+          source={{ uri: box.Image }}
+          style={[
+            styles.mealTypeImg,
+            box.IsAvailable === 0 && { filter: "grayscale(100%)" },
+          ]}
+        />
+        {this.renderAddToCartBtn(0, box.IsAvailable)}
+      </Box>
+    )}
+  </Box>
+</Box>
+
+
+                    );
+                  })}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+      </Accordion>
+      </ScrollView>
     );
   }
 }
@@ -615,21 +647,22 @@ class cbCategoryList extends React.Component {
     this.id = props.id;
   }
   renderMenuCategoryList = (categoryItem, setMealCategory) => {
-    let item = categoryItem
+    if (!categoryItem.IsSelect) {
+      categoryItem.IsSelect = 1;
+      setMealCategory(categoryItem.Category_Id); 
+    }
+  
     return (
       <Box>
         <TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item.Category_Id)}
+          onPress={() => setMealCategory(categoryItem.Category_Id)}
         >
           <Text style={styles.categoryText}>
-            {item.Category_Name?.toUpperCase()}
+            {categoryItem.Category_Name?.toUpperCase()}
           </Text>
-          {
-            item.IsSelect ===1 &&
-            <Box style={styles.bottomStyle} />
-          }
+          {categoryItem.IsSelect === 1 && <Box style={styles.bottomStyle} />}
         </TouchableOpacity>
       </Box>
     );
