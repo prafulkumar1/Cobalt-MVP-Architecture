@@ -154,7 +154,7 @@ const styles = UI.StyleSheet.create({
     borderRadius: 5,
     width: 115,
     height: 40,
-    marginHorizontal:10
+    marginHorizontal:5
   },
   inactiveMenuType: {
     backgroundColor: "#ECECEC",
@@ -166,7 +166,7 @@ const styles = UI.StyleSheet.create({
     alignSelf: "center",
     borderRadius: 5,
     opacity: 0.5,
-    marginHorizontal:10
+    marginHorizontal:5
   },
   timeDurationTxt: {
     fontSize: 10,

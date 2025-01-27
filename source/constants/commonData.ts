@@ -173,57 +173,6 @@ export const foodOrderData =
             }
           ]
         },
-        {
-          "Category_Name": "Entrees",
-          "Category_Id": "C203",
-          "IsSelect": 0,
-          "Submenu": [
-            {
-              "Submenu_Name": "Grilled",
-              "Submenu_Id": "SM305",
-              "Items": [
-                {
-                  "Item_Name": "Grilled Chicken Breast",
-                  "Item_Id": "I309",
-                  "Description": "Tender grilled chicken breast with spices.",
-                  "Price": 22.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
-                },
-                {
-                  "Item_Name": "Grilled Steak",
-                  "Item_Id": "I310",
-                  "Description": "Juicy grilled steak, seasoned perfectly.",
-                  "Price": 30.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
-                  "IsAvailable": 1
-                }
-              ]
-            },
-            {
-              "Submenu_Name": "Vegetarian",
-              "Submenu_Id": "SM306",
-              "Items": [
-                {
-                  "Item_Name": "Vegetable Stir-Fry",
-                  "Item_Id": "I311",
-                  "Description": "A medley of vegetables stir-fried in a soy sauce.",
-                  "Price": 20.00,
-                  "Image": "https://media.gettyimages.com/id/1457889029/photo/group-of-food-with-high-content-of-dietary-fiber-arranged-side-by-side.jpg?s=612x612&w=gi&k=20&c=YiNatAP0CzFSalhnkzSUFyy6XpVhBe3WSnRpu1W3pV4=",
-                  "IsAvailable": 1
-                },
-                {
-                  "Item_Name": "Grilled Tofu",
-                  "Item_Id": "I312",
-                  "Description": "Grilled tofu served with sautéed vegetables.",
-                  "Price": 18.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
-                  "IsAvailable": 1
-                }
-              ]
-            }
-          ]
-        },
       ]
     },
     {
