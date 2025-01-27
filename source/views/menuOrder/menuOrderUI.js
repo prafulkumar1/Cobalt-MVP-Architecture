@@ -65,7 +65,7 @@ export default function MenuOrderScreen() {
         })}
       </UI.ScrollView>
 
-      <UI.Box style={{ marginHorizontal: 20 }}>
+      <UI.Box style={styles.subCategoryContainer}>
         {menuOrderData.MenuItems?.map((mealCategory) => {
           if (mealCategory.IsSelect === 1) {
             return (
@@ -74,7 +74,7 @@ export default function MenuOrderScreen() {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.categoryListContainer}
               >
-                {mealCategory.Categories.map((items) => {
+                {mealCategory?.Categories?.map((items) => {
                   return renderMenuCategoryList(items);
                 })}
               </UI.ScrollView>
@@ -128,6 +128,7 @@ const styles = UI.StyleSheet.create({
     borderRadius: 5,
     width: 115,
     height: 40,
+    marginHorizontal:10
   },
   inactiveMenuType: {
     backgroundColor: "#ECECEC",
@@ -137,9 +138,9 @@ const styles = UI.StyleSheet.create({
     width: 115,
     height: 40,
     alignSelf: "center",
-    marginHorizontal: 5,
     borderRadius: 5,
-    opacity: 0.5
+    opacity: 0.5,
+    marginHorizontal:10
   },
   timeDurationTxt: {
     fontSize: 10,
@@ -156,5 +157,6 @@ const styles = UI.StyleSheet.create({
   categoryListContainer: {
     flexDirection: "row",
     height: responsiveHeight(6),
-  }
+  },
+  subCategoryContainer:{ marginHorizontal: 20 }
 });
