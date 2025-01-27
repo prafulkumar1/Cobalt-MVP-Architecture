@@ -26,6 +26,7 @@ import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -34,49 +35,59 @@ class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
+    this.addItemToCartBtn = props.addItemToCartBtn
     this.state = {
       expandedIds: [],
+      cartData:null
     };
   }
 
-  handleReadMoreToggle = (id) => {
-    this.setState((prevState) => {
-      const isExpanded = prevState.expandedIds.includes(id);
-      return {
-        expandedIds: isExpanded
-          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
-          : [...prevState.expandedIds, id],
-      };
-    });
+  getCartData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('cart_data');
+      console.log(value,"====>1112222")
+      if (value !== null) {
+        this.setState({cartData:value})
+      }
+    } catch (e) {
+    }
   };
 
-  renderAddToCartBtn = (quantity, IsAvailable) => {
+  async componentDidMount(){
+    this.getCartData()
+  }
+
+  handleReadMoreToggle = (index) => {
+    this.setState((prevState) => ({
+      expandedIndex: prevState.expandedIndex === index ? null : index,
+    }));
+  };
+  commonStyles = (isAvailable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1){
+      return primaryColor
+    }else{
+      return secondaryColor
+    }
+  }
+
+  renderAddToCartBtn = (quantity,mealItemDetails) => {
+    const  IsAvailable = mealItemDetails.IsAvailable
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn, { borderColor: IsAvailable === 1 ? "#5773a2" : "#4B515469" }]}
+          style={[styles.addItemToCartBtn, {borderColor:this.commonStyles(IsAvailable,"#5773a2","#4B515469")}]}
           activeOpacity={0.5}
+          onPress={() => this.addItemToCartBtn(mealItemDetails,this.state.cartData)}
+          disabled={IsAvailable===0?true : false}
         >
-          <Icon as={AddIcon} color={IsAvailable === 1 ? "#5773a2" : "#4B515469"} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,"#5773a2","#4B515469")} />
         </TouchableOpacity>
-      );
-    } else if (quantity === 1) {
+      )
+    } else{
       return (
         <Box style={styles.operationBtn}>
           <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={TrashIcon} color="#5773a2" size={18} />
-          </TouchableOpacity>
-          <Text style={styles.quantityTxt}>{quantity}</Text>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={AddIcon} color="#5773a2" size={20} />
-          </TouchableOpacity>
-        </Box>
-      );
-    } else {
-      return (
-        <Box style={styles.operationBtn}>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={RemoveIcon} color="#5773a2" size={18} />
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={18} />
           </TouchableOpacity>
           <Text style={styles.quantityTxt}>{quantity}</Text>
           <TouchableOpacity style={styles.iconBtn}>
@@ -690,7 +701,7 @@ class cbCategoryList extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ menuOrderData, setMealType, setMealCategory }) => {
+        {({ menuOrderData,addItemToCartBtn}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -705,7 +716,7 @@ class cbCategoryList extends React.Component {
                     if (categoryList.IsSelect === 1) {
                       return (
                         <Box>
-                          <CbAccordion AccordionData={categoryList.Submenu} />
+                          <CbAccordion AccordionData={categoryList.Submenu} addItemToCartBtn={addItemToCartBtn}/>
                         </Box>
                       );
                     }

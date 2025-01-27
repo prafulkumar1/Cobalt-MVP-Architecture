@@ -149,5 +149,7 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     fontStyle: "italic",
     marginTop: -2
-  }
+  },
+  bottomMainContent:{marginTop:10},
+  accordionHeaderTxt:{color:"#5773a2",fontSize:16}
 })

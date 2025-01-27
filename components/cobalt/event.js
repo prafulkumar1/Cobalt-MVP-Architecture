@@ -1,6 +1,8 @@
 import { foodOrderData } from '@/source/constants/commonData';
 import { Children, useState } from 'react';
 import { createContext,  useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 export const FormContext = createContext(); 
 
@@ -67,10 +69,37 @@ export const UseFormContextProvider = ({children}) => {
     const handleChangeState = () => {
       setIsSearchActive(!isSearchActive)
     }
+    removeValue = async () => {
+      try {
+        await AsyncStorage.removeItem('cart_data')
+        
+      } catch(e) {
+      }
+
+    }
+
+    const addItemToCartBtn = async(data,cartData) => {
+      // console.log(data,cartData,"====>datatattatata")
+      // if(cartData === null){
+      //   try {
+      //     const jsonValue = JSON.stringify([...cartData,{...data,quantity:1}]);
+      //     await AsyncStorage.setItem('cart_data', jsonValue);
+      //   } catch (e) {
+      //     // saving error
+      //   }
+      // }else{
+      //   // let getStorageData = await AsyncStorage.getItem("cart_data")
+      //   // if(getStorageData !==null){
+      //   //   let updatedData = getStorageData.find((items) => items.Item_Id === data.Item_Id)
+          
+      //   // }
+      // }
+     
+    }
     
     
     return(
-        <FormContext.Provider value={{getFormFieldData,setFormFieldData,menuOrderData,setMealType,setMealCategory,isSearchActive,handleChangeState}}>
+        <FormContext.Provider value={{getFormFieldData,setFormFieldData,menuOrderData,setMealType,setMealCategory,isSearchActive,handleChangeState,addItemToCartBtn}}>
             {children}
             </FormContext.Provider>
     );

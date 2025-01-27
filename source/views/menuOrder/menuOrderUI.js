@@ -3,6 +3,9 @@ import {
   useFormContext,
 } from "@/components/cobalt/event";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import {  ChevronsLeftIcon,ChevronsRightIcon} from '@/components/ui/icon';
+import { Icon } from '@/components/ui/icon';
+import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen() {
@@ -14,6 +17,7 @@ export default function MenuOrderScreen() {
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
 
   const {menuOrderData,setMealCategory,setMealType} = useFormContext();
+  const {categoryRef, scrollToLast,scrollToFirst} = useMenuOrderLogic()
 
   const renderMenuCategoryList = (categoryItem) => {
     return (
@@ -60,27 +64,36 @@ export default function MenuOrderScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.topContainer}
       >
-        {menuOrderData.MenuItems?.map((item) => {
+        {menuOrderData && menuOrderData.MenuItems?.map((item) => {
           return renderMealTypeList(item, setMealType);
         })}
       </UI.ScrollView>
 
       <UI.Box style={styles.subCategoryContainer}>
-        {menuOrderData.MenuItems?.map((mealCategory) => {
-          if (mealCategory.IsSelect === 1) {
-            return (
-              <UI.ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.categoryListContainer}
-              >
-                {mealCategory?.Categories?.map((items) => {
-                  return renderMenuCategoryList(items);
-                })}
-              </UI.ScrollView>
-            );
-          }
-        })}
+        <UI.TouchableOpacity style={styles.backWardIcon} onPress={scrollToFirst}>
+          <Icon as={ChevronsLeftIcon} color="#5773a2" size={`xl`} />
+        </UI.TouchableOpacity>
+        <>
+          {menuOrderData && menuOrderData.MenuItems?.map((mealCategory) => {
+            if (mealCategory.IsSelect === 1) {
+              return (
+                <UI.ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.categoryListContainer}
+                  ref={categoryRef}
+                >
+                  {mealCategory?.Categories?.map((items) => {
+                    return renderMenuCategoryList(items);
+                  })}
+                </UI.ScrollView>
+              );
+            }
+          })}
+        </>
+        <UI.TouchableOpacity style={styles.forwardIcon} onPress={scrollToLast}>
+            <Icon as={ChevronsRightIcon} color="#5773a2" size={`xl`} />
+        </UI.TouchableOpacity>
       </UI.Box>
       <UI.ScrollView contentContainerStyle={styles.scrollContent}>
         <UI.cbCategoryList />
@@ -115,9 +128,9 @@ const styles = UI.StyleSheet.create({
   },
   categoryBtn: {
     flex: 1,
-    paddingRight:responsiveWidth(6),
     cursor: "pointer",
-    paddingTop:responsiveHeight(1)
+    paddingTop:responsiveHeight(1.5),
+    marginRight:responsiveWidth(3)
   },
   activeMenuType: {
     backgroundColor: "#00C6FF",
@@ -158,5 +171,7 @@ const styles = UI.StyleSheet.create({
     flexDirection: "row",
     height: responsiveHeight(6),
   },
-  subCategoryContainer:{ marginHorizontal: 20 }
+  subCategoryContainer:{ flexDirection:"row",alignItems:"center",width:"90%",alignSelf:"center" },
+  forwardIcon:{marginLeft:10},
+  backWardIcon:{marginRight:10}
 });
