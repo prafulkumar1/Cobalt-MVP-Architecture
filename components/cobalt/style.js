@@ -60,11 +60,29 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: { flex: 1, paddingRight: 20, minWidth: "30%", maxWidth: "60%" },
+  imageContainer: {
+    width: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  textContainer: {
+    flex: 1,
+  },
   quantityTxt: {
     fontSize: 18,
     fontWeight: "300",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8)
+  },
+  container: {
+    flex: 1,
+    padding: 20,
   },
   iconBtn: { width: responsiveWidth(4) },
   mainContainer: { paddingTop: responsiveHeight(5), backgroundColor: "#fff" },
