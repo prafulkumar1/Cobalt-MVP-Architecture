@@ -3,10 +3,6 @@ import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimens
 
 export const styles = StyleSheet.create({
   subContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 25,
     width: "95%",
   },
@@ -42,9 +38,6 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: -15,
     top: 15,
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    borderRadius: 5
   },
   operationBtn: {
     padding: responsiveWidth(2),
@@ -60,11 +53,29 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: { flex: 1, paddingRight: 20, minWidth: "30%", maxWidth: "60%" },
+  imageContainer: {
+    width: 100,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  textContainer: {
+    flex: 1,
+  },
   quantityTxt: {
     fontSize: 18,
     fontWeight: "300",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8)
+  },
+  container: {
+    flex: 1,
+    padding: 20,
   },
   iconBtn: { width: responsiveWidth(4) },
   mainContainer: { paddingTop: responsiveHeight(5), backgroundColor: "#fff" },
@@ -110,7 +121,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     alignSelf: "center",
-    marginHorizontal: 5,
     borderRadius: 5,
     width: 115,
     height: 40,
@@ -132,5 +142,10 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     fontStyle: "italic",
     marginTop: -2
-  }
+  },
+  bottomMainContent:{marginTop:10},
+  accordionHeaderTxt:{color:"#5773a2",fontSize:16},
+  mainContainerList:{ flexGrow: 1},
+  itemCategoryLabel:{ color: "#5773a2", fontSize: 16 },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
 })

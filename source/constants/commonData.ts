@@ -32,7 +32,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Seared Salmon Salad",
                   "Item_Id": "I301",
-                  "Description": "Savor the delicious Green salad.",
+                  "Description": "Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad.",
                   "Price": 25.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 0
@@ -40,7 +40,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Coconut Shrimp",
                   "Item_Id": "I302",
-                  "Description": "These coconut shrimp are dipped...",
+                  "Description": "These coconut shrimp are dipped... A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips",
                   "Price": 45.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1
@@ -172,7 +172,7 @@ export const foodOrderData =
               ]
             }
           ]
-        }
+        },
       ]
     },
     {
@@ -224,7 +224,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Guacamole with Chips",
                   "Item_Id": "I304",
-                  "Description": "A creamy guacamole served with crispy tortilla chips.",
+                  "Description": "A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips.",
                   "Price": 12.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1
@@ -237,3 +237,58 @@ export const foodOrderData =
     }
   ]
 }
+
+export const ProfitCentersData = {
+    "ResponseCode": "Success",
+    "ResponseMessage": "",
+    "ProfitCenters": [
+        {
+            "LocationId": "cd123bjdbcjd",
+            "LocationName": "Panache",
+            "Date": "01/24/2025",
+            "OpeningTime": "6:00 AM",
+            "ClosingTime": "11:30 AM",
+            "Status": "Available",
+            "Isnavigate": "0",
+            "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
+        },
+        {
+            "LocationId": "cd123bjdbcjd",
+            "LocationName": "Living Room",
+            "Date": "01/24/2025",
+            "OpeningTime": "6:00 AM",
+            "ClosingTime": "11:30 AM",
+            "Status": "Available",
+            "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
+        },
+        {
+            "LocationId": "cd123bjdbcjd",
+            "LocationName": "Grand Central",
+            "Date": "01/24/2025",
+            "OpeningTime": "11:30 AM",
+            "ClosingTime": "5:30 PM",
+            "Status": "Available",
+            "ImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJguz-Yat9Wr46Dnevi49thl1jlYCfsYXiUw&s"
+        },
+        {
+            "LocationId": "cd123bjdbcjd",
+            "LocationName": "Prime Cut",
+            "Date": "01/24/2025",
+            "OpeningTime": "5:30 PM",
+            "ClosingTime": "10:00 PM",
+            "Status": "Closed",
+            "ImageUrl": "https://thumbs.dreamstime.com/b/assorted-indian-food-different-bowls-dark-wooden-background-top-view-dishes-appetizers-cuisine-chicken-curry-rice-129630877.jpg"
+        },
+        {
+            "LocationId": "cd123bjdbcjd",
+            "LocationName": "MyPi",
+            "Date": "01/24/2025",
+            "OpeningTime": "6:00 AM",
+            "ClosingTime": "11:30 AM",
+            "Status": "Available",
+            "ImageUrl": "https://i.pinimg.com/736x/03/d9/d1/03d9d18c3531291c21d864bf8ebdd9fe.jpg"
+        },
+     
+
+    ]
+};

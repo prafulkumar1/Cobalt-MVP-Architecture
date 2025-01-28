@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView, Platform} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -138,131 +138,233 @@ class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
     this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
+    this.addItemToCartBtn = props.addItemToCartBtn
+    this.updateCartItemQuantity = props.updateCartItemQuantity
+    this.cartData = props.cartData || []
     this.state = {
-      expandedIndex: null,
+      expandedIds: [],
     };
   }
 
-  handleReadMoreToggle = (index) => {
-    this.setState((prevState) => ({
-      expandedIndex: prevState.expandedIndex === index ? null : index,
-    }));
-  };
-
-  renderAddToCartBtn = (quantity,IsAvailable) => {
+  renderAddToCartBtn = (mealItemDetails) => {
+    const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+    const { cartData, addItemToCartBtn, updateCartItemQuantity } = this.props;
+    const IsAvailable = mealItemDetails.IsAvailable;
+    const cartItem = cartData?.find((item) => item.Item_Id === mealItemDetails.Item_Id);
+    const quantity = cartItem ? cartItem.quantity : 0;
+  
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn,{borderColor:IsAvailable ===1?"#5773a2":"#4B515469"}]}
+          style={[styles.addItemToCartBtn, 
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
+            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
+            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
+            {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
+            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          ]}
           activeOpacity={0.5}
+          onPress={() => addItemToCartBtn(mealItemDetails)}
+          disabled={IsAvailable === 0}
         >
-          <Icon as={AddIcon} color={IsAvailable ===1?"#5773a2":"#4B515469"} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, "#5773a2", "#4B515469")} />
         </TouchableOpacity>
-      )
-    } else if (quantity === 1) {
-      return (
-        <Box style={styles.operationBtn}>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={TrashIcon} color="#5773a2" size={18} />
-          </TouchableOpacity>
-          <Text style={styles.quantityTxt}>{quantity}</Text>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={AddIcon} color="#5773a2" size={20} />
-          </TouchableOpacity>
-        </Box>
-      )
+      );
     } else {
       return (
         <Box style={styles.operationBtn}>
-          <TouchableOpacity style={styles.iconBtn}>
-            <Icon as={RemoveIcon} color="#5773a2" size={18} />
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => updateCartItemQuantity(mealItemDetails, quantity - 1)}
+          >
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={18} />
           </TouchableOpacity>
+  
           <Text style={styles.quantityTxt}>{quantity}</Text>
-          <TouchableOpacity style={styles.iconBtn}>
+  
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => updateCartItemQuantity(mealItemDetails, quantity + 1)}
+          >
             <Icon as={AddIcon} color="#5773a2" size={20} />
           </TouchableOpacity>
         </Box>
-      )
+      );
+    }
+  };
+  
+  handleReadMoreToggle = (id) => {
+    this.setState((prevState) => {
+      const isExpanded = prevState.expandedIds.includes(id);
+      return {
+        expandedIds: isExpanded
+          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
+          : [...prevState.expandedIds, id],
+      };
+    });
+  };
+  commonStyles = (isAvailable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1){
+      return primaryColor
+    }else{
+      return secondaryColor
     }
   }
 
+
   showActiveAvailableColor = (isAvailable) => {
-    return {color:isAvailable ===1?"#4B5154":"#4B515469"}
-  }
+    return { color: isAvailable === 1 ? "#4B5154" : "#4B515469" };
+  };
 
   render() {
     const componentdata = this.AccordionData;
-    const { expandedIndex } = this.state;
+    const { expandedIds } = this.state;
+    const configItems = global.controlsConfigJson?.reduce((acc, item) => {
+      if (["itemTitle", "itemPrice", "itemDescription", "itemCategoryLabel"].includes(item.id)) {
+        acc[item.id] = item;
+      }
+      return acc;
+    }, {});
+    
+    const { itemTitle, itemPrice, itemDescription, itemCategoryLabel } = configItems;
+    
 
     return (
-      <Accordion defaultValue={componentdata?.map((item) => item.Submenu_Name)}  variant="filled" type="multiple" isCollapsible={true} isDisabled={false}>
-        {componentdata && componentdata.map((item) => (
-        <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
-          <AccordionHeader style={{marginBottom:10}}>
-            <AccordionTrigger>
-              {({ isExpanded }) => (
-                <>
-                  <AccordionTitleText style={{color:"#5773a2",fontSize:16}}>{item.Submenu_Name}</AccordionTitleText>
-                  {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} width={20} height={20} className="ml-3" />
-                  ) : (
-                    <AccordionIcon as={ChevronDownIcon} width={20} height={20} className="ml-3" />
-                  )}
-                </>
-              )}
-            </AccordionTrigger>
-          </AccordionHeader>
-          <AccordionContent style={{marginTop:10}} >
-              {item.Items &&
-                item.Items.map((box, index) => (
-                  <Box
-                    key={index}
-                    style={[styles.subContainer,{opacity:box.IsAvailable ===1 ?1:0.8}]}
-                  >
-                    <Box style={styles.contentContainer}>
-                    <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.mealTypeTitle,this.showActiveAvailableColor(box.IsAvailable)]}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={[styles.mainContainerList,Platform.OS==="ios" && {paddingBottom: "30%" }]}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Accordion
+          defaultValue={componentdata?.map((item) => item.Submenu_Name)}
+          variant="filled"
+          type="multiple"
+          isCollapsible={true}
+          isDisabled={false}
+        >
+          {componentdata &&
+            componentdata.map((item) => (
+              <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
+                <AccordionHeader>
+                  <AccordionTrigger>
+                    {({ isExpanded }) => (
+                      <>
+                        <AccordionTitleText
+                          style={[itemCategoryLabel?.styles? itemCategoryLabel?.styles:styles.itemCategoryLabel]}
                         >
-                        {box.Item_Name}
-                        </AccordionContentText>
-                        <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 2}
-                        style={[styles.priceTxt,this.showActiveAvailableColor(box.IsAvailable)]}
-                        >
-                        {`$${box.Price}.00`}
-                        </AccordionContentText>
-                    <AccordionContentText
-                        numberOfLines={expandedIndex === index ? undefined : 1}
-                        style={[styles.descriptionTxt,this.showActiveAvailableColor(box.IsAvailable)]}
-                        >
-                        {box.Description}
-                        </AccordionContentText>
-                        {box.Description.length > 100 && (
-                        <AccordionContentText
-                          onPress={() => this.handleReadMoreToggle(index)}
-                          style={styles.underLineTxt}
-                        >
-                          {expandedIndex === index ? 'Show Less' : 'Read More'}
-                        </AccordionContentText>
+                          {item.Submenu_Name}
+                        </AccordionTitleText>
+                        {isExpanded ? (
+                          <AccordionIcon
+                            as={ChevronUpIcon}
+                            width={20}
+                            height={20}
+                            className="ml-3"
+                          />
+                        ) : (
+                          <AccordionIcon
+                            as={ChevronDownIcon}
+                            width={20}
+                            height={20}
+                            className="ml-3"
+                          />
                         )}
-                    </Box>
-                    {box.Image && (
-                      <Box>                                   
-                           <Image
-                          source={{ uri: box.Image }}
-                          style={[styles.mealTypeImg,box.IsAvailable ===0 && {filter:'grayscale(100%)'}]}
-                        />
-                     
-                        {this.renderAddToCartBtn(0,box.IsAvailable)}
-                      </Box>
+                      </>
                     )}
-                  </Box>
-                ))}
-        </AccordionContent>
-        </AccordionItem>
-      ))}
-    </Accordion>
+                  </AccordionTrigger>
+                </AccordionHeader>
+                <AccordionContent style={{ marginTop: 10 }}>
+                  {item.Items &&
+                    item.Items.map((box) => {
+                      const isExpanded = expandedIds.includes(box.Item_Id);
+
+                      return (
+                        <Box
+                          key={box.Item_Id}
+                          style={[
+                            styles.subContainer,
+                            { opacity: box.IsAvailable === 1 ? 1 : 0.8 },
+                          ]}
+                        >
+                          <Box style={styles.rowContainer}>
+                            <Box
+                              style={[styles.textContainer, { marginRight: 5 }]}
+                            >
+                              <AccordionContentText
+                                numberOfLines={isExpanded ? undefined : 2}
+                                style={[
+                                  itemTitle?.styles ? itemTitle?.styles : 
+                                  styles.mealTypeTitle,
+                                  this.showActiveAvailableColor(
+                                    box.IsAvailable
+                                  ),
+                                  { textAlign: "justify" },
+                                ]}
+                              >
+                                {box.Item_Name}
+                              </AccordionContentText>
+                              <AccordionContentText
+                                numberOfLines={isExpanded ? undefined : 2}
+                                style={[
+                                  itemPrice?.styles? itemPrice?.styles:
+                                  styles.priceTxt,
+                                  this.showActiveAvailableColor(
+                                    box.IsAvailable
+                                  ),
+                                ]}
+                              >
+                                {`$${box.Price}`}
+                              </AccordionContentText>
+                              <AccordionContentText
+                                numberOfLines={isExpanded ? undefined : 1}
+                                style={[
+                                  itemDescription?.styles?itemDescription?.styles:
+                                  styles.descriptionTxt,
+                                  this.showActiveAvailableColor(
+                                    box.IsAvailable
+                                  ),
+                                  { textAlign: "left", letterSpacing: -0.5 },
+                                ]}
+                              >
+                                {box.Description}
+                              </AccordionContentText>
+                              {box.Description.length > 100 && (
+                                <AccordionContentText
+                                  onPress={() =>
+                                    this.handleReadMoreToggle(box.Item_Id)
+                                  }
+                                  style={styles.underLineTxt}
+                                >
+                                  {isExpanded ? "Show Less" : "Read More"}
+                                </AccordionContentText>
+                              )}
+                            </Box>
+
+                            {box.Image && (
+                              <Box style={styles.imageContainer}>
+                                <Image
+                                  source={{ uri: box.Image }}
+                                  style={[
+                                    styles.mealTypeImg,
+                                    box.IsAvailable === 0 && {
+                                      filter: "grayscale(100%)",
+                                    },
+                                  ]}
+                                />
+                                {this.renderAddToCartBtn(box)}
+                              </Box>
+                            )}
+                          </Box>
+                          <Box style={styles.horizontalLine} />
+                        </Box>
+                      );
+                    })}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+        </Accordion>
+      </ScrollView>
     );
   }
 }
@@ -682,28 +784,31 @@ class cbCategoryList extends React.Component {
     super();
     this.id = props.id;
   }
-  renderMenuCategoryList = ({ item }, setMealCategory) => {
+  renderMenuCategoryList = (categoryItem, setMealCategory) => {
+    if (!categoryItem.IsSelect) {
+      categoryItem.IsSelect = 1;
+      setMealCategory(categoryItem.Category_Id); 
+    }
+  
     return (
       <Box>
         <TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item.Category_Id)}
+          onPress={() => setMealCategory(categoryItem.Category_Id)}
         >
           <Text style={styles.categoryText}>
-            {item.Category_Name?.toUpperCase()}
+            {categoryItem.Category_Name?.toUpperCase()}
           </Text>
-          {
-            item.IsSelect ===1 &&
-            <Box style={styles.bottomStyle} />
-          }
+          {categoryItem.IsSelect === 1 && <Box style={styles.bottomStyle} />}
         </TouchableOpacity>
       </Box>
     );
   }
-  renderMealTypeList = ({item},setMealType) => {
+  renderMealTypeList = (pureItems,setMealType) => {
+    let item = pureItems
     return (
-     <Box>
+     <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
        <TouchableOpacity
          activeOpacity={0.6}
          style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
@@ -723,48 +828,28 @@ class cbCategoryList extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ menuOrderData, setMealType,setMealCategory }) => {
-          const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+        {({ menuOrderData,addItemToCartBtn,updateCartItemQuantity,cartData}) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
 
           return (
             <>
-            <CbFlatList
-                    flatlistData={menuOrderData.MenuItems}
-                    children={(item) => this.renderMealTypeList(item,setMealType)}
-                    horizontal={true}
-                    contentContainerStyle={styles.categoryBottomContainer}
-                  />
-              {
-                menuOrderData.MenuItems?.map((mealCategory) => {
-                  if (mealCategory.IsSelect ===1) {
-                    return (
-                      <CbFlatList
-                        flatlistData={mealCategory.Categories}
-                        children={(items) => this.renderMenuCategoryList(items, setMealCategory)}
-                        horizontal={true}
-                        contentContainerStyle={styles.subCategoryContainer}
-                      />
-                    )
-                  }
-                })
-              }
-              {
-                menuOrderData.MenuItems?.map((mealCategory) => {
-                  if (mealCategory.IsSelect ===1) {
-                    return mealCategory.Categories.map((categoryList) => {
-                      if (categoryList.IsSelect ===1) {
-                        return (
-                          <Box>
-                            <CbAccordion AccordionData={categoryList.Submenu} />
-                          </Box>
-                        )
-                      }
-                    })
-                  }
-                })
-              }
+              {menuOrderData.MenuItems?.map((mealCategory) => {
+                if (mealCategory.IsSelect === 1) {
+                  return mealCategory.Categories.map((categoryList) => {
+                    if (categoryList.IsSelect === 1) {
+                      return (
+                        <Box>
+                          <CbAccordion AccordionData={categoryList.Submenu} addItemToCartBtn={addItemToCartBtn} updateCartItemQuantity={updateCartItemQuantity} cartData={cartData}/>
+                        </Box>
+                      );
+                    }
+                  });
+                }
+              })}
             </>
           );
         }}
@@ -789,7 +874,9 @@ CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
-CbFloatingButton.displayName='CbFloatingButton';
- export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
+CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList"
+cbHeader.displayName = "cbHeader"
+
+ export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,,cbSearchbox,CbFloatingButton,CbImage };
 
 
