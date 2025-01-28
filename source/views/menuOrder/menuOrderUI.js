@@ -3,7 +3,7 @@ import {
   useFormContext,
 } from "@/components/cobalt/event";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-import {  ChevronsLeftIcon,ChevronsRightIcon} from '@/components/ui/icon';
+import {  ChevronLeftIcon,ChevronRightIcon} from '@/components/ui/icon';
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
 
@@ -79,14 +79,12 @@ export default function MenuOrderScreen() {
 
               return (
                 <>
-                  {categoryCount > 1 && (
-                    <UI.TouchableOpacity
+                  <UI.TouchableOpacity
                       style={styles.backWardIcon}
                       onPress={scrollToFirst}
                     >
-                      <Icon as={ChevronsLeftIcon} color="#5773a2" size="xl" />
+                      <Icon as={ChevronLeftIcon} color="#5773a2" size="xl" />
                     </UI.TouchableOpacity>
-                  )}
                   <UI.ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -100,7 +98,7 @@ export default function MenuOrderScreen() {
                       style={styles.forwardIcon}
                       onPress={scrollToLast}
                     >
-                      <Icon as={ChevronsRightIcon} color="#5773a2" size="xl" />
+                      <Icon as={ChevronRightIcon} color="#5773a2" size="xl" />
                     </UI.TouchableOpacity>
                   )}
                 </>
