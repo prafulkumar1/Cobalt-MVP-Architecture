@@ -15,9 +15,36 @@ export default function MenuOrderScreen() {
 
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-
-  const {menuOrderData,setMealCategory,setMealType} = useFormContext();
+    const configItems = global.controlsConfigJson?.reduce((acc, item) => {
+      if (["mealTypeLabel", "timeLabel", "mealTypeBtn", "tapBarBtn"].includes(item.id)) {
+        acc[item.id] = item;
+      }
+      return acc;
+    }, {});
+    
+    const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn } = configItems;
+  
+  const {menuOrderData,setMealCategory,setMealType,isCategoryEmpty} = useFormContext();
   const {categoryRef, scrollToLast,scrollToFirst} = useMenuOrderLogic()
+
+  const renderMealTypeList = (mealTypeItem) => {
+    return (
+     <UI.Box style={styles.mealTypeContainer}>
+       <UI.TouchableOpacity
+         activeOpacity={0.6}
+         style={[mealTypeItem.IsSelect===1 ? [styles.activeMenuType,{backgroundColor:mealTypeBtn?.activeBackgroundColor?mealTypeBtn.activeBackgroundColor : "#00C6FF",borderRadius:mealTypeBtn?.borderRadius?mealTypeBtn?.borderRadius: 5}]:styles.inactiveMenuType]}
+         onPress={() => setMealType(mealTypeItem.MealPeriod_Id)}
+       >
+         <UI.Text style={[mealTypeLabel?.styles ? mealTypeLabel?.styles : styles.mealTypeLabel,{color:mealTypeItem.IsSelect===1?"#ffffff":"#717171"}]}>
+           {mealTypeItem.MealPeriod_Name?.toUpperCase()}
+         </UI.Text>
+         <UI.Text style={[timeLabel?.styles? timeLabel?.styles : styles.timeDurationTxt,{color:mealTypeItem.IsSelect===1?"#fff":"#717171"}]}>
+           {mealTypeItem.Time}
+         </UI.Text>
+         </UI.TouchableOpacity>
+     </UI.Box>
+   );
+ }
 
   const renderMenuCategoryList = (categoryItem) => {
     return (
@@ -32,30 +59,66 @@ export default function MenuOrderScreen() {
           </UI.Text>
           {
             categoryItem.IsSelect ===1 &&
-            <UI.Box style={styles.bottomStyle} />
+            <UI.Box style={[tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle]} />
           }
         </UI.TouchableOpacity>
       </UI.Box>
     );
   }
-  const renderMealTypeList = (mealTypeItem) => {
-    return (
-     <UI.Box style={styles.mealTypeContainer}>
-       <UI.TouchableOpacity
-         activeOpacity={0.6}
-         style={[mealTypeItem.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
-         onPress={() => setMealType(mealTypeItem.MealPeriod_Id)}
-       >
-         <UI.Text style={[styles.mealTypeTxt,{color:mealTypeItem.IsSelect===1?"#ffffff":"#717171"}]}>
-           {mealTypeItem.MealPeriod_Name?.toUpperCase()}
-         </UI.Text>
-         <UI.Text style={[styles.timeDurationTxt,{color:mealTypeItem.IsSelect===1?"#fff":"#717171"}]}>
-           {mealTypeItem.Time}
-         </UI.Text>
-         </UI.TouchableOpacity>
-     </UI.Box>
-   );
- }
+
+  const renderCategoryMainList = () => {
+    if (!isCategoryEmpty) {
+      return (
+        <>
+          <UI.Box style={styles.subCategoryContainer}>
+            {menuOrderData &&
+              menuOrderData.MenuItems?.map((mealCategory) => {
+                if (mealCategory.IsSelect === 1) {
+                  const categories = mealCategory?.Categories || [];
+                  const categoryCount = categories.length;
+                  return (
+                    <>
+                      <UI.TouchableOpacity
+                        style={styles.backWardIcon}
+                        onPress={scrollToFirst}
+                      >
+                        <Icon as={ChevronLeftIcon} color="#5773a2" size="xl" />
+                      </UI.TouchableOpacity>
+                      <UI.ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.categoryListContainer}
+                        ref={categoryRef}
+                      >
+                        {categories.map((items) => renderMenuCategoryList(items))}
+                      </UI.ScrollView>
+                      {categoryCount > 3 && (
+                        <UI.TouchableOpacity
+                          style={styles.forwardIcon}
+                          onPress={scrollToLast}
+                        >
+                          <Icon as={ChevronRightIcon} color="#5773a2" size="xl" />
+                        </UI.TouchableOpacity>
+                      )}
+                    </>
+                  );
+                }
+              })}
+          </UI.Box>
+          <UI.ScrollView contentContainerStyle={styles.scrollContent}>
+            <UI.cbCategoryList />
+          </UI.ScrollView>
+        </>
+      )
+    } else {
+      return (
+        <UI.Box style={styles.emptyListContainer}>
+          <UI.Text style={styles.emptyMealTxt}>No meal available</UI.Text>
+        </UI.Box>
+      )
+    }
+  }
+
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.ScrollView
@@ -70,45 +133,7 @@ export default function MenuOrderScreen() {
           })}
       </UI.ScrollView>
 
-      <UI.Box style={styles.subCategoryContainer}>
-        {menuOrderData &&
-          menuOrderData.MenuItems?.map((mealCategory) => {
-            if (mealCategory.IsSelect === 1) {
-              const categories = mealCategory?.Categories || [];
-              const categoryCount = categories.length;
-
-              return (
-                <>
-                  <UI.TouchableOpacity
-                      style={styles.backWardIcon}
-                      onPress={scrollToFirst}
-                    >
-                      <Icon as={ChevronLeftIcon} color="#5773a2" size="xl" />
-                    </UI.TouchableOpacity>
-                  <UI.ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={styles.categoryListContainer}
-                    ref={categoryRef}
-                  >
-                    {categories.map((items) => renderMenuCategoryList(items))}
-                  </UI.ScrollView>
-                  {categoryCount > 3 && (
-                    <UI.TouchableOpacity
-                      style={styles.forwardIcon}
-                      onPress={scrollToLast}
-                    >
-                      <Icon as={ChevronRightIcon} color="#5773a2" size="xl" />
-                    </UI.TouchableOpacity>
-                  )}
-                </>
-              );
-            }
-          })}
-      </UI.Box>
-      <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-        <UI.cbCategoryList />
-      </UI.ScrollView>
+      {renderCategoryMainList()}
     </UI.Box>
   );
 }
@@ -122,12 +147,12 @@ const styles = UI.StyleSheet.create({
     paddingTop:responsiveHeight(2)
   },
   categoryText: {
-    padding: 2,
+    padding:2,
     fontSize: 16,
     fontWeight: "bold",
     color: "#4B5154",
   },
-  mealTypeTxt: {
+  mealTypeLabel: {
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -146,12 +171,10 @@ const styles = UI.StyleSheet.create({
     marginRight:responsiveWidth(6)
   },
   activeMenuType: {
-    backgroundColor: "#00C6FF",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     alignSelf: "center",
-    borderRadius: 5,
     width: responsiveWidth(30),
     height: responsiveHeight(4.5),
     marginHorizontal:5
@@ -192,5 +215,14 @@ const styles = UI.StyleSheet.create({
     borderWidth: 1,
   },
   forwardIcon:{marginLeft:10},
-  backWardIcon:{marginRight:10}
+  backWardIcon:{marginRight:10},
+  emptyListContainer:{
+    justifyContent:"center",
+    alignItems:"center",
+    alignSelf:"center",
+    height:responsiveHeight(10)
+  },
+  emptyMealTxt:{
+    fontStyle:"italic"
+  }
 });

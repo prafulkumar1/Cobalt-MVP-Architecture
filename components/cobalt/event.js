@@ -15,6 +15,7 @@ export const UseFormContextProvider = ({children}) => {
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
+    const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -50,6 +51,14 @@ export const UseFormContextProvider = ({children}) => {
         ...menuOrderData,
         MenuItems: updatedMealType,
       };
+    
+      let isCategoryEmptyFlag = false;
+      updatedMealType.forEach((items) => {
+        if (items.IsSelect === 1 && items.Categories.length === 0) {
+          isCategoryEmptyFlag = true; 
+        }
+      });
+      setIsCategoryEmpty(isCategoryEmptyFlag);
       setMenuOrderData(foodMenuList);
     };
 
@@ -132,7 +141,8 @@ export const UseFormContextProvider = ({children}) => {
       handleChangeState,
       addItemToCartBtn,
       updateCartItemQuantity,
-      cartData
+      cartData,
+      isCategoryEmpty
     }
     return (
       <FormContext.Provider
