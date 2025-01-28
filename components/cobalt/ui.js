@@ -875,8 +875,7 @@ CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
 CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList"
-cbHeader.displayName = "cbHeader"
 
- export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,,cbSearchbox,CbFloatingButton,CbImage };
+ export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
 
 
