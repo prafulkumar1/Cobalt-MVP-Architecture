@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView, Platform} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -113,7 +113,7 @@ class CbAccordion extends React.Component {
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: "30%" }}
+        contentContainerStyle={[styles.mainContainerList,Platform.OS==="ios" && {paddingBottom: "30%" }]}
         keyboardShouldPersistTaps="handled"
       >
         <Accordion

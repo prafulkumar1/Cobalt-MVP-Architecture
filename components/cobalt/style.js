@@ -151,5 +151,6 @@ export const styles = StyleSheet.create({
     marginTop: -2
   },
   bottomMainContent:{marginTop:10},
-  accordionHeaderTxt:{color:"#5773a2",fontSize:16}
+  accordionHeaderTxt:{color:"#5773a2",fontSize:16},
+  mainContainerList:{ flexGrow: 1}
 })

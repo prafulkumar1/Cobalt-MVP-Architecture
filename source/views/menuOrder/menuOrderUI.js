@@ -118,7 +118,8 @@ const styles = UI.StyleSheet.create({
   mainContainer:{paddingTop:responsiveHeight(5),backgroundColor:"#fff"},
   scrollContent: {
     backgroundColor:"#fff",
-    paddingHorizontal:responsiveWidth(2)
+    paddingHorizontal:responsiveWidth(2),
+    paddingTop:responsiveHeight(2)
   },
   categoryText: {
     padding: 2,
@@ -142,7 +143,7 @@ const styles = UI.StyleSheet.create({
   categoryBtn: {
     flex: 1,
     cursor: "pointer",
-    marginRight:responsiveWidth(3)
+    marginRight:responsiveWidth(6)
   },
   activeMenuType: {
     backgroundColor: "#00C6FF",
@@ -152,7 +153,7 @@ const styles = UI.StyleSheet.create({
     alignSelf: "center",
     borderRadius: 5,
     width: responsiveWidth(30),
-    height: 40,
+    height: responsiveHeight(4.5),
     marginHorizontal:5
   },
   inactiveMenuType: {
@@ -161,7 +162,7 @@ const styles = UI.StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: responsiveWidth(30),
-    height: 40,
+    height: responsiveHeight(4.5),
     alignSelf: "center",
     borderRadius: 5,
     opacity: 0.8,
