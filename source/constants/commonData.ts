@@ -40,7 +40,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Coconut Shrimp",
                   "Item_Id": "I302",
-                  "Description": "These coconut shrimp are dipped...",
+                  "Description": "These coconut shrimp are dipped... A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips",
                   "Price": 45.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1
@@ -172,7 +172,7 @@ export const foodOrderData =
               ]
             }
           ]
-        }
+        },
       ]
     },
     {
@@ -224,7 +224,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Guacamole with Chips",
                   "Item_Id": "I304",
-                  "Description": "A creamy guacamole served with crispy tortilla chips.",
+                  "Description": "A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips.",
                   "Price": 12.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1
