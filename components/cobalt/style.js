@@ -3,10 +3,6 @@ import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimens
 
 export const styles = StyleSheet.create({
   subContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginBottom: 25,
     width: "95%",
   },
@@ -42,9 +38,6 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: -15,
     top: 15,
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    borderRadius: 5
   },
   operationBtn: {
     padding: responsiveWidth(2),
@@ -152,5 +145,7 @@ export const styles = StyleSheet.create({
   },
   bottomMainContent:{marginTop:10},
   accordionHeaderTxt:{color:"#5773a2",fontSize:16},
-  mainContainerList:{ flexGrow: 1}
+  mainContainerList:{ flexGrow: 1},
+  itemCategoryLabel:{ color: "#5773a2", fontSize: 16 },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
 })

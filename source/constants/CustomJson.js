@@ -36,7 +36,7 @@ const data = [
         "type": "image",
         "id": "seachBarImage",
         "imageUrl":"",
-        "style":{
+        "styles":{
           "seachBarImage":{
             "color":"red"
           }
@@ -46,7 +46,7 @@ const data = [
         "type": "image",
         "id": "recentOrderImage",
         "imageUrl":"",
-        "style":{
+        "styles":{
           "recentOrderImage":{
             "color":"gray"
           }
@@ -56,7 +56,7 @@ const data = [
         "type": "text",
         "id": "recentOrder",
         "labeltext": "Old orders",
-        "style":{
+        "styles":{
           "recentOrderLabel":{
             "color":"red",
             "fontSize":"18"
@@ -67,7 +67,7 @@ const data = [
         "type": "image",
         "id": "rightArrowImage",
         "imageUrl":"",
-        "style":{
+        "styles":{
           "rightArrowImage":{
             "color":"red",
           }
@@ -76,7 +76,7 @@ const data = [
       {
         "type": "text",
         "id": "mealTypeLabel",
-        "style":{
+        "styles":{
           "mealTypeLabel":{
             "fontSize":"20"
           }
@@ -85,7 +85,7 @@ const data = [
       {
         "type": "text",
         "id": "timeLabel",
-        "style":{
+        "styles":{
           "timeLabel":{
             "fontSize":"20"
           }
@@ -94,7 +94,8 @@ const data = [
       {
         "type": "button",
         "id": "mealTypeBtn",
-        "backgroundColor": "white",
+        "activeBackgroundColor": "white",
+        "inactiveBackgroundColor": "green",
         "borderRadius": "40",
         "variant": ""
       },
@@ -102,7 +103,7 @@ const data = [
         "type": "tapBar",
         "id": "tapBarBtn",
         "variant": "",
-        "style":{
+        "styles":{
           "topBarBtn":{
             "color":"",
             "borderColor":"green"
@@ -111,8 +112,18 @@ const data = [
       },
       {
         "type": "text",
+        "id": "itemCategoryLabel",
+        "styles":{
+          "itemCategoryLabel":{
+            "color":"",
+            "borderColor":"green"
+          }
+        }
+      },
+      {
+        "type": "text",
         "id": "itemTitle",
-        "style":{
+        "styles":{
           "itemTitle":{
             "color":"",
             "borderColor":"green"
@@ -122,7 +133,7 @@ const data = [
       {
         "type": "text",
         "id": "itemPrice",
-        "style":{
+        "styles":{
           "itemPrice":{
             "color":"",
             "borderColor":"green"
@@ -132,7 +143,7 @@ const data = [
       {
         "type": "text",
         "id": "itemDescription",
-        "style":{
+        "styles":{
           "itemDescription":{
             "color":"",
             "fontSize":"15"

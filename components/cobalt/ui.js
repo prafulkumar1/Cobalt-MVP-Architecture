@@ -43,6 +43,7 @@ class CbAccordion extends React.Component {
   }
 
   renderAddToCartBtn = (mealItemDetails) => {
+    const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
     const { cartData, addItemToCartBtn, updateCartItemQuantity } = this.props;
     const IsAvailable = mealItemDetails.IsAvailable;
     const cartItem = cartData?.find((item) => item.Item_Id === mealItemDetails.Item_Id);
@@ -51,7 +52,13 @@ class CbAccordion extends React.Component {
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn, { borderColor: this.commonStyles(IsAvailable, "#5773a2", "#4B515469") }]}
+          style={[styles.addItemToCartBtn, 
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
+            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
+            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
+            {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
+            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          ]}
           activeOpacity={0.5}
           onPress={() => addItemToCartBtn(mealItemDetails)}
           disabled={IsAvailable === 0}
@@ -108,6 +115,15 @@ class CbAccordion extends React.Component {
   render() {
     const componentdata = this.AccordionData;
     const { expandedIds } = this.state;
+    const configItems = global.controlsConfigJson?.reduce((acc, item) => {
+      if (["itemTitle", "itemPrice", "itemDescription", "itemCategoryLabel"].includes(item.id)) {
+        acc[item.id] = item;
+      }
+      return acc;
+    }, {});
+    
+    const { itemTitle, itemPrice, itemDescription, itemCategoryLabel } = configItems;
+    
 
     return (
       <ScrollView
@@ -126,12 +142,12 @@ class CbAccordion extends React.Component {
           {componentdata &&
             componentdata.map((item) => (
               <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
-                <AccordionHeader style={{ marginBottom: 10 }}>
+                <AccordionHeader>
                   <AccordionTrigger>
                     {({ isExpanded }) => (
                       <>
                         <AccordionTitleText
-                          style={{ color: "#5773a2", fontSize: 16 }}
+                          style={[itemCategoryLabel?.styles? itemCategoryLabel?.styles:styles.itemCategoryLabel]}
                         >
                           {item.Submenu_Name}
                         </AccordionTitleText>
@@ -174,6 +190,7 @@ class CbAccordion extends React.Component {
                               <AccordionContentText
                                 numberOfLines={isExpanded ? undefined : 2}
                                 style={[
+                                  itemTitle?.styles ? itemTitle?.styles : 
                                   styles.mealTypeTitle,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
@@ -186,17 +203,19 @@ class CbAccordion extends React.Component {
                               <AccordionContentText
                                 numberOfLines={isExpanded ? undefined : 2}
                                 style={[
+                                  itemPrice?.styles? itemPrice?.styles:
                                   styles.priceTxt,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
                                   ),
                                 ]}
                               >
-                                {`$${box.Price}.00`}
+                                {`$${box.Price}`}
                               </AccordionContentText>
                               <AccordionContentText
                                 numberOfLines={isExpanded ? undefined : 1}
                                 style={[
+                                  itemDescription?.styles?itemDescription?.styles:
                                   styles.descriptionTxt,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
@@ -233,6 +252,7 @@ class CbAccordion extends React.Component {
                               </Box>
                             )}
                           </Box>
+                          <Box style={styles.horizontalLine} />
                         </Box>
                       );
                     })}
