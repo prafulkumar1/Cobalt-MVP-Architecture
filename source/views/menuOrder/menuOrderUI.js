@@ -49,7 +49,7 @@ export default function MenuOrderScreen() {
          <UI.Text style={[styles.mealTypeTxt,{color:mealTypeItem.IsSelect===1?"#ffffff":"#717171"}]}>
            {mealTypeItem.MealPeriod_Name?.toUpperCase()}
          </UI.Text>
-         <UI.Text style={[styles.timeDurationTxt,{color:mealTypeItem.IsSelect===1?"#fff":"#000"}]}>
+         <UI.Text style={[styles.timeDurationTxt,{color:mealTypeItem.IsSelect===1?"#fff":"#717171"}]}>
            {mealTypeItem.Time}
          </UI.Text>
          </UI.TouchableOpacity>
@@ -137,12 +137,13 @@ const styles = UI.StyleSheet.create({
     borderRadius: 4,
     borderWidth: 3,
     borderColor: "#00c6ff",
-    marginTop: 5
+    marginTop: 5,
+    position:"absolute",
+    bottom:0,
   },
   categoryBtn: {
     flex: 1,
     cursor: "pointer",
-    paddingTop:responsiveHeight(1.5),
     marginRight:responsiveWidth(3)
   },
   activeMenuType: {
@@ -152,7 +153,7 @@ const styles = UI.StyleSheet.create({
     alignSelf: "center",
     alignSelf: "center",
     borderRadius: 5,
-    width: 115,
+    width: responsiveWidth(30),
     height: 40,
     marginHorizontal:5
   },
@@ -161,11 +162,11 @@ const styles = UI.StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    width: 115,
+    width: responsiveWidth(30),
     height: 40,
     alignSelf: "center",
     borderRadius: 5,
-    opacity: 0.5,
+    opacity: 0.8,
     marginHorizontal:5
   },
   timeDurationTxt: {
@@ -174,17 +175,23 @@ const styles = UI.StyleSheet.create({
     fontStyle: "italic",
     marginTop: -2
   },
-  topContainer:{
+  topContainer: {
     flexDirection: "row",
     paddingVertical: 10,
     justifyContent: "center",
     alignItems: "center",
+    borderColor:"#0000002B",
+    borderWidth:1
   },
   categoryListContainer: {
     flexDirection: "row",
-    height: responsiveHeight(6),
+    height: responsiveHeight(4.2),
+    paddingTop:responsiveHeight(0.6)
   },
-  subCategoryContainer:{ flexDirection:"row",alignItems:"center",width:"90%",alignSelf:"center" },
+  subCategoryContainer: {
+    flexDirection: "row", alignItems: "center", width: "100%", alignSelf: "center", borderColor: "#0000002B",
+    borderWidth: 1,
+  },
   forwardIcon:{marginLeft:10},
   backWardIcon:{marginRight:10}
 });
