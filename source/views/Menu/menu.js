@@ -37,7 +37,7 @@ export default function MenuScreen(props) {
               <UI.Box style={{ width: 68, height: 68, backgroundColor:"#FF6F00",borderRadius:11,alignContent:"center" }}>
               <CartIcon style={{ width: 28, height: 28, backgroundColor:"" }} color="#FF4C4C" />
               </UI.Box>
-              <UI.FloatingButton />
+              <UI.CbFloatingButton />
             </UI.cbVStack>
           </UI.cbForm>
         </UI.ScrollView>
