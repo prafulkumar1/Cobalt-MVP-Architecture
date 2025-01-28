@@ -1,29 +1,27 @@
 import * as UI from '@/components/cobalt/importUI';
 import { ProfitCentersData } from '@/source/constants/commonData';
 import React from 'react';
-import {ImageBackground} from "react-native"
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
 const pageId='ProfitCenter';
 
 const RenderingProfitCenter = ({ item }) => {
     const isAvailable = item.Status === "Available";
-
     return (
-        <ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}> 
+        <UI.ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
 
-        <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6}>
-            <UI.Box style={styles.profitCenterOverlay}>
-                <UI.Text id='profitCenterName'style={styles.profitCenterName}>{item.LocationName}</UI.Text>
-                <UI.Text  id="profitCenterTimings" style={styles.profitCenterTimings}> 
-                    {item.OpeningTime}-{item.ClosingTime}
-                </UI.Text>
-            </UI.Box>
-            <UI.Box  id="status" style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
-                <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
-            </UI.Box>
-        </UI.TouchableOpacity>
-        </ImageBackground>
+            <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6}>
+                <UI.Box style={styles.profitCenterOverlay}>
+                    <UI.Text id='profitCenterName' style={styles.profitCenterName}>{item.LocationName}</UI.Text>
+                    <UI.Text id="profitCenterTimings" style={styles.profitCenterTimings}>
+                        {item.OpeningTime}-{item.ClosingTime}
+                    </UI.Text>
+                </UI.Box>
+                <UI.Box id="status" style={[styles.statusBox,{backgroundColor:isAvailable?"#00B253":"#DF2727"}]}>
+                    <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
+                </UI.Box>
+            </UI.TouchableOpacity>
+        </UI.ImageBackground>
 
     );
 };
@@ -80,12 +78,6 @@ const styles = UI.StyleSheet.create({
         paddingBottom:3,
         justifyContent: "center",
         alignItems: "center",
-    },
-    available: {
-        backgroundColor: "#00B253",
-    },
-    closed: {
-        backgroundColor: "#DF2727",
     },
     statusText: {
         fontSize: 12,
