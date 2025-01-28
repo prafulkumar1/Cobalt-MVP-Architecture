@@ -8,7 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
 import MenuScreen from '@/source/views/Menu/menu';
 import RecentordersScreen from '@/source/views/Recentorders/recentorders';
-
+import * as UI from '@/components/cobalt/importUI';
 import { UseFormContextProvider } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 import ProfitCenters from './source/views/ProfitCenters/ProfitCertersUI';
@@ -26,7 +26,25 @@ export default function App() {
       <GluestackUIProvider mode="light">
         <UseFormContextProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="MenuOrder">
+          <Stack.Navigator initialRouteName="Login"
+          screenOptions={({ route,navigation}) => ({
+            headerLeft: () => (
+             <UI.CbBackButton navigation={navigation}  />
+            ),
+            headerTitle: route.params?.title ,
+            headerRight: () => {
+              const value = route.params?.showHomeButton
+            if(value){
+              return(
+                <UI.CbHomeButton navigation={navigation} />
+              )
+            }
+            },
+            headerTitleStyle: {
+              color: "#4B5154",
+              fontSize: 22,
+            },
+          })}  >
             <Stack.Screen 
               name="Login" 
               component={LoginScreen} 
@@ -39,8 +57,7 @@ export default function App() {
             />
             <Stack.Screen 
               name="MenuOrder" 
-              component={MenuOrderScreen} 
-              options={{ headerShown: false }} 
+              component={MenuOrderScreen}           
             />
              <Stack.Screen 
               name="Menu" 
@@ -50,7 +67,6 @@ export default function App() {
             <Stack.Screen 
               name="Recentorders" 
               component={RecentordersScreen} 
-              options={{ headerShown: false }} 
             />
           </Stack.Navigator>
           <StatusBar style="auto" />

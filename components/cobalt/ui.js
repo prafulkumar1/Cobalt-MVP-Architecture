@@ -26,10 +26,114 @@ import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
-
-
-
+import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
+
+class CbImage extends React.Component {
+  constructor(props) {
+    super(props);
+    // this.id=props.id;
+    this.source = props.source || "";
+    this.imageJsx=props.imageJsx;
+    
+  }
+
+  render() {
+    //const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+    //const source = inputArray?.source  || this.source;'
+    const jsx = this.imageJsx;
+    const source=this.source;
+   
+    if (source) {
+    
+      if (source.endsWith('.svg')) {
+        return <SvgUri source={{ uri: source }}  />;
+      } else {
+          
+        return <Image alt='image' source={{ uri: source }}  />;
+      }
+    } else {      
+        return jsx;
+    }
+  }
+}
+
+class CbBackButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.source = props.source;
+  }
+  render() {
+       return (
+      <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
+        {
+          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
+        }
+        </TouchableOpacity>
+    );
+  }
+}
+
+class CbHomeButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.source = props.source;
+  }
+  render() {
+       return (
+      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'Login')}>
+        {
+          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
+        }
+        </TouchableOpacity>
+          
+    );
+  }
+}
+
+class CbFloatingButton extends React.Component {
+ 
+
+  render() {
+    return (
+      <View style={{position: 'absolute',    bottom: 20,   right: 20,}}>
+        <TouchableOpacity  style={{
+         width: 68,
+         height: 68,
+         backgroundColor: '#FF6F00',
+         borderRadius: 11,
+         justifyContent: 'center',
+         alignItems: 'center',
+         position: 'absolute',
+         bottom: 20,
+         right: 20,
+         shadowColor: '#000',
+         shadowOffset: { width: 0, height: 2 },
+         shadowOpacity: 0.25,
+         shadowRadius: 3.84,
+         elevation: 5,}}>
+         
+          {/* <CartIcon color="#FFF" style={{width: 28,
+    height: 28,}} /> */}
+    <Text style={{position: 'absolute',
+   bottom:31,
+    right: 2,    
+    color: '#FFFFFF', 
+    fontSize: 26,
+    fontWeight: 'bold',
+    padding: 4,
+    borderRadius: 20,
+    overflow: 'hidden',}}>3</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+
+
+
+
 class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -269,6 +373,9 @@ class CbAccordion extends React.Component {
 class cbSearchbox extends React.Component {
   constructor(props) {
     super(props);
+    this.search=props.Searchsource || "";
+    this.backarrow=props.Backarrowsource || "";
+    this.close=props.closesource || "";
     this.state = {
       showSearchInput: false,
       searchValue: "",
@@ -277,6 +384,9 @@ class cbSearchbox extends React.Component {
 
   render() {
     const { showSearchInput, searchValue } = this.state;
+    const Searchsource=this.search;
+    const Backarrowsource=this.backarrow;
+    const Closesource=this.close;
     return (
       <Box
         style={{
@@ -285,6 +395,8 @@ class cbSearchbox extends React.Component {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          marginLeft:9,
+          borderRadius:4,
           backgroundColor: showSearchInput ? "#f0f0f0" : "white",
         }}
       >
@@ -294,17 +406,15 @@ class cbSearchbox extends React.Component {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-              width: "100%",
+              width: "95%",
               height: "100%",
+              marginRight: 25
             }}
           >
-            <TouchableOpacity
-              onPress={() =>
-                handleCloseClick(this.setState.bind(this), this.props.onSearchActivate)
+            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 5 }} >
+              {
+                Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
-              style={{ marginLeft: 5 }}
-            >
-              <Icon as={ArrowLeftIcon} size="md" style={{ color: "#5773A2", marginRight: 5 }} />
             </TouchableOpacity>
             <Input
               style={{
@@ -321,18 +431,13 @@ class cbSearchbox extends React.Component {
                 onChangeText={(value) => this.setState({ searchValue: value })}
               />
             </Input>
-            <TouchableOpacity
-              onPress={() =>
-                handleClearClick(
-                  this.setState.bind(this),
-                  this.state.searchValue,
-                  this.props.onSearchActivate
-                )
+            {searchValue && (
+            <TouchableOpacity  onPress={() =>handleClearClick(this.setState.bind(this),this.state.searchValue,this.props.onSearchActivate )}  style={{ marginLeft: 5 }} > 
+              {
+                Closesource? <Image source={{ uri: Closesource}}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
               }
-              style={{ marginLeft: 5 }}
-            >
-              <Icon as={CloseIcon} size="md" style={{ color: "#5773A2" }} />
             </TouchableOpacity>
+             )}
           </Box>
         ) : (
           <TouchableOpacity
@@ -340,46 +445,9 @@ class cbSearchbox extends React.Component {
               handleSearchClick(this.setState.bind(this), this.props.onSearchActivate)
             }
           >
-            <Icon as={SearchIcon} size="xl" style={{ color: "#5773A2" }} />
-          </TouchableOpacity>
-        )}
-      </Box>
-    );
-  }
-}
-
-
-class cbHeader extends React.Component {
-  constructor(props) {
-    super(props);
-    this.headerText = props.headerText || "Header";
-    this.isHomeEnable = props.isHomeEnable !== false; 
-  }
-
-  render() {
-    const headerText = this.headerText;
-    const isHomeEnable = this.isHomeEnable;
-    
-
-    return (
-      <Box
-        style={{
-          display: "flex",    
-          flexDirection: "row",      
-          justifyContent: "space-between",
-          padding: 10,
-          borderBottom: 1,
-          backgroundColor: 'white',
-        }}
-      >
-         <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
-            <Icon as={ChevronsLeftIcon} size='xl' style={{ color:'#5773A2' ,top:5, }} />
-          </TouchableOpacity>
-          
-          <Text style={{ right:97, fontSize: 20}}>{headerText}</Text>
-        {isHomeEnable && (
-          <TouchableOpacity onPress={()=>navigateToScreen(this.props,'Login')}>
-          <Icon as={House} size='xl'  style={{ top:7, fontSize:30,color:'#5773A2', cursor: "pointer" }} />
+        {
+          Searchsource ? <Image source={{ uri: Searchsource}}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
+        }
           </TouchableOpacity>
         )}
       </Box>
@@ -791,6 +859,9 @@ class cbCategoryList extends React.Component {
 }
 
 
+CbHomeButton.display='CbHomeButton';
+CbBackButton.display='CbBackButton';
+CbImage.displayName='CbImage';
 cbButton.displayName='cbButton';
 cbInput.displayName='cbInput';
 cbCheckBox.displayName='cbCheckBox';
@@ -802,11 +873,9 @@ cbForm.displayName='cbForm';
 CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
-cbHeader.displayName='cbHeader';
 cbSearchbox.displayName='cbSearchbox';
-cbCategoryList.displayName = "cbCategoryList"
-cbHeader.displayName = "cbHeader"
+CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList"
 
- export {  cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbHeader,cbSearchbox };
+ export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
 
 

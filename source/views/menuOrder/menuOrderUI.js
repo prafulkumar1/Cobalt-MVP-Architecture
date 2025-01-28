@@ -6,9 +6,11 @@ import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimen
 import {  ChevronLeftIcon,ChevronRightIcon} from '@/components/ui/icon';
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
+import {  Image } from "react-native";
+import { navigateToScreen } from '@/source/constants/Navigations'
 
 const pageId = "MenuOrder";
-export default function MenuOrderScreen() {
+export default function MenuOrderScreen(props) {
   let pageConfigJson = global.appConfigJsonArray.find(
     (item) => item.PageId === pageId
   );
@@ -24,7 +26,7 @@ export default function MenuOrderScreen() {
     
     const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn } = configItems;
   
-  const {menuOrderData,setMealCategory,setMealType,isCategoryEmpty} = useFormContext();
+  const {menuOrderData,setMealCategory,setMealType,isCategoryEmpty,isSearchActive,handleChangeState}= useFormContext();
   const {categoryRef, scrollToLast,scrollToFirst} = useMenuOrderLogic()
 
   const renderMealTypeList = (mealTypeItem) => {
@@ -120,7 +122,23 @@ export default function MenuOrderScreen() {
   }
 
   return (
-    <UI.Box style={styles.mainContainer}>
+    <UI.Box style={styles.mainContainer}> 
+                <UI.Box style={{display:"flex",flexDirection: "row", marginVertical:4,}}>
+                <UI.cbSearchbox onSearchActivate={() => handleChangeState()}/>
+                {!isSearchActive && (
+                <UI.Box style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginLeft:4, borderBottom: 1, backgroundColor: "white", width: 362, height: 31,  alignItems: "center", }}>
+                  <UI.TouchableOpacity style={{ left:5 }} onPress={() => this.props.navigation.goBack()}>
+                     <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />}/>
+                  </UI.TouchableOpacity>
+                  <UI.Text style={{fontSize: 16, fontWeight: "bold", right:100, lineHeight: 20, }}>
+                       Recent Orders
+                  </UI.Text>
+                  <UI.TouchableOpacity style={{ right:8 }} onPress={() => navigateToScreen(props, "Recentorders",false)}>
+                    <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/RONav.png')} />}/>
+                  </UI.TouchableOpacity>
+                </UI.Box>
+                )}    
+                </UI.Box>         
       <UI.ScrollView
         horizontal={false}
         scrollEnabled={false}
@@ -132,6 +150,7 @@ export default function MenuOrderScreen() {
             return renderMealTypeList(item, setMealType);
           })}
       </UI.ScrollView>
+      <UI.CbFloatingButton />
 
       {renderCategoryMainList()}
     </UI.Box>
@@ -140,7 +159,7 @@ export default function MenuOrderScreen() {
 
 const styles = UI.StyleSheet.create({
   mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
-  mainContainer:{paddingTop:responsiveHeight(5),backgroundColor:"#fff"},
+  mainContainer:{},
   scrollContent: {
     backgroundColor:"#fff",
     paddingHorizontal:responsiveWidth(2),

@@ -1,23 +1,10 @@
-import { useState,useContext } from 'react';
-import { useFormContextProvider,useFormContext } from '@/components/cobalt/event';
+import {useFormContext } from '@/components/cobalt/event';
 import { navigateToScreen } from '@/source/constants/Navigations';
-// import { useNavigation } from '@react-navigation/native';
 const pageId='Login';
 export const useLoginLogic = () => {
-  // const navigation = useNavigation();
 
     const {getFormFieldData,setFormFieldData }= useFormContext();
    
-  // const handleValidation = () => {
-       
-  //     if(!getFormFieldData(pageId,"username") && !getFormFieldData(pageId,"password"))
-  //     {
-  //       alert("Please give login Creditianls");
-  //     }
-  //    else{
-  //     alert("success");
-  //    }
-  // };
   const handleValidation = () => {
     const usernameField = getFormFieldData(pageId, 'username');
     const passwordField = getFormFieldData(pageId, 'password');
@@ -30,7 +17,6 @@ export const useLoginLogic = () => {
     } else {
       setFormFieldData(pageId, 'input', 'username', usernameField.value, false);
     }
-    //const checkarray=getFormFieldData(pageId, 'username');
     if (!passwordField.value) {
       setFormFieldData(pageId, 'input', 'password', passwordField.value, true);
       isValid = false;
@@ -44,7 +30,7 @@ export const useLoginLogic = () => {
 
   const handleLogin = (props) => {
   
-    navigateToScreen(props,"Menu")
+    navigateToScreen(props,"MenuOrder",true)
   };
 
   return {

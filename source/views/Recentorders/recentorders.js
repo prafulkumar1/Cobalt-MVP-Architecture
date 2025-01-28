@@ -10,7 +10,6 @@ export default function RecentordersScreen(props) {
           <UI.ScrollView contentContainerStyle={styles.scrollContent}>
             <UI.cbForm >
               <UI.cbVStack id='VStack1'>      
-                <UI.cbHeader headerText='Living Room' isHomeEnable={true} {...props}/>
               </UI.cbVStack>
             </UI.cbForm>
           </UI.ScrollView>
