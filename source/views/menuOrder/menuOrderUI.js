@@ -6,7 +6,7 @@ import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimen
 import {  ChevronLeftIcon,ChevronRightIcon} from '@/components/ui/icon';
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
-import {  Image } from "react-native";
+import {  Image, Platform } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 
 const pageId = "MenuOrder";
@@ -31,22 +31,48 @@ export default function MenuOrderScreen(props) {
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
-     <UI.Box style={styles.mealTypeContainer}>
-       <UI.TouchableOpacity
-         activeOpacity={0.6}
-         style={[mealTypeItem.IsSelect===1 ? [styles.activeMenuType,{backgroundColor:mealTypeBtn?.activeBackgroundColor?mealTypeBtn.activeBackgroundColor : "#00C6FF",borderRadius:mealTypeBtn?.borderRadius?mealTypeBtn?.borderRadius: 5}]:styles.inactiveMenuType]}
-         onPress={() => setMealType(mealTypeItem.MealPeriod_Id)}
-       >
-         <UI.Text style={[mealTypeLabel?.styles ? mealTypeLabel?.styles : styles.mealTypeLabel,{color:mealTypeItem.IsSelect===1?"#ffffff":"#717171"}]}>
-           {mealTypeItem.MealPeriod_Name?.toUpperCase()}
-         </UI.Text>
-         <UI.Text style={[timeLabel?.styles? timeLabel?.styles : styles.timeDurationTxt,{color:mealTypeItem.IsSelect===1?"#fff":"#717171"}]}>
-           {mealTypeItem.Time}
-         </UI.Text>
-         </UI.TouchableOpacity>
-     </UI.Box>
-   );
- }
+      <UI.Box style={styles.mealTypeContainer}>
+        <UI.TouchableOpacity
+          activeOpacity={0.6}
+          style={[
+            mealTypeItem.IsSelect === 1
+              ? [
+                  styles.activeMenuType,
+                  {
+                    backgroundColor: mealTypeBtn?.activeBackgroundColor
+                      ? mealTypeBtn.activeBackgroundColor
+                      : "#00C6FF",
+                    borderRadius: mealTypeBtn?.borderRadius
+                      ? mealTypeBtn?.borderRadius
+                      : 5,
+                  },
+                ]
+              : styles.inactiveMenuType,
+          ]}
+          onPress={() => setMealType(mealTypeItem.MealPeriod_Id)}
+        >
+          <UI.Text
+            style={[
+              mealTypeLabel?.styles
+                ? mealTypeLabel?.styles
+                : styles.mealTypeLabel,
+              { color: mealTypeItem.IsSelect === 1 ? "#ffffff" : "#717171" },
+            ]}
+          >
+            {mealTypeItem.MealPeriod_Name?.toUpperCase()}
+          </UI.Text>
+          <UI.Text
+            style={[
+              timeLabel?.styles ? timeLabel?.styles : styles.timeDurationTxt,
+              { color: mealTypeItem.IsSelect === 1 ? "#fff" : "#717171" },
+            ]}
+          >
+            {mealTypeItem.Time}
+          </UI.Text>
+        </UI.TouchableOpacity>
+      </UI.Box>
+    );
+  }
 
   const renderMenuCategoryList = (categoryItem) => {
     return (
@@ -59,10 +85,13 @@ export default function MenuOrderScreen(props) {
           <UI.Text style={styles.categoryText}>
             {categoryItem.Category_Name?.toUpperCase()}
           </UI.Text>
-          {
-            categoryItem.IsSelect ===1 &&
-            <UI.Box style={[tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle]} />
-          }
+          {categoryItem.IsSelect === 1 && (
+            <UI.Box
+              style={[
+                tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
+              ]}
+            />
+          )}
         </UI.TouchableOpacity>
       </UI.Box>
     );
@@ -71,7 +100,7 @@ export default function MenuOrderScreen(props) {
   const renderCategoryMainList = () => {
     if (!isCategoryEmpty) {
       return (
-        <>
+        <UI.Box style={styles.mainBoxContainer}>
           <UI.Box style={styles.subCategoryContainer}>
             {menuOrderData &&
               menuOrderData.MenuItems?.map((mealCategory) => {
@@ -92,14 +121,20 @@ export default function MenuOrderScreen(props) {
                         contentContainerStyle={styles.categoryListContainer}
                         ref={categoryRef}
                       >
-                        {categories.map((items) => renderMenuCategoryList(items))}
+                        {categories.map((items) =>
+                          renderMenuCategoryList(items)
+                        )}
                       </UI.ScrollView>
                       {categoryCount > 3 && (
                         <UI.TouchableOpacity
                           style={styles.forwardIcon}
                           onPress={scrollToLast}
                         >
-                          <Icon as={ChevronRightIcon} color="#5773a2" size="xl" />
+                          <Icon
+                            as={ChevronRightIcon}
+                            color="#5773a2"
+                            size="xl"
+                          />
                         </UI.TouchableOpacity>
                       )}
                     </>
@@ -110,7 +145,7 @@ export default function MenuOrderScreen(props) {
           <UI.ScrollView contentContainerStyle={styles.scrollContent}>
             <UI.cbCategoryList />
           </UI.ScrollView>
-        </>
+        </UI.Box>
       )
     } else {
       return (
@@ -139,31 +174,27 @@ export default function MenuOrderScreen(props) {
                 </UI.Box>
                 )}    
                 </UI.Box>         
-      <UI.ScrollView
-        horizontal={false}
-        scrollEnabled={false}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.topContainer}
+      <UI.Box
+        style={styles.topContainer}
       >
         {menuOrderData &&
           menuOrderData.MenuItems?.map((item) => {
             return renderMealTypeList(item, setMealType);
           })}
-      </UI.ScrollView>
+      </UI.Box>
+        {renderCategoryMainList()}
       <UI.CbFloatingButton />
-
-      {renderCategoryMainList()}
     </UI.Box>
   );
 }
 
 const styles = UI.StyleSheet.create({
   mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
-  mainContainer:{},
+  mainContainer:{flex:1},
   scrollContent: {
     backgroundColor:"#fff",
     paddingHorizontal:responsiveWidth(2),
-    paddingTop:responsiveHeight(2)
+    paddingTop:responsiveHeight(2),
   },
   categoryText: {
     padding:2,
@@ -193,9 +224,8 @@ const styles = UI.StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    alignSelf: "center",
     width: responsiveWidth(30),
-    height: responsiveHeight(4.5),
+    height: Platform.OS === "android"?responsiveHeight(6):responsiveHeight(5),
     marginHorizontal:5
   },
   inactiveMenuType: {
@@ -204,7 +234,7 @@ const styles = UI.StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: responsiveWidth(30),
-    height: responsiveHeight(4.5),
+    height: Platform.OS === "android"?responsiveHeight(6):responsiveHeight(5),
     alignSelf: "center",
     borderRadius: 5,
     opacity: 0.8,
@@ -219,18 +249,24 @@ const styles = UI.StyleSheet.create({
   topContainer: {
     flexDirection: "row",
     paddingVertical: 10,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     borderColor:"#0000002B",
     borderWidth:1
   },
   categoryListContainer: {
     flexDirection: "row",
-    height: responsiveHeight(4.2),
-    paddingTop:responsiveHeight(0.6)
+    height: Platform.OS === "android" ?responsiveHeight(6):responsiveHeight(5.5),
+    paddingTop:responsiveHeight(1.2),
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
   },
   subCategoryContainer: {
-    flexDirection: "row", alignItems: "center", width: "100%", alignSelf: "center", borderColor: "#0000002B",
+    flexDirection: "row", 
+    alignItems: "center", 
+    width: "100%", 
+    alignSelf: "center", 
+    borderColor: "#0000002B",
     borderWidth: 1,
   },
   forwardIcon:{marginLeft:10},
@@ -243,5 +279,6 @@ const styles = UI.StyleSheet.create({
   },
   emptyMealTxt:{
     fontStyle:"italic"
-  }
+  },
+  mainBoxContainer:{ flex: 1,backgroundColor:"#fff",paddingBottom:responsiveHeight(6) }
 });

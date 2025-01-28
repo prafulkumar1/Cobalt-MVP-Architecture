@@ -92,40 +92,30 @@ class CbHomeButton extends React.Component {
 }
 
 class CbFloatingButton extends React.Component {
- 
-
+  constructor(props) {
+    super(props);
+    this.cartQuantity = props.cartQuantity
+  }
   render() {
     return (
-      <View style={{position: 'absolute',    bottom: 20,   right: 20,}}>
-        <TouchableOpacity  style={{
-         width: 68,
-         height: 68,
-         backgroundColor: '#FF6F00',
-         borderRadius: 11,
-         justifyContent: 'center',
-         alignItems: 'center',
-         position: 'absolute',
-         bottom: 20,
-         right: 20,
-         shadowColor: '#000',
-         shadowOffset: { width: 0, height: 2 },
-         shadowOpacity: 0.25,
-         shadowRadius: 3.84,
-         elevation: 5,}}>
-         
-          {/* <CartIcon color="#FFF" style={{width: 28,
-    height: 28,}} /> */}
-    <Text style={{position: 'absolute',
-   bottom:31,
-    right: 2,    
-    color: '#FFFFFF', 
-    fontSize: 26,
-    fontWeight: 'bold',
-    padding: 4,
-    borderRadius: 20,
-    overflow: 'hidden',}}>3</Text>
-        </TouchableOpacity>
-      </View>
+      <FormContext.Consumer>
+      {({cartData}) => {
+        const buttonArray = global.controlsConfigJson.find(
+          (item) => item.id === this.id
+        );
+        const variant = buttonArray?.variant || this.variant;
+        const buttonText = buttonArray?.text || this.buttonText;
+
+        return (
+          <View style={styles.floatingContainer}>
+            <TouchableOpacity style={styles.floatingBtn}>
+              <Icon as={AddIcon} style={styles.cartIcon} color={"#FFF"} />
+              <Text style={styles.cartCountTxt}>{cartData?.length? cartData?.length:0}</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      }}
+    </FormContext.Consumer>
     );
   }
 }
@@ -231,8 +221,8 @@ class CbAccordion extends React.Component {
 
     return (
       <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
+        showsHorizontalScrollIndicator={true}
         contentContainerStyle={[styles.mainContainerList,Platform.OS==="ios" && {paddingBottom: "30%" }]}
         keyboardShouldPersistTaps="handled"
       >

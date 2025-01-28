@@ -26,7 +26,7 @@ export default function App() {
       <GluestackUIProvider mode="light">
         <UseFormContextProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login"
+          <Stack.Navigator initialRouteName="MenuOrder"
           screenOptions={({ route,navigation}) => ({
             headerLeft: () => (
              <UI.CbBackButton navigation={navigation}  />
