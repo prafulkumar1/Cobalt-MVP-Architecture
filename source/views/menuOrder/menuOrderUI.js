@@ -6,7 +6,7 @@ import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimen
 import {  ChevronLeftIcon,ChevronRightIcon} from '@/components/ui/icon';
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
-import {  Image, Platform } from "react-native";
+import { Image, Platform } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 
 const pageId = "MenuOrder";
@@ -17,17 +17,17 @@ export default function MenuOrderScreen(props) {
 
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-    const configItems = global.controlsConfigJson?.reduce((acc, item) => {
-      if (["mealTypeLabel", "timeLabel", "mealTypeBtn", "tapBarBtn"].includes(item.id)) {
-        acc[item.id] = item;
-      }
-      return acc;
-    }, {});
-    
-    const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn } = configItems;
-  
-  const {menuOrderData,setMealCategory,setMealType,isCategoryEmpty,isSearchActive,handleChangeState}= useFormContext();
-  const {categoryRef, scrollToLast,scrollToFirst} = useMenuOrderLogic()
+  const configItems = global.controlsConfigJson?.reduce((acc, item) => {
+    if (["mealTypeLabel", "timeLabel", "mealTypeBtn", "tapBarBtn", "recentOrderName", "seeAllRecentOrders", "recentOrderImage"].includes(item.id)) {
+      acc[item.id] = item;
+    }
+    return acc;
+  }, {});
+
+  const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
+
+  const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState } = useFormContext();
+  const { categoryRef, scrollToLast, scrollToFirst } = useMenuOrderLogic()
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -37,16 +37,16 @@ export default function MenuOrderScreen(props) {
           style={[
             mealTypeItem.IsSelect === 1
               ? [
-                  styles.activeMenuType,
-                  {
-                    backgroundColor: mealTypeBtn?.activeBackgroundColor
-                      ? mealTypeBtn.activeBackgroundColor
-                      : "#00C6FF",
-                    borderRadius: mealTypeBtn?.borderRadius
-                      ? mealTypeBtn?.borderRadius
-                      : 5,
-                  },
-                ]
+                styles.activeMenuType,
+                {
+                  backgroundColor: mealTypeBtn?.activeBackgroundColor
+                    ? mealTypeBtn.activeBackgroundColor
+                    : "#00C6FF",
+                  borderRadius: mealTypeBtn?.borderRadius
+                    ? mealTypeBtn?.borderRadius
+                    : 5,
+                },
+              ]
               : styles.inactiveMenuType,
           ]}
           onPress={() => setMealType(mealTypeItem.MealPeriod_Id)}
@@ -73,7 +73,7 @@ export default function MenuOrderScreen(props) {
       </UI.Box>
     );
   }
-
+  
   const renderMenuCategoryList = (categoryItem) => {
     return (
       <UI.Box>
@@ -156,6 +156,135 @@ export default function MenuOrderScreen(props) {
     }
   }
 
+  const RecentOrderData = [
+
+    {
+
+      "Item_Name": "Coconut Shrimp",
+
+      "Item_Id": "I302",
+
+      "Description": "These coconut shrimp are dipped...",
+
+      "Price": 45.00,
+
+      "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+      "IsAvailable": 1
+
+    },
+    {
+
+      "Item_Name": "Coconut Shrimp",
+
+      "Item_Id": "I302",
+
+      "Description": "These coconut shrimp are dipped...",
+
+      "Price": 45.00,
+
+      "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+      "IsAvailable": 1
+
+    },
+    {
+
+      "Item_Name": "Coconut Shrimp",
+
+      "Item_Id": "I302",
+
+      "Description": "These coconut shrimp are dipped...",
+
+      "Price": 45.00,
+
+      "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+      "IsAvailable": 1
+
+    },
+    {
+
+      "Item_Name": "Coconut Shrimp",
+
+      "Item_Id": "I302",
+
+      "Description": "These coconut shrimp are dipped...",
+
+      "Price": 45.00,
+
+      "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+      "IsAvailable": 1
+
+    },
+    {
+
+      "Item_Name": "Coconut Shrimp",
+
+      "Item_Id": "I302",
+
+      "Description": "These coconut shrimp are dipped...",
+
+      "Price": 45.00,
+
+      "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+      "IsAvailable": 1
+
+    },
+
+
+  ]
+
+
+
+
+
+  const OnRecentOrderPress = () => {
+    const RenderingRecentOrders = ({ item }) => {
+      return (
+        <UI.Box style={{ marginRight: 18, }}>
+          <UI.TouchableOpacity>
+            <UI.CbImage imageJsx={<Image alt='image'   id= "recentOrderImage" source={{ uri: recentOrderImage?.Image ? recentOrderImage?.Image : item.Image }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
+]} />} />
+          </UI.TouchableOpacity>
+          <UI.Box style={{ flexDirection: "row", justifyContent: "space-between", paddingTop: 5 }}>
+            <UI.Text id="recentOrderName"
+              
+              style={[
+                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
+                
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >{item.Item_Name}
+            </UI.Text>
+
+            <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />} />
+          </UI.Box>
+        </UI.Box>
+      );
+    };
+
+    return (
+      <UI.Box style={styles.recentContainer}>
+        <UI.CbFlatList
+          flatlistData={RecentOrderData}
+          horizontal
+          children={({ item }) => <RenderingRecentOrders item={item} />}
+        />
+        <UI.TouchableOpacity>
+          <UI.Text 
+           style={[
+            seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
+          ]}
+          >Show All</UI.Text>
+        </UI.TouchableOpacity>
+      </UI.Box>
+    );
+  };
+
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.Box style={styles.mainHeaderContainer}>
@@ -164,12 +293,12 @@ export default function MenuOrderScreen(props) {
           <UI.TouchableOpacity style={styles.recentOrderContainer}>
 
             <UI.Box style={styles.recentOrderBox}>
-            <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />} />
-            </UI.TouchableOpacity>
-            <UI.Text style={styles.recentOrderTxt}>
-              Recent Orders
-            </UI.Text>
+              <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />} />
+              </UI.TouchableOpacity>
+              <UI.Text style={styles.recentOrderTxt}>
+                Recent Orders
+              </UI.Text>
             </UI.Box>
 
             <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", false)}>
@@ -178,6 +307,7 @@ export default function MenuOrderScreen(props) {
           </UI.TouchableOpacity>
         )}
       </UI.Box>
+      <OnRecentOrderPress />
       <UI.Box
         style={styles.topContainer}
       >
@@ -268,10 +398,10 @@ const styles = UI.StyleSheet.create({
     alignItems: "flex-start",
   },
   subCategoryContainer: {
-    flexDirection: "row", 
-    alignItems: "center", 
-    width: "100%", 
-    alignSelf: "center", 
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
     borderColor: "#0000002B",
     borderWidth: 1,
   },
@@ -286,8 +416,12 @@ const styles = UI.StyleSheet.create({
   emptyMealTxt:{
     fontStyle:"italic"
   },
-  mainBoxContainer:{ flex: 1,backgroundColor:"#fff",paddingBottom:responsiveHeight(6) },
-  recentOrderTxt:{ fontSize: 16, fontWeight: "bold", lineHeight: 20,marginLeft:8 },
-  rightIconBtn:{ right: 10 },
-  recentOrderBox:{flexDirection:"row",alignItems:"center",justifyContent:"center",marginLeft:10}
+  mainBoxContainer: { flex: 1, backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
+  recentOrderTxt: { fontSize: 16, fontWeight: "bold", lineHeight: 20, marginLeft: 8 },
+  rightIconBtn: { right: 10 },
+  recentOrderBox: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginLeft: 10 },
+  recentOrderImage:{width: 120, height: 60, borderRadius: 10},
+  recentOrderName:{fontSize: 12, color: "#4B5154", width: 100},
+  seeAllRecentOrders:{fontSize: 16, color: "#26BAE2", width: "100%", textAlign: "center", fontStyle: "italic", fontWeight: "Semibold", paddingVertical: 11},
+recentContainer:{paddingLeft: 8, backgroundColor: "#FFFFFF"},
 });
