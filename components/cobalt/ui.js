@@ -108,9 +108,8 @@ class CbFloatingButton extends React.Component {
 
         return (
           <View style={styles.floatingContainer}>
-            <TouchableOpacity style={styles.floatingBtn}>
-              {/* <Icon as={AddIcon} style={styles.cartIcon} color={"#FFF"} /> */}
-              <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={{width:35,height:35,resizeMode:"contain",margin:5}}/>
+            <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.props, "MyCart", false)}>
+              <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
               <Text style={styles.cartCountTxt}>{cartData?.length? cartData?.length:0}</Text>
             </TouchableOpacity>
           </View>

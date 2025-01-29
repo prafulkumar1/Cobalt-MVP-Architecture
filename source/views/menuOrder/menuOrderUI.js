@@ -157,23 +157,27 @@ export default function MenuOrderScreen(props) {
   }
 
   return (
-    <UI.Box style={styles.mainContainer}> 
-                <UI.Box style={{display:"flex",flexDirection: "row", marginVertical:4,}}>
-                <UI.cbSearchbox onSearchActivate={() => handleChangeState()}/>
-                {!isSearchActive && (
-                <UI.Box style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginLeft:4, borderBottom: 1, backgroundColor: "white", width: 362, height: 31,  alignItems: "center", }}>
-                  <UI.TouchableOpacity style={{ left:5 }} onPress={() => this.props.navigation.goBack()}>
-                     <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />}/>
-                  </UI.TouchableOpacity>
-                  <UI.Text style={{fontSize: 16, fontWeight: "bold", right:100, lineHeight: 20, }}>
-                       Recent Orders
-                  </UI.Text>
-                  <UI.TouchableOpacity style={{ right:8 }} onPress={() => navigateToScreen(props, "Recentorders",false)}>
-                    <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/RONav.png')} />}/>
-                  </UI.TouchableOpacity>
-                </UI.Box>
-                )}    
-                </UI.Box>         
+    <UI.Box style={styles.mainContainer}>
+      <UI.Box style={styles.mainHeaderContainer}>
+        <UI.cbSearchbox onSearchActivate={() => handleChangeState()} />
+        {!isSearchActive && (
+          <UI.TouchableOpacity style={styles.recentOrderContainer}>
+
+            <UI.Box style={styles.recentOrderBox}>
+            <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />} />
+            </UI.TouchableOpacity>
+            <UI.Text style={styles.recentOrderTxt}>
+              Recent Orders
+            </UI.Text>
+            </UI.Box>
+
+            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", false)}>
+              <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/RONav.png')} />} />
+            </UI.TouchableOpacity>
+          </UI.TouchableOpacity>
+        )}
+      </UI.Box>
       <UI.Box
         style={styles.topContainer}
       >
@@ -182,13 +186,15 @@ export default function MenuOrderScreen(props) {
             return renderMealTypeList(item, setMealType);
           })}
       </UI.Box>
-        {renderCategoryMainList()}
+      {renderCategoryMainList()}
       <UI.CbFloatingButton />
     </UI.Box>
   );
 }
 
 const styles = UI.StyleSheet.create({
+  mainHeaderContainer:{ display: "flex", flexDirection: "row", marginVertical: 6, },
+  recentOrderContainer:{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginLeft: 4, borderBottom: 1, backgroundColor: "#fff", width: "90%", height: 31, alignItems: "center", },
   mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
   mainContainer:{flex:1},
   scrollContent: {
@@ -280,5 +286,8 @@ const styles = UI.StyleSheet.create({
   emptyMealTxt:{
     fontStyle:"italic"
   },
-  mainBoxContainer:{ flex: 1,backgroundColor:"#fff",paddingBottom:responsiveHeight(6) }
+  mainBoxContainer:{ flex: 1,backgroundColor:"#fff",paddingBottom:responsiveHeight(6) },
+  recentOrderTxt:{ fontSize: 16, fontWeight: "bold", lineHeight: 20,marginLeft:8 },
+  rightIconBtn:{ right: 10 },
+  recentOrderBox:{flexDirection:"row",alignItems:"center",justifyContent:"center",marginLeft:10}
 });

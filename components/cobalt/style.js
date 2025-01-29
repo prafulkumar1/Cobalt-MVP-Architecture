@@ -168,14 +168,15 @@ export const styles = StyleSheet.create({
   cartCountTxt:{
     position: "absolute",
     bottom: 28,
-    right: 8,
+    right: 5,
     color: "#FFFFFF",
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "bold",
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
   },
   cartIcon:{ width: 40, height: 40 },
-  backArrowHeader:{marginRight:20}
+  backArrowHeader:{marginRight:20},
+  cartIcon:{width:35,height:35,resizeMode:"contain",margin:5}
 })

@@ -26,7 +26,7 @@ export default function App() {
       <GluestackUIProvider mode="light">
         <UseFormContextProvider>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="MenuOrder"
+          <Stack.Navigator initialRouteName="ProfitCenters"
           screenOptions={({ route,navigation}) => ({
             headerLeft: () => (
              <UI.CbBackButton navigation={navigation}  />
@@ -53,7 +53,9 @@ export default function App() {
              <Stack.Screen 
               name="ProfitCenters" 
               component={ProfitCenters} 
-              options={{ headerShown: true }} 
+              options={{ headerShown: true,
+                headerTitle: "Food Ordering",
+               }} 
             />
             <Stack.Screen 
               name="MenuOrder" 
