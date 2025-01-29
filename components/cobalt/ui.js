@@ -121,9 +121,6 @@ class CbFloatingButton extends React.Component {
 }
 
 
-
-
-
 class CbAccordion extends React.Component {
   constructor(props) {
     super(props);
@@ -864,8 +861,8 @@ CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
-CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList"
+CbFloatingButton.displayName='CbFloatingButton';
+
+
 
  export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
-
-
