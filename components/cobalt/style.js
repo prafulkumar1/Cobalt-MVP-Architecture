@@ -154,8 +154,7 @@ export const styles = StyleSheet.create({
     height: 68,
     backgroundColor: "#FF6F00",
     borderRadius: 11,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: "flex-end",
     position: "absolute",
     bottom: 20,
     right: 20,
@@ -164,11 +163,12 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    padding:5
   },
   cartCountTxt:{
     position: "absolute",
-    bottom: 31,
-    right: 2,
+    bottom: 28,
+    right: 8,
     color: "#FFFFFF",
     fontSize: 26,
     fontWeight: "bold",
@@ -176,5 +176,6 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
   },
-  cartIcon:{ width: 40, height: 40 }
+  cartIcon:{ width: 40, height: 40 },
+  backArrowHeader:{marginRight:20}
 })

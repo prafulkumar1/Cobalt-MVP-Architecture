@@ -65,7 +65,7 @@ class CbBackButton extends React.Component {
   }
   render() {
        return (
-      <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
+      <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}} style={styles.backArrowHeader}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
         }
@@ -109,7 +109,8 @@ class CbFloatingButton extends React.Component {
         return (
           <View style={styles.floatingContainer}>
             <TouchableOpacity style={styles.floatingBtn}>
-              <Icon as={AddIcon} style={styles.cartIcon} color={"#FFF"} />
+              {/* <Icon as={AddIcon} style={styles.cartIcon} color={"#FFF"} /> */}
+              <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={{width:35,height:35,resizeMode:"contain",margin:5}}/>
               <Text style={styles.cartCountTxt}>{cartData?.length? cartData?.length:0}</Text>
             </TouchableOpacity>
           </View>

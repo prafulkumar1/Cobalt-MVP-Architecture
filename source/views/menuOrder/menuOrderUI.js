@@ -150,7 +150,7 @@ export default function MenuOrderScreen(props) {
     } else {
       return (
         <UI.Box style={styles.emptyListContainer}>
-          <UI.Text style={styles.emptyMealTxt}>No meal available</UI.Text>
+          <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
         </UI.Box>
       )
     }
@@ -225,7 +225,7 @@ const styles = UI.StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: responsiveWidth(30),
-    height: Platform.OS === "android"?responsiveHeight(6):responsiveHeight(5),
+    height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5),
     marginHorizontal:5
   },
   inactiveMenuType: {
@@ -234,7 +234,7 @@ const styles = UI.StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: responsiveWidth(30),
-    height: Platform.OS === "android"?responsiveHeight(6):responsiveHeight(5),
+    height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5.5),
     alignSelf: "center",
     borderRadius: 5,
     opacity: 0.8,
@@ -256,7 +256,7 @@ const styles = UI.StyleSheet.create({
   },
   categoryListContainer: {
     flexDirection: "row",
-    height: Platform.OS === "android" ?responsiveHeight(6):responsiveHeight(5.5),
+    height: Platform.OS === "android" ?responsiveHeight(5):responsiveHeight(5.5),
     paddingTop:responsiveHeight(1.2),
     justifyContent: "flex-start",
     alignItems: "flex-start",
