@@ -18,7 +18,7 @@ export default function MyCartScreen(props) {
 
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
   const [value,setValue]  =useState(0)
-   const {   } = useMyCartLogic();
+   const {  tipData } = useMyCartLogic();
    const {cartData,deleteCartItem}= useFormContext();
 
   const renderCartItems = (item) => {
@@ -68,32 +68,71 @@ export default function MyCartScreen(props) {
     );
   };
 
+  const renderAddTip = ({item},index) => {
+    let lastIndex = tipData.length - 1;
+    return(
+     <>
+         <UI.TouchableOpacity style={[styles.tipMainContainer,{backgroundColor:item.isSelected===1?"#00BFF6":"#fff"}]}>
+         <UI.Text style={[styles.tipCount,{color:item.isSelected===1?"#fff":"#00BFF6"}]}>{item.tip}.00%</UI.Text>
+       </UI.TouchableOpacity>
+       { 
+       lastIndex === index &&  <UI.TouchableOpacity style={[styles.tipMainContainer,{backgroundColor:item.isSelected===1?"#00BFF6":"#fff"}]}>
+       <UI.Text style={[styles.tipCount,{color:item.isSelected===1?"#fff":"#00BFF6"}]}>Custom</UI.Text>
+     </UI.TouchableOpacity>
+       }
+     </>
+    )
+  }
   return (
     <UI.Box style={styles.topContainer}>
       <UI.ScrollView>
-        {
-          cartData && cartData.length > 0 ? cartData?.map((items) => {
-            return renderCartItems(items)
-          }) : <UI.View style={{ alignSelf: "center" }}>
+        {cartData && cartData.length > 0 ? (
+          cartData?.map((items) => {
+            return renderCartItems(items);
+          })
+        ) : (
+          <UI.View style={{ alignSelf: "center" }}>
             <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
           </UI.View>
-        }
+        )}
         <UI.Box style={styles.mainSubContainer}>
           <UI.TouchableOpacity style={styles.orderInstContainer}>
-            <Image alt='pras' source={require("@/assets/images/icons/notes.png")} style={styles.notesIcon} resizeMode='contain' />
+            <Image
+              alt="pras"
+              source={require("@/assets/images/icons/notes.png")}
+              style={styles.notesIcon}
+              resizeMode="contain"
+            />
             <UI.Text style={styles.orderInstTxt}>Order Instructions</UI.Text>
           </UI.TouchableOpacity>
-          <UI.CbCommonButton id={"addMorebtn"} showBtnName={"Add More"} isPlusIconAvailable={true} />
+          <UI.CbCommonButton
+            id={"addMorebtn"}
+            showBtnName={"Add More"}
+            isPlusIconAvailable={true}
+          />
         </UI.Box>
 
-        <UI.Box style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end", marginVertical: responsiveHeight(2) }}>
+        <UI.Box
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            marginVertical: responsiveHeight(2),
+          }}
+        >
           <UI.Box style={{ alignSelf: "flex-end" }}>
             <UI.Text style={styles.priceLabel}>Sub Total:</UI.Text>
             <UI.Text style={styles.priceLabel}>10% Service Charge:</UI.Text>
             <UI.Text style={styles.priceLabel}>State Tax:</UI.Text>
             <UI.Text style={styles.priceLabel}>Tip:</UI.Text>
           </UI.Box>
-          <UI.Box style={{ alignSelf: "flex-end", justifyContent: "flex-end", width: responsiveWidth(25) }}>
+          <UI.Box
+            style={{
+              alignSelf: "flex-end",
+              justifyContent: "flex-end",
+              width: responsiveWidth(25),
+            }}
+          >
             <UI.Text style={styles.priceLabel}>$171.00</UI.Text>
             <UI.Text style={styles.priceLabel}>$17.10</UI.Text>
             <UI.Text style={styles.priceLabel}>$8.5</UI.Text>
@@ -104,13 +143,40 @@ export default function MyCartScreen(props) {
         <UI.Box style={styles.tipContainer}>
           <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
         </UI.Box>
+
+        <UI.Box>
+          <UI.CbFlatList
+            flatlistData={tipData}
+            horizontal={true}
+            children={renderAddTip}
+            contentContainerStyle={{ padding: 5 }}
+          />
+        </UI.Box>
+
+
+        <UI.Box style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",backgroundColor:"#EFEFEF",padding:10}}>
+          <UI.Box>
+            <UI.Text style={{textAlign:"center"}}>Select Pickup Time</UI.Text>
+            <UI.TouchableOpacity style={{borderRadius:5,backgroundColor:"#fff",justifyContent:"center",alignItems:"center",width:165,height:32,marginTop:5}}>
+              <UI.Text>7:00 PM</UI.Text>
+            </UI.TouchableOpacity>
+          </UI.Box>
+
+          <UI.Box>
+            <UI.Text style={{textAlign:"center"}}>Select Pickup Point</UI.Text>
+            <UI.TouchableOpacity style={{borderRadius:5,backgroundColor:"#fff",justifyContent:"center",alignItems:"center",width:165,height:32,marginTop:5}}>
+              <UI.Text style={{textAlign:"center"}}>Clubhouse Grill</UI.Text>
+            </UI.TouchableOpacity>
+          </UI.Box>
+        </UI.Box>
+
       </UI.ScrollView>
-    </UI.Box>  
+    </UI.Box>
   );
 }
 
 const styles = UI.StyleSheet.create({
-  topContainer:{ flex: 1, padding: 10 },
+  topContainer:{ flex: 1, padding: 10,backgroundColor:"#fff" },
   scrollContent: {
     padding: 20,
   },
@@ -204,5 +270,7 @@ const styles = UI.StyleSheet.create({
       color:"#4B5154",
       fontWeight:"bold",
       fontSize:14
-    }
+    },
+    tipMainContainer:{width:80,height:40,justifyContent:"center",alignItems:"center",borderRadius:10,marginHorizontal:5,marginVertical:10},
+    tipCount:{fontSize:14,fontWeight:"700"}
 });

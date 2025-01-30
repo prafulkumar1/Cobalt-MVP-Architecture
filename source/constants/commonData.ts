@@ -420,6 +420,22 @@ export const RecentOrderData = [
     "IsAvailable": 1
 
   },
+]
 
-
+export const additionalTipData = [
+  {
+    id:uuid.v4(),
+    tip: 10,
+    isSelected:0
+  },
+  {
+    id:uuid.v4(),
+    tip: 20,
+    isSelected:0
+  },
+  {
+    id:uuid.v4(),
+    tip: 30,
+    isSelected:0
+  }
 ]
