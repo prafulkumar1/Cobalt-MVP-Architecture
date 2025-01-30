@@ -24,52 +24,90 @@ export const foodOrderData =
           "Category_Name": "Appetizers",
           "Category_Id": "C201",
           "IsSelect": 1,
-          "Submenu": [
-            {
-              "Submenu_Name": "Hot",
-              "Submenu_Id": "SM301",
-              "Items": [
-                {
-                  "Item_Name": "Seared Salmon Salad",
-                  "Item_Id": "I301",
-                  "Description": "Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad Savor the delicious Green salad.",
-                  "Price": 25.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 0
-                },
-                {
-                  "Item_Name": "Coconut Shrimp",
-                  "Item_Id": "I302",
-                  "Description": "These coconut shrimp are dipped... A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips",
-                  "Price": 45.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
-                }
-              ]
-            },
-            {
-              "Submenu_Name": "Cold",
-              "Submenu_Id": "SM302",
-              "Items": [
-                {
-                  "Item_Name": "Caprese Salad",
-                  "Item_Id": "I303",
-                  "Description": "Fresh mozzarella, tomatoes, and basil.",
-                  "Price": 18.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
-                },
-                {
-                  "Item_Name": "Guacamole with Chips",
-                  "Item_Id": "I304",
-                  "Description": "A creamy guacamole served with crispy tortilla chips.",
-                  "Price": 12.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
-                }
-              ]
-            }
-          ]
+         "Submenu": [
+    {
+      "Submenu_Name": "Hot",
+      "Submenu_Id": "SM401",
+      "Items": [
+        {
+          "Item_Name": "Spicy Tuna Tacos",
+          "Item_Id": "I401",
+          "Description": "Soft tacos filled with spicy tuna, avocado, and sesame seeds.",
+          "Price": 22.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":1
+        },
+        {
+          "Item_Name": "Chili Cheese Fries",
+          "Item_Id": "I402",
+          "Description": "Crispy fries topped with spicy chili and melted cheese.",
+          "Price": 18.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":0
+        },
+        {
+          "Item_Name": "Crispy Chicken Wings",
+          "Item_Id": "I405",
+          "Description": "Crispy fried wings tossed in buffalo sauce, served with ranch.",
+          "Price": 16.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":0
+        },
+        {
+          "Item_Name": "Mozzarella Sticks",
+          "Item_Id": "I406",
+          "Description": "Breaded mozzarella sticks served with marinara dipping sauce.",
+          "Price": 12.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":0
+        }
+      ]
+    },
+    {
+      "Submenu_Name": "Cold",
+      "Submenu_Id": "SM402",
+      "Items": [
+        {
+          "Item_Name": "Cucumber & Avocado Salad",
+          "Item_Id": "I403",
+          "Description": "A refreshing salad of cucumbers, avocado, and a light vinaigrette.",
+          "Price": 14.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":0
+        },
+        {
+          "Item_Name": "Shrimp Cocktail",
+          "Item_Id": "I404",
+          "Description": "Chilled shrimp served with tangy cocktail sauce.",
+          "Price": 20.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "isModifier":0
+        },
+        {
+          "Item_Name": "Tuna Tartare",
+          "Item_Id": "I407",
+          "Description": "Fresh tuna marinated with soy sauce, sesame oil, and served with crispy wontons.",
+          "Price": 24.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1
+        },
+        {
+          "Item_Name": "Watermelon Feta Salad",
+          "Item_Id": "I408",
+          "Description": "A refreshing mix of watermelon, feta cheese, mint, and a balsamic glaze.",
+          "Price": 16.00,
+          "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+          "IsAvailable": 1,
+          "isModifier":0
+        }
+      ]
+    }
+  ]
         },
         {
           "Category_Name": "Salads",
@@ -86,7 +124,8 @@ export const foodOrderData =
                   "Description": "A classic Caesar with crisp romaine lettuce.",
                   "Price": 15.00,
                   "Image": "https://media.istockphoto.com/id/1457433817/photo/group-of-healthy-food-for-flexitarian-diet.jpg?s=612x612&w=0&k=20&c=v48RE0ZNWpMZOlSp13KdF1yFDmidorO2pZTu2Idmd3M=",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":1
                 },
                 {
                   "Item_Name": "Greek Salad",
@@ -94,7 +133,8 @@ export const foodOrderData =
                   "Description": "Mixed greens with feta, olives, and dressing.",
                   "Price": 18.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlfJWSz_pT9LgXvU37bHgwIpsmC3HLmIEu60h0nlVTN-MCBC0e9RNEeu-pqE-M9BhmdrY&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 }
               ]
             },
@@ -108,7 +148,8 @@ export const foodOrderData =
                   "Description": "A mix of quinoa, roasted veggies, and a light vinaigrette.",
                   "Price": 20.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 },
                 {
                   "Item_Name": "Grilled Chicken Salad",
@@ -116,7 +157,8 @@ export const foodOrderData =
                   "Description": "Grilled chicken, mixed greens, and light dressing.",
                   "Price": 22.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":1
                 }
               ]
             }
@@ -137,7 +179,8 @@ export const foodOrderData =
                   "Description": "Tender grilled chicken breast with spices.",
                   "Price": 22.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 },
                 {
                   "Item_Name": "Grilled Steak",
@@ -145,7 +188,8 @@ export const foodOrderData =
                   "Description": "Juicy grilled steak, seasoned perfectly.",
                   "Price": 30.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 }
               ]
             },
@@ -159,7 +203,8 @@ export const foodOrderData =
                   "Description": "A medley of vegetables stir-fried in a soy sauce.",
                   "Price": 20.00,
                   "Image": "https://media.gettyimages.com/id/1457889029/photo/group-of-food-with-high-content-of-dietary-fiber-arranged-side-by-side.jpg?s=612x612&w=gi&k=20&c=YiNatAP0CzFSalhnkzSUFyy6XpVhBe3WSnRpu1W3pV4=",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 },
                 {
                   "Item_Name": "Grilled Tofu",
@@ -167,7 +212,8 @@ export const foodOrderData =
                   "Description": "Grilled tofu served with sautéed vegetables.",
                   "Price": 18.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpptIUMlnioDZxSpnLnIST_qJAC_Bw9synOLrks2ZYitcUyEUbb5Le7uVDrj5yiYiFWY8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":0
                 }
               ]
             }
@@ -197,7 +243,8 @@ export const foodOrderData =
                   "Description": "Savor the delicious Green salad.",
                   "Price": 25.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":1
                 },
                 {
                   "Item_Name": "Coconut Shrimp",
@@ -205,7 +252,8 @@ export const foodOrderData =
                   "Description": "These coconut shrimp are dipped...",
                   "Price": 45.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":1
                 }
               ]
             },
@@ -219,7 +267,8 @@ export const foodOrderData =
                   "Description": "Fresh mozzarella, tomatoes, and basil.",
                   "Price": 18.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 0
+                  "IsAvailable": 0,
+                  "isModifier":1
                 },
                 {
                   "Item_Name": "Guacamole with Chips",
@@ -227,7 +276,8 @@ export const foodOrderData =
                   "Description": "A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips A creamy guacamole served with crispy tortilla chips.",
                   "Price": 12.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1
+                  "IsAvailable": 1,
+                  "isModifier":1
                 }
               ]
             }
@@ -292,3 +342,84 @@ export const ProfitCentersData = {
 
     ]
 };
+
+export const RecentOrderData = [
+
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1
+
+  },
+
+
+]

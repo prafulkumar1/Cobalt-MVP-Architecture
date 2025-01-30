@@ -1,7 +1,7 @@
 
 import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
-import { Text } from 'react-native';
+import { Image } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 import { MessageCircleIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -23,7 +23,7 @@ export default function MyCartScreen(props) {
 
   const renderCartItems = (item) => {
     const renderRightActions = (progress, dragX) => {
-      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; // Fallback to 0
+      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
       setValue(roundedAbsolute);
       return (
@@ -53,15 +53,7 @@ export default function MyCartScreen(props) {
   
             <UI.Box style={styles.rightContainer}>
               <UI.Text style={styles.itemPrice}>{`$${item.Price}`}</UI.Text>
-              <UI.Box style={styles.operationBtn}>
-                <UI.TouchableOpacity style={styles.iconBtn}>
-                  <Icon as={true ? TrashIcon : RemoveIcon} color="#5773a2" size={'lg'} />
-                </UI.TouchableOpacity>
-                <Text style={styles.quantityTxt}>{item.quantity}</Text>
-                <UI.TouchableOpacity style={styles.iconBtn}>
-                  <Icon as={AddIcon} color="#5773a2" size={"lg"} />
-                </UI.TouchableOpacity>
-              </UI.Box>
+              <UI.CbAddToCartButton mealItemDetails={item} style={{ padding: responsiveWidth(2) }} cartStyle = {true}/>
             </UI.Box>
           </UI.Box>
   
@@ -82,10 +74,36 @@ export default function MyCartScreen(props) {
         {
           cartData && cartData.length > 0 ? cartData?.map((items) => {
             return renderCartItems(items)
-          }) : <UI.View style={{alignSelf:"center"}}>
+          }) : <UI.View style={{ alignSelf: "center" }}>
             <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
           </UI.View>
         }
+        <UI.Box style={styles.mainSubContainer}>
+          <UI.TouchableOpacity style={styles.orderInstContainer}>
+            <Image alt='pras' source={require("@/assets/images/icons/notes.png")} style={styles.notesIcon} resizeMode='contain' />
+            <UI.Text style={styles.orderInstTxt}>Order Instructions</UI.Text>
+          </UI.TouchableOpacity>
+          <UI.CbCommonButton id={"addMorebtn"} showBtnName={"Add More"} isPlusIconAvailable={true} />
+        </UI.Box>
+
+        <UI.Box style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-end", marginVertical: responsiveHeight(2) }}>
+          <UI.Box style={{ alignSelf: "flex-end" }}>
+            <UI.Text style={styles.priceLabel}>Sub Total:</UI.Text>
+            <UI.Text style={styles.priceLabel}>10% Service Charge:</UI.Text>
+            <UI.Text style={styles.priceLabel}>State Tax:</UI.Text>
+            <UI.Text style={styles.priceLabel}>Tip:</UI.Text>
+          </UI.Box>
+          <UI.Box style={{ alignSelf: "flex-end", justifyContent: "flex-end", width: responsiveWidth(25) }}>
+            <UI.Text style={styles.priceLabel}>$171.00</UI.Text>
+            <UI.Text style={styles.priceLabel}>$17.10</UI.Text>
+            <UI.Text style={styles.priceLabel}>$8.5</UI.Text>
+            <UI.Text style={styles.priceLabel}>$10.00</UI.Text>
+          </UI.Box>
+        </UI.Box>
+
+        <UI.Box style={styles.tipContainer}>
+          <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
+        </UI.Box>
       </UI.ScrollView>
     </UI.Box>  
   );
@@ -166,5 +184,25 @@ const styles = UI.StyleSheet.create({
       color:"#FFFFFF",
       fontSize:16
     },
-    emptyCartTxt:{ fontSize: 18, fontWeight: "500", padding: 10 }
+    emptyCartTxt:{ fontSize: 18, fontWeight: "500", padding: 10 },
+    operationBtn: {
+      borderColor: '#5773a2',
+      borderWidth: 1,
+      backgroundColor: '#fff',
+      borderRadius: 5,
+      justifyContent: "space-between",
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    orderInstContainer:{ borderWidth: 1, borderColor: "#C4C4C4", justifyContent: "flex-start", flexDirection: "row", alignItems: "center", width: 180, height: 27, borderRadius: 4, paddingHorizontal: 10 },
+    notesIcon:{ width: 12, height: 18 },
+    orderInstTxt:{ fontSize: 12, fontStyle: "italic", color: "#4B5154", paddingLeft: 10 },
+    mainSubContainer:{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
+    priceLabel:{textAlign:"right",color:"#4B5154",fontSize:12,fontWeight:"600"},
+    tipContainer:{borderTopWidth:0.6,borderBottomWidth:0.6,justifyContent:"center",alignItems:"center",borderColor:"#B9B9B9",padding:10},
+    tipTxt:{
+      color:"#4B5154",
+      fontWeight:"bold",
+      fontSize:14
+    }
 });

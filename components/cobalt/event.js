@@ -37,29 +37,31 @@ export const UseFormContextProvider = ({children}) => {
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
 
-    const setMealType = (id) => {
-      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
-        ...items,
-        IsSelect: items.MealPeriod_Id === id ? 1 : 0,
-        Categories: items.Categories.map((category, index) => ({
-          ...category,
-          IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-        })),
-      }));
-    
-      const foodMenuList = {
-        ...menuOrderData,
-        MenuItems: updatedMealType,
-      };
-    
-      let isCategoryEmptyFlag = false;
-      updatedMealType.forEach((items) => {
-        if (items.IsSelect === 1 && items.Categories.length === 0) {
-          isCategoryEmptyFlag = true; 
-        }
-      });
-      setIsCategoryEmpty(isCategoryEmptyFlag);
-      setMenuOrderData(foodMenuList);
+    const setMealType = (id,IsEnabled) => {
+      if(IsEnabled===1){
+        const updatedMealType = menuOrderData.MenuItems.map((items) => ({
+          ...items,
+          IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+          Categories: items.Categories.map((category, index) => ({
+            ...category,
+            IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+          })),
+        }));
+      
+        const foodMenuList = {
+          ...menuOrderData,
+          MenuItems: updatedMealType,
+        };
+      
+        let isCategoryEmptyFlag = false;
+        updatedMealType.forEach((items) => {
+          if (items.IsSelect === 1 && items.Categories.length === 0) {
+            isCategoryEmptyFlag = true; 
+          }
+        });
+        setIsCategoryEmpty(isCategoryEmptyFlag);
+        setMenuOrderData(foodMenuList);
+      }
     };
 
     const setMealCategory = (id) => {
