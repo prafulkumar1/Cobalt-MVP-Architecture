@@ -730,6 +730,7 @@ class CbFlatList extends React.Component{
       )
      }
   render(){
+    console.log(this.flatlistData,"===>cartData")
     const { children } = this.props; 
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     const spaceprop = inputArray?.space  || this.space;

@@ -131,6 +131,11 @@ export const UseFormContextProvider = ({children}) => {
         });
       } catch (error) {}
     };
+    const deleteCartItem = async (mealItemDetails) => {
+      let updatedCartData = cartData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
+      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+      setCartData(updatedCartData)
+    }
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -142,7 +147,8 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartBtn,
       updateCartItemQuantity,
       cartData,
-      isCategoryEmpty
+      isCategoryEmpty,
+      deleteCartItem
     }
     return (
       <FormContext.Provider
