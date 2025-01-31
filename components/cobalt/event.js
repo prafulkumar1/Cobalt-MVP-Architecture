@@ -39,29 +39,31 @@ const [itemDataVisible, setItemDataVisible] = useState(false);
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
 
-    const setMealType = (id) => {
-      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
-        ...items,
-        IsSelect: items.MealPeriod_Id === id ? 1 : 0,
-        Categories: items.Categories.map((category, index) => ({
-          ...category,
-          IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-        })),
-      }));
-    
-      const foodMenuList = {
-        ...menuOrderData,
-        MenuItems: updatedMealType,
-      };
-    
-      let isCategoryEmptyFlag = false;
-      updatedMealType.forEach((items) => {
-        if (items.IsSelect === 1 && items.Categories.length === 0) {
-          isCategoryEmptyFlag = true; 
-        }
-      });
-      setIsCategoryEmpty(isCategoryEmptyFlag);
-      setMenuOrderData(foodMenuList);
+    const setMealType = (id,IsEnabled) => {
+      if(IsEnabled===1){
+        const updatedMealType = menuOrderData.MenuItems.map((items) => ({
+          ...items,
+          IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+          Categories: items.Categories.map((category, index) => ({
+            ...category,
+            IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+          })),
+        }));
+      
+        const foodMenuList = {
+          ...menuOrderData,
+          MenuItems: updatedMealType,
+        };
+      
+        let isCategoryEmptyFlag = false;
+        updatedMealType.forEach((items) => {
+          if (items.IsSelect === 1 && items.Categories.length === 0) {
+            isCategoryEmptyFlag = true; 
+          }
+        });
+        setIsCategoryEmpty(isCategoryEmptyFlag);
+        setMenuOrderData(foodMenuList);
+      }
     };
   
     const setMealCategory = (id) => {
@@ -137,6 +139,11 @@ const [itemDataVisible, setItemDataVisible] = useState(false);
     const closePreviewModal = () => {
       setItemDataVisible(!itemDataVisible)
     }
+    const deleteCartItem = async (mealItemDetails) => {
+      let updatedCartData = cartData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
+      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+      setCartData(updatedCartData)
+    }
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -150,7 +157,8 @@ const [itemDataVisible, setItemDataVisible] = useState(false);
       cartData,
       isCategoryEmpty,
       itemDataVisible,
-      closePreviewModal
+      closePreviewModal,
+      deleteCartItem
     }
     return (
       <FormContext.Provider

@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView, Platform,Modal} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -9,9 +9,8 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
-import {  House, } from 'lucide-react-native';
-import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
+import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
+import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
@@ -167,7 +166,8 @@ class CbImage extends React.Component {
     // this.id=props.id;
     this.source = props.source || "";
     this.imageJsx=props.imageJsx;
-
+    this.style = props.style
+    
   }
 
   render() {
@@ -181,8 +181,8 @@ class CbImage extends React.Component {
       if (source.endsWith('.svg')) {
         return <SvgUri source={{ uri: source }}  />;
       } else {
-
-        return <Image alt='image' source={{ uri: source }}  />;
+          
+        return <Image alt='image' source={{ uri: source }}  style={this.style}/>;
       }
     } else {
       return jsx;
@@ -227,6 +227,7 @@ class CbFloatingButton extends React.Component {
   constructor(props) {
     super(props);
     this.cartQuantity = props.cartQuantity
+    this.screenProps = props.props
   }
   render() {
     return (
@@ -240,7 +241,7 @@ class CbFloatingButton extends React.Component {
 
           return (
             <View style={styles.floatingContainer}>
-              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.props, "MyCart", false)}>
+              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
               <Text style={styles.cartCountTxt}>{cartData?.length? cartData?.length:0}</Text>
               </TouchableOpacity>
@@ -253,7 +254,88 @@ class CbFloatingButton extends React.Component {
 }
 
 
+class CbAddToCartButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.mealItemDetails = props.mealItemDetails
+    this.style = props.style
+    this.cartStyle = props.cartStyle
+  }
+  commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1 && IsDisable ===1){
+      return primaryColor
+    }else{
+      return secondaryColor
+    }
+  }
 
+  renderAddToCartBtn = (contextProps) => {
+     const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+    const { cartData, addItemToCartBtn, updateCartItemQuantity } = contextProps;
+    const IsAvailable = this.mealItemDetails.IsAvailable;
+    const IsDisable = this.mealItemDetails.IsDisable
+    const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
+    const quantity = cartItem ? cartItem.quantity : 0;
+  
+    if (quantity === 0) {
+      return (
+        <TouchableOpacity
+          style={[this.style ? this.style : styles.addItemToCartBtn, 
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
+            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
+            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
+            {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
+            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          ]}
+          activeOpacity={0.5}
+          onPress={() => addItemToCartBtn(this.mealItemDetails)}
+          disabled={IsAvailable === 1 && IsDisable === 0?false:true}
+        >
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} />
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity - 1)}
+          >
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} />
+          </TouchableOpacity>
+
+          <Text style={styles.quantityTxt}>{quantity}</Text>
+
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity + 1)}
+          >
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} />
+          </TouchableOpacity>
+        </Box>
+      );
+    }
+  };
+  render() {
+    return (
+      <FormContext.Consumer>
+      {(contextProps) => {
+        const buttonArray = global.controlsConfigJson.find(
+          (item) => item.id === this.id
+        );
+        const variant = buttonArray?.variant || this.variant;
+        const buttonText = buttonArray?.text || this.buttonText;
+
+        return (
+          <>
+          {this.renderAddToCartBtn(contextProps)}
+          </>
+        );
+      }}
+    </FormContext.Consumer>
+    );
+  }
+}
 
 
 class CbAccordion extends React.Component {
@@ -268,52 +350,6 @@ class CbAccordion extends React.Component {
     };
   }
 
-  renderAddToCartBtn = (mealItemDetails) => {
-    const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const { cartData, addItemToCartBtn, updateCartItemQuantity } = this.props;
-    const IsAvailable = mealItemDetails.IsAvailable;
-    const cartItem = cartData?.find((item) => item.Item_Id === mealItemDetails.Item_Id);
-    const quantity = cartItem ? cartItem.quantity : 0;
-
-    if (quantity === 0) {
-      return (
-        <TouchableOpacity
-          style={[styles.addItemToCartBtn,
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
-            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
-            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
-            {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
-            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
-          ]}
-          activeOpacity={0.5}
-          onPress={() => addItemToCartBtn(mealItemDetails)}
-          disabled={IsAvailable === 0}
-        >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, "#5773a2", "#4B515469")} />
-        </TouchableOpacity>
-      );
-    } else {
-      return (
-        <Box style={styles.operationBtn}>
-          <TouchableOpacity
-            style={styles.iconBtn}
-            onPress={() => updateCartItemQuantity(mealItemDetails, quantity - 1)}
-          >
-            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={18} />
-          </TouchableOpacity>
-
-          <Text style={styles.quantityTxt}>{quantity}</Text>
-
-          <TouchableOpacity
-            style={styles.iconBtn}
-            onPress={() => updateCartItemQuantity(mealItemDetails, quantity + 1)}
-          >
-            <Icon as={AddIcon} color="#5773a2" size={20} />
-          </TouchableOpacity>
-        </Box>
-      );
-    }
-  };
 
   handleReadMoreToggle = (id) => {
     this.setState((prevState) => {
@@ -334,8 +370,8 @@ class CbAccordion extends React.Component {
   }
 
 
-  showActiveAvailableColor = (isAvailable) => {
-    return { color: isAvailable === 1 ? "#4B5154" : "#4B515469" };
+  showActiveAvailableColor = (isAvailable,IsDisable) => {
+    return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
   };
 
   render() {
@@ -414,7 +450,7 @@ class CbAccordion extends React.Component {
                           key={box.Item_Id}
                           style={[
                             styles.subContainer,
-                            { opacity: box.IsAvailable === 1 ? 1 : 0.8 },
+                            { opacity: box.IsAvailable === 1 && box.IsDisable === 0 ? 1 : 0.8 },
                           ]}
                         >
                           <Box style={styles.rowContainer}>
@@ -427,7 +463,7 @@ class CbAccordion extends React.Component {
                                   itemTitle?.styles ? itemTitle?.styles :
                                     styles.mealTypeTitle,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                   { textAlign: "justify" },
                                 ]}
@@ -440,7 +476,7 @@ class CbAccordion extends React.Component {
                                   itemPrice?.styles? itemPrice?.styles:
                                     styles.priceTxt,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                 ]}
                               >
@@ -452,7 +488,7 @@ class CbAccordion extends React.Component {
                                   itemDescription?.styles?itemDescription?.styles:
                                     styles.descriptionTxt,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                   { textAlign: "left", letterSpacing: -0.5 },
                                 ]}
@@ -1011,6 +1047,38 @@ class cbCategoryList extends React.Component {
 }
 
 
+class CbCommonButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id = props.addMorebtn
+    this.cartQuantity = props.cartQuantity
+    this.showBtnName = props.showBtnName || ""
+    this.isPlusIconAvailable = props.isPlusIconAvailable || false
+    this.style = props.style
+    this.screenName = props.screenName
+    this.extraParams = props.extraParams
+    this.isHomeEnabled = props.isHomeIconRequire || true
+  }
+  render() {
+    return (
+      <Box>
+        <TouchableOpacity
+          style={[this.style ? this.style : styles.mediumBtn]}
+          onPress={()=>navigateToScreen(this.props.props, this.screenName, this.isHomeEnabled,this.extraParams)}
+        >
+          {
+            this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
+          }
+          <Text style={styles.mediumBtnTxt}>
+            {this.showBtnName}
+          </Text>
+        </TouchableOpacity>
+      </Box>
+    );
+  }
+}
+
+
 CbHomeButton.display='CbHomeButton';
 CbBackButton.display='CbBackButton';
 CbImage.displayName='CbImage';
@@ -1026,9 +1094,10 @@ CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
-CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList";
+CbFloatingButton.displayName='CbFloatingButton';
+CbAddToCartButton.displayName = "CbAddToCartButton"
+CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
 
- export { CbAccordionlist, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
 
-
+ export {CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton };

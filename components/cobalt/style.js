@@ -40,10 +40,18 @@ export const styles = StyleSheet.create({
     top: 15,
   },
   operationBtn: {
-    padding: responsiveWidth(2),
     position: 'absolute',
     right: -15,
     top: 15,
+    borderColor: '#5773a2',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  operationBtn2: {
     borderColor: '#5773a2',
     borderWidth: 1,
     backgroundColor: '#fff',
@@ -77,7 +85,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-  iconBtn: { width: responsiveWidth(4) },
+  iconBtn: { width: responsiveWidth(7.9),height:responsiveHeight(4),justifyContent:"center",alignItems:'center' },
   mainContainer: { paddingTop: responsiveHeight(5), backgroundColor: "#fff" },
   scrollContent: {
     backgroundColor: "#fff",
@@ -179,6 +187,18 @@ export const styles = StyleSheet.create({
   cartIcon:{ width: 40, height: 40 },
   backArrowHeader:{marginRight:20},
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
+  mediumBtn:{
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
+    borderWidth: 2,
+    borderColor: "#2A4E7D",
+    width: responsiveWidth(30)
+  },
+  mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, fontWeight: "bold", textAlign: "center" },
   CheckboxIndicator:{
     width: 20,
     height: 20,
