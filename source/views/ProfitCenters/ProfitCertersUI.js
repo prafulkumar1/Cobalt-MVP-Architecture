@@ -1,30 +1,49 @@
 import * as UI from '@/components/cobalt/importUI';
 import { ProfitCentersData } from '@/source/constants/commonData';
 import React from 'react';
-import {ImageBackground} from "react-native"
+import { ImageBackground, Alert } from "react-native";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { useNavigation } from '@react-navigation/native';
 
-const pageId='ProfitCenter';
+const pageId = 'ProfitCenter';
 
 const RenderingProfitCenter = ({ item }) => {
+    const navigation = useNavigation(); 
+
     const isAvailable = item.Status === "Available";
 
+    const navigationMap = {
+        'Panache': 'Panache',
+        'Living Room': 'MenuOrder',
+    };
+
+    const onItemPress = () => { 
+        const destination = navigationMap[item.LocationName];
+        if (destination) {
+            navigation.navigate(destination);
+        } else {
+            Alert.alert( `No Screen Found for ${item.LocationName}`);
+        }
+    };
+
     return (
-        <ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}> 
-
-        <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6}>
-            <UI.Box style={styles.profitCenterOverlay}>
-                <UI.Text id='profitCenterName'style={styles.profitCenterName}>{item.LocationName}</UI.Text>
-                <UI.Text  id="profitCenterTimings" style={styles.profitCenterTimings}> 
-                    {item.OpeningTime}-{item.ClosingTime}
-                </UI.Text>
-            </UI.Box>
-            <UI.Box  id="status" style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
-                <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
-            </UI.Box>
-        </UI.TouchableOpacity>
+        <ImageBackground source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
+            <UI.TouchableOpacity 
+                style={styles.profitCenter_btn} 
+                activeOpacity={0.6} 
+                onPress={onItemPress} 
+            >
+                <UI.Box style={styles.profitCenterOverlay}>
+                    <UI.Text style={styles.profitCenterName}>{item.LocationName}</UI.Text>
+                    <UI.Text style={styles.profitCenterTimings}>
+                        {item.OpeningTime} - {item.ClosingTime}
+                    </UI.Text>
+                </UI.Box>
+                <UI.Box style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
+                    <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
+                </UI.Box>
+            </UI.TouchableOpacity>
         </ImageBackground>
-
     );
 };
 
@@ -33,7 +52,7 @@ const ProfitCenters = () => {
         <UI.ScrollView contentContainerStyle={styles.scrollContent}>
             <UI.CbFlatList
                 flatlistData={ProfitCentersData.ProfitCenters}
-                children={RenderingProfitCenter}
+                children={({ item }) => <RenderingProfitCenter item={item} />} 
                 scrollEnabled={false}
             />
         </UI.ScrollView>
@@ -77,7 +96,7 @@ const styles = UI.StyleSheet.create({
         right: 11,
         borderRadius: 10,
         paddingTop: 1,
-        paddingBottom:3,
+        paddingBottom: 3,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -92,8 +111,7 @@ const styles = UI.StyleSheet.create({
         color: "#FFF",
         fontWeight: "500",
         textAlign: "center",
-        width:responsiveWidth(20),
-        height:responsiveHeight(2.5)
+        width: responsiveWidth(20),
+        height: responsiveHeight(2.5),
     },
 });
-
