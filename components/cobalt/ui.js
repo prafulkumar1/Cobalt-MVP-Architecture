@@ -129,8 +129,8 @@ class CbAddToCartButton extends React.Component {
     this.style = props.style
     this.cartStyle = props.cartStyle
   }
-  commonStyles = (isAvailable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1){
+  commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1 && IsDisable ===1){
       return primaryColor
     }else{
       return secondaryColor
@@ -141,6 +141,7 @@ class CbAddToCartButton extends React.Component {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
     const { cartData, addItemToCartBtn, updateCartItemQuantity } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
+    const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
     const quantity = cartItem ? cartItem.quantity : 0;
     
@@ -148,7 +149,7 @@ class CbAddToCartButton extends React.Component {
       return (
         <TouchableOpacity
           style={[this.style ? this.style : styles.addItemToCartBtn, 
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
             {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
             {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
             {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
@@ -156,9 +157,9 @@ class CbAddToCartButton extends React.Component {
           ]}
           activeOpacity={0.5}
           onPress={() => addItemToCartBtn(this.mealItemDetails)}
-          disabled={IsAvailable === 1?false:true}
+          disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, "#5773a2", "#4B515469")} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} />
         </TouchableOpacity>
       );
     } else {
@@ -237,8 +238,8 @@ class CbAccordion extends React.Component {
   }
 
 
-  showActiveAvailableColor = (isAvailable) => {
-    return { color: isAvailable === 1 ? "#4B5154" : "#4B515469" };
+  showActiveAvailableColor = (isAvailable,IsDisable) => {
+    return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
   };
 
   render() {
@@ -308,7 +309,7 @@ class CbAccordion extends React.Component {
                           key={box.Item_Id}
                           style={[
                             styles.subContainer,
-                            { opacity: box.IsAvailable === 1 ? 1 : 0.8 },
+                            { opacity: box.IsAvailable === 1 && box.IsDisable === 0 ? 1 : 0.8 },
                           ]}
                         >
                           <Box style={styles.rowContainer}>
@@ -321,7 +322,7 @@ class CbAccordion extends React.Component {
                                   itemTitle?.styles ? itemTitle?.styles : 
                                   styles.mealTypeTitle,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                   { textAlign: "justify" },
                                 ]}
@@ -334,7 +335,7 @@ class CbAccordion extends React.Component {
                                   itemPrice?.styles? itemPrice?.styles:
                                   styles.priceTxt,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                 ]}
                               >
@@ -346,7 +347,7 @@ class CbAccordion extends React.Component {
                                   itemDescription?.styles?itemDescription?.styles:
                                   styles.descriptionTxt,
                                   this.showActiveAvailableColor(
-                                    box.IsAvailable
+                                    box.IsAvailable,box.IsDisable
                                   ),
                                   { textAlign: "left", letterSpacing: -0.5 },
                                 ]}
@@ -369,12 +370,7 @@ class CbAccordion extends React.Component {
                               <Box style={styles.imageContainer}>
                                 <Image
                                   source={{ uri: box.Image }}
-                                  style={[
-                                    styles.mealTypeImg,
-                                    box.IsAvailable === 0 && {
-                                      filter: "grayscale(100%)",
-                                    },
-                                  ]}
+                                  style={styles.mealTypeImg}
                                 />
                                 <CbAddToCartButton mealItemDetails={box}/>
                               </Box>
@@ -891,12 +887,16 @@ class CbCommonButton extends React.Component {
     this.showBtnName = props.showBtnName || ""
     this.isPlusIconAvailable = props.isPlusIconAvailable || false
     this.style = props.style
+    this.screenName = props.screenName
+    this.extraParams = props.extraParams
+    this.isHomeEnabled = props.isHomeIconRequire || true
   }
   render() {
     return (
       <Box>
         <TouchableOpacity
           style={[this.style ? this.style : styles.mediumBtn]}
+          onPress={()=>navigateToScreen(this.props.props, this.screenName, this.isHomeEnabled,this.extraParams)}
         >
           {
             this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
