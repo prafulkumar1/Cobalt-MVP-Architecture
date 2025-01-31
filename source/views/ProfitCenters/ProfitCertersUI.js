@@ -81,11 +81,12 @@ const styles = UI.StyleSheet.create({
         fontWeight: "bold",
         color: "#FFF",
         paddingTop: 8,
+        fontFamily: "SourceSansPro_SemiBold"
     },
     profitCenterTimings: {
         fontSize: 14,
         color: "#FFF",
-        fontStyle: "italic",
+        fontFamily: "SourceSansPro_Italic"
     },
     statusBox: {
         position: "absolute",
@@ -110,5 +111,6 @@ const styles = UI.StyleSheet.create({
         textAlign: "center",
         width: responsiveWidth(20),
         height: responsiveHeight(2.5),
+        fontFamily:"SourceSansPro_Regular"
     },
 });
