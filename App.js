@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import "@/global.css";
 import 'react-native-gesture-handler';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
@@ -31,7 +31,17 @@ export default function App() {
             headerLeft: () => (
              <UI.CbBackButton navigation={navigation}  />
             ),
-            headerTitle: route.params?.title ,
+            headerTitle:() => {
+              if(route.name == "MenuOrder"){
+                return (
+                  <Text style={styles.menuTitle}>{route?.params?.profileCenterTile}</Text>
+                )
+              }else{
+                return (
+                  <Text style={styles.menuTitle}>{route.name}</Text>
+                )
+              }
+            },
             headerRight: () => {
               const value = route.params?.showHomeButton
             if(value){
@@ -85,4 +95,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  menuTitle:{fontSize:22,color:"#4B5154",fontWeight:"500"}
 });

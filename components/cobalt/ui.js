@@ -81,7 +81,7 @@ class CbHomeButton extends React.Component {
   }
   render() {
        return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'Login')}>
+      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
         }

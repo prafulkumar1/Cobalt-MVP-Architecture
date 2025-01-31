@@ -1,5 +1,6 @@
 import * as UI from '@/components/cobalt/importUI';
 import { ProfitCentersData } from '@/source/constants/commonData';
+import { navigateToScreen } from '@/source/constants/Navigations';
 import React from 'react';
 import { ImageBackground, Alert } from "react-native";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -7,9 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const pageId = 'ProfitCenter';
 
-const RenderingProfitCenter = ({ item }) => {
-    const navigation = useNavigation(); 
-
+const RenderingProfitCenter = ({ item },props) => {
     const isAvailable = item.Status === "Available";
 
     const navigationMap = {
@@ -27,19 +26,17 @@ const RenderingProfitCenter = ({ item }) => {
     };
 
     return (
-        <ImageBackground source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
-            <UI.TouchableOpacity 
-                style={styles.profitCenter_btn} 
-                activeOpacity={0.6} 
-                onPress={onItemPress} 
-            >
+        <ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
+            <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToScreen(props, "MenuOrder", true,{profileCenterTile:item.LocationName})}>
                 <UI.Box style={styles.profitCenterOverlay}>
-                    <UI.Text style={styles.profitCenterName}>{item.LocationName}</UI.Text>
-                    <UI.Text style={styles.profitCenterTimings}>
-                        {item.OpeningTime} - {item.ClosingTime}
+                    <UI.Text id='profitCenterName' style={styles.profitCenterName}>{item.LocationName}</UI.Text>
+                    <UI.Text id="profitCenterTimings" style={styles.profitCenterTimings}>
+                        {
+                            isAvailable ? `Closes at ${item.ClosingTime}` : `Available at ${item.OpeningTime}`
+                        }
                     </UI.Text>
                 </UI.Box>
-                <UI.Box style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
+                <UI.Box id="status" style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
                     <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
                 </UI.Box>
             </UI.TouchableOpacity>
@@ -47,12 +44,12 @@ const RenderingProfitCenter = ({ item }) => {
     );
 };
 
-const ProfitCenters = () => {
+const ProfitCenters = (props) => {
     return (
         <UI.ScrollView contentContainerStyle={styles.scrollContent}>
             <UI.CbFlatList
                 flatlistData={ProfitCentersData.ProfitCenters}
-                children={({ item }) => <RenderingProfitCenter item={item} />} 
+                children={(item) => RenderingProfitCenter(item,props)}
                 scrollEnabled={false}
             />
         </UI.ScrollView>
@@ -77,7 +74,7 @@ const styles = UI.StyleSheet.create({
     },
     profitCenterOverlay: {
         paddingHorizontal: 12,
-        paddingVertical: 8,
+        paddingVertical: 10,
     },
     profitCenterName: {
         fontSize: 24,
