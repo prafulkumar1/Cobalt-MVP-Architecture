@@ -2,13 +2,28 @@ import * as UI from '@/components/cobalt/importUI';
 import { ProfitCentersData } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import React from 'react';
-import {ImageBackground} from "react-native"
+import { ImageBackground, Alert } from "react-native";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { useNavigation } from '@react-navigation/native';
 
-const pageId='ProfitCenter';
+const pageId = 'ProfitCenter';
 
 const RenderingProfitCenter = ({ item },props) => {
     const isAvailable = item.Status === "Available";
+
+    const navigationMap = {
+        'Panache': 'Panache',
+        'Living Room': 'MenuOrder',
+    };
+
+    const onItemPress = () => { 
+        const destination = navigationMap[item.LocationName];
+        if (destination) {
+            navigation.navigate(destination);
+        } else {
+            Alert.alert( `No Screen Found for ${item.LocationName}`);
+        }
+    };
 
     return (
         <ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
@@ -78,7 +93,7 @@ const styles = UI.StyleSheet.create({
         right: 11,
         borderRadius: 10,
         paddingTop: 1,
-        paddingBottom:3,
+        paddingBottom: 3,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -93,8 +108,7 @@ const styles = UI.StyleSheet.create({
         color: "#FFF",
         fontWeight: "500",
         textAlign: "center",
-        width:responsiveWidth(20),
-        height:responsiveHeight(2.5)
+        width: responsiveWidth(20),
+        height: responsiveHeight(2.5),
     },
 });
-

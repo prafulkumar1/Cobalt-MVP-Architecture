@@ -363,6 +363,137 @@ export const ProfitCentersData = {
     ]
 };
 
+export const RecentordersData={
+  "ResponseCode": "Success",
+    "ResponseMessage": "",
+    "RecentOrders":[
+      {
+        "HeadingLabel":"Ordered Date",
+        "OrderDate":"01/13/2025",
+        "Items":[
+           { "ItemName": "Fish and Chips",
+            "ItemId": "I301",
+            "Price": 25.00,
+            "IsAvailable": 1,
+            "IsFavorite":0
+           },
+           { "ItemName": "Chicken Satay Skewers",
+            "ItemId": "I302",
+            "Price": 30.00,
+            "IsAvailable": 1,
+            "IsFavorite":1
+           },
+           { "ItemName": "Chicken patties",
+            "ItemId": "I303",
+            "Price": 22.00,
+            "IsAvailable": 1,
+            "IsFavorite":1
+           },
+           { "ItemName": "Coconut Shrimp",
+            "ItemId": "I304",
+            "Price": 45.00,
+            "IsAvailable": 1,
+            "IsFavorite":0
+           },
+        ]
+      },
+      {
+        "HeadingLabel":"Ordered Date",
+        "OrderDate":"01/13/2025",
+        "Items":[
+           { "ItemName": "Spinach Artichoke Dip",
+            "ItemId": "I401",
+            "Price": 35.00,
+            "IsAvailable": 1,
+            "IsFavorite":0
+           },
+           { "ItemName": "Hummus with Pita Chips",
+            "ItemId": "I301",
+            "Price": 45.00,
+            "IsAvailable": 1,
+            "IsFavorite":1
+           },
+        ]
+      },
+    ]
+}
+
+export const ModifiersData={
+  "ResponseCode": "Success",
+    "ResponseMessage": "",
+    "Modifiers":[
+      {
+        "MainModifier":"Sauce",
+        "IsRequried":0,
+        "IsMaxAllowedOne":1,
+        "ModifierItems":[
+           {
+            "ItemName": "Peanut sauce or sweet soy glaze",            
+            "Price": null,            
+           },
+           {
+            "ItemName": "Sweet Chili Sauce",            
+            "Price": 3.00,            
+           },
+           {
+            "ItemName": "Add balsamic reductio",            
+            "Price": 2.00,            
+           },
+           {
+            "ItemName": "Wasabi or ginger soy sauce",            
+            "Price": 2.00,            
+           },
+        ]
+      },
+      {
+        "MainModifier":"Side",
+        "IsRequried":0,
+        "MaxAllowedOne":0,
+        "ModifierItems":[
+          {
+            "ItemName": "Celery",            
+            "Price": 3.00,            
+           },
+           {
+            "ItemName": "Carrots",            
+            "Price": 3.00,            
+           },
+           {
+            "ItemName": "Blue Cheese Dressing",            
+            "Price": 2.00,            
+           },
+           {
+            "ItemName": "Ranch Dressing",            
+            "Price": 2.00,            
+           },
+        ]
+      },
+      {
+        "MainModifier":"Stuffing Type",
+        "IsRequried":1,
+        "MaxAllowedOne":1,
+        "ModifierItems":[
+          {
+            "ItemName": "Cream Cheese",            
+            "Price": 3.00,            
+           },
+           {
+            "ItemName": "Parmesan",            
+            "Price": 3.00,            
+           },
+           {
+            "ItemName": "Sausage",            
+            "Price": 2.00,            
+           },
+           {
+            "ItemName": "spinach",            
+            "Price": 2.00,            
+           },
+        ]
+      },
+    ]
+}
+
 export const RecentOrderData = [
 
   {

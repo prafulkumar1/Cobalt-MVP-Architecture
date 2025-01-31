@@ -11,7 +11,7 @@ import * as UI from '@/components/cobalt/importUI';
 import { UseFormContextProvider } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 import ProfitCenters from './source/views/ProfitCenters/ProfitCertersUI';
-import MyCartScreen from './source/views/myCart/myCartUI';
+import ItemData from './source/views/ItemData/ItemData';import MyCartScreen from './source/views/myCart/myCartUI';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Global Configurations
@@ -28,7 +28,7 @@ export default function App() {
       <UseFormContextProvider>
         <GestureHandlerRootView>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="MyCart"
+            <Stack.Navigator initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />
@@ -77,6 +77,14 @@ export default function App() {
               <Stack.Screen
                 name="Recentorders"
                 component={RecentordersScreen}
+              options={{ headerShown: true,
+                headerTitle: "Order Again",
+               }} 
+            />
+             <Stack.Screen 
+              name="ItemData" 
+              component={ItemData} 
+              options={{ headerShown: true}} 
               />
               <Stack.Screen
                 name="MyCart"

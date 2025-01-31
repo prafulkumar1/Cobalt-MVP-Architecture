@@ -1,4 +1,4 @@
-import { foodOrderData } from '@/source/constants/commonData';
+import { foodOrderData,ModifiersData } from '@/source/constants/commonData';
 import { useEffect, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,9 +10,11 @@ export const useFormContext = () => {
   };
 
 export const UseFormContextProvider = ({children}) => {
-
+    
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
+    const [selectedModifiers, setSelectedModifiers] = useState({});
+const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
@@ -63,7 +65,7 @@ export const UseFormContextProvider = ({children}) => {
         setMenuOrderData(foodMenuList);
       }
     };
-
+  
     const setMealCategory = (id) => {
       const updatedMealCategory = menuOrderData.MenuItems.map((items) => ({
        ...items,
@@ -133,6 +135,10 @@ export const UseFormContextProvider = ({children}) => {
         });
       } catch (error) {}
     };
+
+    const closePreviewModal = () => {
+      setItemDataVisible(!itemDataVisible)
+    }
     const deleteCartItem = async (mealItemDetails) => {
       let updatedCartData = cartData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
@@ -150,6 +156,8 @@ export const UseFormContextProvider = ({children}) => {
       updateCartItemQuantity,
       cartData,
       isCategoryEmpty,
+      itemDataVisible,
+      closePreviewModal,
       deleteCartItem
     }
     return (

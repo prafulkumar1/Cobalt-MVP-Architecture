@@ -198,5 +198,15 @@ export const styles = StyleSheet.create({
     borderColor: "#2A4E7D",
     width: responsiveWidth(30)
   },
-  mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, fontWeight: "bold", textAlign: "center" }
+  mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, fontWeight: "bold", textAlign: "center" },
+  CheckboxIndicator:{
+    width: 20,
+    height: 20,
+    borderWidth: 0.75,
+    borderColor: "#4B5154",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff"
+  }
 })
