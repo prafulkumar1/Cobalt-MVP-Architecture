@@ -28,7 +28,7 @@ export default function App() {
       <UseFormContextProvider>
         <GestureHandlerRootView>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="MyCart"
+            <Stack.Navigator initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />

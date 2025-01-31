@@ -535,7 +535,7 @@ class CbAccordion extends React.Component {
                                   <ItemData />
 
                                 </Modal>
-                                {this.renderAddToCartBtn(box)}
+                                <CbAddToCartButton mealItemDetails={box}/>
                               </Box>
                             )}
                           </Box>
@@ -1100,4 +1100,4 @@ CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
 
 
- export {CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton };
+ export {CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };

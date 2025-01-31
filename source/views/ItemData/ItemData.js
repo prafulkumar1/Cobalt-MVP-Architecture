@@ -146,11 +146,12 @@ const ItemData = (props) => {
                         <UI.Box style={{ paddingBottom: 10 }}>
 
                             <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
-                            <UI.cbInput
+                            {/* <UI.cbInput
                                 id="Comments"
-
+                                formId="Comments"
                                 style={styles.commentsBox}
-                            />
+                                setFormFieldData={{this.formId,'input',this.id,value}}
+                            /> */}
 
                         </UI.Box>
 
