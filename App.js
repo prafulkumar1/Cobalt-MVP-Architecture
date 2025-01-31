@@ -79,6 +79,9 @@ export default function App() {
             <Stack.Screen 
               name="Recentorders" 
               component={RecentordersScreen} 
+              options={{ headerShown: true,
+                headerTitle: "Order Again",
+               }} 
             />
           </Stack.Navigator>
           <StatusBar style="auto" />

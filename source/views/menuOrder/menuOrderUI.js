@@ -301,7 +301,7 @@ export default function MenuOrderScreen(props) {
               </UI.Text>
             </UI.Box>
 
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", false)}>
+            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", true)}>
               <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/RONav.png')} />} />
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>

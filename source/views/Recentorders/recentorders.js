@@ -1,18 +1,19 @@
 import * as UI from '@/components/cobalt/importUI';
+import { RecentordersData,ModifiersData } from '@/source/constants/commonData';
 
 
 export default function RecentordersScreen(props) { 
    
   
     return (
-      
-    
-          <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-            <UI.cbForm >
-              <UI.cbVStack id='VStack1'>      
-              </UI.cbVStack>
-            </UI.cbForm>
-          </UI.ScrollView>
+      <UI.Box>
+        <UI.Box style={{display:"flex",flexDirection:"row", marginVertical:11,marginLeft:8, gap: 5}}>
+          <UI.cbButton text="Favorites" variant="sloid"/>
+          <UI.cbButton text="Recent Orders" variant="sloid"/>
+        </UI.Box>
+         {/* <UI.CbAccordionlist componentData={RecentordersData} screenName="RecentOrders"/>  */}
+        <UI.CbAccordionlist componentData={ModifiersData} screenName="Modifiers"/>
+      </UI.Box>
   
       
     );
