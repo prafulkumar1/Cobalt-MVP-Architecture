@@ -1,4 +1,4 @@
-import { foodOrderData } from '@/source/constants/commonData';
+import { foodOrderData,ModifiersData } from '@/source/constants/commonData';
 import { useEffect, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,9 +10,11 @@ export const useFormContext = () => {
   };
 
 export const UseFormContextProvider = ({children}) => {
-
+    
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
+    const [selectedModifiers, setSelectedModifiers] = useState({});
+const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
@@ -61,7 +63,7 @@ export const UseFormContextProvider = ({children}) => {
       setIsCategoryEmpty(isCategoryEmptyFlag);
       setMenuOrderData(foodMenuList);
     };
-
+  
     const setMealCategory = (id) => {
       const updatedMealCategory = menuOrderData.MenuItems.map((items) => ({
        ...items,
@@ -131,6 +133,10 @@ export const UseFormContextProvider = ({children}) => {
         });
       } catch (error) {}
     };
+
+    const closePreviewModal = () => {
+      setItemDataVisible(!itemDataVisible)
+    }
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -142,7 +148,9 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartBtn,
       updateCartItemQuantity,
       cartData,
-      isCategoryEmpty
+      isCategoryEmpty,
+      itemDataVisible,
+      closePreviewModal
     }
     return (
       <FormContext.Provider

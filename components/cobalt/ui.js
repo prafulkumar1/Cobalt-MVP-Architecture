@@ -1,5 +1,5 @@
 import React,{useState,useContext} from 'react';
-import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView, Platform} from 'react-native';
+import { FlatList, ImageBackground, StyleSheet,I18nManager,Image, TouchableOpacity, ScrollView, SafeAreaView, Platform,Modal} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -29,16 +29,17 @@ import { navigateToScreen } from '@/source/constants/Navigations'
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { height } from '@/source/constants/Matrices';
+import ItemData from '@/source/views/ItemData/ItemData';
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
     super(props);
     // this.id=props.id;
     this.screenName=props.screenName;
-     this.favsource = props.favsource || "";
-     this.Notfavsource = props.Notfavsource || "";
+    this.favsource = props.favsource || "";
+    this.Notfavsource = props.Notfavsource || "";
      this.componentData= props.componentData || [];
-     
+
   }
 
   render() {
@@ -46,74 +47,115 @@ class CbAccordionlist extends React.Component {
     const favsource=this.favsource;
     const IsFavorite=1;
     const componentData=this.screenName === "RecentOrders" ? this.componentData.RecentOrders: this.componentData.Modifiers;
-    
-    
+
+
     return (
       componentData.map((order, index) => (
-      <Accordion size="md" vriant="filled" type="single" >
-      <AccordionItem value="a">
-        <AccordionHeader>
-          <AccordionTrigger>
-            {({ isExpanded }) => {
-              return (
-                <>
-                  {this.screenName === "RecentOrders" ? (
-                   
-                      <Box key={index} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
-                        <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
-                        <AccordionTitleText>Ordered Date: {order.OrderDate}</AccordionTitleText>
-                      </Box>
-                   
-                    ) : (
-                      <Box style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-                          <AccordionTitleText style={{ display: "flex" }}>{order.MainModifier} </AccordionTitleText>
-                        {order.IsRequried? <AccordionTitleText style={{ display: "flex" }}>(Required)</AccordionTitleText>: null  }
-                        {order.IsMaxAllowedOne? <AccordionTitleText style={{ display: "flex" }}>(Max allowed 1)</AccordionTitleText>: null  }
-                      </Box>
-                  )}
-                  {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} className="ml-3" style={{width:15,height:15}} />
-                  ) : (
-                    <AccordionIcon as={ChevronDownIcon} className="ml-3" style={{width:15,height:15}} />
-                  )}
-                </>
-              )
+        <Accordion size="md" vriant="filled" type="single" style={{ paddingTop: 6, backgroundColor: "white" }}>
+          <AccordionItem
+            value="a"
+            style={{
+              borderWidth: 0.3,
+              borderRadius: 5,
+              borderColor: "#ccc",
+              backgroundColor: "white",
             }}
-          </AccordionTrigger>
-        </AccordionHeader>
-        <AccordionContent>
-          {this.screenName == "RecentOrders" ?(
-            order.Items.map((item, index) => (
-        <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Box>
-                <AccordionContentText> {item.ItemName} </AccordionContentText>
-                <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
-            </Box>
-            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", }}>
-                <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={{  marginRight: 10 }} />
-                <Button style={{ width: 30 }} />
-            </Box>
-        </Box>
-            ))
-          ):
-         (
-          order.ModifierItems.map((item, index) => ( 
-            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center" }}>
-                <Checkbox >
-                  <CheckboxIndicator>
-                    <CheckboxIcon as={CheckIcon} style={{color:"white"}}/>
-                  </CheckboxIndicator>
-                  <CheckboxLabel>{item.ItemName}</CheckboxLabel>
-                </Checkbox>
-                <AccordionContentText style={{marginLeft:"auto"}}>{`$${item.Price}`}</AccordionContentText>
-              </Box>
-          ))
-         )
-  }
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
-     ))
+          >
+
+            <AccordionHeader style={{ backgroundColor: "#F3F3F3", borderRadius: 5, padding: 0, height: 30, justifyContent: 'center' }} >
+              <AccordionTrigger >
+                {({ isExpanded }) => {
+                  return (
+                    <>
+                      {this.screenName === "RecentOrders" ? (
+
+                        <Box key={index} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+                          <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
+                          <AccordionTitleText>Ordered Date: {order.OrderDate}</AccordionTitleText>
+                        </Box>
+
+                      ) : (
+                        <Box
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: 'flex-start'
+                          }}
+                        >
+                          <AccordionTitleText style={{ fontWeight: "bold", color: "#4B5154", fontSize: 14 }}>
+                            {order.MainModifier} {order.IsRequried === 1 && (
+                              <AccordionTitleText style={{ color: "red", }}>
+                                (Required)
+                              </AccordionTitleText>
+                            )} {order.IsMaxAllowedOne === 1 && (
+                              <AccordionTitleText style={{ color: "#3B87C1", fontSize: 12 }}>
+                                (Max allowed 1)
+                              </AccordionTitleText>
+                            )}
+                          </AccordionTitleText>
+
+
+                          {isExpanded ? (
+                            <AccordionIcon
+                              as={ChevronDownIcon}
+                              className="ml-3"
+                              style={{ width: 20, height: 20 }}
+                            />
+                          ) : (
+
+                            <AccordionIcon
+                              as={ChevronUpIcon}
+                              className="ml-3"
+                              style={{ width: 20, height: 20 }}
+                            />
+                          )}
+                        </Box>
+                      )}
+
+                    </>
+                  )
+                }}
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent>
+              {this.screenName == "RecentOrders" ? (
+                order.Items.map((item, index) => (
+                  <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <Box>
+                      <AccordionContentText> {item.ItemName} </AccordionContentText>
+                      <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
+                    </Box>
+                    <Box style={{ display: "flex", flexDirection: "row", alignItems: "center", marginLeft: "auto", }}>
+                      <Image alt="image" source={item.IsFavorite ? favsource ? { uri: favsource } : require("@/assets/images/icons/Fav.png") : Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={{ marginRight: 10 }} />
+                      <Button style={{ width: 30 }} />
+                    </Box>
+                  </Box>
+                ))
+              ) :
+                (
+                  order.ModifierItems.map((item, index) => (
+                    <Box style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 10 }}>
+                      <Checkbox onChange={() => handleCheckboxChange()}>
+                        <CheckboxIndicator
+                          style={styles.CheckboxIndicator}
+                        >
+                          <CheckboxIcon as={CheckIcon} style={{ color: "#707070", width: 17, height: 17 }} />
+                        </CheckboxIndicator>
+                        <CheckboxLabel style={{ color: "#4B5154", fontSize: 14, fontStyle: 'italic', fontWeight: '500' }}>
+                          {item.ItemName}
+                        </CheckboxLabel>
+                      </Checkbox>
+                      <AccordionContentText style={{ marginLeft: "auto", color: "#4B5154", fontSize: 14, fontWeight: '500' }}>
+                        {`$${item.Price}`}
+                      </AccordionContentText>
+                    </Box>
+                  ))
+                )
+              }
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      ))
     );
   }
 }
@@ -125,7 +167,7 @@ class CbImage extends React.Component {
     // this.id=props.id;
     this.source = props.source || "";
     this.imageJsx=props.imageJsx;
-    
+
   }
 
   render() {
@@ -133,17 +175,17 @@ class CbImage extends React.Component {
     //const source = inputArray?.source  || this.source;'
     const jsx = this.imageJsx;
     const source=this.source;
-   
+
     if (source) {
-    
+
       if (source.endsWith('.svg')) {
         return <SvgUri source={{ uri: source }}  />;
       } else {
-          
+
         return <Image alt='image' source={{ uri: source }}  />;
       }
-    } else {      
-        return jsx;
+    } else {
+      return jsx;
     }
   }
 }
@@ -154,12 +196,12 @@ class CbBackButton extends React.Component {
     this.source = props.source;
   }
   render() {
-       return (
+    return (
       <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}} style={styles.backArrowHeader}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
         }
-        </TouchableOpacity>
+      </TouchableOpacity>
     );
   }
 }
@@ -170,13 +212,13 @@ class CbHomeButton extends React.Component {
     this.source = props.source;
   }
   render() {
-       return (
+    return (
       <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
         }
-        </TouchableOpacity>
-          
+      </TouchableOpacity>
+
     );
   }
 }
@@ -190,22 +232,22 @@ class CbFloatingButton extends React.Component {
     return (
       <FormContext.Consumer>
       {({cartData}) => {
-        const buttonArray = global.controlsConfigJson.find(
-          (item) => item.id === this.id
-        );
-        const variant = buttonArray?.variant || this.variant;
-        const buttonText = buttonArray?.text || this.buttonText;
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
 
-        return (
-          <View style={styles.floatingContainer}>
-            <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.props, "MyCart", false)}>
-              <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
+          return (
+            <View style={styles.floatingContainer}>
+              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.props, "MyCart", false)}>
+                <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
               <Text style={styles.cartCountTxt}>{cartData?.length? cartData?.length:0}</Text>
-            </TouchableOpacity>
-          </View>
-        );
-      }}
-    </FormContext.Consumer>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -232,11 +274,11 @@ class CbAccordion extends React.Component {
     const IsAvailable = mealItemDetails.IsAvailable;
     const cartItem = cartData?.find((item) => item.Item_Id === mealItemDetails.Item_Id);
     const quantity = cartItem ? cartItem.quantity : 0;
-  
+
     if (quantity === 0) {
       return (
         <TouchableOpacity
-          style={[styles.addItemToCartBtn, 
+          style={[styles.addItemToCartBtn,
             { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
             {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
             {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
@@ -259,9 +301,9 @@ class CbAccordion extends React.Component {
           >
             <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={18} />
           </TouchableOpacity>
-  
+
           <Text style={styles.quantityTxt}>{quantity}</Text>
-  
+
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={() => updateCartItemQuantity(mealItemDetails, quantity + 1)}
@@ -272,7 +314,7 @@ class CbAccordion extends React.Component {
       );
     }
   };
-  
+
   handleReadMoreToggle = (id) => {
     this.setState((prevState) => {
       const isExpanded = prevState.expandedIds.includes(id);
@@ -305,12 +347,20 @@ class CbAccordion extends React.Component {
       }
       return acc;
     }, {});
-    
+
     const { itemTitle, itemPrice, itemDescription, itemCategoryLabel } = configItems;
-    
 
     return (
-      <ScrollView
+      <FormContext.Consumer>
+        {({itemDataVisible,closePreviewModal}) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
+
+          return (
+                 <ScrollView
         showsVerticalScrollIndicator={true}
         showsHorizontalScrollIndicator={true}
         contentContainerStyle={[styles.mainContainerList,Platform.OS==="ios" && {paddingBottom: "30%" }]}
@@ -374,8 +424,8 @@ class CbAccordion extends React.Component {
                               <AccordionContentText
                                 numberOfLines={isExpanded ? undefined : 2}
                                 style={[
-                                  itemTitle?.styles ? itemTitle?.styles : 
-                                  styles.mealTypeTitle,
+                                  itemTitle?.styles ? itemTitle?.styles :
+                                    styles.mealTypeTitle,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
                                   ),
@@ -388,7 +438,7 @@ class CbAccordion extends React.Component {
                                 numberOfLines={isExpanded ? undefined : 2}
                                 style={[
                                   itemPrice?.styles? itemPrice?.styles:
-                                  styles.priceTxt,
+                                    styles.priceTxt,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
                                   ),
@@ -400,7 +450,7 @@ class CbAccordion extends React.Component {
                                 numberOfLines={isExpanded ? undefined : 1}
                                 style={[
                                   itemDescription?.styles?itemDescription?.styles:
-                                  styles.descriptionTxt,
+                                    styles.descriptionTxt,
                                   this.showActiveAvailableColor(
                                     box.IsAvailable
                                   ),
@@ -423,15 +473,32 @@ class CbAccordion extends React.Component {
 
                             {box.Image && (
                               <Box style={styles.imageContainer}>
-                                <Image
-                                  source={{ uri: box.Image }}
-                                  style={[
-                                    styles.mealTypeImg,
-                                    box.IsAvailable === 0 && {
-                                      filter: "grayscale(100%)",
-                                    },
-                                  ]}
-                                />
+                                <TouchableOpacity  
+                                 onPress={closePreviewModal}
+                                  style={{
+                                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                                  }}
+                                  disabled={box.IsAvailable === 0}
+                                  >
+                                  <Image
+                                    source={{ uri: box.Image }}
+                                    style={[
+                                      styles.mealTypeImg,
+                                      box.IsAvailable === 0 && {
+                                        filter: "grayscale(100%)",
+                                      },
+                                    ]}
+                                  />
+                                </TouchableOpacity>
+                                <Modal
+                                  visible={itemDataVisible}
+                                  transparent
+                                  animationType="fade"
+                                  onRequestClose={closePreviewModal}
+                                  >
+                                  <ItemData />
+
+                                </Modal>
                                 {this.renderAddToCartBtn(box)}
                               </Box>
                             )}
@@ -445,6 +512,10 @@ class CbAccordion extends React.Component {
             ))}
         </Accordion>
       </ScrollView>
+
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -513,11 +584,11 @@ class cbSearchbox extends React.Component {
             </Input>
             {searchValue && (
             <TouchableOpacity  onPress={() =>handleClearClick(this.setState.bind(this),this.state.searchValue,this.props.onSearchActivate )}  style={{ marginLeft: 5 }} > 
-              {
+                {
                 Closesource? <Image source={{ uri: Closesource}}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
-              }
-            </TouchableOpacity>
-             )}
+                }
+              </TouchableOpacity>
+            )}
           </Box>
         ) : (
           <TouchableOpacity
@@ -525,9 +596,9 @@ class cbSearchbox extends React.Component {
               handleSearchClick(this.setState.bind(this), this.props.onSearchActivate)
             }
           >
-        {
+            {
           Searchsource ? <Image source={{ uri: Searchsource}}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
-        }
+            }
           </TouchableOpacity>
         )}
       </Box>
@@ -576,14 +647,14 @@ class cbCheckBox extends React.Component {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     const checkBoxLabelprop = inputArray?.labeltext  || this.checkBoxLabel;
     const styles=this.customStyles;
-    
-    return (  
+
+    return (
       <Checkbox size={this.size} isInvalid={this.isInvalid} isDisabled={this.isDisabled}>
-      <CheckboxIndicator >
-        <CheckboxIcon as={CheckIcon} />
-      </CheckboxIndicator>
-      <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
-    </Checkbox>    
+        <CheckboxIndicator >
+          <CheckboxIcon as={CheckIcon} />
+        </CheckboxIndicator>
+        <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
+      </Checkbox>
     );
   }
 }
@@ -594,12 +665,12 @@ class cbImageBackground extends React.Component {
   constructor(props) {
     super();
     this.id=props.id;
-    this.source = props.source || null; 
+    this.source = props.source || null;
     this.styles= props.styles || null;
-   }
+  }
 
   render() {
-    const { children } = this.props; 
+    const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     const sourceprop = inputArray?.source  || this.source;
     const styleprop = inputArray?.styles ||  this.styles;
@@ -613,15 +684,15 @@ class cbImageBackground extends React.Component {
 }
 
 class cbRadioButton extends React.Component {
-  
-    constructor(props) {
-      super(props);
+
+  constructor(props) {
+    super(props);
       this.id=props.id;
-      this.alignment = props.alignment || 'vertical';
+    this.alignment = props.alignment || 'vertical';
       this.Label= props.Label || '';
       this.options= Array.isArray(props.options) ? props.options : [];
-    }
-   
+  }
+
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
@@ -630,27 +701,27 @@ class cbRadioButton extends React.Component {
     const alignmentprop= inputArray?.alignment || this.alignment;
     const Stack = alignmentprop === 'vertical' ? VStack : HStack;
     return (
-      
+
       <FormControl>
       <VStack  space="md">
-        <FormControlLabel>
-        <FormControlLabelText>{radiolabelprop}</FormControlLabelText>
-      </FormControlLabel>
-        <RadioGroup>
-          <Stack space="sm">
-          {selectItems.map((item, index) => (
-            <Radio key={index} value={item.value} size="md" >
-            <RadioIndicator>
-              <RadioIcon as={CircleIcon} />
-            </RadioIndicator>
-            <RadioLabel>{item.label}</RadioLabel>
-          </Radio>
-            ))}
-          </Stack>
-        </RadioGroup>
-      </VStack >
-    </FormControl>
-  
+          <FormControlLabel>
+            <FormControlLabelText>{radiolabelprop}</FormControlLabelText>
+          </FormControlLabel>
+          <RadioGroup>
+            <Stack space="sm">
+              {selectItems.map((item, index) => (
+                <Radio key={index} value={item.value} size="md" >
+                  <RadioIndicator>
+                    <RadioIcon as={CircleIcon} />
+                  </RadioIndicator>
+                  <RadioLabel>{item.label}</RadioLabel>
+                </Radio>
+              ))}
+            </Stack>
+          </RadioGroup>
+        </VStack >
+      </FormControl>
+
     );
   }
 }
@@ -673,36 +744,36 @@ class cbSelect extends React.Component {
     const selectLabelprop = inputArray?.labelText  || this.selectLabel;
     const placeholderprop = inputArray?.placeholder || this.placeholder;
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
-    
-    return (      
+
+    return (
       <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid}>
-      <FormControlLabel>
-        <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
-      </FormControlLabel>
-      <Select>
-        <SelectTrigger>
-          <SelectInput placeholder={placeholderprop} />
+        <FormControlLabel>
+          <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
+        </FormControlLabel>
+        <Select>
+          <SelectTrigger>
+            <SelectInput placeholder={placeholderprop} />
           <SelectIcon  as={ChevronDownIcon} width={16} height={16} />
-        </SelectTrigger>
-        <SelectPortal>
-          <SelectBackdrop />
+          </SelectTrigger>
+          <SelectPortal>
+            <SelectBackdrop />
             <SelectContent>
-            {selectItems.map((item, index) => (
+              {selectItems.map((item, index) => (
             <SelectItem key={index} label={item.label} value={item.value}/>
-            ))}
+              ))}
             </SelectContent>
-        </SelectPortal>
-      </Select>
-      <FormControlError>
-        <FormControlErrorText></FormControlErrorText>
-      </FormControlError>
-    </FormControl>
+          </SelectPortal>
+        </Select>
+        <FormControlError>
+          <FormControlErrorText></FormControlErrorText>
+        </FormControlError>
+      </FormControl>
     );
   }
 }
 
 class cbInput extends React.Component {
-  
+
   constructor(props) {
     super(props);
     this.formId=props.formId;
@@ -717,6 +788,7 @@ class cbInput extends React.Component {
     this.isRequired=props.isRequired || false;
     this.isInvalid=props.isInvalid || false;
     this.setFormFieldData=props.setFormFieldData;
+    this.style = props.style
   }
 
   render() {
@@ -730,45 +802,45 @@ class cbInput extends React.Component {
     const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
     const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
     //const {getFormFieldData}= useFormContext();
-  
-   //const fieldData =this.getFormFieldData(this.formId,this.id); 
-    
+
+    //const fieldData =this.getFormFieldData(this.formId,this.id); 
+
     return (
-      <FormControl  isDisabled={isDisabledprop}   isReadOnly={isReadOnlyprop}   isRequired={isRequiredprop}   >
-      {labelTextprop && (
-        <FormControlLabel>
-          <FormControlLabelText>{labelTextprop}</FormControlLabelText>
-        </FormControlLabel>
-      )}
-      <Input variant={variantprop}>
-           <InputField 
-          id={this.id}
-          placeholder={placeholderprop} 
-          type={typeprop} 
-          //value={fieldData.value} 
+      <FormControl isDisabled={isDisabledprop} isReadOnly={isReadOnlyprop} isRequired={isRequiredprop}   >
+        {labelTextprop && (
+          <FormControlLabel>
+            <FormControlLabelText>{labelTextprop}</FormControlLabelText>
+          </FormControlLabel>
+        )}
+        <Input variant={variantprop} style={this.style}>
+          <InputField
+            id={this.id}
+            placeholder={placeholderprop}
+            type={typeprop}
+            //value={fieldData.value} 
           onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
-        />
-      </Input>
-      {isRequiredprop && errorMessageprop && (
-        <FormControlError>
-          <FormControlErrorText>
-            {errorMessageprop}
-          </FormControlErrorText>
-        </FormControlError>
-      )}
-    </FormControl>
+          />
+        </Input>
+        {isRequiredprop && errorMessageprop && (
+          <FormControlError>
+            <FormControlErrorText>
+              {errorMessageprop}
+            </FormControlErrorText>
+          </FormControlError>
+        )}
+      </FormControl>
     );
   }
 }
 function cbForm({ formId, setFormFieldData, children }) {
-  
+
   const childrenWithProps = React.Children.map(children, (child) =>
-    React.isValidElement(child) 
-      ? React.cloneElement(child, { formId, setFormFieldData }) 
+    React.isValidElement(child)
+      ? React.cloneElement(child, { formId, setFormFieldData })
       : child
   );
 
-  
+
   return <Box>{childrenWithProps}</Box>;
 }
 
@@ -778,15 +850,15 @@ class cbVStack extends React.Component {
     super();
     this.id=props.id;
     this.children=this.props;
-    this.space = props.space || 'md'; 
-     }
+    this.space = props.space || 'md';
+  }
 
   render() {
-   
-     const { children } = this.props; 
+
+    const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     const spaceprop = inputArray?.space  || this.space;
-   
+
     return (
       <VStack space={spaceprop}>
         {children}
@@ -800,7 +872,7 @@ class CbFlatList extends React.Component{
     super();
     this.id=props.id;
     this.children=props.children;
-    this.space = props.space || 'md'; 
+    this.space = props.space || 'md';
     this.flatlistData = props.flatlistData || []
     this.numColumns = props.numColumns || 0
     this.initialNumToRender = props.initialNumToRender || 10
@@ -815,15 +887,15 @@ class CbFlatList extends React.Component{
     this.customStyles = props.customStyles || {}
     this.extraData = props.extraData || []
   }
-     renderEmptyList = () => {
+  renderEmptyList = () => {
       return(
-        <VStack>
-          <Text>{this.emptyListText}</Text>
-        </VStack>
-      )
-     }
+      <VStack>
+        <Text>{this.emptyListText}</Text>
+      </VStack>
+    )
+  }
   render(){
-    const { children } = this.props; 
+    const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     const spaceprop = inputArray?.space  || this.space;
     const ITEM_HEIGHT = 100
@@ -867,9 +939,9 @@ class cbCategoryList extends React.Component {
   renderMenuCategoryList = (categoryItem, setMealCategory) => {
     if (!categoryItem.IsSelect) {
       categoryItem.IsSelect = 1;
-      setMealCategory(categoryItem.Category_Id); 
+      setMealCategory(categoryItem.Category_Id);
     }
-  
+
     return (
       <Box>
         <TouchableOpacity
@@ -889,21 +961,21 @@ class cbCategoryList extends React.Component {
     let item = pureItems
     return (
      <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-       <TouchableOpacity
-         activeOpacity={0.6}
+        <TouchableOpacity
+          activeOpacity={0.6}
          style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
-         onPress={() => setMealType(item.MealPeriod_Id)}
-       >
+          onPress={() => setMealType(item.MealPeriod_Id)}
+        >
          <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
-           {item.MealPeriod_Name?.toUpperCase()}
-         </Text>
+            {item.MealPeriod_Name?.toUpperCase()}
+          </Text>
          <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
-           {item.Time}
-         </Text>
-         </TouchableOpacity>
-     </Box>
-   );
- }
+            {item.Time}
+          </Text>
+        </TouchableOpacity>
+      </Box>
+    );
+  }
 
   render() {
     return (

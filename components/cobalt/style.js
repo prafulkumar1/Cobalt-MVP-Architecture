@@ -178,5 +178,15 @@ export const styles = StyleSheet.create({
   },
   cartIcon:{ width: 40, height: 40 },
   backArrowHeader:{marginRight:20},
-  cartIcon:{width:35,height:35,resizeMode:"contain",margin:5}
+  cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
+  CheckboxIndicator:{
+    width: 20,
+    height: 20,
+    borderWidth: 0.75,
+    borderColor: "#4B5154",
+    borderRadius: 4,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff"
+  }
 })
