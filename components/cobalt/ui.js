@@ -528,9 +528,10 @@ class CbAccordion extends React.Component {
                                 </TouchableOpacity>
                                 <Modal
                                   visible={itemDataVisible}
-                                  transparent
+                                  transparent={false}
                                   animationType="fade"
                                   onRequestClose={closePreviewModal}
+                                  style={{flex:1}}
                                   >
                                   <ItemData />
 
