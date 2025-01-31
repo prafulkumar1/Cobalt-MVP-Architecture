@@ -11,12 +11,13 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
 import {  House, } from 'lucide-react-native';
-import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
+import {  CheckIcon,ChevronLeftIcon,ChevronRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
+import { Divider } from '@/components/ui/divider';
 import {useFormContext} from './event';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Text, View} from 'react-native';
@@ -25,7 +26,7 @@ import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, Accordio
 import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
-import { navigateToScreen } from '@/source/constants/Navigations'
+import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { height } from '@/source/constants/Matrices';
@@ -50,18 +51,18 @@ class CbAccordionlist extends React.Component {
     
     return (
       componentData.map((order, index) => (
-      <Accordion size="md" vriant="filled" type="single" >
+      <Accordion size="md" vriant="filled" type="single" style={styles.roAccordion} >
       <AccordionItem value="a">
-        <AccordionHeader>
+        <AccordionHeader style={styles.roAccordionHeader}>
           <AccordionTrigger>
             {({ isExpanded }) => {
               return (
                 <>
                   {this.screenName === "RecentOrders" ? (
                    
-                      <Box key={index} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+                      <Box key={index} style={styles.roAccordionHeading}>
                         <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
-                        <AccordionTitleText>Ordered Date: {order.OrderDate}</AccordionTitleText>
+                        <AccordionTitleText style={styles.roAccordionTitleText}>Ordered Date: {order.OrderDate}</AccordionTitleText>
                       </Box>
                    
                     ) : (
@@ -72,9 +73,10 @@ class CbAccordionlist extends React.Component {
                       </Box>
                   )}
                   {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} className="ml-3" style={{width:15,height:15}} />
+                     <AccordionIcon as={ChevronDownIcon} className="ml-3" style={styles.roAccordionIcon} />
+                
                   ) : (
-                    <AccordionIcon as={ChevronDownIcon} className="ml-3" style={{width:15,height:15}} />
+                     <AccordionIcon as={ChevronRightIcon} className="ml-3" style={styles.roAccordionIcon} />
                   )}
                 </>
               )
@@ -84,16 +86,19 @@ class CbAccordionlist extends React.Component {
         <AccordionContent>
           {this.screenName == "RecentOrders" ?(
             order.Items.map((item, index) => (
-        <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Box>
-                <AccordionContentText> {item.ItemName} </AccordionContentText>
-                <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
-            </Box>
-            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", }}>
-                <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={{  marginRight: 10 }} />
-                <Button style={{ width: 30 }} />
-            </Box>
-        </Box>
+          <Box>
+                <Box style={styles.roAccordionContentouterbox}>
+                    <Box style={styles.roAccordionContentItembox}>
+                        <AccordionContentText style={styles.roItemName}> {item.ItemName} </AccordionContentText>
+                        <AccordionContentText style={styles.roItemprice}>{`$${item.Price}`}</AccordionContentText>
+                    </Box>
+                    <Box style={styles.roImagescetion}>
+                      <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={styles.roItemImage} />
+                      <Button style={styles.roItemButton} />
+                    </Box>           
+                </Box>
+                <Divider/>
+          </Box>
             ))
           ):
          (
@@ -101,7 +106,7 @@ class CbAccordionlist extends React.Component {
             <Box style={{ display: "flex",flexDirection: "row",alignItems: "center" }}>
                 <Checkbox >
                   <CheckboxIndicator>
-                    <CheckboxIcon as={CheckIcon} style={{color:"white"}}/>
+                    <CheckboxIcon as={CheckIcon} style={styles.CheckIcon}/>
                   </CheckboxIndicator>
                   <CheckboxLabel>{item.ItemName}</CheckboxLabel>
                 </Checkbox>
@@ -110,6 +115,9 @@ class CbAccordionlist extends React.Component {
           ))
          )
   }
+  {this.screenName == "RecentOrders" && order.IsReorder ?<Button variant="outline" style={styles.roReoderButton}>
+          <ButtonText style={styles.roReordertext} numberOfLines={1}  ellipsizeMode="tail">Re Order</ButtonText>
+      </Button>:"" }
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -539,11 +547,12 @@ class cbSearchbox extends React.Component {
 
 class cbButton extends React.Component {
   constructor(props) {
-    super();
+    super(props);
     this.id = props.id;
     this.buttonText = props.text || "Button";
     this.variant = props.variant || "solid";
     this.onPress = props.onPress;
+    this.customStyles=props.customStyles || '';
   }
 
   render() {
@@ -552,10 +561,13 @@ class cbButton extends React.Component {
     const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
     const variant = buttonArray?.variant || this.variant;
     const buttonText = buttonArray?.text || this.buttonText ;
+    const buttonStyle=this.customStyles.buttonStyle;
+    const ButtonTextStyle=this.customStyles.buttontextStyle;
+    
 
     return (
-      <Button variant={variant} onPress={this.onPress}   style={{ minWidth: 118, maxWidth: "100%", borderRadius: 11,height: 22, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
-          <ButtonText style={{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1}} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
+      <Button variant={variant} onPress={this.onPress} style={buttonStyle}  >
+          <ButtonText style={ButtonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
   }
@@ -580,7 +592,7 @@ class cbCheckBox extends React.Component {
     return (  
       <Checkbox size={this.size} isInvalid={this.isInvalid} isDisabled={this.isDisabled}>
       <CheckboxIndicator >
-        <CheckboxIcon as={CheckIcon} />
+        <CheckboxIcon as={CheckIcon} style={styles.CheckIcon}/>
       </CheckboxIndicator>
       <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
     </Checkbox>    
