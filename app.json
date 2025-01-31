@@ -23,6 +23,59 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "fonts": [
+      {
+        "name": "SourceSansPro_Black",
+        "file": "./assets/fonts/SourceSansPro-Black.otf"
+      },
+      {
+        "name": "SourceSansPro_BlackItalic",
+        "file": "./assets/fonts/SourceSansPro-BlackIt.otf"
+      },
+      {
+        "name": "SourceSansPro_Bold",
+        "file": "./assets/fonts/SourceSansPro-Bold.otf"
+      },
+      {
+        "name": "SourceSansPro_BoldItalic",
+        "file": "./assets/fonts/SourceSansPro-BoldIt.otf"
+      },
+      {
+        "name": "SourceSansPro_ExtraLight",
+        "file": "./assets/fonts/SourceSansPro-ExtraLight.otf"
+      },
+      {
+        "name": "SourceSansPro_ExtraLightItalic",
+        "file": "./assets/fonts/SourceSansPro-ExtraLightIt.otf"
+      },
+      {
+        "name": "SourceSansPro_Italic",
+        "file": "./assets/fonts/SourceSansPro-It.otf"
+      },
+      {
+        "name": "SourceSansPro_Light",
+        "file": "./assets/fonts/SourceSansPro-Light.otf"
+      },
+      {
+        "name": "SourceSansPro_LightItalic",
+        "file": "./assets/fonts/SourceSansPro-LightIt.otf"
+      },
+      {
+        "name": "SourceSansPro_Regular",
+        "file": "./assets/fonts/SourceSansPro-Regular.otf"
+      },
+      {
+        "name": "SourceSansPro_SemiBold",
+        "file": "./assets/fonts/SourceSansPro-Semibold.otf"
+      },
+      {
+        "name": "SourceSansPro_SemiBoldItalic",
+        "file": "./assets/fonts/SourceSansPro-SemiboldIt.otf"
+      }
+    ]
   }
 }
