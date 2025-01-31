@@ -28,6 +28,96 @@ import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations'
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
+import { height } from '@/source/constants/Matrices';
+
+class CbAccordionlist extends React.Component {
+  constructor(props) {
+    super(props);
+    // this.id=props.id;
+    this.screenName=props.screenName;
+     this.favsource = props.favsource || "";
+     this.Notfavsource = props.Notfavsource || "";
+     this.componentData= props.componentData || [];
+     
+  }
+
+  render() {
+    const Notfavsource=this.Notfavsource;
+    const favsource=this.favsource;
+    const IsFavorite=1;
+    const componentData=this.screenName === "RecentOrders" ? this.componentData.RecentOrders: this.componentData.Modifiers;
+    
+    
+    return (
+      componentData.map((order, index) => (
+      <Accordion size="md" vriant="filled" type="single" >
+      <AccordionItem value="a">
+        <AccordionHeader>
+          <AccordionTrigger>
+            {({ isExpanded }) => {
+              return (
+                <>
+                  {this.screenName === "RecentOrders" ? (
+                   
+                      <Box key={index} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+                        <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
+                        <AccordionTitleText>Ordered Date: {order.OrderDate}</AccordionTitleText>
+                      </Box>
+                   
+                    ) : (
+                      <Box style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
+                          <AccordionTitleText style={{ display: "flex" }}>{order.MainModifier} </AccordionTitleText>
+                        {order.IsRequried? <AccordionTitleText style={{ display: "flex" }}>(Required)</AccordionTitleText>: null  }
+                        {order.IsMaxAllowedOne? <AccordionTitleText style={{ display: "flex" }}>(Max allowed 1)</AccordionTitleText>: null  }
+                      </Box>
+                  )}
+                  {isExpanded ? (
+                    <AccordionIcon as={ChevronUpIcon} className="ml-3" style={{width:15,height:15}} />
+                  ) : (
+                    <AccordionIcon as={ChevronDownIcon} className="ml-3" style={{width:15,height:15}} />
+                  )}
+                </>
+              )
+            }}
+          </AccordionTrigger>
+        </AccordionHeader>
+        <AccordionContent>
+          {this.screenName == "RecentOrders" ?(
+            order.Items.map((item, index) => (
+        <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+            <Box>
+                <AccordionContentText> {item.ItemName} </AccordionContentText>
+                <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
+            </Box>
+            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", }}>
+                <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={{  marginRight: 10 }} />
+                <Button style={{ width: 30 }} />
+            </Box>
+        </Box>
+            ))
+          ):
+         (
+          order.ModifierItems.map((item, index) => ( 
+            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center" }}>
+                <Checkbox >
+                  <CheckboxIndicator>
+                    <CheckboxIcon as={CheckIcon} style={{color:"white"}}/>
+                  </CheckboxIndicator>
+                  <CheckboxLabel>{item.ItemName}</CheckboxLabel>
+                </Checkbox>
+                <AccordionContentText style={{marginLeft:"auto"}}>{`$${item.Price}`}</AccordionContentText>
+              </Box>
+          ))
+         )
+  }
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+     ))
+    );
+  }
+}
+
 
 class CbImage extends React.Component {
   constructor(props) {
@@ -464,8 +554,8 @@ class cbButton extends React.Component {
     const buttonText = buttonArray?.text || this.buttonText ;
 
     return (
-      <Button variant={variant} onPress={this.onPress}>
-        <ButtonText>{buttonText}</ButtonText>
+      <Button variant={variant} onPress={this.onPress}   style={{ minWidth: 118, maxWidth: "100%", borderRadius: 11,height: 22, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
+          <ButtonText style={{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1}} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
   }
@@ -490,7 +580,7 @@ class cbCheckBox extends React.Component {
     return (  
       <Checkbox size={this.size} isInvalid={this.isInvalid} isDisabled={this.isDisabled}>
       <CheckboxIndicator >
-        <CheckboxIcon as={CheckIcon} style={styles.CheckIcon}/>
+        <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
       <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
     </Checkbox>    
@@ -864,8 +954,9 @@ CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
 cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
-CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList"
+CbFloatingButton.displayName='CbFloatingButton';cbCategoryList.displayName = "cbCategoryList";
+CbAccordionlist.displayName='CbAccordionlist';
 
- export { CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
+ export { CbAccordionlist, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage };
 
 

@@ -26,6 +26,6 @@ export { Accordion,
  export { Icon,  } from '@/components/ui/icon';
 export { Box } from '@/components/ui/box';
 export { Image } from '@/components/ui/image';
-export {CbHomeButton, CbBackButton, CbImage, cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton } from '@/components/cobalt/ui'
+export {CbAccordionlist, CbHomeButton, CbBackButton, CbImage, cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton } from '@/components/cobalt/ui'
 
 

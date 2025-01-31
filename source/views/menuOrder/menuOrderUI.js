@@ -164,7 +164,7 @@ export default function MenuOrderScreen(props) {
           <UI.TouchableOpacity style={styles.recentOrderContainer}>
 
             <UI.Box style={styles.recentOrderBox}>
-            <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <UI.TouchableOpacity >
               <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/ROCart.png')} />} />
             </UI.TouchableOpacity>
             <UI.Text style={styles.recentOrderTxt}>
@@ -172,7 +172,7 @@ export default function MenuOrderScreen(props) {
             </UI.Text>
             </UI.Box>
 
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", false)}>
+            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", true)}>
               <UI.CbImage imageJsx={<Image alt='image' source={require('@/assets/images/icons/RONav.png')} />} />
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
