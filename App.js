@@ -51,7 +51,7 @@ export default function App() {
   if (!fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00BFF6" />
       </View>
     );
   }
@@ -70,13 +70,13 @@ export default function App() {
                 headerTitle: () => {
                   if (route.name === "MenuOrder") {
                     return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'MyCustomFont' }]}>
+                      <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
                         {route?.params?.profileCenterTile}
                       </Text>
                     );
                   } else {
                     return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'MyCustomFont' }]}>
+                      <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
                         {route.name}
                       </Text>
                     );
@@ -99,7 +99,7 @@ export default function App() {
                 headerTitleStyle: {
                   color: "#4B5154",
                   fontSize: 22,
-                  fontFamily: 'MyCustomFont', // Apply custom font to header titles
+                  fontFamily: 'SourceSansPro_SemiBold',
                 },
               })}
             >

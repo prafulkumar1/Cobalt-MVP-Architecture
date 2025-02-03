@@ -597,3 +597,52 @@ export const priceItems = [
   { label: "State Tax:", value: "$8.50" },
   { label: "Tip:", value: "$10.00" }
 ];
+
+export const cartConfigResponseData = { 
+  "ResponseCode": "Success", 
+  "ResponseMessage": "", 
+  "ShowPickupLocation": 1, 
+  "ShowPickupTime": 1, 
+  "ShowTip": 1, 
+  "Servicetax":"10 %", 
+  "Pickup_Locations": [ 
+    { 
+      "Pickup_LocationId": "sjcjdc1bjdbcj2324nn", 
+      "Pickup_LocationName": "East Gate" 
+    },
+    { 
+      "Pickup_LocationId": "sjcjdc1bjdbcj2324nn", 
+      "Pickup_LocationName": "South Gate" 
+    } 
+  ], 
+  "Pickup_Times": [ 
+    { 
+      "Time": "08:00 AM" 
+    }, 
+    { 
+      "Time": "08:30 AM" 
+    }, 
+    { 
+      "Time": "09:00 AM" 
+    }, 
+    { 
+      "Time": "09:30 AM" 
+    }, 
+    { 
+      "Time": "10:00 AM" 
+    }, 
+    { 
+      "Time": "10:30 AM" 
+    }, 
+    { 
+      "Time": "11:00 AM" 
+    } 
+  ], 
+
+  "Tip": [ 
+    { "tip": "10%" }, 
+    { "tip": "15%" }, 
+    { "tip": "20%" } 
+  ] 
+
+} 
