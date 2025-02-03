@@ -19,7 +19,24 @@ export default function MyCartScreen(props) {
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
  const [keyboardVisible, setKeyboardVisible] = useState(false);
   
-   const {isTimeModalSelected, changeTime,  cartConfigData,tipData, value, setValue ,swipeableRefs,closeAllSwipeables, handleDelete,handleSwipeOpen,addTip} = useMyCartLogic();
+   const {
+     isTimeModalSelected,
+     changeTime,
+     cartConfigData,
+     tipData,
+     value,
+     setValue,
+     swipeableRefs,
+     closeAllSwipeables,
+     handleDelete,
+     handleSwipeOpen,
+     addTip,
+     handleResetTip,
+     getCustomTip,
+     customTipValue,
+     handleSaveTip,
+     scrollViewRef
+   } = useMyCartLogic();
    const {cartData}= useFormContext();
 
 
@@ -108,7 +125,10 @@ export default function MyCartScreen(props) {
                 color:"#4D4F50",
                 fontFamily:"SourceSansPro_SemiBold"
               }}
-              onFocus={() => set}
+              onFocus={() => handleResetTip()}
+              onBlur={() => handleResetTip()}
+              onChangeText={(value) => getCustomTip(value)}
+              value={customTipValue}
             />
           </UI.Box>
        } 
@@ -145,7 +165,7 @@ export default function MyCartScreen(props) {
         <UI.Box style={styles.mainSubContainer}>
           <UI.TouchableOpacity style={styles.orderInstContainer}>
             <Image
-              alt="pras"
+              alt="notes"
               source={require("@/assets/images/icons/notes.png")}
               style={styles.notesIcon}
               resizeMode="contain"
@@ -172,7 +192,7 @@ export default function MyCartScreen(props) {
             <UI.Box style={styles.tipContainer}>
               <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
             </UI.Box>
-            <UI.ScrollView horizontal={true}>
+            <UI.ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
               {
                 tipData && tipData.map((item, index) => {
                   return renderAddTip(item, index)
@@ -183,26 +203,22 @@ export default function MyCartScreen(props) {
         }
 
         {keyboardVisible && (
-            <UI.Box
-              style={styles.bottomBtn}
-            >
-              <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle ={styles.btnTextStyle} onPress={() => Keyboard}/>
-              <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn,{backgroundColor: "#5773A2",}]} btnTextStyle ={[styles.btnTextStyle,{color:"#fff"}]} />
-            </UI.Box>
+             <UI.Box
+             style={styles.bottomBtn}
+           >
+             <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle ={styles.btnTextStyle} onPress={() => Keyboard.dismiss()}/>
+             <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn,{backgroundColor: "#5773A2",}]} btnTextStyle ={[styles.btnTextStyle,{color:"#fff"}]} onPress={() => handleSaveTip()}/>
+           </UI.Box>
           )}
 
         <UI.Box style={styles.pickUpContainer}>
           <UI.Box>
             <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
-            {/* <UI.TouchableOpacity style={styles.timeBtn}>
-              <UI.Text style={styles.timeTxt}>{formatTime(date)}</UI.Text>
-            </UI.TouchableOpacity> */}
-            <UI.cbSelect 
+            <UI.cbSelectTime 
               id={pageId} 
               selectItems = {departments} 
               Label={"7:45 Am"}
               style={styles.timeBtn}
-              // isTimeModalSelected={isTimeModalSelected} 
             />
           </UI.Box>
 
@@ -235,9 +251,11 @@ export default function MyCartScreen(props) {
     {label:'Pool', value:'pool'},
   ];
   return (
-    <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === "android"?"padding":undefined}>
+    <KeyboardAvoidingView style={{flex:1}} 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
-        <UI.ScrollView showsVerticalScrollIndicator={false}>
+        <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
           {cartData && cartData.length > 0 ? (
             cartData?.map((items) => {
               return renderCartItems(items);
@@ -423,7 +441,7 @@ const styles = UI.StyleSheet.create({
   },
   bottomBtn:{
     position: 'absolute',
-    bottom: responsiveHeight(0),
+    bottom:Platform.OS=="ios"?responsiveHeight(10):responsiveHeight(0),
     left: 0,
     right: 0,
     flexDirection: 'row',

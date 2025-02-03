@@ -3,9 +3,12 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import {  cartConfigResponseData } from '@/source/constants/commonData';
 import uuid from "react-native-uuid";
 import { useEffect, useRef, useState } from 'react';
+import { Alert } from 'react-native';
 const pageId='MyCart';
 export const useMyCartLogic = () => {
     const swipeableRefs = useRef({});
+    const customTip = useRef(null)
+    const scrollViewRef = useRef(null);
 
     const {deleteCartItem }= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
@@ -13,6 +16,7 @@ export const useMyCartLogic = () => {
     const [value,setValue]  =useState(0)
     const [openItemId, setOpenItemId] = useState(null);
     const [isTimeModalSelected,setIsTimeModalSelected] = useState(false)
+    const [customTipValue,setCustomTipValue] = useState("")
 
   useEffect(() => {
     getTipDetails()
@@ -60,6 +64,42 @@ export const useMyCartLogic = () => {
     setIsTimeModalSelected(true)
   }
 
+  const handleResetTip = () => {
+    const updatedTipDetails = tipData.map((item) => {
+      return{
+        ...item,
+        isSelected:0
+      }
+    })
+    setTipData(updatedTipDetails)
+  }
+
+  const getCustomTip = (value) =>{
+     const numericValue = value.replace(/[^0-9]/g, '');
+     setCustomTipValue(numericValue ? `$${numericValue}` : '');
+     customTip.current = numericValue ? `$${numericValue}` : ''
+  }
+
+  const handleSaveTip = () => {
+    if (customTip.current.length === 0) {
+      Alert.alert('Please select a custom tip');
+    } else {
+      const newTip = {
+        id: uuid.v4(),
+        tip: `${customTip.current}`,
+        isSelected: 0,
+      };
+
+      setTipData((prevData) => {
+        const updatedData = [...prevData, newTip];
+        setCustomTipValue("")
+        setTimeout(() => {
+          scrollViewRef.current?.scrollToEnd({ animated: true });
+        }, 100);
+        return updatedData;
+      });
+    }
+  };
   return {
     tipData,
     value,
@@ -73,6 +113,11 @@ export const useMyCartLogic = () => {
     addTip,
     cartConfigData,
     isTimeModalSelected,
-    changeTime
+    changeTime,
+    handleResetTip,
+    getCustomTip,
+    customTipValue,
+    handleSaveTip,
+    scrollViewRef
   };
 };
