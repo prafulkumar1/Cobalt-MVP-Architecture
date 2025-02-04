@@ -44,7 +44,7 @@ export const foodOrderData =
                   "Item_Id": "I402",
                   "Description": "Crispy fries topped with spicy chili and melted cheese.",
                   "Price": 18.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://www.shutterstock.com/image-photo/fried-salmon-steak-cooked-green-600nw-2489026949.jpg",
                   "IsAvailable": 1,
                   "isModifier": 0,
                   "IsDisable":0,
@@ -54,7 +54,7 @@ export const foodOrderData =
                   "Item_Id": "I405",
                   "Description": "Crispy fried wings tossed in buffalo sauce, served with ranch.",
                   "Price": 16.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://www.shutterstock.com/image-photo/grilled-salmon-vegetables-260nw-224518786.jpg",
                   "IsAvailable": 1,
                   "isModifier": 0,
                   "IsDisable":0,
@@ -64,7 +64,7 @@ export const foodOrderData =
                   "Item_Id": "I406",
                   "Description": "Breaded mozzarella sticks served with marinara dipping sauce.",
                   "Price": 12.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://www.shutterstock.com/image-photo/beautiful-food-image-on-table-260nw-2545025947.jpg",
                   "IsAvailable": 1,
                   "isModifier": 0,
                   "IsDisable":0,
@@ -80,7 +80,7 @@ export const foodOrderData =
                   "Item_Id": "I403",
                   "Description": "A refreshing salad of cucumbers, avocado, and a light vinaigrette.",
                   "Price": 14.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2o86IDNmk8t6E2yl-5LPK401pby8B2BX0Vg&s",
                   "IsAvailable": 1,
                   "isModifier": 0,
                   "IsDisable":0,
@@ -90,7 +90,7 @@ export const foodOrderData =
                   "Item_Id": "I404",
                   "Description": "Chilled shrimp served with tangy cocktail sauce.",
                   "Price": 20.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2o86IDNmk8t6E2yl-5LPK401pby8B2BX0Vg&s",
                   "isModifier": 0,
                   "IsDisable":0,
                 },
@@ -99,7 +99,7 @@ export const foodOrderData =
                   "Item_Id": "I407",
                   "Description": "Fresh tuna marinated with soy sauce, sesame oil, and served with crispy wontons.",
                   "Price": 24.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSr2OGUKUrsSRGyS5PTcSr1SwZOdze0JA0wFtFVenst8C85CUAUiC3cGTJJwkVHW4sjxXY&usqp=CAU",
                   "IsAvailable": 1,
                   "IsDisable":0,
                 },
@@ -108,7 +108,7 @@ export const foodOrderData =
                   "Item_Id": "I408",
                   "Description": "A refreshing mix of watermelon, feta cheese, mint, and a balsamic glaze.",
                   "Price": 16.00,
-                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
+                  "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTEdD1CqS1XYte2SUlSdgMwkSCOVtz1IlNJz0zMokcoH26QIKoJ90tcYvsOOkvG0gc0pUg&usqp=CAU",
                   "IsAvailable": 1,
                   "isModifier": 0,
                   "IsDisable":0,
@@ -319,7 +319,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
-            "Isnavigate": "0",
+            "Isnavigate": "1",
             "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
         },
         {
@@ -329,6 +329,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
         },
         {
@@ -338,6 +339,7 @@ export const ProfitCentersData = {
             "OpeningTime": "11:30 AM",
             "ClosingTime": "5:30 PM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJguz-Yat9Wr46Dnevi49thl1jlYCfsYXiUw&s"
         },
         {
@@ -347,6 +349,7 @@ export const ProfitCentersData = {
             "OpeningTime": "5:30 PM",
             "ClosingTime": "10:00 PM",
             "Status": "Closed",
+            "Isnavigate": "0",
             "ImageUrl": "https://thumbs.dreamstime.com/b/assorted-indian-food-different-bowls-dark-wooden-background-top-view-dishes-appetizers-cuisine-chicken-curry-rice-129630877.jpg"
         },
         {
@@ -356,6 +359,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://i.pinimg.com/736x/03/d9/d1/03d9d18c3531291c21d864bf8ebdd9fe.jpg"
         },
      
@@ -597,3 +601,52 @@ export const priceItems = [
   { label: "State Tax:", value: "$8.50" },
   { label: "Tip:", value: "$10.00" }
 ];
+
+export const cartConfigResponseData = { 
+  "ResponseCode": "Success", 
+  "ResponseMessage": "", 
+  "ShowPickupLocation": 1, 
+  "ShowPickupTime": 1, 
+  "ShowTip": 1, 
+  "Servicetax":"10 %", 
+  "Pickup_Locations": [ 
+    { 
+      "Pickup_LocationId": "sjcjdc1bjdbcj2324nn", 
+      "Pickup_LocationName": "East Gate" 
+    },
+    { 
+      "Pickup_LocationId": "sjcjdc1bjdbcj2324nn", 
+      "Pickup_LocationName": "South Gate" 
+    } 
+  ], 
+  "Pickup_Times": [ 
+    { 
+      "Time": "08:00 AM" 
+    }, 
+    { 
+      "Time": "08:30 AM" 
+    }, 
+    { 
+      "Time": "09:00 AM" 
+    }, 
+    { 
+      "Time": "09:30 AM" 
+    }, 
+    { 
+      "Time": "10:00 AM" 
+    }, 
+    { 
+      "Time": "10:30 AM" 
+    }, 
+    { 
+      "Time": "11:00 AM" 
+    } 
+  ], 
+
+  "Tip": [ 
+    { "tip": "10%" }, 
+    { "tip": "15%" }, 
+    { "tip": "20%" } 
+  ] 
+
+} 

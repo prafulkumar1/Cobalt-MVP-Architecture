@@ -14,7 +14,7 @@ export const UseFormContextProvider = ({children}) => {
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
     const [selectedModifiers, setSelectedModifiers] = useState({});
-const [itemDataVisible, setItemDataVisible] = useState(false);
+    const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
@@ -104,13 +104,12 @@ const [itemDataVisible, setItemDataVisible] = useState(false);
         setCartData((prevCartData) => {
           let updatedCartData = [...prevCartData];
           const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
-    
           if (itemIndex !== -1) {
             updatedCartData[itemIndex].quantity += 1;
+            updatedCartData[itemIndex].quantityIncPrice +=  data.Price
           } else {
-            updatedCartData.push({ ...data, quantity: 1 });
-          }
-    
+            updatedCartData.push({ ...data, quantity: 1,quantityIncPrice:data.Price });
+          }    
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
           return updatedCartData;
         });
@@ -126,10 +125,9 @@ const [itemDataVisible, setItemDataVisible] = useState(false);
             updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
           } else {
             updatedCartData = prevCartData.map((item) =>
-              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity } : item
+              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
             );
           }
-    
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
           return updatedCartData;
         });
