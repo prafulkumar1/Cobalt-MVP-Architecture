@@ -81,17 +81,21 @@ export default function App() {
                 headerTitle: "Order Again",
                }} 
             />
-             <Stack.Screen 
-              name="ItemData" 
-              component={ItemData} 
-              options={{ headerShown: true}} 
+            <Stack.Screen
+              name="ItemData"
+              component={ItemData}
+              options={{
+                headerShown: true,
+                title: "Back to Menu"
+              }}
               />
               <Stack.Screen
                 name="MyCart"
                 component={MyCartScreen}
                 options={{ headerShown: true, headerTitle: "My Cart" }}
               />
-            </Stack.Navigator>
+  
+          </Stack.Navigator>
             <StatusBar style="auto" />
           </NavigationContainer>
         </GestureHandlerRootView>

@@ -32,21 +32,20 @@ const ItemData = (props) => {
 
     return (
         <>
-            <UI.ScrollView style={{ flex: 1, marginBottom: 80, paddingBottom: 10 }}>
+            <UI.ScrollView style={{ flex: 1,  }}>
                 <UI.Box style={styles.mainContainer}>
-                    <UI.TouchableOpacity>
+                    <UI.TouchableOpacity onPress={() => navigateToScreen(props, "ItemData", true)}>
                         <UI.CbImage
-                            imageJsx={<Image
-                                alt='image'
-                                source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU" }}
-                                style={styles.itemImage}
-                            />}
+                            imageJsx={
+                                <Image
+                                    alt='image'
+                                    source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU" }}
+                                    style={styles.itemImage}
+                                />
+                            }
                         />
-
-
-
                     </UI.TouchableOpacity>
-
+    
                     <UI.TouchableOpacity
                         onPress={() => setIsVisible(true)}
                         style={styles.crossbtn}
@@ -57,19 +56,15 @@ const ItemData = (props) => {
                             style={styles.crossImage}
                         />
                     </UI.TouchableOpacity>
-
+    
                     <Modal
                         visible={isVisible}
                         transparent
                         animationType="fade"
                         onRequestClose={() => setIsVisible(false)}
                     >
-
-                        <UI.View
-                            style={styles.modalContainer}
-                            onPress={() => setIsVisible(false)}
-                        />
-
+                        <UI.View style={styles.modalContainer} onPress={() => setIsVisible(false)} />
+    
                         <UI.Box
                             style={{
                                 flex: 1,
@@ -78,44 +73,34 @@ const ItemData = (props) => {
                                 paddingBottom: 20,
                             }}
                         >
-                            <UI.Box
-                                style={styles.innerModal}
-                            >
+                            <UI.Box style={styles.innerModal}>
                                 <UI.Box style={styles.innerModalMsgContainer}>
-                                    <UI.Text style={styles.innerModalAlertTxt}>Are you sure you want to discard your changes?</UI.Text>
+                                    <UI.Text style={styles.innerModalAlertTxt}>
+                                        Are you sure you want to discard your changes?
+                                    </UI.Text>
                                 </UI.Box>
                                 <UI.Box style={{ flexDirection: 'row', justifyContent: "space-between" }}>
-
                                     <UI.TouchableOpacity
                                         onPress={() => setIsVisible(false)}
                                         style={styles.modalNoYesBtn}
                                     >
                                         <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
                                     </UI.TouchableOpacity>
-
-
-
+    
                                     <UI.TouchableOpacity
                                         onPress={closePreviewModal}
                                         style={styles.modalNoYesBtn}
                                     >
                                         <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
                                     </UI.TouchableOpacity>
-
-
-
-
                                 </UI.Box>
                             </UI.Box>
                         </UI.Box>
                     </Modal>
-
-
-
-
+    
                     <UI.Box style={{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" }}>
                         <UI.Box style={styles.itemDetailsContainer}>
-                            <UI.Box >
+                            <UI.Box>
                                 <UI.Text style={styles.foodItemName}>
                                     {firstItem.Item_Name || 'Item Name'}
                                 </UI.Text>
@@ -123,26 +108,30 @@ const ItemData = (props) => {
                                     ${firstItem.Price || '0.00'}
                                 </UI.Text>
                             </UI.Box>
-
+    
                             <UI.Box style={{ flexDirection: 'row', alignItems: 'center' }}>
-
                                 <UI.Text>QUANTITY</UI.Text>
                             </UI.Box>
                         </UI.Box>
+    
                         <UI.Box style={styles.foodDiscripContainer}>
-
                             <UI.Text style={styles.foodDiscripTxt}>
                                 {firstItem.Description}
                             </UI.Text>
                         </UI.Box>
-
-                        <UI.Box style={{ paddingVertical: 15 }} >
-
+    
+                        <UI.Box style={{ paddingVertical: 15 }}>
                             <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-
-                            <UI.CbAccordionlist componentData={ModifiersData} screenName="Modifiers" />
-                        </UI.Box >
-
+    
+                           
+                            <UI.ScrollView  showsVerticalScrollIndicator={false} style={{flex:1,marginBottom: 80,  }}>
+                                <UI.CbAccordionlist componentData={ModifiersData} screenName="Modifiers" />
+                                <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
+                            <UI.cbInput id="Comments" style={styles.commentsBox}  
+ />
+                            </UI.ScrollView>
+                        </UI.Box>
+    
                         <UI.Box style={{ paddingBottom: 10 }}>
 
                             <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
@@ -154,36 +143,23 @@ const ItemData = (props) => {
                             /> */}
 
                         </UI.Box>
-
-
                     </UI.Box>
-
-
                 </UI.Box>
             </UI.ScrollView>
+    
             <UI.Box style={styles.footerContainer}>
-
                 <UI.Box>
-                    <UI.Text style={styles.totalAmountTxt}>
-                        Total Amount
-                    </UI.Text>
-                    <UI.Text style={styles.orderAmount}>
-                        $34.00
-                    </UI.Text>
+                    <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                    <UI.Text style={styles.orderAmount}>$34.00</UI.Text>
                 </UI.Box>
-
-
-                <UI.TouchableOpacity
-                    style={styles.addToCartBtn}
-                >
-                    <UI.Text style={styles.addCartTxt}>
-                        Add to Cart
-                    </UI.Text>
+    
+                <UI.TouchableOpacity style={styles.addToCartBtn}>
+                    <UI.Text style={styles.addCartTxt}>Add to Cart</UI.Text>
                 </UI.TouchableOpacity>
             </UI.Box>
         </>
-
     );
+    
 };
 
 export default ItemData;
@@ -204,8 +180,8 @@ const styles = UI.StyleSheet.create({
     foodDiscripContainer:{ paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed' },
     foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D", fontStyle: 'italic', fontWeight: 'semibold' },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontWeight: "500" },
-    allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontWeight: "500", paddingBottom: 10 },
-    commentsBox:{height: 100, borderColor: "#888888",   borderRadius: 5, },
+    allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontWeight: "500", paddingVertical: 10 },
+    commentsBox:{height: 100, borderColor: "#00000026",   borderRadius: 5,paddingBottom:10 ,},
     footerContainer:{
         backgroundColor: "#fff",
         width: "100%",

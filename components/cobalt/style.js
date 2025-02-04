@@ -208,5 +208,22 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff"
-  }
+  },
+    modalContainer: {
+      flex: 1, 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      backgroundColor: 'rgba(0, 0, 0, 0.2)' ,
+    },
+    modalContent: {
+      width: '100%', 
+      height: '90%',
+      position:"absolute",
+      bottom:0,right:0,left:0,
+      backgroundColor: 'white', 
+      borderRadius: 35, 
+    
+    }
+
+  
 })

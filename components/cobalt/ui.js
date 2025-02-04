@@ -38,9 +38,43 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
      this.componentData= props.componentData || [];
+     this.state = {
+      selectedModifiers: {},
+    };
 
   }
 
+  handleCheckboxToggle = (modifierIndex, itemIndex, isMaxAllowedOne, isRequired) => {
+    this.setState((prevState) => {
+      const updatedModifiers = { ...prevState.selectedModifiers };
+  
+      if (isMaxAllowedOne) {
+    
+        updatedModifiers[modifierIndex] = itemIndex;
+      } else {
+        
+        updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex] || [];
+        
+        if (updatedModifiers[modifierIndex].includes(itemIndex)) {
+       
+          updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex].filter(
+            (i) => i !== itemIndex
+          );
+  
+         
+          if (isRequired && updatedModifiers[modifierIndex].length === 0) {
+            return prevState; 
+          }
+        } else {
+         
+          updatedModifiers[modifierIndex].push(itemIndex);
+        }
+      }
+  
+      return { selectedModifiers: updatedModifiers };
+    });
+  };
+  
   render() {
     const Notfavsource=this.Notfavsource;
     const favsource=this.favsource;
@@ -61,7 +95,7 @@ class CbAccordionlist extends React.Component {
             }}
           >
 
-            <AccordionHeader style={{ backgroundColor: "#F3F3F3", borderRadius: 5, padding: 0, height: 30, justifyContent: 'center' }} >
+            <AccordionHeader style={{ backgroundColor: "#F3F3F3", borderRadius: 5, padding: 0, height: 30, justifyContent: 'center', }} >
               <AccordionTrigger >
                 {({ isExpanded }) => {
                   return (
@@ -132,12 +166,17 @@ class CbAccordionlist extends React.Component {
                 ))
               ) :
                 (
-                  order.ModifierItems.map((item, index) => (
-                    <Box style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 10 }}>
-                      <Checkbox onChange={() => handleCheckboxChange()}>
-                        <CheckboxIndicator
-                          style={styles.CheckboxIndicator}
-                        >
+                  order.ModifierItems.map((item, itemIndex) => (
+                    <Box key={itemIndex} style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 10 }}>
+                      <Checkbox
+                        isChecked={
+                          this.state.selectedModifiers[index] === itemIndex ||
+                          (Array.isArray(this.state.selectedModifiers[index]) &&
+                            this.state.selectedModifiers[index].includes(itemIndex))
+                        }
+                        onChange={() => this.handleCheckboxToggle(index, itemIndex, order.IsMaxAllowedOne === 1)}
+                      >
+                        <CheckboxIndicator style={styles.CheckboxIndicator}>
                           <CheckboxIcon as={CheckIcon} style={{ color: "#707070", width: 17, height: 17 }} />
                         </CheckboxIndicator>
                         <CheckboxLabel style={{ color: "#4B5154", fontSize: 14, fontStyle: 'italic', fontWeight: '500' }}>
@@ -149,6 +188,7 @@ class CbAccordionlist extends React.Component {
                       </AccordionContentText>
                     </Box>
                   ))
+                  
                 )
               }
             </AccordionContent>
@@ -532,8 +572,11 @@ class CbAccordion extends React.Component {
                                   animationType="fade"
                                   onRequestClose={closePreviewModal}
                                   >
+                                    <Box style={styles.modalContainer}>
+                                      <Box style={styles.modalContent}>
                                   <ItemData />
-
+                                  </Box> 
+                                  </Box>
                                 </Modal>
                                 <CbAddToCartButton mealItemDetails={box}/>
                               </Box>
@@ -812,20 +855,21 @@ class cbInput extends React.Component {
 
   constructor(props) {
     super(props);
-    this.formId=props.formId;
-    this.id=props.id;
+    this.formId = props.formId;
+    this.id = props.id;
     this.labelText = props.labelText || "";
     this.variant = props.variant || "outline";
-    this.input=props.input || 'text';
-    this.placeholder=props.placeholder || '';
-    this.errorMessage=props.errorMessage || '';
-    this.isReadOnly=props.isReadOnly || false;
-    this.isDisabled=props.isDisabled || false;
-    this.isRequired=props.isRequired || false;
-    this.isInvalid=props.isInvalid || false;
-    this.setFormFieldData=props.setFormFieldData;
-    this.style = props.style
+    this.input = props.input || 'text';
+    this.placeholder = props.placeholder || '';
+    this.errorMessage = props.errorMessage || '';
+    this.isReadOnly = props.isReadOnly || false;
+    this.isDisabled = props.isDisabled || false;
+    this.isRequired = props.isRequired || false;
+    this.isInvalid = props.isInvalid || false;
+    this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
+    this.style = props.style;
   }
+  
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
