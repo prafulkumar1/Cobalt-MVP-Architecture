@@ -17,6 +17,7 @@ export const useMyCartLogic = () => {
     const [openItemId, setOpenItemId] = useState(null);
     const [isTimeModalSelected,setIsTimeModalSelected] = useState(false)
     const [customTipValue,setCustomTipValue] = useState("")
+    const [pickUpTimeLineData,setPickUpTimeLineData] = useState(cartConfigResponseData.Pickup_Times)
 
   useEffect(() => {
     getTipDetails()
@@ -31,6 +32,17 @@ export const useMyCartLogic = () => {
       }
     })
     setTipData(tipDetails)
+  }
+
+  const getPickupTimeLine = () => {
+    let updatedPickupTimeData = pickUpTimeLineData.map((items) => {
+      return{
+        id:uuid.v4(),
+        tip: items.tip,
+        isSelected:0
+      }
+    })
+    setPickUpTimeLineData(updatedPickupTimeData)
   }
 
   const closeAllSwipeables = () => {

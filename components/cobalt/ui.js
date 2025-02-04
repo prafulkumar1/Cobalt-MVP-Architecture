@@ -827,7 +827,8 @@ class cbSelectTime extends React.Component {
     this.style = props.style
     this.isTimeModalSelected = props.isTimeModalSelected 
     this.state = {
-      isSelected:false
+      isSelected:false,
+      selectedTime : ''
     }
   }
 
@@ -838,7 +839,7 @@ class cbSelectTime extends React.Component {
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
     return (
       <TouchableOpacity
-        onPress={() =>his.setState({ isSelected: true })}
+        onPress={() =>this.setState({ isSelected: true })}
       >
         <FormControl
           isRequired={this.isRequired}
@@ -861,14 +862,7 @@ class cbSelectTime extends React.Component {
                       onPress={() =>  {
                         this.setState({ isSelected: false })
                       }}
-                      style={[styles.scrollIndicator,index === 0 && {  shadowColor: "#000",
-                      shadowOffset: { width: 0, height: 1 },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 3.84,
-                      backgroundColor:"#fff",
-                      width:"90%",
-                      elevation: 5,}]}
-
+                      style={[styles.scrollIndicator,index === 0 && styles.hoverItem]}
                     />
                   ))}
                   <CbCommonButton showBtnName={"Done"} style = {styles.doneBtn} btnTextStyle = {styles.doneTxtBtn} onPress={() => console.log("ssnnss")}/>

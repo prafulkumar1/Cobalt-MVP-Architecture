@@ -319,7 +319,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
-            "Isnavigate": "0",
+            "Isnavigate": "1",
             "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
         },
         {
@@ -329,6 +329,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://t3.ftcdn.net/jpg/02/52/12/40/360_F_252124067_aCtp9ZD934RboKmjJzkXiwYDL7XkNjpn.jpg"
         },
         {
@@ -338,6 +339,7 @@ export const ProfitCentersData = {
             "OpeningTime": "11:30 AM",
             "ClosingTime": "5:30 PM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJguz-Yat9Wr46Dnevi49thl1jlYCfsYXiUw&s"
         },
         {
@@ -347,6 +349,7 @@ export const ProfitCentersData = {
             "OpeningTime": "5:30 PM",
             "ClosingTime": "10:00 PM",
             "Status": "Closed",
+            "Isnavigate": "0",
             "ImageUrl": "https://thumbs.dreamstime.com/b/assorted-indian-food-different-bowls-dark-wooden-background-top-view-dishes-appetizers-cuisine-chicken-curry-rice-129630877.jpg"
         },
         {
@@ -356,6 +359,7 @@ export const ProfitCentersData = {
             "OpeningTime": "6:00 AM",
             "ClosingTime": "11:30 AM",
             "Status": "Available",
+            "Isnavigate": "1",
             "ImageUrl": "https://i.pinimg.com/736x/03/d9/d1/03d9d18c3531291c21d864bf8ebdd9fe.jpg"
         },
      
