@@ -42,7 +42,7 @@ const ProfitCenters = (props) => {
                     </UI.Box>
                     <UI.Box id="status" style={[
                         styles.statusBox,
-                        { borderRadius: availabilityStatus?.borderRadius ? availabilityStatus.borderRadius : 10 },
+                        { borderRadius: availabilityStatus?.borderRadius ? availabilityStatus.borderRadius : 20 },
                         isAvailable ? availabilityStatus?.activeBackgroundColor ? { backgroundColor: availabilityStatus?.activeBackgroundColor } :
                             styles.available : availabilityStatus?.inactiveBackgroundColor ? { backgroundColor: availabilityStatus?.inactiveBackgroundColor } : styles.closed
                     ]}>
@@ -71,9 +71,9 @@ const styles = UI.StyleSheet.create({
     },
     profitCenterBGImage: {
         width: "100%",
-        height: 115,
+        height: responsiveHeight(15),
         marginTop: 8,
-        borderRadius: 6, 
+        borderRadius: 10, 
         overflow: "hidden", 
     },
     profitCenter_btn: {
@@ -99,10 +99,9 @@ const styles = UI.StyleSheet.create({
         position: "absolute",
         top: 13,
         right: 11,
-        paddingTop: 1,
-        paddingBottom: 3,
         justifyContent: "center",
         alignItems: "center",
+        alignSelf:"center"
     },
     available: {
         backgroundColor: "#00B253",
@@ -113,7 +112,6 @@ const styles = UI.StyleSheet.create({
     statusText: {
         fontSize: 12,
         color: "#FFF",
-        fontWeight: "500",
         textAlign: "center",
         width: responsiveWidth(20),
         height: responsiveHeight(2.5),

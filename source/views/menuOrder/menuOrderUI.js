@@ -110,12 +110,6 @@ export default function MenuOrderScreen(props) {
                   const categoryCount = categories.length;
                   return (
                     <>
-                      <UI.TouchableOpacity
-                        style={styles.backWardIcon}
-                        onPress={scrollToFirst}
-                      >
-                        <Icon as={ChevronLeftIcon} color="#5773a2" size="xl" />
-                      </UI.TouchableOpacity>
                       <UI.ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
@@ -126,18 +120,6 @@ export default function MenuOrderScreen(props) {
                           renderMenuCategoryList(items)
                         )}
                       </UI.ScrollView>
-                      {categoryCount > 3 && (
-                        <UI.TouchableOpacity
-                          style={styles.forwardIcon}
-                          onPress={scrollToLast}
-                        >
-                          <Icon
-                            as={ChevronRightIcon}
-                            color="#5773a2"
-                            size="xl"
-                          />
-                        </UI.TouchableOpacity>
-                      )}
                     </>
                   );
                 }
@@ -251,30 +233,27 @@ const styles = UI.StyleSheet.create({
   mainHeaderContainer:{ display: "flex", flexDirection: "row" },
   recentOrderContainer:{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginLeft: 4, borderBottom: 1, backgroundColor: "#fff", height: 31, alignItems: "center", },
   mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
-  mainContainer:{flex:1},
+  mainContainer:{flex:1,backgroundColor:"#ECECEC"},
   scrollContent: {
-    backgroundColor:"#fff",
-    paddingHorizontal:responsiveWidth(2),
-    paddingTop:responsiveHeight(2),
+    paddingTop:responsiveHeight(0.2),
+    paddingBottom:responsiveHeight(10)
   },
   categoryText: {
     padding:2,
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 18,
     color: "#4B5154",
+    fontFamily:"SourceSansPro_Bold"
   },
   mealTypeLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontFamily:"SourceSansPro_Bold"
   },
   bottomStyle: {
     width: "100%",
     borderRadius: 4,
     borderWidth: 3,
     borderColor: "#00c6ff",
-    marginTop: 5,
-    position:"absolute",
-    bottom:0,
+    marginTop:6,
   },
   categoryBtn: {
     flex: 1,
@@ -303,17 +282,23 @@ const styles = UI.StyleSheet.create({
   },
   timeDurationTxt: {
     fontSize: 10,
-    fontWeight: "600",
-    fontStyle: "italic",
-    marginTop: -2
+    marginTop: -5,
+    fontFamily:"SourceSansPro_SemiBoldItalic"
   },
   topContainer: {
     flexDirection: "row",
     paddingVertical: 10,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    borderColor:"#0000002B",
-    borderWidth:1
+    alignSelf:"center",
+    width:"100%",
+    justifyContent:"center",
+    alignItems:"center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation:1,
+    backgroundColor:"#fff",
+    marginBottom:4
   },
   categoryListContainer: {
     flexDirection: "row",
@@ -327,8 +312,13 @@ const styles = UI.StyleSheet.create({
     alignItems: "center",
     width: "100%",
     alignSelf: "center",
-    borderColor: "#0000002B",
-    borderWidth: 1,
+    paddingHorizontal:10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation:10,
+    backgroundColor:"#fff",
   },
   forwardIcon:{marginLeft:10},
   backWardIcon:{marginRight:10},
@@ -339,10 +329,10 @@ const styles = UI.StyleSheet.create({
     height:responsiveHeight(10)
   },
   emptyMealTxt:{
-    fontStyle:"italic"
+    fontFamily:"SourceSansPro_SemiBoldItalic"
   },
   mainBoxContainer: { flex: 1, backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
-  recentOrderTxt: { fontSize: 16, fontWeight: "bold", lineHeight: 20, marginLeft: 8 },
+  recentOrderTxt: { fontSize: 16, fontFamily:"SourceSansPro_SemiBold", lineHeight: 20, marginLeft: 8 },
   rightIconBtn: { right: 10 },
   recentOrderBox: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginLeft: 10 },
   recentOrderImage:{width: 120, height: 60, borderRadius: 10},

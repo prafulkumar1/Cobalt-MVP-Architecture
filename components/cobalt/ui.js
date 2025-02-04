@@ -262,7 +262,7 @@ class CbAddToCartButton extends React.Component {
     this.cartStyle = props.cartStyle
   }
   commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1 && IsDisable ===1){
+    if(isAvailable ===1 && IsDisable ===0){
       return primaryColor
     }else{
       return secondaryColor
@@ -291,7 +291,7 @@ class CbAddToCartButton extends React.Component {
           onPress={() => addItemToCartBtn(this.mealItemDetails)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
         </TouchableOpacity>
       );
     } else {
@@ -301,7 +301,7 @@ class CbAddToCartButton extends React.Component {
             style={styles.iconBtn}
             onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity - 1)}
           >
-            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} />
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
           </TouchableOpacity>
 
           <Text style={styles.quantityTxt}>{quantity}</Text>
@@ -310,7 +310,7 @@ class CbAddToCartButton extends React.Component {
             style={styles.iconBtn}
             onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity + 1)}
           >
-            <Icon as={AddIcon} color="#5773a2" size={"xl"} />
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
           </TouchableOpacity>
         </Box>
       );
@@ -411,9 +411,9 @@ class CbAccordion extends React.Component {
         >
           {componentdata &&
             componentdata.map((item) => (
-              <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
-                <AccordionHeader>
-                  <AccordionTrigger>
+              <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name} style={styles.headerTxt}>
+                <AccordionHeader style={styles.menuHeader}>
+                  <AccordionTrigger style={styles.subItem}>
                     {({ isExpanded }) => (
                       <>
                         <AccordionTitleText
@@ -424,15 +424,15 @@ class CbAccordion extends React.Component {
                         {isExpanded ? (
                           <AccordionIcon
                             as={ChevronUpIcon}
-                            width={20}
-                            height={20}
+                            width={22}
+                            height={22}
                             className="ml-3"
                           />
                         ) : (
                           <AccordionIcon
                             as={ChevronDownIcon}
-                            width={20}
-                            height={20}
+                            width={22}
+                            height={22}
                             className="ml-3"
                           />
                         )}
@@ -458,7 +458,7 @@ class CbAccordion extends React.Component {
                               style={[styles.textContainer, { marginRight: 5 }]}
                             >
                               <AccordionContentText
-                                numberOfLines={isExpanded ? undefined : 2}
+                                numberOfLines={isExpanded ? undefined : 1}
                                 style={[
                                   itemTitle?.styles ? itemTitle?.styles :
                                     styles.mealTypeTitle,
@@ -526,19 +526,18 @@ class CbAccordion extends React.Component {
                                     ]}
                                   />
                                 </TouchableOpacity>
-                                <Modal
-                                  visible={itemDataVisible}
-                                  transparent={false}
-                                  animationType="fade"
-                                  onRequestClose={closePreviewModal}
-                                  style={{flex:1}}
-                                  >
-                                  <ItemData />
-
-                                </Modal>
                                 <CbAddToCartButton mealItemDetails={box}/>
                               </Box>
                             )}
+                            <Modal
+                              visible={itemDataVisible}
+                              transparent={false}
+                              animationType="fade"
+                              onRequestClose={closePreviewModal}
+                              style={{ flex: 1 }}
+                            >
+                              <ItemData />
+                            </Modal>
                           </Box>
                           <Box style={styles.horizontalLine} />
                         </Box>
@@ -1041,46 +1040,6 @@ class cbCategoryList extends React.Component {
   constructor(props) {
     super();
     this.id = props.id;
-  }
-  renderMenuCategoryList = (categoryItem, setMealCategory) => {
-    if (!categoryItem.IsSelect) {
-      categoryItem.IsSelect = 1;
-      setMealCategory(categoryItem.Category_Id);
-    }
-
-    return (
-      <Box>
-        <TouchableOpacity
-          style={styles.categoryBtn}
-          activeOpacity={0.6}
-          onPress={() => setMealCategory(categoryItem.Category_Id)}
-        >
-          <Text style={styles.categoryText}>
-            {categoryItem.Category_Name?.toUpperCase()}
-          </Text>
-          {categoryItem.IsSelect === 1 && <Box style={styles.bottomStyle} />}
-        </TouchableOpacity>
-      </Box>
-    );
-  }
-  renderMealTypeList = (pureItems,setMealType) => {
-    let item = pureItems
-    return (
-     <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-        <TouchableOpacity
-          activeOpacity={0.6}
-         style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
-          onPress={() => setMealType(item.MealPeriod_Id)}
-        >
-         <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
-            {item.MealPeriod_Name?.toUpperCase()}
-          </Text>
-         <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
-            {item.Time}
-          </Text>
-        </TouchableOpacity>
-      </Box>
-    );
   }
 
   render() {

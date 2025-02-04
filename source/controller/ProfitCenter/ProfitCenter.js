@@ -25,7 +25,7 @@ export const useProfitCenterLogic = () => {
           "OSVersion": DeviceInfo.osVersion,
           "OriginatingIP": "183.82.116.84",
           "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
-          "Browser": "chrome 113.0.0.0",
+          "Browser": DeviceInfo.osName,
           "HostName": "183.82.116.84.actcorp.in",
           "SourcePortNo": "50189"
         }
