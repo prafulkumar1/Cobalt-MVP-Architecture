@@ -67,21 +67,16 @@ export default function App() {
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />
                 ),
-                headerTitle: () => {
-                  if (route.name === "MenuOrder") {
-                    return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
-                        {route?.params?.profileCenterTile}
-                      </Text>
-                    );
-                  } else {
-                    return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
-                        {route.name}
-                      </Text>
-                    );
-                  }
-                },
+                headerTitleAlign: 'left',
+                headerTitle: () => (
+                  <View style={styles.headerTitle}>
+                    <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
+                      {route.name === "MenuOrder" 
+                        ? route?.params?.profileCenterTile 
+                        : route.name}
+                    </Text>
+                  </View>
+                ),
                 headerRight: () => {
                   const value = route.params?.showHomeButton
                   if(route.name === "ProfitCenters") {
@@ -164,4 +159,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerTitle:{ flex: 1, alignItems: 'flex-start' }
 });

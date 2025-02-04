@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   quantityTxt: {
-    fontSize: 18,
+    fontSize: Platform.OS == "ios"?20:18,
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8)
@@ -157,7 +157,7 @@ export const styles = StyleSheet.create({
   mainContainerList:{ flexGrow: 1},
   itemCategoryLabel:{ color: "#5773a2", fontSize: 20 ,fontFamily:"SourceSansPro_Bold",paddingVertical:8},
   horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
-  floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(2) },
+  floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
   floatingBtn:{
     width: 72,
     height: 72,
@@ -185,7 +185,7 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
     fontFamily:"SourceSansPro_SemiBold"
   },
-  backArrowHeader:{marginRight:20},
+  backArrowHeader:{width:responsiveWidth(9),marginRight:10,justifyContent:"center",alignItems:"center"},
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
     paddingVertical: 10,
@@ -198,7 +198,7 @@ export const styles = StyleSheet.create({
     borderColor: "#2A4E7D",
     width: responsiveWidth(30)
   },
-  mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, fontWeight: "bold", textAlign: "center" },
+  mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, textAlign: "center",fontFamily: "SourceSansPro_SemiBold"},
   CheckboxIndicator:{
     width: 20,
     height: 20,

@@ -563,12 +563,33 @@ class cbSearchbox extends React.Component {
     this.search=props.Searchsource || "";
     this.backarrow=props.Backarrowsource || "";
     this.close=props.closesource || "";
+    this.isRecentOrderOpen = props.isRecentOrderOpen || false
     this.state = {
       showSearchInput: false,
       searchValue: "",
     };
+    this.inputRef = React.createRef();
+  }
+  handleFocus = () => {
+    if (this.inputRef?.current) {
+      this.inputRef.current.focus();
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.isRecentOrderOpen !== this.props.isRecentOrderOpen &&
+      this.props.isRecentOrderOpen
+    ) {
+      this.setState({ showSearchInput: true }, () => {
+        if (this.inputRef.current) {
+          this.inputRef.current.focus();
+        }
+      });
+    }
   }
 
+  
   render() {
     const { showSearchInput, searchValue } = this.state;
     const Searchsource=this.search;
@@ -577,8 +598,8 @@ class cbSearchbox extends React.Component {
     return (
       <Box
         style={{
-          width: showSearchInput ? "100%" : 34,
-          height: 31,
+          width: showSearchInput ? "100%" : 40,
+          height: 40,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -598,7 +619,7 @@ class cbSearchbox extends React.Component {
               marginRight: 25
             }}
           >
-            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 5 }} >
+            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 10 }} >
               {
                 Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
@@ -613,6 +634,7 @@ class cbSearchbox extends React.Component {
               }}
             >
               <InputField
+                ref={this.inputRef}
                 value={searchValue}
                 placeholder="Items"
                 onChangeText={(value) => this.setState({ searchValue: value })}
@@ -852,7 +874,7 @@ class cbSelectTime extends React.Component {
               <SelectPortal isOpen={this.state.isSelected}>
                 <SelectBackdrop onPress={()=> this.setState({isSelected:false})}/>
                 <SelectContent>
-                  <Text style={{marginVertical:10}}>Select Time</Text>
+                  <Text style={{marginVertical:10,fontFamily:"SourceSansPro_SemiBoldItalic"}}>Select Time</Text>
                   {selectItems.map((item, index) => (
                     <SelectItem
                       key={index}
