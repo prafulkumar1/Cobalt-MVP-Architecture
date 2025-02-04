@@ -208,5 +208,27 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff"
+  },
+  scrollIndicator:{justifyContent:"center",alignSelf:"center",alignItems:"center"},
+  doneBtn:{
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
+    backgroundColor: "#2A4E7D",
+    marginVertical:15,
+    width: responsiveWidth(35)
+  },
+  doneTxtBtn:{color: "#FFFFFF", fontSize: 16, fontWeight: "bold", textAlign: "center" },
+  hoverItem:{  
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    backgroundColor:"#fff",
+    width:"90%",
+    elevation: 5,
   }
 })

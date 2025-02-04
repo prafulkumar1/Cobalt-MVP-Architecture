@@ -774,6 +774,11 @@ class cbSelect extends React.Component {
     this.isInvalid=props.isInvalid || false;
     this.selectLabel=props.Label || '';
     this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
+    this.style = props.style
+    this.isTimeModalSelected = props.isTimeModalSelected 
+    this.state = {
+      isSelected:false
+    }
   }
 
   render() {
@@ -781,30 +786,94 @@ class cbSelect extends React.Component {
     const selectLabelprop = inputArray?.labelText  || this.selectLabel;
     const placeholderprop = inputArray?.placeholder || this.placeholder;
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
-
     return (
-      <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid}>
+<FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
         <FormControlLabel>
           <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
         </FormControlLabel>
-        <Select>
+       <TouchableOpacity>
+       <Select>
           <SelectTrigger>
             <SelectInput placeholder={placeholderprop} />
           <SelectIcon  as={ChevronDownIcon} width={16} height={16} />
           </SelectTrigger>
-          <SelectPortal>
+          <SelectPortal isOpen={this.state.isSelected}>
             <SelectBackdrop />
             <SelectContent>
               {selectItems.map((item, index) => (
-            <SelectItem key={index} label={item.label} value={item.value}/>
+            <SelectItem key={index} label={item.label} value={item.value} onPress={()=>this.setState({isSelected:false},()=>console.log(item.value, "=== > selectedItem"))}/>
               ))}
             </SelectContent>
           </SelectPortal>
         </Select>
+       </TouchableOpacity>
         <FormControlError>
           <FormControlErrorText></FormControlErrorText>
         </FormControlError>
-      </FormControl>
+      </FormControl>      
+    );
+  }
+}
+
+class cbSelectTime extends React.Component {
+  constructor(props) {
+    super();
+    this.id=props.id;
+    this.placeholder= props.placeholder || 'Select';
+    this.isRequired=props.isRequired || false;
+    this.isInvalid=props.isInvalid || false;
+    this.selectLabel=props.Label || '';
+    this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
+    this.style = props.style
+    this.isTimeModalSelected = props.isTimeModalSelected 
+    this.state = {
+      isSelected:false,
+      selectedTime : ''
+    }
+  }
+
+  render() {
+    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+    const selectLabelprop = inputArray?.labelText  || this.selectLabel;
+    const placeholderprop = inputArray?.placeholder || this.placeholder;
+    const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
+    return (
+      <TouchableOpacity
+        onPress={() =>this.setState({ isSelected: true })}
+      >
+        <FormControl
+          isRequired={this.isRequired}
+          isInvalid={this.isInvalid}
+          style={this.style}
+        >
+          <FormControlLabel>
+            <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
+          </FormControlLabel>
+            <Select>
+              <SelectPortal isOpen={this.state.isSelected}>
+                <SelectBackdrop onPress={()=> this.setState({isSelected:false})}/>
+                <SelectContent>
+                  <Text style={{marginVertical:10}}>Select Time</Text>
+                  {selectItems.map((item, index) => (
+                    <SelectItem
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                      onPress={() =>  {
+                        this.setState({ isSelected: false })
+                      }}
+                      style={[styles.scrollIndicator,index === 0 && styles.hoverItem]}
+                    />
+                  ))}
+                  <CbCommonButton showBtnName={"Done"} style = {styles.doneBtn} btnTextStyle = {styles.doneTxtBtn} onPress={() => console.log("ssnnss")}/>
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+          <FormControlError>
+            <FormControlErrorText></FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+      </TouchableOpacity>
     );
   }
 }
@@ -1056,21 +1125,20 @@ class CbCommonButton extends React.Component {
     this.showBtnName = props.showBtnName || ""
     this.isPlusIconAvailable = props.isPlusIconAvailable || false
     this.style = props.style
-    this.screenName = props.screenName
-    this.extraParams = props.extraParams
-    this.isHomeEnabled = props.isHomeIconRequire || true
+    this.btnTextStyle = props.btnTextStyle
+    this.onPress = props.onPress
   }
   render() {
     return (
       <Box>
         <TouchableOpacity
           style={[this.style ? this.style : styles.mediumBtn]}
-          onPress={()=>navigateToScreen(this.props.props, this.screenName, this.isHomeEnabled,this.extraParams)}
+          onPress={() => this?.onPress()}
         >
           {
             this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
           }
-          <Text style={styles.mediumBtnTxt}>
+          <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
             {this.showBtnName}
           </Text>
         </TouchableOpacity>
@@ -1099,6 +1167,7 @@ CbFloatingButton.displayName='CbFloatingButton';
 CbAddToCartButton.displayName = "CbAddToCartButton"
 CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
+cbSelectTime.displayName='cbSelectTime';
 
 
- export {CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
