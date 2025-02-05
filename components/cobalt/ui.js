@@ -680,16 +680,16 @@ class CbAccordion extends React.Component {
               </Accordion>
               <Modal
                 visible={itemDataVisible}
-                transparent={false}
+                transparent={true}
                 animationType="fade"
                 onRequestClose={closePreviewModal}
-                style={{ flex: 1 }}
               >
-                <Box style={styles.modalContainer}>
-                  <Box style={styles.modalContent}>
-                    <ItemData />
-                  </Box>
-                </Box>
+                <ScrollView style={styles.modiferItems}>
+                  <Box
+                    style={styles.blackShadow}
+                  />
+                  <ItemData />
+                </ScrollView>
               </Modal>
             </ScrollView>
           );
