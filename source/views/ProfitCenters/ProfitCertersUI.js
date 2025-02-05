@@ -2,26 +2,45 @@ import * as UI from '@/components/cobalt/importUI';
 import { ProfitCentersData } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import React from 'react';
-import {ImageBackground} from "react-native"
+import { ImageBackground } from "react-native";
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 
-const pageId='ProfitCenter';
+const pageId = 'ProfitCenter';
+
+let pageConfigJson = global.appConfigJsonArray?.find(
+    (item) => item.PageId === pageId
+  );
+
+  global.controlsConfigJson =
+    pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
+  const configItems = global.controlsConfigJson?.reduce((acc, item) => {
+    if (["backgroundImage", "profitCenterName", "timingsText", "availabilityStatus"].includes(item.id)) {
+      acc[item.id] = item;
+    }
+    return acc;
+  }, {});
+
+  const { backgroundImage, profitCenterName, timingsText, availabilityStatus } = configItems;
 
 const RenderingProfitCenter = ({ item },props) => {
     const isAvailable = item.Status === "Available";
-
     return (
-        <ImageBackground id="profitCenterBGImage" source={{ uri: item.ImageUrl }} style={styles.profitCenterBGImage}>
+        <ImageBackground id="profitCenterBGImage" source={{ uri: backgroundImage?.imageUrl?backgroundImage?.imageUrl: item.ImageUrl }} style={styles.profitCenterBGImage}>
             <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToScreen(props, "MenuOrder", true,{profileCenterTile:item.LocationName})}>
                 <UI.Box style={styles.profitCenterOverlay}>
-                    <UI.Text id='profitCenterName' style={styles.profitCenterName}>{item.LocationName}</UI.Text>
-                    <UI.Text id="profitCenterTimings" style={styles.profitCenterTimings}>
+                    <UI.Text id='profitCenterName' style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
+                    <UI.Text id="profitCenterTimings" style={[timingsText?.styles? timingsText?.timingsText:styles.profitCenterTimings]}>
                         {
                             isAvailable ? `Closes at ${item.ClosingTime}` : `Available at ${item.OpeningTime}`
                         }
                     </UI.Text>
                 </UI.Box>
-                <UI.Box id="status" style={[styles.statusBox, isAvailable ? styles.available : styles.closed]}>
+                <UI.Box id="status" style={[
+                    styles.statusBox,
+                    { borderRadius: availabilityStatus?.borderRadius ? availabilityStatus.borderRadius : 10 },
+                    isAvailable ? availabilityStatus?.activeBackgroundColor ? { backgroundColor: availabilityStatus?.activeBackgroundColor } :
+                        styles.available : availabilityStatus?.inactiveBackgroundColor ? { backgroundColor: availabilityStatus?.inactiveBackgroundColor } : styles.closed
+                ]}>
                     <UI.Text style={styles.statusText}>{item.Status}</UI.Text>
                 </UI.Box>
             </UI.TouchableOpacity>
@@ -66,19 +85,19 @@ const styles = UI.StyleSheet.create({
         fontWeight: "bold",
         color: "#FFF",
         paddingTop: 8,
+        fontFamily: "SourceSansPro_SemiBold"
     },
     profitCenterTimings: {
         fontSize: 14,
         color: "#FFF",
-        fontStyle: "italic",
+        fontFamily: "SourceSansPro_Italic"
     },
     statusBox: {
         position: "absolute",
         top: 13,
         right: 11,
-        borderRadius: 10,
         paddingTop: 1,
-        paddingBottom:3,
+        paddingBottom: 3,
         justifyContent: "center",
         alignItems: "center",
     },
@@ -93,8 +112,8 @@ const styles = UI.StyleSheet.create({
         color: "#FFF",
         fontWeight: "500",
         textAlign: "center",
-        width:responsiveWidth(20),
-        height:responsiveHeight(2.5)
+        width: responsiveWidth(20),
+        height: responsiveHeight(2.5),
+        fontFamily:"SourceSansPro_Regular"
     },
 });
-

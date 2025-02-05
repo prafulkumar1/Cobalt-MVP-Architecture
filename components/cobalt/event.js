@@ -1,4 +1,4 @@
-import { foodOrderData } from '@/source/constants/commonData';
+import { foodOrderData,ModifiersData } from '@/source/constants/commonData';
 import { useEffect, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,9 +10,11 @@ export const useFormContext = () => {
   };
 
 export const UseFormContextProvider = ({children}) => {
-
+    
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
+    const [selectedModifiers, setSelectedModifiers] = useState({});
+const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
@@ -37,31 +39,33 @@ export const UseFormContextProvider = ({children}) => {
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
 
-    const setMealType = (id) => {
-      const updatedMealType = menuOrderData.MenuItems.map((items) => ({
-        ...items,
-        IsSelect: items.MealPeriod_Id === id ? 1 : 0,
-        Categories: items.Categories.map((category, index) => ({
-          ...category,
-          IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-        })),
-      }));
-    
-      const foodMenuList = {
-        ...menuOrderData,
-        MenuItems: updatedMealType,
-      };
-    
-      let isCategoryEmptyFlag = false;
-      updatedMealType.forEach((items) => {
-        if (items.IsSelect === 1 && items.Categories.length === 0) {
-          isCategoryEmptyFlag = true; 
-        }
-      });
-      setIsCategoryEmpty(isCategoryEmptyFlag);
-      setMenuOrderData(foodMenuList);
+    const setMealType = (id,IsEnabled) => {
+      if(IsEnabled===1){
+        const updatedMealType = menuOrderData.MenuItems.map((items) => ({
+          ...items,
+          IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+          Categories: items.Categories.map((category, index) => ({
+            ...category,
+            IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+          })),
+        }));
+      
+        const foodMenuList = {
+          ...menuOrderData,
+          MenuItems: updatedMealType,
+        };
+      
+        let isCategoryEmptyFlag = false;
+        updatedMealType.forEach((items) => {
+          if (items.IsSelect === 1 && items.Categories.length === 0) {
+            isCategoryEmptyFlag = true; 
+          }
+        });
+        setIsCategoryEmpty(isCategoryEmptyFlag);
+        setMenuOrderData(foodMenuList);
+      }
     };
-
+  
     const setMealCategory = (id) => {
       const updatedMealCategory = menuOrderData.MenuItems.map((items) => ({
        ...items,
@@ -131,6 +135,15 @@ export const UseFormContextProvider = ({children}) => {
         });
       } catch (error) {}
     };
+
+    const closePreviewModal = () => {
+      setItemDataVisible(!itemDataVisible)
+    }
+    const deleteCartItem = async (mealItemDetails) => {
+      let updatedCartData = cartData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
+      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+      setCartData(updatedCartData)
+    }
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -142,7 +155,10 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartBtn,
       updateCartItemQuantity,
       cartData,
-      isCategoryEmpty
+      isCategoryEmpty,
+      itemDataVisible,
+      closePreviewModal,
+      deleteCartItem
     }
     return (
       <FormContext.Provider
