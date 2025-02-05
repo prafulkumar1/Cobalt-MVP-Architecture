@@ -248,5 +248,24 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white', 
     borderRadius: 35, 
   
+  },
+  itemDetailsContainer:{ paddingTop: 6, backgroundColor: "white" },
+  itemDetailsSubContainer:{
+    borderWidth: 0.3,
+    borderRadius: 5,
+    borderColor: "#ccc",
+    backgroundColor: "white",
+  },
+  subHeader:{
+    backgroundColor: "#F3F3F3",
+    borderRadius: 5,
+    padding: 0,
+    height: 30,
+    justifyContent: "center",
+  },
+  topItem:{
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
   }
 })

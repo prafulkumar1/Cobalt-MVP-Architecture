@@ -8,11 +8,10 @@ import { AddIcon, TrashIcon, RemoveIcon, Icon } from '@/components/ui/icon';
 import { useFormContext } from '@/components/cobalt/event';
 
 const ItemData = (props) => {
-
     const [quantity, setQuantity] = useState(1);
     const [itemNames, setItemNames] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
-    const { itemDataVisible, closePreviewModal } = useFormContext()
+    const { itemDataVisible, closePreviewModal,singleItemDetails } = useFormContext()
     useEffect(() => {
         const items = [];
         foodOrderData.MenuItems.forEach(mealPeriod => {
@@ -34,7 +33,7 @@ const ItemData = (props) => {
         <>
             <UI.ScrollView style={{ flex: 1,  }}>
                 <UI.Box style={styles.mainContainer}>
-                    <UI.TouchableOpacity onPress={() => navigateToScreen(props, "ItemData", true)}>
+                    <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
                         <UI.CbImage
                             imageJsx={
                                 <Image
@@ -88,7 +87,12 @@ const ItemData = (props) => {
                                     </UI.TouchableOpacity>
     
                                     <UI.TouchableOpacity
-                                        onPress={closePreviewModal}
+                                        onPress={() => {
+                                            setIsVisible(false)
+                                            setTimeout(() => {
+                                                closePreviewModal()
+                                            },100)
+                                        }}
                                         style={styles.modalNoYesBtn}
                                     >
                                         <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
@@ -132,17 +136,7 @@ const ItemData = (props) => {
                             </UI.ScrollView>
                         </UI.Box>
     
-                        <UI.Box style={{ paddingBottom: 10 }}>
-
-                            <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
-                            {/* <UI.cbInput
-                                id="Comments"
-                                formId="Comments"
-                                style={styles.commentsBox}
-                                setFormFieldData={{this.formId,'input',this.id,value}}
-                            /> */}
-
-                        </UI.Box>
+                     
                     </UI.Box>
                 </UI.Box>
             </UI.ScrollView>

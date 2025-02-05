@@ -18,6 +18,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
+    const [singleItemDetails, setSingleItemDetails] = useState(null)
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -142,6 +143,10 @@ export const UseFormContextProvider = ({children}) => {
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
       setCartData(updatedCartData)
     }
+
+    const storeSingleItem = (item) => {
+      setSingleItemDetails(item)
+    }
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -157,7 +162,8 @@ export const UseFormContextProvider = ({children}) => {
       itemDataVisible,
       closePreviewModal,
       deleteCartItem,
-      // handleCheckboxToggle
+      storeSingleItem,
+      singleItemDetails
     }
     return (
       <FormContext.Provider
