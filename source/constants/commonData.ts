@@ -422,81 +422,81 @@ export const RecentordersData={
     ]
 }
 
-export const ModifiersData={
-  "ResponseCode": "Success",
-    "ResponseMessage": "",
-    "Modifiers":[
-      {
-        "MainModifier":"Sauce",
-        "IsRequried":0,
-        "IsMaxAllowedOne":1,
-        "ModifierItems":[
-           {
-            "ItemName": "Peanut sauce or sweet soy glaze",            
-            "Price": null,            
-           },
-           {
-            "ItemName": "Sweet Chili Sauce",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Add balsamic reductio",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "Wasabi or ginger soy sauce",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-      {
-        "MainModifier":"Side",
-        "IsRequried":0,
-        "MaxAllowedOne":0,
-        "ModifierItems":[
-          {
-            "ItemName": "Celery",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Carrots",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Blue Cheese Dressing",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "Ranch Dressing",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-      {
-        "MainModifier":"Stuffing Type",
-        "IsRequried":1,
-        "MaxAllowedOne":1,
-        "ModifierItems":[
-          {
-            "ItemName": "Cream Cheese",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Parmesan",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Sausage",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "spinach",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-    ]
-}
+  export const ModifiersData={
+    "ResponseCode": "Success",
+      "ResponseMessage": "",
+      "Modifiers":[
+        {
+          "MainModifier":"Sauce",
+          "IsRequried":0,
+          "IsMaxAllowedOne":0,
+          "ModifierItems":[
+            {
+              "ItemName": "Peanut sauce or sweet soy glaze",            
+              "Price": 0,            
+            },
+            {
+              "ItemName": "Sweet Chili Sauce",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Add balsamic reductio",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "Wasabi or ginger soy sauce",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+        {
+          "MainModifier":"Side",
+          "IsRequried":0,
+          "IsMaxAllowedOne":1,
+          "ModifierItems":[
+            {
+              "ItemName": "Celery",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Carrots",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Blue Cheese Dressing",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "Ranch Dressing",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+        {
+          "MainModifier":"Stuffing Type",
+          "IsRequried":1,
+          "IsMaxAllowedOne":0,
+          "ModifierItems":[
+            {
+              "ItemName": "Cream Cheese",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Parmesan",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Sausage",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "spinach",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+      ]
+  }
 
 export const RecentOrderData = [
 

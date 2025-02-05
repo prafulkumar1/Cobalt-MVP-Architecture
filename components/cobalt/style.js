@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   quantityTxt: {
-    fontSize: Platform.OS == "ios"?20:18,
+    fontSize: 20,
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8)
@@ -233,5 +233,62 @@ export const styles = StyleSheet.create({
   },
   menuHeader:{backgroundColor:"#F4F6FB"},
   subItem:{backgroundColor:"#fff",marginTop:8},
-  headerTxt:{fontFamily:"SourceSansPro_SemiBold"}
+  headerTxt:{fontFamily:"SourceSansPro_SemiBold"},
+  modalContainer: {
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height:"100%",
+    width:"100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor:"pink",
+    flexGrow:1
+
+  },
+  modalContent: {
+    width: '100%', 
+    height: '100%',
+    borderRadius: 35, 
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    backgroundColor:"green",
+    marginTop:30
+  
+  },
+  itemDetailsContainer:{ paddingTop: 6, backgroundColor: "white" },
+  itemDetailsSubContainer:{
+    borderWidth: 0.3,
+    borderRadius: 5,
+    borderColor: "#ccc",
+    backgroundColor: "white",
+  },
+  subHeader:{
+    backgroundColor: "#F3F3F3",
+    borderRadius: 5,
+    padding: 0,
+    height: 30,
+    justifyContent: "center",
+  },
+  topItem:{
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+  },
+  blackShadow:{
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "#000000",
+    opacity: 0.4,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 10,
+    zIndex:-1
+  },
+  modiferItems:{flex:1}
 })

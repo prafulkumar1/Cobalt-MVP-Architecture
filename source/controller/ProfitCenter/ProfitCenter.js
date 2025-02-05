@@ -7,14 +7,14 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 
 const pageId='ProfitCenter';
 export const useProfitCenterLogic = () => {
-  
+  const [profitCenterData , setProfitCenterData] = useState(null)
   const { } = useFormContext();
   
   useEffect(() => {
     getProfitCenterList()
   }, [])
 
-  const getProfitCenterList = () => {
+  const getProfitCenterList = async () => {
     const params = {
       "MemberID": "09071",
       "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
@@ -38,19 +38,20 @@ export const useProfitCenterLogic = () => {
       "FilterTime": ""
     }
     const getUrl = `${endpoints['PROFIT_CENTER']['GET_PROFIT_CENTERS']}`
-    let profitCenterResponseData = postApiCall(getUrl, params, "token")
+    let profitCenterResponseData = await postApiCall(getUrl, params, "token")
 
-    console.log(profitCenterResponseData)
+    setProfitCenterData(profitCenterResponseData.response)
   }
 
   const navigateToMenuOrder = (props, item) => {
-    if (item.Isnavigate == 1) {
+    if (item.Isnavigate == 0) {
       navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName })
     }
   }
 
   return {
     getProfitCenterList,
-    navigateToMenuOrder
+    navigateToMenuOrder,
+    profitCenterData
   };
 };
