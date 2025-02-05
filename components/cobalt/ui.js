@@ -11,7 +11,7 @@ import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
 import {  House, } from 'lucide-react-native';
-import {  CheckIcon,ChevronsLeftIcon,ChevronsRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
+import {  CheckIcon,ChevronsLeftIcon,ChevronRightIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon,SearchIcon,CloseIcon,ArrowLeftIcon } from '@/components/ui/icon';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
@@ -52,18 +52,18 @@ class CbAccordionlist extends React.Component {
 
     return (
       componentData.map((order, index) => (
-      <Accordion size="md" vriant="filled" type="single" >
+      <Accordion size="md" vriant="filled" type="single" style={styles.roAccordion} >
       <AccordionItem value="a">
-        <AccordionHeader>
+        <AccordionHeader style={styles.roAccordionHeader}>
           <AccordionTrigger>
             {({ isExpanded }) => {
               return (
                 <>
                   {this.screenName === "RecentOrders" ? (
                    
-                      <Box key={index} style={{ display: "flex", flexDirection: "row", gap: 5 }}>
+                      <Box key={index} style={styles.roAccordionHeading}>
                         <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
-                        <AccordionTitleText>Ordered Date: {order.OrderDate}</AccordionTitleText>
+                        <AccordionTitleText style={styles.roAccordionTitleText}>Ordered Date: {order.OrderDate}</AccordionTitleText>
                       </Box>
                    
                     ) : (
@@ -74,9 +74,9 @@ class CbAccordionlist extends React.Component {
                       </Box>
                   )}
                   {isExpanded ? (
-                    <AccordionIcon as={ChevronUpIcon} className="ml-3" style={{width:15,height:15}} />
+                     <AccordionIcon as={ChevronDownIcon} className="ml-3" style={styles.roAccordionIcon} />
                   ) : (
-                    <AccordionIcon as={ChevronDownIcon} className="ml-3" style={{width:15,height:15}} />
+                     <AccordionIcon as={ChevronRightIcon} className="ml-3" style={styles.roAccordionIcon} />
                   )}
                 </>
               )
@@ -86,16 +86,19 @@ class CbAccordionlist extends React.Component {
         <AccordionContent>
           {this.screenName == "RecentOrders" ?(
             order.Items.map((item, index) => (
-        <Box style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-            <Box>
-                <AccordionContentText> {item.ItemName} </AccordionContentText>
-                <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
-            </Box>
-            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", }}>
-                <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={{  marginRight: 10 }} />
-                <Button style={{ width: 30 }} />
-            </Box>
-        </Box>
+          <Box>
+                <Box style={styles.roAccordionContentouterbox}>
+                    <Box style={styles.roAccordionContentItembox}>
+                        <AccordionContentText style={styles.roItemName}> {item.ItemName} </AccordionContentText>
+                        <AccordionContentText style={styles.roItemprice}>{`$${item.Price}`}</AccordionContentText>
+                    </Box>
+                    <Box style={styles.roImagescetion}>
+                      <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={styles.roItemImage} />
+                      <Button style={styles.roItemButton} />
+                    </Box>           
+                </Box>
+                <Divider/>
+          </Box>
             ))
           ):
          (
@@ -103,7 +106,7 @@ class CbAccordionlist extends React.Component {
             <Box style={{ display: "flex",flexDirection: "row",alignItems: "center" }}>
                 <Checkbox >
                   <CheckboxIndicator>
-                    <CheckboxIcon as={CheckIcon} style={{color:"white"}}/>
+                    <CheckboxIcon as={CheckIcon} style={styles.CheckIcon}/>
                   </CheckboxIndicator>
                   <CheckboxLabel>{item.ItemName}</CheckboxLabel>
                 </Checkbox>
@@ -112,6 +115,9 @@ class CbAccordionlist extends React.Component {
           ))
          )
   }
+  {this.screenName == "RecentOrders" && order.IsReorder ?<Button variant="outline" style={styles.roReoderButton}>
+          <ButtonText style={styles.roReordertext} numberOfLines={1}  ellipsizeMode="tail">Re Order</ButtonText>
+      </Button>:"" }
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -127,8 +133,8 @@ class CbImage extends React.Component {
     // this.id=props.id;
     this.source = props.source || "";
     this.imageJsx=props.imageJsx;
-    this.style = props.style
-    
+    this.style = props.style || "";
+    // console.log("===>",this.style);
   }
 
   render() {
@@ -136,13 +142,14 @@ class CbImage extends React.Component {
     //const source = inputArray?.source  || this.source;'
     const jsx = this.imageJsx;
     const source=this.source;
-
+     
     if (source) {
 
       if (source.endsWith('.svg')) {
+        
         return <SvgUri source={{ uri: source }}  />;
       } else {
-          
+
         return <Image alt='image' source={{ uri: source }}  style={this.style}/>;
       }
     } else {
@@ -627,7 +634,7 @@ class cbButton extends React.Component {
     
 
     return (
-      <Button variant={variant} onPress={this.onPress} style={buttonStyle}  >
+      <Button variant={variant} onPress={()=> this.onPress()} style={buttonStyle}  >
           <ButtonText style={ButtonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
