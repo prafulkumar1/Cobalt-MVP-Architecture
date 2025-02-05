@@ -51,7 +51,7 @@ export default function App() {
   if (!fontsLoaded) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#00BFF6" />
       </View>
     );
   }
@@ -67,21 +67,16 @@ export default function App() {
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />
                 ),
-                headerTitle: () => {
-                  if (route.name === "MenuOrder") {
-                    return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'MyCustomFont' }]}>
-                        {route?.params?.profileCenterTile}
-                      </Text>
-                    );
-                  } else {
-                    return (
-                      <Text style={[styles.menuTitle, { fontFamily: 'MyCustomFont' }]}>
-                        {route.name}
-                      </Text>
-                    );
-                  }
-                },
+                headerTitleAlign: 'left',
+                headerTitle: () => (
+                  <View style={styles.headerTitle}>
+                    <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
+                      {route.name === "MenuOrder" 
+                        ? route?.params?.profileCenterTile 
+                        : route.name}
+                    </Text>
+                  </View>
+                ),
                 headerRight: () => {
                   const value = route.params?.showHomeButton
                   if(route.name === "ProfitCenters") {
@@ -99,7 +94,7 @@ export default function App() {
                 headerTitleStyle: {
                   color: "#4B5154",
                   fontSize: 22,
-                  fontFamily: 'MyCustomFont', // Apply custom font to header titles
+                  fontFamily: 'SourceSansPro_SemiBold',
                 },
               })}
             >
@@ -164,4 +159,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerTitle:{ flex: 1, alignItems: 'flex-start' }
 });

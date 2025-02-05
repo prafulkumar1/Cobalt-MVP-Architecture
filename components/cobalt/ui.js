@@ -230,7 +230,7 @@ class CbAddToCartButton extends React.Component {
     this.cartStyle = props.cartStyle
   }
   commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1 && IsDisable ===1){
+    if(isAvailable ===1 && IsDisable ===0){
       return primaryColor
     }else{
       return secondaryColor
@@ -259,7 +259,7 @@ class CbAddToCartButton extends React.Component {
           onPress={() => addItemToCartBtn(this.mealItemDetails)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} />
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
         </TouchableOpacity>
       );
     } else {
@@ -269,7 +269,7 @@ class CbAddToCartButton extends React.Component {
             style={styles.iconBtn}
             onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity - 1)}
           >
-            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} />
+            <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
           </TouchableOpacity>
 
           <Text style={styles.quantityTxt}>{quantity}</Text>
@@ -278,7 +278,7 @@ class CbAddToCartButton extends React.Component {
             style={styles.iconBtn}
             onPress={() => updateCartItemQuantity(this.mealItemDetails, quantity + 1)}
           >
-            <Icon as={AddIcon} color="#5773a2" size={"xl"} />
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
           </TouchableOpacity>
         </Box>
       );
@@ -379,9 +379,9 @@ class CbAccordion extends React.Component {
         >
           {componentdata &&
             componentdata.map((item) => (
-              <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name}>
-                <AccordionHeader>
-                  <AccordionTrigger>
+              <AccordionItem key={item.Submenu_Name} value={item.Submenu_Name} style={styles.headerTxt}>
+                <AccordionHeader style={styles.menuHeader}>
+                  <AccordionTrigger style={styles.subItem}>
                     {({ isExpanded }) => (
                       <>
                         <AccordionTitleText
@@ -392,15 +392,15 @@ class CbAccordion extends React.Component {
                         {isExpanded ? (
                           <AccordionIcon
                             as={ChevronUpIcon}
-                            width={20}
-                            height={20}
+                            width={22}
+                            height={22}
                             className="ml-3"
                           />
                         ) : (
                           <AccordionIcon
                             as={ChevronDownIcon}
-                            width={20}
-                            height={20}
+                            width={22}
+                            height={22}
                             className="ml-3"
                           />
                         )}
@@ -426,7 +426,7 @@ class CbAccordion extends React.Component {
                               style={[styles.textContainer, { marginRight: 5 }]}
                             >
                               <AccordionContentText
-                                numberOfLines={isExpanded ? undefined : 2}
+                                numberOfLines={isExpanded ? undefined : 1}
                                 style={[
                                   itemTitle?.styles ? itemTitle?.styles :
                                     styles.mealTypeTitle,
@@ -494,19 +494,18 @@ class CbAccordion extends React.Component {
                                     ]}
                                   />
                                 </TouchableOpacity>
-                                <Modal
-                                  visible={itemDataVisible}
-                                  transparent={false}
-                                  animationType="fade"
-                                  onRequestClose={closePreviewModal}
-                                  style={{flex:1}}
-                                  >
-                                  <ItemData />
-
-                                </Modal>
                                 <CbAddToCartButton mealItemDetails={box}/>
                               </Box>
                             )}
+                            <Modal
+                              visible={itemDataVisible}
+                              transparent={false}
+                              animationType="fade"
+                              onRequestClose={closePreviewModal}
+                              style={{ flex: 1 }}
+                            >
+                              <ItemData />
+                            </Modal>
                           </Box>
                           <Box style={styles.horizontalLine} />
                         </Box>
@@ -532,12 +531,33 @@ class cbSearchbox extends React.Component {
     this.search=props.Searchsource || "";
     this.backarrow=props.Backarrowsource || "";
     this.close=props.closesource || "";
+    this.isRecentOrderOpen = props.isRecentOrderOpen || false
     this.state = {
       showSearchInput: false,
       searchValue: "",
     };
+    this.inputRef = React.createRef();
+  }
+  handleFocus = () => {
+    if (this.inputRef?.current) {
+      this.inputRef.current.focus();
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.isRecentOrderOpen !== this.props.isRecentOrderOpen &&
+      this.props.isRecentOrderOpen
+    ) {
+      this.setState({ showSearchInput: true }, () => {
+        if (this.inputRef.current) {
+          this.inputRef.current.focus();
+        }
+      });
+    }
   }
 
+  
   render() {
     const { showSearchInput, searchValue } = this.state;
     const Searchsource=this.search;
@@ -546,8 +566,8 @@ class cbSearchbox extends React.Component {
     return (
       <Box
         style={{
-          width: showSearchInput ? "100%" : 34,
-          height: 31,
+          width: showSearchInput ? "100%" : 40,
+          height: 40,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -567,7 +587,7 @@ class cbSearchbox extends React.Component {
               marginRight: 25
             }}
           >
-            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 5 }} >
+            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 10 }} >
               {
                 Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
@@ -582,6 +602,7 @@ class cbSearchbox extends React.Component {
               }}
             >
               <InputField
+                ref={this.inputRef}
                 value={searchValue}
                 placeholder="Items"
                 onChangeText={(value) => this.setState({ searchValue: value })}
@@ -746,6 +767,11 @@ class cbSelect extends React.Component {
     this.isInvalid=props.isInvalid || false;
     this.selectLabel=props.Label || '';
     this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
+    this.style = props.style
+    this.isTimeModalSelected = props.isTimeModalSelected 
+    this.state = {
+      isSelected:false
+    }
   }
 
   render() {
@@ -753,30 +779,94 @@ class cbSelect extends React.Component {
     const selectLabelprop = inputArray?.labelText  || this.selectLabel;
     const placeholderprop = inputArray?.placeholder || this.placeholder;
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
-
     return (
-      <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid}>
+<FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
         <FormControlLabel>
           <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
         </FormControlLabel>
-        <Select>
+       <TouchableOpacity>
+       <Select>
           <SelectTrigger>
             <SelectInput placeholder={placeholderprop} />
           <SelectIcon  as={ChevronDownIcon} width={16} height={16} />
           </SelectTrigger>
-          <SelectPortal>
+          <SelectPortal isOpen={this.state.isSelected}>
             <SelectBackdrop />
             <SelectContent>
               {selectItems.map((item, index) => (
-            <SelectItem key={index} label={item.label} value={item.value}/>
+            <SelectItem key={index} label={item.label} value={item.value} onPress={()=>this.setState({isSelected:false},()=>console.log(item.value, "=== > selectedItem"))}/>
               ))}
             </SelectContent>
           </SelectPortal>
         </Select>
+       </TouchableOpacity>
         <FormControlError>
           <FormControlErrorText></FormControlErrorText>
         </FormControlError>
-      </FormControl>
+      </FormControl>      
+    );
+  }
+}
+
+class cbSelectTime extends React.Component {
+  constructor(props) {
+    super();
+    this.id=props.id;
+    this.placeholder= props.placeholder || 'Select';
+    this.isRequired=props.isRequired || false;
+    this.isInvalid=props.isInvalid || false;
+    this.selectLabel=props.Label || '';
+    this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
+    this.style = props.style
+    this.isTimeModalSelected = props.isTimeModalSelected 
+    this.state = {
+      isSelected:false,
+      selectedTime : ''
+    }
+  }
+
+  render() {
+    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+    const selectLabelprop = inputArray?.labelText  || this.selectLabel;
+    const placeholderprop = inputArray?.placeholder || this.placeholder;
+    const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
+    return (
+      <TouchableOpacity
+        onPress={() =>this.setState({ isSelected: true })}
+      >
+        <FormControl
+          isRequired={this.isRequired}
+          isInvalid={this.isInvalid}
+          style={this.style}
+        >
+          <FormControlLabel>
+            <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
+          </FormControlLabel>
+            <Select>
+              <SelectPortal isOpen={this.state.isSelected}>
+                <SelectBackdrop onPress={()=> this.setState({isSelected:false})}/>
+                <SelectContent>
+                  <Text style={{marginVertical:10,fontFamily:"SourceSansPro_SemiBoldItalic"}}>Select Time</Text>
+                  {selectItems.map((item, index) => (
+                    <SelectItem
+                      key={index}
+                      label={item.label}
+                      value={item.value}
+                      onPress={() =>  {
+                        this.setState({ isSelected: false })
+                      }}
+                      style={[styles.scrollIndicator,index === 0 && styles.hoverItem]}
+                    />
+                  ))}
+                  <CbCommonButton showBtnName={"Done"} style = {styles.doneBtn} btnTextStyle = {styles.doneTxtBtn} onPress={() => console.log("ssnnss")}/>
+                </SelectContent>
+              </SelectPortal>
+            </Select>
+          <FormControlError>
+            <FormControlErrorText></FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+      </TouchableOpacity>
     );
   }
 }
@@ -945,46 +1035,6 @@ class cbCategoryList extends React.Component {
     super();
     this.id = props.id;
   }
-  renderMenuCategoryList = (categoryItem, setMealCategory) => {
-    if (!categoryItem.IsSelect) {
-      categoryItem.IsSelect = 1;
-      setMealCategory(categoryItem.Category_Id);
-    }
-
-    return (
-      <Box>
-        <TouchableOpacity
-          style={styles.categoryBtn}
-          activeOpacity={0.6}
-          onPress={() => setMealCategory(categoryItem.Category_Id)}
-        >
-          <Text style={styles.categoryText}>
-            {categoryItem.Category_Name?.toUpperCase()}
-          </Text>
-          {categoryItem.IsSelect === 1 && <Box style={styles.bottomStyle} />}
-        </TouchableOpacity>
-      </Box>
-    );
-  }
-  renderMealTypeList = (pureItems,setMealType) => {
-    let item = pureItems
-    return (
-     <Box style={{flexDirection:"row",justifyContent:"center",alignItems:"center"}}>
-        <TouchableOpacity
-          activeOpacity={0.6}
-         style={[item.IsSelect===1 ? styles.activeMenuType:styles.inactiveMenuType]}
-          onPress={() => setMealType(item.MealPeriod_Id)}
-        >
-         <Text style={[styles.mealTypeTxt,{color:item.IsSelect===1?"#ffffff":"#717171"}]}>
-            {item.MealPeriod_Name?.toUpperCase()}
-          </Text>
-         <Text style={[styles.timeDurationTxt,{color:item.IsSelect===1?"#fff":"#000"}]}>
-            {item.Time}
-          </Text>
-        </TouchableOpacity>
-      </Box>
-    );
-  }
 
   render() {
     return (
@@ -1028,21 +1078,20 @@ class CbCommonButton extends React.Component {
     this.showBtnName = props.showBtnName || ""
     this.isPlusIconAvailable = props.isPlusIconAvailable || false
     this.style = props.style
-    this.screenName = props.screenName
-    this.extraParams = props.extraParams
-    this.isHomeEnabled = props.isHomeIconRequire || true
+    this.btnTextStyle = props.btnTextStyle
+    this.onPress = props.onPress
   }
   render() {
     return (
       <Box>
         <TouchableOpacity
           style={[this.style ? this.style : styles.mediumBtn]}
-          onPress={()=>navigateToScreen(this.props.props, this.screenName, this.isHomeEnabled,this.extraParams)}
+          onPress={() => this?.onPress()}
         >
           {
             this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
           }
-          <Text style={styles.mediumBtnTxt}>
+          <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
             {this.showBtnName}
           </Text>
         </TouchableOpacity>
@@ -1071,6 +1120,7 @@ CbFloatingButton.displayName='CbFloatingButton';
 CbAddToCartButton.displayName = "CbAddToCartButton"
 CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
+cbSelectTime.displayName='cbSelectTime';
 
 
- export {CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };

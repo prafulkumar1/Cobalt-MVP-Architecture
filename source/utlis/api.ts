@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseURL } from "../config/config";
+import { baseURL, endpoints } from "../config/config";
  
 const api = axios.create({
     baseURL,
@@ -14,6 +14,21 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default api;
+
+export const postApiCall = async (endpoints:string, params:any,userToken:string) => {
+    try {
+     await api.post(`${baseURL}/${endpoints}`,params,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            token: userToken,
+          },
+        }
+      )
+    } catch (error) {
+      console.log(JSON.stringify(error))
+    }
+}
  
 //No sonar
 // const response = await api.get(endpoints, {
