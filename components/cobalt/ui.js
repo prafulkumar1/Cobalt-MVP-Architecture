@@ -17,10 +17,11 @@ import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
 import { Divider } from '@/components/ui/divider';
 import {useFormContext} from './event';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
-import { Text, View} from 'react-native';
+import {  View} from 'react-native';
 import PropTypes from "prop-types";
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import {  styles } from './style';
@@ -40,6 +41,7 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
      this.componentData= props.componentData || [];
+     
 
   }
 
@@ -47,14 +49,14 @@ class CbAccordionlist extends React.Component {
     const Notfavsource=this.Notfavsource;
     const favsource=this.favsource;
     const IsFavorite=1;
-    const componentData=this.screenName === "RecentOrders" ? this.componentData.RecentOrders: this.componentData.Modifiers;
+    const componentData=this.screenName === "RecentOrders" ? this.componentData.CompletedOrders: this.componentData.Modifiers;
 
 
     return (
       componentData.map((order, index) => (
-      <Accordion size="md" vriant="filled" type="single" style={styles.roAccordion} >
-      <AccordionItem value="a">
-        <AccordionHeader style={styles.roAccordionHeader}>
+      <Accordion size="md" vriant="filled" type="single" style={this.screenName === "RecentOrders" ? styles.roAccordion: []} >
+      <AccordionItem value={`item-${index}`}  style={!this.screenName === "RecentOrders" ? styles.itemDetailsSubContainer:[]}>
+        <AccordionHeader style={this.screenName === "RecentOrders" ? styles.roAccordionHeader:[]}>
           <AccordionTrigger>
             {({ isExpanded }) => {
               return (
@@ -67,10 +69,10 @@ class CbAccordionlist extends React.Component {
                       </Box>
                    
                     ) : (
-                      <Box style={{ display: "flex", flexDirection: "row", alignItems: "center"}}>
-                          <AccordionTitleText style={{ display: "flex" }}>{order.MainModifier} </AccordionTitleText>
-                        {order.IsRequried? <AccordionTitleText style={{ display: "flex" }}>(Required)</AccordionTitleText>: null  }
-                        {order.IsMaxAllowedOne? <AccordionTitleText style={{ display: "flex" }}>(Max allowed 1)</AccordionTitleText>: null  }
+                      <Box style={{  display: "flex",flexDirection: "row",justifyContent: "flex-start",}}>
+                          <AccordionTitleText style={{ color: "#4B5154",fontSize: 14,fontFamily:"SourceSansPro_SemiBold"}}>{order.MainModifier}{" "} </AccordionTitleText>
+                        {order.IsRequried? <AccordionTitleText style={{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, }}>(Required){" "}</AccordionTitleText>: null  }
+                        {order.IsMaxAllowedOne? <AccordionTitleText style={{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"}}>(Max allowed 1)</AccordionTitleText>: null  }
                       </Box>
                   )}
                   {isExpanded ? (
@@ -89,12 +91,12 @@ class CbAccordionlist extends React.Component {
           <Box>
                 <Box style={styles.roAccordionContentouterbox}>
                     <Box style={styles.roAccordionContentItembox}>
-                        <AccordionContentText style={styles.roItemName}> {item.ItemName} </AccordionContentText>
-                        <AccordionContentText style={styles.roItemprice}>{`$${item.Price}`}</AccordionContentText>
+                        <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}> {item.ItemName} </Text>
+                        <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
                     </Box>
                     <Box style={styles.roImagescetion}>
                       <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={styles.roItemImage} />
-                      <Button style={styles.roItemButton} />
+                       <CbAddToCartButton mealItemDetails={{}} style={styles.roItemButton} />
                     </Box>           
                 </Box>
                 <Divider/>
@@ -103,7 +105,7 @@ class CbAccordionlist extends React.Component {
           ):
          (
           order.ModifierItems.map((item, index) => ( 
-            <Box style={{ display: "flex",flexDirection: "row",alignItems: "center" }}>
+            <Box style={{ display: "flex",  flexDirection: "row",  alignItems: "center", paddingTop: 10, }}>
                 <Checkbox >
                   <CheckboxIndicator>
                     <CheckboxIcon as={CheckIcon} style={styles.CheckIcon}/>
@@ -651,12 +653,11 @@ class cbButton extends React.Component {
     const variant = buttonArray?.variant || this.variant;
     const buttonText = buttonArray?.text || this.buttonText ;
     const buttonStyle=this.customStyles.buttonStyle;
-    const ButtonTextStyle=this.customStyles.buttontextStyle;
+    const buttonTextStyle=this.customStyles.buttontextStyle;
     
-
     return (
       <Button variant={variant} onPress={()=> this.onPress()} style={buttonStyle}  >
-          <ButtonText style={ButtonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
+          <ButtonText style={buttonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
   }

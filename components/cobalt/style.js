@@ -246,7 +246,7 @@ export const styles = StyleSheet.create({
   roItemprice:{fontSize:16,fontFamily:"Source Sans Pro",fontWeight:"700",marginLeft:4},
   roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", },
   roItemImage:{  marginRight: 10 },
-  roItemButton:{ width: 30 },
+  roItemButton:{ width: 30 ,height:30},
   roReoderButton:{  alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5 },
   roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
 })

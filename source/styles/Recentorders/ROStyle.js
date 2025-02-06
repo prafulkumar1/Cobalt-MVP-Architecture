@@ -13,5 +13,5 @@ export const styles = StyleSheet.create({
     ActiveButtonTextStyle:{ color: "white" ,fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1},
     Item_Image:{height:60,width:80},
     Favorite_Image:{height:22,width:20},
-    AddButton:{   width:40, height: 40,left:40,top:10},
+    AddButton:{   width:30, height: 30,left:40,top:12},
 })
