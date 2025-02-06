@@ -8,7 +8,7 @@ import { styles } from '@/source/styles/ItemData';
 const ItemData = (props) => {
     const [itemNames, setItemNames] = useState([]);
     const [isVisible, setIsVisible] = useState(false);
-    const { closePreviewModal,singleItemDetails,cartData } = useFormContext()
+    const { closePreviewModal,singleItemDetails,cartData,modifierData } = useFormContext()
     const cartItem = cartData?.find((item) => item.Item_Id === singleItemDetails.Item_Id);
     const quantity = cartItem ? cartItem.quantity : 0;
     useEffect(() => {
@@ -125,7 +125,7 @@ const ItemData = (props) => {
                         <UI.Box style={styles.modifierSubContainer}>
                             <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
                             <UI.ScrollView showsVerticalScrollIndicator={false} style={styles.mainList}>
-                                <UI.CbAccordionlist componentData={ModifiersData} screenName="Modifiers" />
+                                <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" />
                                 <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
                                 <UI.cbInput id="Comments" style={styles.commentsBox}
                                 />

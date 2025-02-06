@@ -37,6 +37,7 @@ class CbAccordionlist extends React.Component {
     this.componentData = props.componentData || [];
     this.state = {
       selectedModifiers: {},
+      selectedItems: []
     };
   }
 
@@ -44,8 +45,10 @@ class CbAccordionlist extends React.Component {
     modifierIndex,
     itemIndex,
     isMaxAllowedOne,
-    isRequired
+    isRequired,
+    itemName
   ) => {
+
     this.setState((prevState) => {
       const updatedModifiers = { ...prevState.selectedModifiers };
 
@@ -67,11 +70,12 @@ class CbAccordionlist extends React.Component {
         }
       }
 
-      return { selectedModifiers: updatedModifiers };
+      return { selectedModifiers: updatedModifiers,selectedItems:[...prevState.selectedItems,itemName] };
     });
   };
 
   render() {
+    console.log(this.state,"====>>>itemName")
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
     const IsFavorite = 1;
@@ -222,7 +226,9 @@ class CbAccordionlist extends React.Component {
                         this.handleCheckboxToggle(
                           index,
                           itemIndex,
-                          order.IsMaxAllowedOne === 1
+                          order.IsMaxAllowedOne === 1,
+                          order.IsRequried === 1,
+                          item.ItemName
                         )
                       }
                     >
@@ -374,7 +380,7 @@ class CbAddToCartButton extends React.Component {
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const { cartData, addItemToCartBtn, updateCartItemQuantity } = contextProps;
+    const { cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
@@ -391,7 +397,7 @@ class CbAddToCartButton extends React.Component {
             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
           ]}
           activeOpacity={0.5}
-          onPress={() => addItemToCartBtn(this.mealItemDetails)}
+          onPress={() => this.mealItemDetails?.isModifier ===1 ? closePreviewModal():addItemToCartBtn(this.mealItemDetails)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>

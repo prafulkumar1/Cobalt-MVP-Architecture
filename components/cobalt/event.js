@@ -19,6 +19,7 @@ export const UseFormContextProvider = ({children}) => {
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
+    const [modifierData,setModifierData] = useState(ModifiersData)
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -163,7 +164,8 @@ export const UseFormContextProvider = ({children}) => {
       closePreviewModal,
       deleteCartItem,
       storeSingleItem,
-      singleItemDetails
+      singleItemDetails,
+      modifierData
     }
     return (
       <FormContext.Provider
