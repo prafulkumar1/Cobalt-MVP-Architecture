@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#6D6D6D',
     fontFamily:"SourceSansPro_SemiBold",
-    width:responsiveWidth(40)
+    width:responsiveWidth(40),
   },
   underLineTxt: {
     color: '#00C6FF',
@@ -290,5 +290,31 @@ export const styles = StyleSheet.create({
     elevation: 10,
     zIndex:-1
   },
-  modiferItems:{flex:1}
+  modiferItems:{flex:1},
+  footerContainer:{
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 80,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+    paddingHorizontal: 20,
+},
+addToCartBtn:{
+  backgroundColor: "#5773a2",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+totalAmountTxt:{ fontSize: 12, color: "#4B5154", fontFamily:"SourceSansPro_Italic" },
+orderAmount:{ fontSize: 24, color: "#4B5154", paddingVertical: 8,fontFamily:"SourceSansPro_SemiBold" },
+addCartTxt:{ color: "#fff", fontSize: 22,fontFamily:"SourceSansPro_SemiBold", textAlign: 'center' },
 })

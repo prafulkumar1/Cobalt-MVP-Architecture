@@ -1,29 +1,15 @@
 import * as UI from '@/components/cobalt/importUI';
-import { foodOrderData, ModifiersData } from '@/source/constants/commonData';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Image, Modal } from "react-native";
 import { useFormContext } from '@/components/cobalt/event';
-import { styles } from '@/source/styles/ItemData';
+import { styles } from '@/source/styles/ItemModifier';
+import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
 
-const ItemData = (props) => {
-    const [itemNames, setItemNames] = useState([]);
-    const [isVisible, setIsVisible] = useState(false);
-    const { closePreviewModal,singleItemDetails,cartData,modifierData } = useFormContext()
-    const cartItem = cartData?.find((item) => item.Item_Id === singleItemDetails.Item_Id);
-    const quantity = cartItem ? cartItem.quantity : 0;
-    useEffect(() => {
-        const items = [];
-        foodOrderData.MenuItems.forEach(mealPeriod => {
-            mealPeriod.Categories.forEach(category => {
-                category.Submenu.forEach(submenu => {
-                    submenu.Items.forEach(item => {
-                        items.push(item);
-                    });
-                });
-            });
-        });
-        setItemNames(items);
-    }, []);
+const ItemModifier = (props) => {
+   
+    const {  singleItemDetails,  modifierData, } = useFormContext()
+
+    const { handleCloseItemDetails,handleDiscardChanges,isVisible,setIsVisible} = useItemModifierLogic()
 
     return (
         <>
@@ -43,7 +29,7 @@ const ItemData = (props) => {
                     </UI.TouchableOpacity>
 
                     <UI.TouchableOpacity
-                        onPress={() => setIsVisible(true)}
+                        onPress={()=>handleCloseItemDetails()}
                         style={styles.crossbtn}
                     >
                         <Image
@@ -81,12 +67,7 @@ const ItemData = (props) => {
                                         </UI.TouchableOpacity>
 
                                         <UI.TouchableOpacity
-                                            onPress={() => {
-                                                setIsVisible(false)
-                                                setTimeout(() => {
-                                                    closePreviewModal()
-                                                }, 100)
-                                            }}
+                                            onPress={handleDiscardChanges}
                                             style={styles.modalNoYesBtn}
                                         >
                                             <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
@@ -108,7 +89,7 @@ const ItemData = (props) => {
                                 </UI.Text>
                             </UI.Box>
 
-                            <UI.Box style={[quantity === 0 ? styles.addIconBtn : styles.rightItemContainer]}>
+                            <UI.Box style={styles.rightItemContainer}>
                                 <UI.TouchableOpacity style={styles.favIconBtn}>
                                     <UI.CbImage imageJsx={<Image source={require("@/assets/images/icons/Fav3x.png")} style={styles.favIcon} />} />
                                 </UI.TouchableOpacity>
@@ -125,7 +106,7 @@ const ItemData = (props) => {
                         <UI.Box style={styles.modifierSubContainer}>
                             <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
                             <UI.ScrollView showsVerticalScrollIndicator={false} style={styles.mainList}>
-                                <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" />
+                                <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" props={props}/>
                                 <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
                                 <UI.cbInput id="Comments" style={styles.commentsBox}
                                 />
@@ -134,24 +115,11 @@ const ItemData = (props) => {
                     </UI.Box>
                 </UI.Box>
             </UI.ScrollView>
-
-            <UI.Box style={styles.footerContainer}>
-                <UI.Box>
-                    <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-                    <UI.Text style={styles.orderAmount}>$34.00</UI.Text>
-                </UI.Box>
-                <UI.CbCommonButton
-                    showBtnName={"Add to Cart"}
-                    style={styles.addToCartBtn}
-                    btnTextStyle={styles.addCartTxt}
-                    onPress={() => console.log("cliekcc")}
-                />
-            </UI.Box>
         </>
     );
     
 };
 
-export default ItemData;
+export default ItemModifier;
 
 

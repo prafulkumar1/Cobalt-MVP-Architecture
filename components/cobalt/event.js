@@ -13,13 +13,16 @@ export const UseFormContextProvider = ({children}) => {
     
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
-    const [selectedModifiers, setSelectedModifiers] = useState({});
     const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
     const [modifierData,setModifierData] = useState(ModifiersData)
+    const [modifierCartItemData , setModifierCartItemData] = useState(null)
+    const [selectedModifiers, setSelectedModifiers] = useState([]);
+    const [modifierCart,setModifierCart] = useState([])
+    const [selectedTime,setSelectedTime] = useState("7:30 AM")
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -97,8 +100,22 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
 
+    const getModifierData =async () => {
+      try {
+        const modifierDataItem = await AsyncStorage.getItem("modifier_data")
+        if (modifierDataItem !== null) {
+          setModifierCartItemData(JSON.parse(modifierDataItem))
+          setModifierCart(JSON.parse(modifierDataItem))
+        } else {
+          setModifierCartItemData([])
+          setModifierCart([])
+        }
+      } catch (error) {}
+    };
+
     useEffect(() => {
       getCartData()
+      getModifierData()
     },[])
 
     const addItemToCartBtn = async (data) => {
@@ -145,9 +162,99 @@ export const UseFormContextProvider = ({children}) => {
       setCartData(updatedCartData)
     }
 
+    const deleteItemModifierItem = async (mealItemDetails) => {
+      let updatedCartData = modifierCartItemData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
+      // await AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
+      setModifierCartItemData(updatedCartData)
+    }
+
+    const removeValue = async () => {
+      try {
+        await AsyncStorage.removeItem('modifier_data')
+      } catch(e) {
+        // remove error
+      }
+    
+      console.log('Done.')
+    }
+
     const storeSingleItem = (item) => {
       setSingleItemDetails(item)
     }
+    const increaseQuantity = (item,isAddToCartClick) => {
+      try {
+        setModifierCartItemData((prevModifierCartItemData) => {
+          const updatedModifierData = [...prevModifierCartItemData];
+          const itemIndex = updatedModifierData.findIndex((modifierItem) => modifierItem.Item_Id === item.Item_Id);
+          if (itemIndex !== -1) {
+            updatedModifierData[itemIndex].quantity += 1;
+            updatedModifierData[itemIndex].quantityIncPrice = updatedModifierData[itemIndex].Price * updatedModifierData[itemIndex].quantity;
+          } else {
+            updatedModifierData.push({ ...item, quantity: 1, quantityIncPrice: item.Price });
+          }
+          if(isAddToCartClick){
+          AsyncStorage.setItem("modifier_data", JSON.stringify(updatedModifierData));
+          }
+          return updatedModifierData;
+        });
+      } catch (error) {
+        console.error("Error updating cart item:", error);
+      }
+    };
+    
+
+    const updateModifierItemQuantity = async (mealItemDetails, newQuantity) => {
+      try {
+        setModifierCartItemData((prevCartData) => {
+          let updatedCartData;
+    
+          if (newQuantity === 0) {
+            updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+          } else {
+            const addModifierPrice = modifierCartItemData.find((items) => items.Item_Id === singleItemDetails?.Item_Id)
+            updatedCartData = prevCartData.map((item) =>
+              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+            );
+           
+          }
+          return updatedCartData;
+        });
+      } catch (error) {}
+    };
+
+
+    const getAllSelectedModifiers = (modifiers) => {    
+      setSelectedModifiers((prevState) => {
+        const updatedModifiers = [...prevState];
+        if (modifiers?.isChecked) {
+          if (!updatedModifiers.some(mod => mod.modifier === modifiers.modifier)) {
+            updatedModifiers.push(modifiers);
+          }
+        } else {
+          const index = updatedModifiers.findIndex(mod => mod.modifier === modifiers.modifier);
+          if (index !== -1) {
+            updatedModifiers.splice(index, 1);
+          }
+        }
+        return updatedModifiers;
+      });
+    };
+
+    const calculateTotalPrice = () => {
+      const modifiersTotal = selectedModifiers.reduce((total, modifier) => {
+        return total + modifier.price;
+      }, 0);
+    
+      // const updatedData = modifierCartItemData.map((items) => {
+      //   return{
+      //     ...items,
+      //     quantityIncPrice:modifiersTotal
+      //   }
+      // })
+      // console.log(updatedData,"===>updatedData")
+      // setModifierCartItemData(updatedData)
+    };
+    
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -165,7 +272,17 @@ export const UseFormContextProvider = ({children}) => {
       deleteCartItem,
       storeSingleItem,
       singleItemDetails,
-      modifierData
+      modifierData,
+      increaseQuantity,
+      modifierCartItemData,
+      updateModifierItemQuantity,
+      deleteItemModifierItem,
+      getAllSelectedModifiers,
+      selectedModifiers,
+      setSelectedModifiers,
+      calculateTotalPrice,
+      modifierCart,
+      selectedTime,setSelectedTime
     }
     return (
       <FormContext.Provider

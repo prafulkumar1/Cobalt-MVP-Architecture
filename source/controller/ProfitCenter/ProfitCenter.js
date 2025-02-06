@@ -44,7 +44,7 @@ export const useProfitCenterLogic = () => {
   }
 
   const navigateToMenuOrder = (props, item) => {
-    if (item.Isnavigate == 0) {
+    if (item.Isnavigate == 1) {
       navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName })
     }
   }
