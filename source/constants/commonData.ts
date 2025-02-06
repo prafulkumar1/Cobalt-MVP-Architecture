@@ -433,7 +433,7 @@ export const RecentordersData={
           "ModifierItems":[
             {
               "ItemName": "Peanut sauce or sweet soy glaze",            
-              "Price": 0,            
+              "Price": 6.00,            
             },
             {
               "ItemName": "Sweet Chili Sauce",            

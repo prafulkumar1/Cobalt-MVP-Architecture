@@ -56,7 +56,6 @@ export default function MyCartScreen(props) {
           value:items.Time
         }
       })
-      console.log(updatedShowTime,"==>Pickup_Times")
       setShowPickupTime(updatedShowTime)
     }, 100);
 

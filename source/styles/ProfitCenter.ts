@@ -24,7 +24,8 @@ export const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#FFF",
         paddingTop: 8,
-        fontFamily: "SourceSansPro_SemiBold"
+        fontFamily: "SourceSansPro_SemiBold",
+        width:responsiveWidth(70),
     },
     profitCenterTimings: {
         fontSize: 14,

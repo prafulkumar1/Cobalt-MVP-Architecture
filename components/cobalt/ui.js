@@ -373,7 +373,6 @@ class CbFloatingButton extends React.Component {
     this.screenProps = props.props
   }
   render() {
-    console.log
     return (
       <FormContext.Consumer>
       {({cartData}) => {
@@ -447,11 +446,14 @@ class CbAddToCartButton extends React.Component {
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
     const quantity = cartItem ? cartItem.quantity : 0;
+    console.log(cartItem,"===>>>>")
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     
+
+
   
-    if (quantity === 0 && modifierQuantity === 0) {
+    if ( quantity === 0 && modifierQuantity === 0) {
       return (
         <TouchableOpacity
           style={[this.style ? this.style : styles.addItemToCartBtn, 
@@ -1095,7 +1097,6 @@ class cbSelectTime extends React.Component {
 
       <FormContext.Consumer>
       {({     selectedTime,setSelectedTime}) => {
-        console.log(selectedTime,"===>selectedTime")
         const buttonArray = global.controlsConfigJson.find(
           (item) => item.id === this.id
         );
@@ -1113,7 +1114,7 @@ class cbSelectTime extends React.Component {
           style={this.style}
         >
           <FormControlLabel>
-            <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
+            <FormControlLabelText>{selectedTime}</FormControlLabelText>
           </FormControlLabel>
             <Select>
               <SelectPortal isOpen={this.state.isSelected}>
