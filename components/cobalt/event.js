@@ -23,6 +23,7 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [modifierCart,setModifierCart] = useState([])
     const [selectedTime,setSelectedTime] = useState("7:30 AM")
+    const [currentSelectedVal , setCurrentSelectedVal] = useState("")
     // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
     //      setFormData({...formData,[formId + '_' + controlId]: {
     //       value: controlValue,
@@ -156,15 +157,14 @@ export const UseFormContextProvider = ({children}) => {
     const closePreviewModal = () => {
       setItemDataVisible(!itemDataVisible)
     }
-    const deleteCartItem = async (mealItemDetails) => {
-      let updatedCartData = cartData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
-      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
-      setCartData(updatedCartData)
-    }
+    const deleteCartItem = (mealItemDetails) => {
+      let updatedCartData = cartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+      setCartData(updatedCartData);
+      AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+    };
 
     const deleteItemModifierItem = async (mealItemDetails) => {
       let updatedCartData = modifierCartItemData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
-      // await AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
       setModifierCartItemData(updatedCartData)
     }
 
@@ -211,7 +211,6 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
           } else {
-            const addModifierPrice = modifierCartItemData.find((items) => items.Item_Id === singleItemDetails?.Item_Id)
             updatedCartData = prevCartData.map((item) =>
               item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
             );
@@ -222,38 +221,63 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
 
-
-    const getAllSelectedModifiers = (modifiers) => {    
+    const getAllSelectedModifiers = (modifiers, itemName) => {    
+      setCurrentSelectedVal(itemName)
       setSelectedModifiers((prevState) => {
-        const updatedModifiers = [...prevState];
-        if (modifiers?.isChecked) {
-          if (!updatedModifiers.some(mod => mod.modifier === modifiers.modifier)) {
-            updatedModifiers.push(modifiers);
+          let updatedModifiers = [...prevState];
+  
+          if (modifiers.isChecked) {
+              updatedModifiers = updatedModifiers.filter(mod => mod.modifier !== modifiers.modifier);
+              updatedModifiers.push(modifiers);
+          } else {
+              updatedModifiers = updatedModifiers.filter(mod => mod.modifier !== modifiers.modifier);
           }
-        } else {
-          const index = updatedModifiers.findIndex(mod => mod.modifier === modifiers.modifier);
-          if (index !== -1) {
-            updatedModifiers.splice(index, 1);
-          }
-        }
-        return updatedModifiers;
+          return updatedModifiers;
       });
-    };
+  };
 
     const calculateTotalPrice = () => {
-      const modifiersTotal = selectedModifiers.reduce((total, modifier) => {
-        return total + modifier.price;
-      }, 0);
-    
-      // const updatedData = modifierCartItemData.map((items) => {
-      //   return{
-      //     ...items,
-      //     quantityIncPrice:modifiersTotal
-      //   }
-      // })
-      // console.log(updatedData,"===>updatedData")
-      // setModifierCartItemData(updatedData)
-    };
+      let requiredVal = 0;
+  
+      selectedModifiers.forEach((items) => {
+          if (items.isMaxAllowedOne && items.modifier === currentSelectedVal) {
+              requiredVal = items.price;
+          }
+      });
+  
+      const modifiersTotal = selectedModifiers
+          ?.filter((items) => !items.isMaxAllowedOne)
+          ?.reduce((total, modifier) => {
+              return modifier.isChecked ? total + modifier.price : total;
+          }, 0);
+  
+      let finalValue = modifiersTotal + requiredVal;
+  
+      let updatedModifierData = modifierCartItemData?.map((items) => {
+          const basePrice = items.basePrice ?? items.quantityIncPrice;
+  
+          return {
+              ...items,
+              basePrice: basePrice,
+              quantityIncPrice: (Number(basePrice) || 0) + finalValue
+          };
+      });
+  
+      setModifierCartItemData(updatedModifierData);
+  };
+  
+  useEffect(() => {
+      setModifierCartItemData((prevData) =>
+          prevData?.map((item) => ({
+              ...item,
+              basePrice: item.basePrice ?? (item.quantityIncPrice || 0)
+          }))
+      );
+  }, []);
+  
+  useEffect(() => {
+      calculateTotalPrice();
+  }, [selectedModifiers]);
     
     const initialValues = {
       getFormFieldData,
@@ -282,7 +306,8 @@ export const UseFormContextProvider = ({children}) => {
       setSelectedModifiers,
       calculateTotalPrice,
       modifierCart,
-      selectedTime,setSelectedTime
+      selectedTime,
+      setSelectedTime
     }
     return (
       <FormContext.Provider

@@ -8,8 +8,9 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { cartConfigResponseData, priceItems } from '@/source/constants/commonData';
 import { useEffect, useState } from 'react';
 import { navigateToScreen } from '@/source/constants/Navigations';
+import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
-
+import { Icon } from '@/components/ui/icon';
 
 
 const pageId='MyCart';
@@ -39,7 +40,7 @@ export default function MyCartScreen(props) {
      handleSaveTip,
      scrollViewRef,
    } = useMyCartLogic();
-   const {cartData, selectedTime,setSelectedTime   }= useFormContext();
+   const {cartData, selectedTime ,updateCartItemQuantity }= useFormContext();
 
    useEffect(() => {
     const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
@@ -89,7 +90,9 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_Id)}
         >
-          <UI.Box style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}>
+          <UI.Box
+            style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
+          >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
@@ -99,16 +102,50 @@ export default function MyCartScreen(props) {
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>
-                <UI.Text style={styles.itemPrice}>{`$${item.quantityIncPrice}`}</UI.Text>
-                <UI.CbAddToCartButton mealItemDetails={item} style={styles.addToCartBtn} cartStyle={true} />
+                <UI.Text
+                  style={styles.itemPrice}
+                >{`$${item.quantityIncPrice}`}</UI.Text>
+
+                <UI.Box style={styles.operationBtn}>
+                  <UI.TouchableOpacity
+                    style={styles.iconBtn}
+                    onPress={() =>
+                      updateCartItemQuantity(item, item.quantity - 1)
+                    }
+                  >
+                    <Icon
+                      as={item.quantity === 1 ? TrashIcon : RemoveIcon}
+                      color="#5773a2"
+                      size={"md"}
+                      style={{ width: 23, height: 23 }}
+                    />
+                  </UI.TouchableOpacity>
+
+                  <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
+
+                  <UI.TouchableOpacity
+                    style={styles.iconBtn}
+                    onPress={() =>
+                      updateCartItemQuantity(item, item.quantity + 1)
+                    }
+                  >
+                    <Icon
+                      as={AddIcon}
+                      color="#5773a2"
+                      size={"xl"}
+                      style={{ width: 25, height: 25 }}
+                    />
+                  </UI.TouchableOpacity>
+                </UI.Box>
               </UI.Box>
             </UI.Box>
 
             <UI.Box style={styles.notesContainer}>
-              <Image source={require("@/assets/images/icons/messageIcon2x.png")} style={styles.noteIcon} />
-              <UI.Text style={styles.itemNotes}>
-                sdsandkkdksa
-              </UI.Text>
+              <Image
+                source={require("@/assets/images/icons/messageIcon2x.png")}
+                style={styles.noteIcon}
+              />
+              <UI.Text style={styles.itemNotes}>sdsandkkdksa</UI.Text>
             </UI.Box>
           </UI.Box>
         </Swipeable>

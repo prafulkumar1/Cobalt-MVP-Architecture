@@ -41,7 +41,6 @@ class CbAccordionlist extends React.Component {
   }
 
   handleCheckboxToggle = (
-    calculateTotalPrice,
     modifierIndex,
     itemIndex,
     isMaxAllowedOne,
@@ -56,9 +55,9 @@ class CbAccordionlist extends React.Component {
       const addedModifiers = {
         id:uuid.v4(),
         modifier : itemName,
-        isModifierSelected:false,
         isChecked:!isChecked,
-        price:price
+        price:price,
+        isMaxAllowedOne
       }
 
       if (isMaxAllowedOne) {
@@ -78,10 +77,8 @@ class CbAccordionlist extends React.Component {
           updatedModifiers[modifierIndex].push(itemIndex);
         }
       }
-      getAllSelectedModifiers(addedModifiers)
-      setTimeout(() => {
-        calculateTotalPrice()
-      }, 200);
+      getAllSelectedModifiers(addedModifiers,itemName)
+
       return { selectedModifiers: updatedModifiers };
     });
   };
@@ -98,7 +95,7 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({ cartData,getAllSelectedModifiers ,calculateTotalPrice}) => {
+        {({ cartData,getAllSelectedModifiers}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -245,7 +242,6 @@ class CbAccordionlist extends React.Component {
                                 }
                                 onChange={() =>
                                   this.handleCheckboxToggle(
-                                    calculateTotalPrice,
                                     index,
                                     itemIndex,
                                     order.IsMaxAllowedOne === 1,
@@ -446,7 +442,6 @@ class CbAddToCartButton extends React.Component {
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
     const quantity = cartItem ? cartItem.quantity : 0;
-    console.log(cartItem,"===>>>>")
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     
