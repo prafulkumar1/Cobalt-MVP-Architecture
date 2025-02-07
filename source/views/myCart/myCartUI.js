@@ -21,7 +21,6 @@ export default function MyCartScreen(props) {
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
  const [keyboardVisible, setKeyboardVisible] = useState(false);
  const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
-
  
   
    const {
@@ -40,9 +39,21 @@ export default function MyCartScreen(props) {
      handleSaveTip,
      scrollViewRef,
    } = useMyCartLogic();
-   const {cartData, selectedTime ,updateCartItemQuantity }= useFormContext();
+   const {cartData, selectedTime ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity}= useFormContext();
+
+   const [finalCartData, setFinalCartData] = useState([]);
+
+  useEffect(() => {
+    if (cartData.length > 0 && addedModifierCartData.length > 0) {
+      setFinalCartData([...cartData, ...addedModifierCartData]);
+    }
+  }, [cartData, addedModifierCartData]);
+  
+
 
    useEffect(() => {
+    getCartData();
+    getModifierData();
     const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
@@ -109,8 +120,13 @@ export default function MyCartScreen(props) {
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() =>
-                      updateCartItemQuantity(item, item.quantity - 1)
+                    onPress={() => {
+                      if (item.isModifier === 1) {
+                        updateModiferItemData(item, item.quantity - 1)
+                      } else {
+                        updateCartItemQuantity(item, item.quantity - 1)
+                      }
+                    }
                     }
                   >
                     <Icon
@@ -125,8 +141,13 @@ export default function MyCartScreen(props) {
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() =>
-                      updateCartItemQuantity(item, item.quantity + 1)
+                    onPress={() => {
+                      if (item.isModifier === 1) {
+                        updateModiferItemData(item, item.quantity + 1)
+                      } else {
+                        updateCartItemQuantity(item, item.quantity + 1)
+                      }
+                    }                      
                     }
                   >
                     <Icon
@@ -139,14 +160,16 @@ export default function MyCartScreen(props) {
                 </UI.Box>
               </UI.Box>
             </UI.Box>
-
-            <UI.Box style={styles.notesContainer}>
+            {
+              item.comments && 
+              <UI.Box style={styles.notesContainer}>
               <Image
                 source={require("@/assets/images/icons/messageIcon2x.png")}
                 style={styles.noteIcon}
               />
-              <UI.Text style={styles.itemNotes}>sdsandkkdksa</UI.Text>
+              <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
             </UI.Box>
+            }
           </UI.Box>
         </Swipeable>
       </UI.Pressable>
@@ -243,8 +266,8 @@ export default function MyCartScreen(props) {
     >
       <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
         <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {cartData && cartData.length > 0 ? (
-            cartData?.map((items) => {
+          {finalCartData && finalCartData.length > 0 ? (
+            finalCartData?.map((items) => {
               return renderCartItems(items);
             })
           ) : (
@@ -252,11 +275,11 @@ export default function MyCartScreen(props) {
               <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
             </UI.View>
           )}
-          {cartData && cartData.length > 0 && renderCartPriceCalculations()}
+          {finalCartData && finalCartData.length > 0 && renderCartPriceCalculations()}
         </UI.ScrollView>
 
         {
-          cartData && cartData.length > 0 &&
+          finalCartData && finalCartData.length > 0 &&
           <UI.Box>
             {
               cartConfigData.ShowTip === 1 &&

@@ -5,9 +5,10 @@ import { useFormContext } from '@/components/cobalt/event';
 import { styles } from '@/source/styles/ItemModifier';
 import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
 
+const pageId = "ItemModifier"
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,  modifierData, } = useFormContext()
+    const {  singleItemDetails,  modifierData,setFormFieldData,getFormFieldData } = useFormContext()
 
     const { handleCloseItemDetails,handleDiscardChanges,isVisible,setIsVisible} = useItemModifierLogic()
 
@@ -108,8 +109,11 @@ const ItemModifier = (props) => {
                             <UI.ScrollView showsVerticalScrollIndicator={false} style={styles.mainList}>
                                 <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" props={props}/>
                                 <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
-                                <UI.cbInput id="Comments" style={styles.commentsBox}
-                                />
+                                
+
+                                  <UI.cbForm formId={pageId} setFormFieldData={setFormFieldData} getFormFieldData={getFormFieldData}>
+                                  <UI.cbInput id="Comments" style={styles.commentsBox}/>
+                                    </UI.cbForm>
                             </UI.ScrollView>
                         </UI.Box>
                     </UI.Box>

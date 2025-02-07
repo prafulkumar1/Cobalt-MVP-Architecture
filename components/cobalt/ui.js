@@ -564,7 +564,7 @@ class CbAccordion extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible,closePreviewModal,singleItemDetails,modifierCartItemData,increaseQuantity}) => {
+        {({itemDataVisible,closePreviewModal,singleItemDetails,modifierCartItemData,addItemToModifierForCart,commentValue}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -772,7 +772,11 @@ class CbAccordion extends React.Component {
                     btnTextStyle={styles.addCartTxt}
                     onPress={() => {
                       navigateToScreen(this.props, "MyCart", true,)
-                      increaseQuantity(singleItemDetails,true)
+                      addItemToModifierForCart(singleItemDetails)
+                      closePreviewModal()
+                      setTimeout(() => {
+                          commentValue.current = ""
+                      }, 1000);
                     }}
                   />
                 </Box>
