@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -9,20 +9,21 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
-import {  CheckIcon, ChevronDownIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
-import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
+import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
+import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem,SelectDragIndicatorWrapper } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
 import { Icon } from '@/components/ui/icon';
+import { Text } from '@/components/ui/text';
+import { Divider } from '@/components/ui/divider';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
-import { Text, View} from 'react-native';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import {  styles } from './style';
 import uuid from  "react-native-uuid"
 import { FormContext } from './event';
-import { navigateToScreen } from '@/source/constants/Navigations'
+import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
@@ -35,6 +36,7 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
+     
     this.state = {
       selectedModifiers: {},
     };
@@ -89,7 +91,7 @@ class CbAccordionlist extends React.Component {
     const IsFavorite = 1;
     const componentData =
       this.screenName === "RecentOrders"
-        ? this.componentData.RecentOrders
+        ? this.componentData.CompletedOrders
         : this.componentData.Modifiers;
     const defaultOpenItems = componentData.map((_, index) => `item-${index}`);
 
@@ -107,29 +109,25 @@ class CbAccordionlist extends React.Component {
                   <Accordion
                     defaultValue={defaultOpenItems}
                     variant="filled"
-                    type="multiple"
+                    type="single"
                     size="md"
-                    style={styles.itemDetailsContainer}
+                    style={this.screenName === "RecentOrders" ? styles.roAccordion: styles.itemDetailsContainer}
                   >
                     <AccordionItem
                       value={`item-${index}`}
                       style={styles.itemDetailsSubContainer}
                     >
-                      <AccordionHeader style={styles.subHeader}>
+                      <AccordionHeader style={this.screenName === "RecentOrders" ? styles.roAccordionHeader:styles.subHeader}>
                         <AccordionTrigger>
                           {({ isExpanded }) => {
                             return (
                               <>
-                                {this.screenName === "RecentOrders" ? (
-                                  <Box key={index} style={styles.topItem}>
-                                    <Image
-                                      alt="image"
-                                      source={require("@/assets/images/icons/ROdate.png")}
-                                    />
-                                    <AccordionTitleText>
-                                      Ordered Date: {order.OrderDate}
-                                    </AccordionTitleText>
+                               {this.screenName === "RecentOrders" ? (
+                                  <Box key={index} style={styles.roAccordionHeading}>
+                                  <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
+                                  <AccordionTitleText style={styles.roAccordionTitleText}>Ordered Date: {order.OrderDate}</AccordionTitleText>
                                   </Box>
+                
                                 ) : (
                                   <Box
                                     style={{
@@ -159,70 +157,36 @@ class CbAccordionlist extends React.Component {
                                         </AccordionTitleText>
                                       )}
                                     </AccordionTitleText>
-
-                                    {isExpanded ? (
-                                      <AccordionIcon
-                                        as={ChevronDownIcon}
-                                        className="ml-3"
-                                        style={{ width: 20, height: 20 }}
-                                      />
-                                    ) : (
-                                      <AccordionIcon
-                                        as={ChevronUpIcon}
-                                        className="ml-3"
-                                        style={{ width: 20, height: 20 }}
-                                      />
-                                    )}
                                   </Box>
                                 )}
+                                {isExpanded ? (
+                     <AccordionIcon as={ChevronDownIcon} className="ml-3" style={styles.roAccordionIcon} />
+                  ) : (
+                     <AccordionIcon as={ChevronRightIcon} className="ml-3" style={styles.roAccordionIcon} />
+                  )}
                               </>
                             );
                           }}
                         </AccordionTrigger>
                       </AccordionHeader>
                       <AccordionContent>
-                        {this.screenName == "RecentOrders"
-                          ? order.Items.map((item, index) => (
-                            <Box
-                              style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                              }}
-                            >
-                              <Box>
-                                <AccordionContentText>
-                                  {" "}
-                                  {item.ItemName}{" "}
-                                </AccordionContentText>
-                                <AccordionContentText>{`$${item.Price}`}</AccordionContentText>
-                              </Box>
-                              <Box
-                                style={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  marginLeft: "auto",
-                                }}
-                              >
-                                <Image
-                                  alt="image"
-                                  source={
-                                    item.IsFavorite
-                                      ? favsource
-                                        ? { uri: favsource }
-                                        : require("@/assets/images/icons/Fav.png")
-                                      : Notfavsource
-                                        ? { uri: Notfavsource }
-                                        : require("@/assets/images/icons/Notfav.png")
-                                  }
-                                  style={{ marginRight: 10 }}
-                                />
-                                <Button style={{ width: 30 }} />
-                              </Box>
-                            </Box>
-                          ))
-                          : order.ModifierItems.map((item, itemIndex) => (
+                      {this.screenName == "RecentOrders" ?
+            order.Items.map((item, index) => (
+          <Box>
+                <Box style={styles.roAccordionContentouterbox}>
+                    <Box style={styles.roAccordionContentItembox}>
+                        <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}> {item.ItemName} </Text>
+                        <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
+                    </Box>
+                    <Box style={styles.roImagescetion}>
+                      <Image alt="image"source={item.IsFavorite? favsource ? { uri: favsource }: require("@/assets/images/icons/Fav.png"): Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")} style={styles.roItemImage} />
+                       <CbAddToCartButton mealItemDetails={{}} style={styles.roItemButton} />
+                    </Box>           
+                </Box>
+                <Divider/>
+          </Box>
+            ))
+          : order.ModifierItems.map((item, itemIndex) => (
                             <Box
                               key={itemIndex}
                               style={{
@@ -285,6 +249,9 @@ class CbAccordionlist extends React.Component {
                               </AccordionContentText>
                             </Box>
                           ))}
+                          {this.screenName == "RecentOrders" && order.IsReorder ?<Button variant="outline" style={styles.roReoderButton}>
+          <ButtonText style={styles.roReordertext} numberOfLines={1}  ellipsizeMode="tail">Re Order</ButtonText>
+      </Button>:"" }
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -305,8 +272,8 @@ class CbImage extends React.Component {
     // this.id=props.id;
     this.source = props.source || "";
     this.imageJsx=props.imageJsx;
-    this.style = props.style
-    
+    this.style = props.style || "";
+    // console.log("===>",this.style);
   }
 
   render() {
@@ -314,13 +281,14 @@ class CbImage extends React.Component {
     //const source = inputArray?.source  || this.source;'
     const jsx = this.imageJsx;
     const source=this.source;
-
+     
     if (source) {
 
       if (source.endsWith('.svg')) {
+        
         return <SvgUri source={{ uri: source }}  />;
       } else {
-          
+
         return <Image alt='image' source={{ uri: source }}  style={this.style}/>;
       }
     } else {
@@ -901,11 +869,12 @@ class cbSearchbox extends React.Component {
 
 class cbButton extends React.Component {
   constructor(props) {
-    super();
+    super(props);
     this.id = props.id;
     this.buttonText = props.text || "Button";
     this.variant = props.variant || "solid";
     this.onPress = props.onPress;
+    this.customStyles=props.customStyles || '';
   }
 
   render() {
@@ -914,10 +883,12 @@ class cbButton extends React.Component {
     const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
     const variant = buttonArray?.variant || this.variant;
     const buttonText = buttonArray?.text || this.buttonText ;
-
+    const buttonStyle=this.customStyles.buttonStyle;
+    const buttonTextStyle=this.customStyles.buttontextStyle;
+    
     return (
-      <Button variant={variant} onPress={this.onPress}   style={{ minWidth: 118, maxWidth: "100%", borderRadius: 11,height: 22, backgroundColor: "#fff", justifyContent: "center", alignItems: "center" }}>
-          <ButtonText style={{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1}} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
+      <Button variant={variant} onPress={()=> this.onPress()} style={buttonStyle}  >
+          <ButtonText style={buttonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
   }
@@ -941,11 +912,11 @@ class cbCheckBox extends React.Component {
 
     return (
       <Checkbox size={this.size} isInvalid={this.isInvalid} isDisabled={this.isDisabled}>
-        <CheckboxIndicator >
-          <CheckboxIcon as={CheckIcon} />
-        </CheckboxIndicator>
-        <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
-      </Checkbox>
+      <CheckboxIndicator >
+        <CheckboxIcon as={CheckIcon} />
+      </CheckboxIndicator>
+      <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
+    </Checkbox>    
     );
   }
 }

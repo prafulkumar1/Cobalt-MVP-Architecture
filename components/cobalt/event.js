@@ -137,12 +137,12 @@ export const UseFormContextProvider = ({children}) => {
         setCartData((prevCartData) => {
           let updatedCartData = [...prevCartData];
           const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
-          if (itemIndex !== -1) {
-            updatedCartData[itemIndex].quantity += 1;
-            updatedCartData[itemIndex].quantityIncPrice +=  data.Price
-          } else {
+          // if (itemIndex !== -1) {
+          //   updatedCartData[itemIndex].quantity += 1;
+          //   updatedCartData[itemIndex].quantityIncPrice +=  data.Price
+          // } else {
             updatedCartData.push({ ...data, quantity: 1,quantityIncPrice:data.Price });
-          }    
+          //}    
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
           return updatedCartData;
         });

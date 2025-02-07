@@ -437,6 +437,8 @@ const ChevronUpIcon = createIcon({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        stroke="#4B5154" 
+        fill="none" 
       />
     </>
   ),
@@ -452,6 +454,8 @@ const ChevronDownIcon = createIcon({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        stroke="#4B5154" 
+        fill="none" 
       />
     </>
   ),
@@ -467,6 +471,8 @@ const ChevronLeftIcon = createIcon({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        stroke="#4B5154" 
+        fill="none" 
       />
     </>
   ),
@@ -483,6 +489,8 @@ const ChevronRightIcon = createIcon({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        stroke="#4B5154" 
+        fill="none" 
       />
     </>
   ),
