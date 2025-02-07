@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#6D6D6D',
     fontFamily:"SourceSansPro_SemiBold",
-    width:responsiveWidth(40)
+    width:responsiveWidth(40),
   },
   underLineTxt: {
     color: '#00C6FF',
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   quantityTxt: {
-    fontSize: Platform.OS == "ios"?20:18,
+    fontSize: 20,
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8)
@@ -234,7 +234,90 @@ export const styles = StyleSheet.create({
   menuHeader:{backgroundColor:"#F4F6FB"},
   subItem:{backgroundColor:"#fff",marginTop:8},
   headerTxt:{fontFamily:"SourceSansPro_SemiBold"},
-  CheckIcon:{color:"#ffff"},
+  modalContainer: {
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height:"100%",
+    width:"100%",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    backgroundColor:"pink",
+    flexGrow:1
+
+  },
+  modalContent: {
+    width: '100%', 
+    height: '100%',
+    borderRadius: 35, 
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    backgroundColor:"green",
+    marginTop:30
+  
+  },
+  itemDetailsContainer:{ paddingTop: 6, backgroundColor: "white" },
+  itemDetailsSubContainer:{
+    borderWidth: 0.3,
+    borderRadius: 5,
+    borderColor: "#ccc",
+    backgroundColor: "white",
+  },
+  subHeader:{
+    backgroundColor: "#F3F3F3",
+    borderRadius: 5,
+    padding: 0,
+    height: 30,
+    justifyContent: "center",
+  },
+  topItem:{
+    display: "flex",
+    flexDirection: "row",
+    gap: 5,
+  },
+  blackShadow:{
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "#000000",
+    opacity: 0.4,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 10,
+    zIndex:-1
+  },
+  modiferItems:{flex:1},
+  footerContainer:{
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 80,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+    paddingHorizontal: 20,
+},
+addToCartBtn:{
+  backgroundColor: "#5773a2",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+totalAmountTxt:{ fontSize: 12, color: "#4B5154", fontFamily:"SourceSansPro_Italic" },
+orderAmount:{ fontSize: 24, color: "#4B5154", paddingVertical: 8,fontFamily:"SourceSansPro_SemiBold" },
+addCartTxt:{ color: "#fff", fontSize: 22,fontFamily:"SourceSansPro_SemiBold", textAlign: 'center' },
+CheckIcon:{color:"#ffff"},
   roAccordion:{width:393,marginHorizontal:8,marginVertical:5},
   roAccordionHeader:{backgroundColor:"#F3F3F3"},
   roAccordionHeading:{ display: "flex", flexDirection: "row", gap: 5 },
@@ -249,4 +332,5 @@ export const styles = StyleSheet.create({
   roItemButton:{ width: 30 ,height:30},
   roReoderButton:{  alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5 },
   roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
+
 })

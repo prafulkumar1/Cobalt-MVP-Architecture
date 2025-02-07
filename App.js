@@ -12,7 +12,7 @@ import * as UI from '@/components/cobalt/importUI';
 import { UseFormContextProvider } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 import ProfitCenters from './source/views/ProfitCenters/ProfitCertersUI';
-import ItemData from './source/views/ItemData/ItemData';
+import ItemModifier from './source/views/ItemModifier/ItemModifierUI';
 import MyCartScreen from './source/views/myCart/myCartUI';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Font from 'expo-font';
@@ -118,22 +118,25 @@ export default function App() {
               <Stack.Screen
                 name="Recentorders"
                 component={RecentordersScreen}
-                options={{
-                  headerShown: true,
-                  headerTitle: "Order Again",
-                }}
-              />
-              <Stack.Screen
-                name="ItemData"
-                component={ItemData}
-                options={{ headerShown: true }}
+              options={{ headerShown: true,
+                headerTitle: "Order Again",
+               }} 
+            />
+            <Stack.Screen
+              name="ItemModifier"
+              component={ItemModifier}
+              options={{
+                headerShown: true,
+                title: "Back to Menu"
+              }}
               />
               <Stack.Screen
                 name="MyCart"
                 component={MyCartScreen}
                 options={{ headerShown: true, headerTitle: "My Cart" }}
               />
-            </Stack.Navigator>
+  
+          </Stack.Navigator>
             <StatusBar style="auto" />
           </NavigationContainer>
         </GestureHandlerRootView>

@@ -32,7 +32,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Spicy Tuna Tacos",
                   "Item_Id": "I401",
-                  "Description": "Soft tacos filled with spicy tuna, avocado, and sesame seeds.",
+                  "Description": "Soft tacos filled with spicy tunakum",
                   "Price": 22.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1,
@@ -57,7 +57,7 @@ export const foodOrderData =
                   "Image": "https://www.shutterstock.com/image-photo/grilled-salmon-vegetables-260nw-224518786.jpg",
                   "IsAvailable": 1,
                   "isModifier": 0,
-                  "IsDisable":0,
+                  "IsDisable":1,
                 },
                 {
                   "Item_Name": "Mozzarella Sticks",
@@ -66,7 +66,7 @@ export const foodOrderData =
                   "Price": 12.00,
                   "Image": "https://www.shutterstock.com/image-photo/beautiful-food-image-on-table-260nw-2545025947.jpg",
                   "IsAvailable": 1,
-                  "isModifier": 0,
+                  "isModifier": 1,
                   "IsDisable":0,
                 }
               ]
@@ -647,81 +647,81 @@ export const FavoritesList = {
   },
 ]
 }
-export const ModifiersData={
-  "ResponseCode": "Success",
-    "ResponseMessage": "",
-    "Modifiers":[
-      {
-        "MainModifier":"Sauce",
-        "IsRequried":0,
-        "IsMaxAllowedOne":1,
-        "ModifierItems":[
-           {
-            "ItemName": "Peanut sauce or sweet soy glaze",            
-            "Price": null,            
-           },
-           {
-            "ItemName": "Sweet Chili Sauce",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Add balsamic reductio",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "Wasabi or ginger soy sauce",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-      {
-        "MainModifier":"Side",
-        "IsRequried":0,
-        "MaxAllowedOne":0,
-        "ModifierItems":[
-          {
-            "ItemName": "Celery",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Carrots",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Blue Cheese Dressing",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "Ranch Dressing",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-      {
-        "MainModifier":"Stuffing Type",
-        "IsRequried":1,
-        "MaxAllowedOne":1,
-        "ModifierItems":[
-          {
-            "ItemName": "Cream Cheese",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Parmesan",            
-            "Price": 3.00,            
-           },
-           {
-            "ItemName": "Sausage",            
-            "Price": 2.00,            
-           },
-           {
-            "ItemName": "spinach",            
-            "Price": 2.00,            
-           },
-        ]
-      },
-    ]
-}
+  export const ModifiersData={
+    "ResponseCode": "Success",
+      "ResponseMessage": "",
+      "Modifiers":[
+        {
+          "MainModifier":"Sauce",
+          "IsRequried":0,
+          "IsMaxAllowedOne":0,
+          "ModifierItems":[
+            {
+              "ItemName": "Peanut sauce or sweet soy glaze",            
+              "Price": 6.00,            
+            },
+            {
+              "ItemName": "Sweet Chili Sauce",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Add balsamic reductio",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "Wasabi or ginger soy sauce",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+        {
+          "MainModifier":"Side",
+          "IsRequried":0,
+          "IsMaxAllowedOne":1,
+          "ModifierItems":[
+            {
+              "ItemName": "Celery",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Carrots",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Blue Cheese Dressing",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "Ranch Dressing",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+        {
+          "MainModifier":"Stuffing Type",
+          "IsRequried":1,
+          "IsMaxAllowedOne":0,
+          "ModifierItems":[
+            {
+              "ItemName": "Cream Cheese",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Parmesan",            
+              "Price": 3.00,            
+            },
+            {
+              "ItemName": "Sausage",            
+              "Price": 2.00,            
+            },
+            {
+              "ItemName": "spinach",            
+              "Price": 2.00,            
+            },
+          ]
+        },
+      ]
+  }
 
 export const RecentOrderData = [
 

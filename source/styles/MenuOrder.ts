@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
       borderRadius: 4,
       borderWidth: 3,
       borderColor: "#00c6ff",
-      marginTop:6,
+      // marginTop:6,
     },
     categoryBtn: {
       flex: 1,

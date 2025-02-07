@@ -17,7 +17,7 @@ export default api;
 
 export const postApiCall = async (endpoints:string, params:any,userToken:string) => {
     try {
-     await api.post(`${baseURL}/${endpoints}`,params,
+     let responseData  = await api.post(`${baseURL}/${endpoints}`,params,
         {
           headers: {
             "Content-Type": "application/json",
@@ -25,6 +25,10 @@ export const postApiCall = async (endpoints:string, params:any,userToken:string)
           },
         }
       )
+      return {
+        response:responseData.data,
+        statusCode:responseData.status,
+      }
     } catch (error) {
       console.log(JSON.stringify(error))
     }
