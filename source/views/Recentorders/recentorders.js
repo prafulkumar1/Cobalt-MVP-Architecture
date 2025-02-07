@@ -184,16 +184,13 @@ export default function RecentordersScreen(props) {
   return (
     <UI.Box style={{ backgroundColor: "white", height: "100%" }}>
       <UI.Box style={{ display: "flex", flexDirection: "row", marginVertical: 11, marginLeft: 8, gap: 5 }}>
-      {isRecentOrder ?
-        <UI.cbButton  text="Favorites"  variant="sloid"  onPress={() => setIsRecentOrderOpen(false)}  customStyles={{ buttonStyle:  styles.ButtonStyle, buttontextStyle: styles.ButtonTextStyle}} />      
-        :
-         <UI.cbButton text="Favorites"  variant="sloid"  onPress={() => setIsRecentOrderOpen(false)}  customStyles={{  buttonStyle: styles.ActiveButtonStyle, buttontextStyle: styles.ActiveButtonTextStyle  }}/>
-       }
-       {isRecentOrder ?
-          <UI.cbButton text="Recent Orders" variant="sloid" onPress={() => setIsRecentOrderOpen(true)}  customStyles={{ buttonStyle:  styles.ActiveButtonStyle , buttontextStyle: styles.ActiveButtonTextStyle }} />  
-        :
-         <UI.cbButton text="Recent Orders" variant="sloid"  onPress={() => setIsRecentOrderOpen(true)}  customStyles={{  buttonStyle: styles.ButtonStyle, buttontextStyle: styles.ButtonTextStyle }} />   
-      }
+      
+      <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(false)} style={!isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
+          <UI.Text style={!isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Favorites     </UI.Text>
+        </UI.TouchableOpacity>
+        <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(true)} style={isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
+          <UI.Text style={isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Recent Orders     </UI.Text>
+        </UI.TouchableOpacity>
       </UI.Box>
       <UI.ScrollView>
         {/* <RenderingPendingOrders/> */}
