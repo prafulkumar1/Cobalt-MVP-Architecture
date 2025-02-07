@@ -16,7 +16,8 @@ export const styles = StyleSheet.create({
         fontSize:16,
         color:"#4B5154",
         lineHeight:20,
-        fontFamily:"SourceSansPro_SemiBold"
+        fontFamily:"SourceSansPro_SemiBold",
+        paddingBottom:5
       },
       itemCategory:{
         color:"#3B87C1",

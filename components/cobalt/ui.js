@@ -1051,6 +1051,7 @@ class cbSelectTime extends React.Component {
     this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
     this.style = props.style
     this.isTimeModalSelected = props.isTimeModalSelected 
+    this.selectItemLabel = props.selectItemLabel
     this.state = {
       isSelected:false,
       selectedTime : ''
@@ -1066,7 +1067,7 @@ class cbSelectTime extends React.Component {
 
 
       <FormContext.Consumer>
-      {({     selectedTime,setSelectedTime}) => {
+      {({ selectedTime,setSelectedTime}) => {
         const buttonArray = global.controlsConfigJson.find(
           (item) => item.id === this.id
         );
@@ -1075,43 +1076,66 @@ class cbSelectTime extends React.Component {
 
         return (
           <>
-             <TouchableOpacity
-        onPress={() =>this.setState({ isSelected: true })}
-      >
-        <FormControl
-          isRequired={this.isRequired}
-          isInvalid={this.isInvalid}
-          style={this.style}
-        >
-          <FormControlLabel>
-            <FormControlLabelText>{selectedTime}</FormControlLabelText>
-          </FormControlLabel>
-            <Select>
-              <SelectPortal isOpen={this.state.isSelected}>
-                <SelectBackdrop onPress={()=> this.setState({isSelected:false})}/>
-                <SelectContent>
-                  <Text style={{marginVertical:10,fontFamily:"SourceSansPro_SemiBoldItalic"}}>Select Time</Text>
-                  {selectItems.map((item, index) => (
-                    <SelectItem
-                      key={index}
-                      label={item.label}
-                      value={item.value}
-                      onPress={() =>  {
-                        this.setState({ isSelected: false })
-                        setSelectedTime(item.value)
-                      }}
-                      style={[styles.scrollIndicator,index === 0 && styles.hoverItem]}
+            <TouchableOpacity
+              onPress={() => this.setState({ isSelected: true })}
+            >
+              <FormControl
+                isRequired={this.isRequired}
+                isInvalid={this.isInvalid}
+                style={this.style}
+              >
+                <FormControlLabel>
+                  <FormControlLabelText>{selectedTime}</FormControlLabelText>
+                </FormControlLabel>
+                <Select>
+                  <SelectPortal
+                    isOpen={this.state.isSelected}
+                    style={{ width:"100%" }}
+                  >
+                    <SelectBackdrop
+                      onPress={() => this.setState({ isSelected: false })}
                     />
-                  ))}
-                  <CbCommonButton  showBtnName={"Done"} style = {styles.doneBtn} btnTextStyle = {styles.doneTxtBtn} onPress={() =>  this.setState({ isSelected: false })}/>
-                </SelectContent>
-              </SelectPortal>
-            </Select>
-          <FormControlError>
-            <FormControlErrorText></FormControlErrorText>
-          </FormControlError>
-        </FormControl>
-      </TouchableOpacity>
+                    <SelectContent
+                      style={styles.selectedContainer}
+                    >
+                      <Text
+                        style={styles.selectedLabel}
+                      >
+                        {this.selectItemLabel}
+                      </Text>
+
+                      <ScrollView style={styles.dropdownContainer} showsVerticalScrollIndicator={false}>
+                        {selectItems.map((item, index) => (
+                          <SelectItem
+                            key={index}
+                            label={item.label}
+                            value={item.value}
+                            onPress={() => {
+                              this.setState({ isSelected: false });
+                              setSelectedTime(item.value);
+                            }}
+                            style={[
+                              styles.scrollIndicator,
+                              index === 0 && styles.hoverItem,
+                            ]}
+                          />
+                        ))}
+                      </ScrollView>
+
+                      <CbCommonButton
+                        showBtnName={"Done"}
+                        style={styles.doneBtn}
+                        btnTextStyle={styles.doneTxtBtn}
+                        onPress={() => this.setState({ isSelected: false })}
+                      />
+                    </SelectContent>
+                  </SelectPortal>
+                </Select>
+                <FormControlError>
+                  <FormControlErrorText></FormControlErrorText>
+                </FormControlError>
+              </FormControl>
+            </TouchableOpacity>
           </>
         );
       }}

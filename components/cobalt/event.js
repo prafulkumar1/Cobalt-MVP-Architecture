@@ -26,7 +26,6 @@ export const UseFormContextProvider = ({children}) => {
     const [currentSelectedVal , setCurrentSelectedVal] = useState("")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
-    const [finalCartData,setFinalCartData] = useState([])
 
     const modifiersData = useRef(null)
     const commentValue = useRef("")
@@ -365,7 +364,6 @@ export const UseFormContextProvider = ({children}) => {
       setSelectedTime,
       addItemToModifierForCart,
       addedModifierCartData,
-      finalCartData,
       getCartData,
       getModifierData,
       commentValue,

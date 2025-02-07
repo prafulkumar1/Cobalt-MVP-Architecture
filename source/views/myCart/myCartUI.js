@@ -77,6 +77,15 @@ export default function MyCartScreen(props) {
     };
   }, []);
 
+  const renderModifierList = ({ item }) => {
+    return (
+      <UI.TouchableOpacity>
+        <UI.Text style={styles.itemCategory}>
+          {item?.modifier}
+        </UI.Text>
+      </UI.TouchableOpacity>
+    );
+  }
   const renderCartItems = (item) => {
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
@@ -107,9 +116,11 @@ export default function MyCartScreen(props) {
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
-                <UI.Text style={styles.itemCategory}>
-                  {item.Description}
-                </UI.Text>
+
+                <UI.CbFlatList
+                  flatlistData={item.selectedModifiers}
+                  children={renderModifierList}
+                />
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>
@@ -122,12 +133,12 @@ export default function MyCartScreen(props) {
                     style={styles.iconBtn}
                     onPress={() => {
                       if (item.isModifier === 1) {
-                        updateModiferItemData(item, item.quantity - 1)
+                        updateModiferItemData(item, item.quantity - 1);
+                        updateModifierItemQuantity(item, item.quantity - 1);
                       } else {
-                        updateCartItemQuantity(item, item.quantity - 1)
+                        updateCartItemQuantity(item, item.quantity - 1);
                       }
-                    }
-                    }
+                    }}
                   >
                     <Icon
                       as={item.quantity === 1 ? TrashIcon : RemoveIcon}
@@ -143,12 +154,12 @@ export default function MyCartScreen(props) {
                     style={styles.iconBtn}
                     onPress={() => {
                       if (item.isModifier === 1) {
-                        updateModiferItemData(item, item.quantity + 1)
+                        updateModiferItemData(item, item.quantity + 1);
+                        updateModifierItemQuantity(item, item.quantity + 1);
                       } else {
-                        updateCartItemQuantity(item, item.quantity + 1)
+                        updateCartItemQuantity(item, item.quantity + 1);
                       }
-                    }                      
-                    }
+                    }}
                   >
                     <Icon
                       as={AddIcon}
@@ -160,16 +171,15 @@ export default function MyCartScreen(props) {
                 </UI.Box>
               </UI.Box>
             </UI.Box>
-            {
-              item.comments && 
+            {item.comments && (
               <UI.Box style={styles.notesContainer}>
-              <Image
-                source={require("@/assets/images/icons/messageIcon2x.png")}
-                style={styles.noteIcon}
-              />
-              <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
-            </UI.Box>
-            }
+                <Image
+                  source={require("@/assets/images/icons/messageIcon2x.png")}
+                  style={styles.noteIcon}
+                />
+                <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+              </UI.Box>
+            )}
           </UI.Box>
         </Swipeable>
       </UI.Pressable>
@@ -259,14 +269,130 @@ export default function MyCartScreen(props) {
       </>
     )
   }
-  const departments =[{"label": "08:00 AM", "value": "08:00 AM"}, {"label": "08:30 AM", "value": "08:30 AM"}, {"label": "09:00 AM", "value": "09:00 AM"}, {"label": "09:30 AM", "value": "09:30 AM"}, {"label": "10:00 AM", "value": "10:00 AM"}, {"label": "10:30 AM", "value": "10:30 AM"}, {"label": "11:00 AM", "value": "11:00 AM"}];
+  const departments =[
+    {
+      "label": "08:00 AM",
+      "value": "08:00 AM"
+    },
+    {
+      "label": "08:30 AM",
+      "value": "08:30 AM"
+    },
+    {
+      "label": "09:00 AM",
+      "value": "09:00 AM"
+    },
+    {
+      "label": "09:30 AM",
+      "value": "09:30 AM"
+    },
+    {
+      "label": "10:00 AM",
+      "value": "10:00 AM"
+    },
+    {
+      "label": "10:30 AM",
+      "value": "10:30 AM"
+    },
+    {
+      "label": "11:00 AM",
+      "value": "11:00 AM"
+    },
+    {
+      "label": "08:00 AM",
+      "value": "08:00 AM"
+    },
+    {
+      "label": "08:30 AM",
+      "value": "08:30 AM"
+    },
+    {
+      "label": "09:00 AM",
+      "value": "09:00 AM"
+    },
+    {
+      "label": "09:30 AM",
+      "value": "09:30 AM"
+    },
+    {
+      "label": "10:00 AM",
+      "value": "10:00 AM"
+    },
+    {
+      "label": "10:30 AM",
+      "value": "10:30 AM"
+    },
+    {
+      "label": "11:00 AM",
+      "value": "11:00 AM"
+    }
+  ];
+
+  const pickupLocations = [
+    {
+      "label": "IT Department",
+      "value": "IT Department"
+    },
+    {
+      "label": "HR Department",
+      "value": "HR Department"
+    },
+    {
+      "label": "Finance Department",
+      "value": "Finance Department"
+    },
+    {
+      "label": "Logistics Department",
+      "value": "Logistics Department"
+    },
+    {
+      "label": "Security Office",
+      "value": "Security Office"
+    },
+    {
+      "label": "Main Reception",
+      "value": "Main Reception"
+    },
+    {
+      "label": "R&D Center",
+      "value": "R&D Center"
+    },
+    {
+      "label": "Customer Support",
+      "value": "Customer Support"
+    },
+    {
+      "label": "Warehouse A",
+      "value": "Warehouse A"
+    },
+    {
+      "label": "Warehouse B",
+      "value": "Warehouse B"
+    },
+    {
+      "label": "Cafeteria",
+      "value": "Cafeteria"
+    },
+    {
+      "label": "Parking Lot",
+      "value": "Parking Lot"
+    },
+    {
+      "label": "Training Room",
+      "value": "Training Room"
+    },
+    {
+      "label": "Server Room",
+      "value": "Server Room"
+    }
+  ];
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
         <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {finalCartData && finalCartData.length > 0 ? (
+          {finalCartData && finalCartData?.length > 0 ? (
             finalCartData?.map((items) => {
               return renderCartItems(items);
             })
@@ -314,14 +440,19 @@ export default function MyCartScreen(props) {
                   selectItems={departments}
                   Label={selectedTime}
                   style={styles.timeBtn}
+                  selectItemLabel={"Select Time"}
                 />
               </UI.Box>
 
               <UI.Box>
                 <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
-                <UI.TouchableOpacity style={styles.timeBtn}>
-                  <UI.Text style={styles.timeTxt}>Clubhouse Grill</UI.Text>
-                </UI.TouchableOpacity>
+                 <UI.cbSelectTime
+                  id={pageId}
+                  selectItems={pickupLocations}
+                  Label={selectedTime}
+                  style={styles.timeBtn}
+                  selectItemLabel={"Select Place"}
+                />
               </UI.Box>
             </UI.Box>
 
