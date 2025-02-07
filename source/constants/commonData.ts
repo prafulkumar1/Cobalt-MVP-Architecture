@@ -32,7 +32,7 @@ export const foodOrderData =
                 {
                   "Item_Name": "Spicy Tuna Tacos",
                   "Item_Id": "I401",
-                  "Description": "Soft tacos filled with spicy tuna, avocado, and sesame seeds.",
+                  "Description": "Soft tacos filled with spicy tunakum",
                   "Price": 22.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
                   "IsAvailable": 1,
@@ -57,7 +57,7 @@ export const foodOrderData =
                   "Image": "https://www.shutterstock.com/image-photo/grilled-salmon-vegetables-260nw-224518786.jpg",
                   "IsAvailable": 1,
                   "isModifier": 0,
-                  "IsDisable":0,
+                  "IsDisable":1,
                 },
                 {
                   "Item_Name": "Mozzarella Sticks",
@@ -66,7 +66,7 @@ export const foodOrderData =
                   "Price": 12.00,
                   "Image": "https://www.shutterstock.com/image-photo/beautiful-food-image-on-table-260nw-2545025947.jpg",
                   "IsAvailable": 1,
-                  "isModifier": 0,
+                  "isModifier": 1,
                   "IsDisable":0,
                 }
               ]
@@ -370,10 +370,116 @@ export const ProfitCentersData = {
 export const RecentordersData={
   "ResponseCode": "Success",
     "ResponseMessage": "",
-    "RecentOrders":[
-      {
+    "RecentOrders":{
+      "PendingOrders" :[
+          {
+            "OrderDate":"02/01/2025",
+            "OrderId": "I304",
+            "OrderStatus":"Preparing your order",
+            "Pickup_Time":"7:00 PM",
+            "Pickup_Location":"Clubhouse Grill",
+            "Items":[
+                      { 
+                        "ItemName": "Fish and Chips",
+                        "ItemId": "I301",
+                        "Quantity": 1,
+                        "Price": 25.00,
+                        "IsAvailable": 1,
+                        "IsFavorite":0,
+                        "comment":"This is the comment give by the user while ordering.",
+                        "Modifiers":[
+                          {
+                            "ItemId": "I301",
+                            "ItemName": "Peanut sauce or sweet soy glaze",             
+                          },
+                          {
+                              "ItemId": "I301",
+                            "ItemName": "Peanut sauce or sweet soy glaze",
+                          },
+                          {
+                                "ItemId": "I301",
+                            "ItemName": "Peanut sauce or sweet soy glaze",
+                          },
+                        ]
+                    },
+           { 
+            "ItemName": "Chicken Satay Skewers",
+            "ItemId": "I302",
+            "Quantity": 1,
+            "Price": 25.00,
+            "IsAvailable": 1,
+            "IsFavorite":0,
+            "comment":"This is the comment give by the user while ordering.",
+            "Modifiers":[
+              {
+                "ItemId": "I301",
+                "ItemName": "Peanut sauce or sweet soy glaze",             
+              },
+              {
+                  "ItemId": "I301",
+                "ItemName": "Peanut sauce or sweet soy glaze",
+              },
+              {
+                    "ItemId": "I301",
+                "ItemName": "Peanut sauce or sweet soy glaze",
+              },
+            ]
+           },
+           { 
+              "ItemName": "Chicken patties",
+              "ItemId": "I303",
+              "Quantity": 1,
+              "Price": 25.00,
+              "IsAvailable": 1,
+              "IsFavorite":0,
+              "comment":"This is the comment give by the user while ordering.",
+              "Modifiers":[
+                {
+                  "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",             
+                },
+                {
+                    "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",
+                },
+                {
+                      "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",
+                },
+              ]
+           },
+           { 
+                "ItemName": "Coconut Shrimp",
+                "ItemId": "I304",
+                "Quantity": 1,
+                "Price": 25.00,
+              "IsAvailable": 1,
+              "IsFavorite":0,
+              "comment":"This is the comment give by the user while ordering.",
+              "Modifiers":[
+                {
+                  "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",             
+                },
+                {
+                    "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",
+                },
+                {
+                      "ItemId": "I301",
+                  "ItemName": "Peanut sauce or sweet soy glaze",
+                },
+              ]               
+           },
+        ]
+      }
+    ],
+      "CompletedOrders":[
+        {
         "HeadingLabel":"Ordered Date",
-        "OrderDate":"01/13/2025",
+        "OrderDate":"02/01/2025",
+        "OrderId": "I304",
+        "IsReorder":1,
         "Items":[
            { "ItemName": "Fish and Chips",
             "ItemId": "I301",
@@ -384,7 +490,7 @@ export const RecentordersData={
            { "ItemName": "Chicken Satay Skewers",
             "ItemId": "I302",
             "Price": 30.00,
-            "IsAvailable": 1,
+            "IsAvailable": 0,
             "IsFavorite":1
            },
            { "ItemName": "Chicken patties",
@@ -396,14 +502,16 @@ export const RecentordersData={
            { "ItemName": "Coconut Shrimp",
             "ItemId": "I304",
             "Price": 45.00,
-            "IsAvailable": 1,
+            "IsAvailable": 0,
             "IsFavorite":0
            },
         ]
       },
       {
         "HeadingLabel":"Ordered Date",
-        "OrderDate":"01/13/2025",
+        "OrderDate":"01/27/2025",
+        "OrderId": "I304",
+        "IsReorder":1,
         "Items":[
            { "ItemName": "Spinach Artichoke Dip",
             "ItemId": "I401",
@@ -414,14 +522,131 @@ export const RecentordersData={
            { "ItemName": "Hummus with Pita Chips",
             "ItemId": "I301",
             "Price": 45.00,
-            "IsAvailable": 1,
+            "IsAvailable": 0,
             "IsFavorite":1
            },
         ]
       },
+      {
+        "HeadingLabel":"Ordered Date",
+        "OrderDate":"01/13/2025",
+        "OrderId": "I304",
+        "IsReorder":0,
+        "Items":[
+           { "ItemName": "Fish and Chips",
+            "ItemId": "I301",
+            "Price": 25.00,
+            "IsAvailable": 0,
+            "IsFavorite":0
+           },
+           { "ItemName": "Chicken Satay Skewers",
+            "ItemId": "I302",
+            "Price": 30.00,
+            "IsAvailable": 0,
+            "IsFavorite":1
+           },
+           { "ItemName": "Chicken patties",
+            "ItemId": "I303",
+            "Price": 22.00,
+            "IsAvailable": 0,
+            "IsFavorite":1
+           },
+           { "ItemName": "Coconut Shrimp",
+            "ItemId": "I304",
+            "Price": 45.00,
+            "IsAvailable": 0,
+            "IsFavorite":0
+           },
+        ]
+      },
     ]
+  }
 }
+export const FavoritesList = {
+  "ResponseCode": "Success",
+    "ResponseMessage": "",  
+  "FavoriteItems":[
+  {
 
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dippedabnsmnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakdddddddddddddddddckidufhnvioefvoieurvoerncvuinuio",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "I302",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+
+  },
+]
+}
   export const ModifiersData={
     "ResponseCode": "Success",
       "ResponseMessage": "",
@@ -433,7 +658,7 @@ export const RecentordersData={
           "ModifierItems":[
             {
               "ItemName": "Peanut sauce or sweet soy glaze",            
-              "Price": 0,            
+              "Price": 6.00,            
             },
             {
               "ItemName": "Sweet Chili Sauce",            

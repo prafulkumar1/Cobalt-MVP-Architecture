@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#6D6D6D',
     fontFamily:"SourceSansPro_SemiBold",
-    width:responsiveWidth(40)
+    width:responsiveWidth(40),
   },
   underLineTxt: {
     color: '#00C6FF',
@@ -290,5 +290,47 @@ export const styles = StyleSheet.create({
     elevation: 10,
     zIndex:-1
   },
-  modiferItems:{flex:1}
+  modiferItems:{flex:1},
+  footerContainer:{
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 80,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+    paddingHorizontal: 20,
+},
+addToCartBtn:{
+  backgroundColor: "#5773a2",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+totalAmountTxt:{ fontSize: 12, color: "#4B5154", fontFamily:"SourceSansPro_Italic" },
+orderAmount:{ fontSize: 24, color: "#4B5154", paddingVertical: 8,fontFamily:"SourceSansPro_SemiBold" },
+addCartTxt:{ color: "#fff", fontSize: 22,fontFamily:"SourceSansPro_SemiBold", textAlign: 'center' },
+CheckIcon:{color:"#ffff"},
+  roAccordion:{width:393,marginHorizontal:8,marginVertical:5},
+  roAccordionHeader:{backgroundColor:"#F3F3F3"},
+  roAccordionHeading:{ display: "flex", flexDirection: "row", gap: 5 },
+  roAccordionTitleText:{fontSize:16,fontFamily:"Source Sans Pro",fontWeight:"700",fontStyle:"italic"},
+  roAccordionIcon:{width:20,height:20},
+  roAccordionContentouterbox:{ display: "flex", flexDirection: "row", alignItems: "center",marginVertical:10 },
+  roAccordionContentItembox:{ display: "flex",  alignItems: "left" },
+  roItemName:{fontSize:18,fontFamily:"Source Sans Pro",fontWeight:"700"},
+  roItemprice:{fontSize:16,fontFamily:"Source Sans Pro",fontWeight:"700",marginLeft:4},
+  roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", },
+  roItemImage:{  marginRight: 10 },
+  roItemButton:{ width: 30 ,height:30},
+  roReoderButton:{ top:10, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5 },
+  roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
+
 })

@@ -31,7 +31,7 @@ const ProfitCenters = (props) => {
                 <UI.Box style={styles.blackShadow} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
                     <UI.Box style={styles.profitCenterOverlay}>
-                        <UI.Text id='profitCenterName' style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
+                        <UI.Text id='profitCenterName' numberOfLines={1} style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
                         <UI.Text id="profitCenterTimings" style={[timingsText?.styles ? timingsText?.timingsText : styles.profitCenterTimings]}>
                             {item.STATUSTEXT}
                         </UI.Text>

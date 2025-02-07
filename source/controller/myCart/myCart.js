@@ -56,7 +56,12 @@ export const useMyCartLogic = () => {
   };
 
   const handleDelete = (item) => {
-    deleteCartItem(item)
+    if (openItemId === item.Item_Id && swipeableRefs.current[openItemId]) {
+      swipeableRefs.current[openItemId].close();
+    }
+    delete swipeableRefs.current[item.Item_Id];
+    setOpenItemId(null);
+    deleteCartItem(item);
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {
@@ -64,6 +69,8 @@ export const useMyCartLogic = () => {
         swipeableRefs.current[openItemId].close();
       }
       setOpenItemId(itemId);
+    }else{
+      setOpenItemId(null);
     }
   };
 

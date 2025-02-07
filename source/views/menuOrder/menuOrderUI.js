@@ -28,6 +28,7 @@ export default function MenuOrderScreen(props) {
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
   const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData } = useFormContext();
+
   const { categoryRef, scrollToLast, scrollToFirst,isRecentOrderOpen,openRecentOrder } = useMenuOrderLogic()
 
   const renderMealTypeList = (mealTypeItem) => {
