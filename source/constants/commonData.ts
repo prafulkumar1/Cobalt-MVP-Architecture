@@ -168,7 +168,7 @@ export const foodOrderData =
                   "Description": "Grilled chicken, mixed greens, and light dressing.",
                   "Price": 22.00,
                   "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyFtIGM3jyStp1h0rD-HPwSRfqmMvBVBtXTtjX7MbaAtnjx3TIMAZs6bT0BdMrBB0nRL8&usqp=CAU",
-                  "IsAvailable": 1,
+                  "IsAvailable": 0,
                   "isModifier": 1,
                   "IsDisable":0,
                 }

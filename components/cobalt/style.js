@@ -4,8 +4,8 @@ import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimens
 
 export const styles = StyleSheet.create({
   subContainer: {
-    marginBottom: 25,
     width: "95%",
+    marginVertical:responsiveHeight(1)
   },
   mealTypeTitle: {
     fontSize: 20,
@@ -158,7 +158,7 @@ export const styles = StyleSheet.create({
   accordionHeaderTxt:{color:"#5773a2",fontSize:16},
   mainContainerList:{ flexGrow: 1},
   itemCategoryLabel:{ color: "#5773a2", fontSize: 20 ,fontFamily:"SourceSansPro_Bold",paddingVertical:8},
-  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
   floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
   floatingBtn:{
     width: 72,

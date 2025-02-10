@@ -22,5 +22,8 @@ export const baseURL = "https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.me
 export const endpoints = {
     PROFIT_CENTER: {
         GET_PROFIT_CENTERS: "MobileOrdering/MO_GetProfitCenters"
+    },
+    MENU_ORDER:{
+        GET_MENU_ORDER_LIST:"MobileOrdering/MO_GetMenuItems"
     }
 }

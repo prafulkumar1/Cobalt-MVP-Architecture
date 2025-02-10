@@ -13,7 +13,7 @@ export const useFormContext = () => {
 export const UseFormContextProvider = ({children}) => {
     
     const [formData, setFormData] = useState({});
-    const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
+    const [menuOrderData,setMenuOrderData] = useState(null)
     const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
@@ -373,7 +373,8 @@ export const UseFormContextProvider = ({children}) => {
       getModifierData,
       commentValue,
       updateModiferItemData,
-      deleteModifierItem
+      deleteModifierItem,
+      setMenuOrderData
     }
     return (
       <FormContext.Provider

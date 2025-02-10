@@ -422,10 +422,9 @@ class CbAddToCartButton extends React.Component {
       return (
         <TouchableOpacity
           style={[this.style ? this.style : styles.addItemToCartBtn, 
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#4B515469") : this.commonStyles(IsAvailable, "#5773a2", "#4B515469") },
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
             {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
             {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
-            {borderColor:addButton?.borderColor?addButton?.borderColor:"#5773A2"},
             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
           ]}
           activeOpacity={0.5}
@@ -522,6 +521,8 @@ class CbAccordion extends React.Component {
 
   render() {
     const componentdata = this.AccordionData;
+
+    console.log(componentdata,"-->12222")
     const { expandedIds } = this.state;
     const configItems = global.controlsConfigJson?.reduce((acc, item) => {
       if (["itemTitle", "itemPrice", "itemDescription", "itemCategoryLabel"].includes(item.id)) {
@@ -578,7 +579,7 @@ class CbAccordion extends React.Component {
                                     : styles.itemCategoryLabel,
                                 ]}
                               >
-                                {item.Submenu_Name}
+                                {item?.Submenu_Name}
                               </AccordionTitleText>
                               {isExpanded ? (
                                 <AccordionIcon
@@ -599,22 +600,23 @@ class CbAccordion extends React.Component {
                           )}
                         </AccordionTrigger>
                       </AccordionHeader>
-                      <AccordionContent style={{ marginTop: 10 }}>
+                      <AccordionContent>
                         {item.Items &&
-                          item.Items.map((box) => {
+                          item.Items?.map((box,index) => {
+                            const lastItem = item.Items?.length -1 === index
                             const isExpanded = expandedIds.includes(
-                              box.Item_Id
+                              box?.Item_Id
                             );
 
                             return (
                               <Box
-                                key={box.Item_Id}
+                                key={box?.Item_Id}
                                 style={[
                                   styles.subContainer,
                                   {
                                     opacity:
-                                      box.IsAvailable === 1 &&
-                                      box.IsDisable === 0
+                                      box?.IsAvailable === 1 &&
+                                      box?.IsDisable === 0
                                         ? 1
                                         : 0.8,
                                   },
@@ -623,8 +625,7 @@ class CbAccordion extends React.Component {
                                 <Box style={styles.rowContainer}>
                                   <Box
                                     style={[
-                                      styles.textContainer,
-                                      { marginRight: 5 },
+                                      styles.textContainer
                                     ]}
                                   >
                                     <AccordionContentText
@@ -634,13 +635,13 @@ class CbAccordion extends React.Component {
                                           ? itemTitle?.styles
                                           : styles.mealTypeTitle,
                                         this.showActiveAvailableColor(
-                                          box.IsAvailable,
-                                          box.IsDisable
+                                          box?.IsAvailable,
+                                          box?.IsDisable
                                         ),
                                         { textAlign: "justify" },
                                       ]}
                                     >
-                                      {box.Item_Name}
+                                      {box?.Item_Name}
                                     </AccordionContentText>
                                     <AccordionContentText
                                       numberOfLines={isExpanded ? undefined : 2}
@@ -654,7 +655,7 @@ class CbAccordion extends React.Component {
                                         ),
                                       ]}
                                     >
-                                      {`$${box.Price}`}
+                                      {`$${box?.Price}`}
                                     </AccordionContentText>
                                     <AccordionContentText
                                       numberOfLines={isExpanded ? undefined : 1}
@@ -672,9 +673,9 @@ class CbAccordion extends React.Component {
                                         },
                                       ]}
                                     >
-                                      {box.Description}
+                                      {box?.Description}
                                     </AccordionContentText>
-                                    {box.Description.length > 35 && (
+                                    {box?.Description?.length > 35 && (
                                       <AccordionContentText
                                         onPress={() =>
                                           this.handleReadMoreToggle(box.Item_Id)
@@ -686,7 +687,7 @@ class CbAccordion extends React.Component {
                                     )}
                                   </Box>
 
-                                  {box.Image && (
+                                  {box?.Image && (
                                     <Box style={styles.imageContainer}>
                                       <TouchableOpacity
                                         style={{
@@ -700,7 +701,7 @@ class CbAccordion extends React.Component {
                                           style={[
                                             styles.mealTypeImg,
                                             box.IsAvailable === 0 && {
-                                              filter: "grayscale(100%)",
+                                              opacity:0.4,
                                             },
                                           ]}
                                         />
@@ -711,7 +712,10 @@ class CbAccordion extends React.Component {
                                     </Box>
                                   )}
                                 </Box>
-                                <Box style={styles.horizontalLine} />
+                                {
+                                  lastItem ? null :
+                                  <Box style={styles.horizontalLine} /> 
+                                }
                               </Box>
                             );
                           })}
@@ -1253,9 +1257,9 @@ class CbFlatList extends React.Component{
     this.numColumns = props.numColumns || 0
     this.initialNumToRender = props.initialNumToRender || 10
     this.bounces = props.bounces || false
-    this.horizontal = props.horizontal || false
+    this.horizontal = props.horizontal
     this.inverted = props.inverted || false
-    this.contentContainerStyle = props.contentContainerStyle || {}
+    this.contentContainerStyle = props.contentContainerStyle
     this.ref = props.ref
     this.emptyListText = props.emptyListText || ""
     this.showsHorizontalScrollIndicator = props.showsHorizontalScrollIndicator || false
@@ -1311,9 +1315,11 @@ class cbCategoryList extends React.Component {
   constructor(props) {
     super();
     this.id = props.id;
+    this.subMenuData = props.subMenuData
   }
 
   render() {
+    console.log(this.subMenuData,"==>011111")
     return (
       <FormContext.Consumer>
         {({ menuOrderData,addItemToCartBtn,updateCartItemQuantity,cartData}) => {
@@ -1325,13 +1331,13 @@ class cbCategoryList extends React.Component {
 
           return (
             <>
-              {menuOrderData.MenuItems?.map((mealCategory) => {
+              {this.subMenuData?.MenuItems?.map((mealCategory) => {
                 if (mealCategory.IsSelect === 1) {
                   return mealCategory.Categories.map((categoryList) => {
                     if (categoryList.IsSelect === 1) {
                       return (
                         <Box>
-                          <CbAccordion AccordionData={categoryList.Submenu} addItemToCartBtn={addItemToCartBtn} updateCartItemQuantity={updateCartItemQuantity} cartData={cartData}/>
+                          <CbAccordion AccordionData={categoryList.SubMenu} addItemToCartBtn={addItemToCartBtn} updateCartItemQuantity={updateCartItemQuantity} cartData={cartData}/>
                         </Box>
                       );
                     }

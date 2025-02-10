@@ -4,6 +4,7 @@ import { postApiCall } from '@/source/utlis/api';
 import { endpoints } from '@/source/config/config';
 import * as DeviceInfo from 'expo-device';
 import { navigateToScreen } from '@/source/constants/Navigations';
+import { Alert } from 'react-native';
 
 const pageId='ProfitCenter';
 export const useProfitCenterLogic = () => {
@@ -43,15 +44,15 @@ export const useProfitCenterLogic = () => {
       "FilterDate": "",
       "FilterTime": ""
     }
-    const getUrl = `${endpoints['PROFIT_CENTER']['GET_PROFIT_CENTERS']}`
-    let profitCenterResponseData = await postApiCall(getUrl, params, "token")
-
-    setProfitCenterData(profitCenterResponseData.response)
+    let profitCenterResponseData = await postApiCall("PROFIT_CENTER","GET_PROFIT_CENTERS", params)
+    if(profitCenterResponseData.statusCode == 200){
+      setProfitCenterData(profitCenterResponseData.response)
+    }
   }
 
   const navigateToMenuOrder = (props, item) => {
     if (item.Isnavigate == 1) {
-      navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName })
+      navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
     }
   }
 

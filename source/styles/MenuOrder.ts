@@ -4,7 +4,7 @@ import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimen
 export const styles = StyleSheet.create({
     mainHeaderContainer:{ display: "flex", flexDirection: "row" },
     recentOrderContainer:{ flexDirection: "row", justifyContent: "space-between", marginLeft: 4, borderBottom: 1, backgroundColor: "#fff", height: 40, alignItems: "center", },
-    mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
+    mealTypeContainer:{flexDirection:"row",justifyContent:"flex-start",alignItems:"center"},
     mainContainer:{flex:1,backgroundColor:"#ECECEC"},
     scrollContent: {
       paddingTop:responsiveHeight(0.2),
@@ -25,7 +25,9 @@ export const styles = StyleSheet.create({
       borderRadius: 4,
       borderWidth: 3,
       borderColor: "#00c6ff",
-      // marginTop:6,
+      marginTop:5,
+      position:"absolute",
+      bottom:0
     },
     categoryBtn: {
       flex: 1,
@@ -59,9 +61,8 @@ export const styles = StyleSheet.create({
     topContainer: {
       flexDirection: "row",
       paddingVertical: 10,
-      alignSelf:"center",
       width:"100%",
-      justifyContent:"center",
+      justifyContent:"flex-start",
       alignItems:"center",
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -69,14 +70,12 @@ export const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation:1,
       backgroundColor:"#fff",
-      marginBottom:4
+      marginBottom:4,
+      paddingHorizontal:10
     },
     categoryListContainer: {
-      flexDirection: "row",
       height: Platform.OS === "android" ?responsiveHeight(5):responsiveHeight(5.5),
       paddingTop:responsiveHeight(1.2),
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
     },
     subCategoryContainer: {
       flexDirection: "row",
@@ -100,7 +99,9 @@ export const styles = StyleSheet.create({
       height:responsiveHeight(10)
     },
     emptyMealTxt:{
-      fontFamily:"SourceSansPro_SemiBoldItalic"
+      fontFamily:"SourceSansPro_SemiBoldItalic",
+      alignSelf:"center",
+      marginTop:responsiveHeight(3)
     },
     mainBoxContainer: { flex: 1, backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
     recentOrderTxt: { fontSize: 18, fontFamily:"SourceSansPro_SemiBold", lineHeight: 20, marginLeft: 8 },

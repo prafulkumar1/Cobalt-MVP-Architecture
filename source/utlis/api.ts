@@ -15,19 +15,20 @@ api.interceptors.response.use((response) => {
 });
 export default api;
 
-export const postApiCall = async (endpoints:string, params:any,userToken:string) => {
+export const postApiCall = async (screenName:string,endpoint:string, params:any) => {
     try {
-     let responseData  = await api.post(`${baseURL}/${endpoints}`,params,
+     let responseData  = await api.post(`${baseURL}/${endpoints[screenName][endpoint]}`,params,
         {
           headers: {
             "Content-Type": "application/json",
-            token: userToken,
+            token: "",
           },
         }
       )
       return {
         response:responseData.data,
         statusCode:responseData.status,
+        statusText:responseData.statusText
       }
     } catch (error) {
       console.log(JSON.stringify(error))

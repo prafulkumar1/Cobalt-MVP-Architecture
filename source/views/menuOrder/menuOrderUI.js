@@ -29,7 +29,7 @@ export default function MenuOrderScreen(props) {
 
   const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
-  const { categoryRef,isRecentOrderOpen,openRecentOrder } = useMenuOrderLogic()
+  const { isRecentOrderOpen,openRecentOrder,errorMessage,mealItems } = useMenuOrderLogic(props)
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -76,18 +76,18 @@ export default function MenuOrderScreen(props) {
     );
   }
   
-  const renderMenuCategoryList = (categoryItem) => {
+  const renderMenuCategoryList = ({item}) => {
     return (
       <UI.Box>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(categoryItem.Category_Id)}
+          onPress={() => setMealCategory(item.Category_Id)}
         >
           <UI.Text style={styles.categoryText}>
-            {categoryItem.Category_Name?.toUpperCase()}
+            {item.Category_Name?.toUpperCase()}
           </UI.Text>
-          {categoryItem.IsSelect === 1 && (
+          {item.IsSelect === 1 && (
             <UI.Box
               style={[
                 tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
@@ -104,29 +104,28 @@ export default function MenuOrderScreen(props) {
       return (
         <UI.Box style={styles.mainBoxContainer}>
           <UI.Box style={styles.subCategoryContainer}>
-            {menuOrderData &&
-              menuOrderData.MenuItems?.map((mealCategory) => {
+            {mealItems &&
+              mealItems?.MenuItems?.map((mealCategory) => {
                 if (mealCategory.IsSelect === 1) {
                   const categories = mealCategory?.Categories || [];
+                  const selectedItems = categories.filter(item => item.IsSelect == 1);
+                  const unSeletedItems = categories.filter(item => item.IsSelect !== 1);
+                  let updatedCategoryList = [...selectedItems, ...unSeletedItems]
                   return (
                     <>
-                      <UI.ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.categoryListContainer}
-                        ref={categoryRef}
-                      >
-                        {categories.map((items) =>
-                          renderMenuCategoryList(items)
-                        )}
-                      </UI.ScrollView>
+                      <UI.CbFlatList 
+                        horizontal={true} 
+                        flatlistData={updatedCategoryList} 
+                        children={(items) => renderMenuCategoryList(items)}
+                        customStyles={styles.categoryListContainer}
+                      />
                     </>
                   );
                 }
               })}
           </UI.Box>
           <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-            <UI.cbCategoryList />
+            <UI.cbCategoryList subMenuData = {mealItems}/>
           </UI.ScrollView>
         </UI.Box>
       )
@@ -212,19 +211,25 @@ export default function MenuOrderScreen(props) {
       {
         isRecentOrderOpen && <OnRecentOrderPress /> 
       }
-      <UI.Box
-        style={styles.topContainer}
-      >
-        {menuOrderData &&
-          menuOrderData.MenuItems?.map((item) => {
-            return renderMealTypeList(item, setMealType);
-          })}
-      </UI.Box>
-      {renderCategoryMainList()}
+
       {
-        (cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props}/>
+        errorMessage === "" ?
+          <>
+            <UI.Box style={styles.topContainer}>
+              {mealItems &&
+                mealItems?.MenuItems?.map((item) => {
+                  return renderMealTypeList(item, setMealType);
+                })}
+            </UI.Box>
+
+            {renderCategoryMainList()}
+
+            {(cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props} />}
+          </>
+          :
+          <UI.Text style={styles.emptyMealTxt}>{errorMessage}</UI.Text>
       }
-      
+
     </UI.Box>
   );
 }
