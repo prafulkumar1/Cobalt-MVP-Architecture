@@ -339,18 +339,20 @@ class CbFloatingButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {({cartData}) => {
+      {({cartData,addedModifierCartData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
+          const getModifierListQuantity = addedModifierCartData && addedModifierCartData.reduce((total,prev) => total+prev.quantity,0)
+          const finalQuantity = getFinalQuantity+getModifierListQuantity
           return (
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-              <Text style={styles.cartCountTxt}>{getFinalQuantity? getFinalQuantity:0}</Text>
+              <Text style={styles.cartCountTxt}>{finalQuantity? finalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
