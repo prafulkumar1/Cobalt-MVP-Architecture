@@ -9,9 +9,8 @@ export const useMenuOrderLogic = (props) => {
   const [isRecentOrderOpen,setIsRecentOrderOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState("")
-  const [mealItems,setMealItems] = useState(null)
 
-    const { setMenuOrderData}= useFormContext();  
+    const { setMenuOrderData }= useFormContext();  
 
 
     const openRecentOrder = () => {

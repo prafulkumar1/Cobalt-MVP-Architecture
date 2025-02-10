@@ -1,4 +1,4 @@
-import { foodOrderData,ModifiersData } from '@/source/constants/commonData';
+import { ModifiersData } from '@/source/constants/commonData';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,13 +31,6 @@ export const UseFormContextProvider = ({children}) => {
     const commentValue = useRef("")
     const singleModifierData = useRef(null)
 
-    // const setFormFieldData = (formId,controlType,controlId,controlValue,isInvalid) => {
-    //      setFormData({...formData,[formId + '_' + controlId]: {
-    //       value: controlValue,
-    //       ...(isInvalid !== null && { isInvalid }), // Conditionally add or update `isInvalid`
-    //     },
-    //    });
-    //  };
     useEffect(() => {
       if(formData.ItemModifier_Comments){
         commentValue.current = formData.ItemModifier_Comments?.value
@@ -59,14 +52,17 @@ export const UseFormContextProvider = ({children}) => {
 
     const setMealType = (id,IsEnabled) => {
       if(IsEnabled===1){
-        const updatedMealType = menuOrderData.MenuItems.map((items) => ({
-          ...items,
-          IsSelect: items.MealPeriod_Id === id ? 1 : 0,
-          Categories: items.Categories.map((category, index) => ({
-            ...category,
-            IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-          })),
-        }));
+        const updatedMealType = menuOrderData.MenuItems.map((items) => {
+          let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
+          return{
+            ...items,
+            IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+            Categories: updatedCategoryData.map((category, index) => ({
+              ...category,
+              IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+            })),
+          }
+        });
       
         const foodMenuList = {
           ...menuOrderData,
@@ -85,13 +81,16 @@ export const UseFormContextProvider = ({children}) => {
     };
   
     const setMealCategory = (id) => {
-      const updatedMealCategory = menuOrderData.MenuItems.map((items) => ({
-       ...items,
-        Categories: items.Categories.map((category) => ({
-         ...category,
-         IsSelect: category.Category_Id === id ? 1:0,
-        })),
-      }));
+      const updatedMealCategory = menuOrderData.MenuItems.map((items) => {
+        let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
+        return{
+          ...items,
+           Categories: updatedCategoryData.map((category) => ({
+            ...category,
+            IsSelect: category.Category_ID === id ? 1:0,
+           })),
+         }
+      });
       const foodMenuList = {
        ...menuOrderData,
        MenuItems: updatedMealCategory,
@@ -174,16 +173,6 @@ export const UseFormContextProvider = ({children}) => {
       setCartData(updatedCartData);
       AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
     };
-
-    const removeValue = async () => {
-      try {
-        await AsyncStorage.removeItem('modifier_data')
-      } catch(e) {
-        // remove error
-      }
-    
-      console.log('Done.')
-    }
 
     const storeSingleItem = (item) => {
       setSingleItemDetails(item)
@@ -374,7 +363,8 @@ export const UseFormContextProvider = ({children}) => {
       commentValue,
       updateModiferItemData,
       deleteModifierItem,
-      setMenuOrderData
+      setMenuOrderData,
+      menuOrderData
     }
     return (
       <FormContext.Provider
@@ -388,9 +378,6 @@ export const UseFormContextProvider = ({children}) => {
   
   UseFormContextProvider.displayName='UseFormContextProvider';
 
-
-
-  // searchHandlers.js
 export const handleSearchClick = (setState, onSearchActivate) => {
   setState({ showSearchInput: true });
   if (onSearchActivate) {
@@ -400,10 +387,8 @@ export const handleSearchClick = (setState, onSearchActivate) => {
 
 export const handleClearClick = (setState, searchValue, onSearchActivate) => {
   if (searchValue.trim()) {
-    // Clear the input field if text is present
     setState({ searchValue: "" });
   } else {
-    // Close the search box if no text
     setState({ showSearchInput: false });
     if (onSearchActivate) {
       onSearchActivate(false);

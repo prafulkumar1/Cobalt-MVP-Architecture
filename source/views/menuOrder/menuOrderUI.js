@@ -29,7 +29,7 @@ export default function MenuOrderScreen(props) {
 
   const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
-  const { isRecentOrderOpen,openRecentOrder,errorMessage,mealItems } = useMenuOrderLogic(props)
+  const { isRecentOrderOpen,openRecentOrder,errorMessage } = useMenuOrderLogic(props)
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -76,13 +76,13 @@ export default function MenuOrderScreen(props) {
     );
   }
   
-  const renderMenuCategoryList = ({item}) => {
+  const renderMenuCategoryList = (item) => {
     return (
       <UI.Box>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item.Category_Id)}
+          onPress={() => setMealCategory(item.Category_ID)}
         >
           <UI.Text style={styles.categoryText}>
             {item.Category_Name?.toUpperCase()}
@@ -104,29 +104,32 @@ export default function MenuOrderScreen(props) {
       return (
         <UI.Box style={styles.mainBoxContainer}>
           <UI.Box style={styles.subCategoryContainer}>
-            {mealItems &&
-              mealItems?.MenuItems?.map((mealCategory) => {
+            {menuOrderData &&
+              menuOrderData?.MenuItems?.map((mealCategory,index) => {
                 if (mealCategory.IsSelect === 1) {
                   const categories = mealCategory?.Categories || [];
-                  const selectedItems = categories.filter(item => item.IsSelect == 1);
-                  const unSeletedItems = categories.filter(item => item.IsSelect !== 1);
-                  let updatedCategoryList = [...selectedItems, ...unSeletedItems]
+                  let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
+                  // const selectedItems = updatedData?.filter(item => item.IsSelect == 1);
+                  // const unSeletedItems = updatedData?.filter(item => item.IsSelect !== 1);
+                  // let updatedCategoryList = [...selectedItems, ...unSeletedItems]
                   return (
                     <>
-                      <UI.CbFlatList 
-                        horizontal={true} 
-                        flatlistData={updatedCategoryList} 
-                        children={(items) => renderMenuCategoryList(items)}
-                        customStyles={styles.categoryListContainer}
-                      />
+                      <UI.ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.categoryListContainer}
+                      >
+                        {updatedData.map((items) =>
+                          renderMenuCategoryList(items)
+                        )}
+                      </UI.ScrollView>
                     </>
                   );
                 }
               })}
           </UI.Box>
-          <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-            <UI.cbCategoryList subMenuData = {mealItems}/>
-          </UI.ScrollView>
+
+          <UI.cbCategoryList />
         </UI.Box>
       )
     } else {
@@ -216,8 +219,8 @@ export default function MenuOrderScreen(props) {
         errorMessage === "" ?
           <>
             <UI.Box style={styles.topContainer}>
-              {mealItems &&
-                mealItems?.MenuItems?.map((item) => {
+              {menuOrderData &&
+                menuOrderData?.MenuItems?.map((item) => {
                   return renderMealTypeList(item, setMealType);
                 })}
             </UI.Box>

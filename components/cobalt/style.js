@@ -1,5 +1,5 @@
 import { isPlatformAndroid } from "@/source/constants/Matrices";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
@@ -347,6 +347,59 @@ CheckIcon:{color:"#ffff"},
   dropdownContainer:{ 
     minHeight:responsiveHeight(30),
     maxHeight: responsiveHeight(45), 
+  },
+  recentOrderContainer:{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  modifierContainer:{
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold"
+  },
+  requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
+  maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  orderSubContainer:{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 10,
+  },
+  itemNameTxt:{
+    color: "#4B5154",
+    fontSize: 14,
+   fontFamily:"SourceSansPro_SemiBoldItalic"
+  },
+  priceMainTxt:{
+    marginLeft: "auto",
+    color: "#4B5154",
+    fontSize: 14,
+     fontFamily:"SourceSansPro_SemiBold"
+  },
+  searchBarContainer:{
+    width: showSearchInput ? "100%" : 40,
+    height: 40,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft:9,
+    borderRadius:4,
+    backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+  },
+  searchBarMainContainer:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "95%",
+    height: "100%",
+    marginRight: 25
+  },
+  inputBox:{
+    flex: 1,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5,
+    backgroundColor: "#f0f0f0",
   }
-
 })

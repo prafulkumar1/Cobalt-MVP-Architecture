@@ -1,5 +1,6 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { isPlatformAndroid } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
     mainHeaderContainer:{ display: "flex", flexDirection: "row" },
@@ -8,7 +9,7 @@ export const styles = StyleSheet.create({
     mainContainer:{flex:1,backgroundColor:"#ECECEC"},
     scrollContent: {
       paddingTop:responsiveHeight(0.2),
-      paddingBottom:Platform.OS === "android"&& responsiveHeight(10)
+      paddingBottom:isPlatformAndroid() && responsiveHeight(10)
     },
     categoryText: {
       padding:2,
@@ -39,7 +40,7 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5),
+      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5),
       marginHorizontal:5
     },
     inactiveMenuType: {
@@ -48,7 +49,7 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5.5),
+      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5.5),
       borderRadius: 5,
       opacity: 0.8,
       marginHorizontal:5
@@ -74,7 +75,7 @@ export const styles = StyleSheet.create({
       paddingHorizontal:10
     },
     categoryListContainer: {
-      height: Platform.OS === "android" ?responsiveHeight(5):responsiveHeight(5.5),
+      height: isPlatformAndroid() ?responsiveHeight(5):responsiveHeight(5.5),
       paddingTop:responsiveHeight(1.2),
     },
     subCategoryContainer: {

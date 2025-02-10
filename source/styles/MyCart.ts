@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { isPlatformIos } from "../constants/Matrices";
 
@@ -143,7 +143,7 @@ export const styles = StyleSheet.create({
     },
     bottomBtn:{
       position: 'absolute',
-      bottom:Platform.OS=="ios"?responsiveHeight(10):responsiveHeight(0),
+      bottom:isPlatformIos()?responsiveHeight(10):responsiveHeight(0),
       left: 0,
       right: 0,
       flexDirection: 'row',
