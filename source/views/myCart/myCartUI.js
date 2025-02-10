@@ -3,10 +3,8 @@ import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Swipeable } from 'react-native-gesture-handler';
-import { cartConfigResponseData, priceItems } from '@/source/constants/commonData';
-import { useEffect, useState } from 'react';
+import {  priceItems } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
@@ -19,10 +17,7 @@ export default function MyCartScreen(props) {
  let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
 
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
- const [keyboardVisible, setKeyboardVisible] = useState(false);
- const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
- 
-  
+
    const {
      cartConfigData,
      tipData,
@@ -38,44 +33,11 @@ export default function MyCartScreen(props) {
      customTipValue,
      handleSaveTip,
      scrollViewRef,
+     finalCartData,
+     keyboardVisible
    } = useMyCartLogic();
-   const {cartData, selectedTime ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity}= useFormContext();
+   const {increaseQuantity,cartData, selectedTime ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity}= useFormContext();
 
-   const [finalCartData, setFinalCartData] = useState([]);
-
-  useEffect(() => {
-    if (cartData.length > 0 && addedModifierCartData.length > 0) {
-      setFinalCartData([...cartData, ...addedModifierCartData]);
-    }
-  }, [cartData, addedModifierCartData]);
-  
-
-
-   useEffect(() => {
-    getCartData();
-    getModifierData();
-    const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const keyboardDidHideListener = Keyboard?.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
-
-    setTimeout(() => {
-      const updatedShowTime = showPickupTime?.map((items) => {
-        return{
-          label:items.Time,
-          value:items.Time
-        }
-      })
-      setShowPickupTime(updatedShowTime)
-    }, 100);
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
 
   const renderModifierList = ({ item }) => {
     return (

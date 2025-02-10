@@ -1,3 +1,4 @@
+import { isPlatformAndroid } from "@/source/constants/Matrices";
 import { Platform, StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
 
@@ -77,10 +78,11 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   quantityTxt: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
-    paddingRight: responsiveWidth(0.8)
+    paddingRight: responsiveWidth(0.8),
+    paddingTop:isPlatformAndroid() && 4
   },
   container: {
     flex: 1,

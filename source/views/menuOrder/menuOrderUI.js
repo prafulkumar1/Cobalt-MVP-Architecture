@@ -27,9 +27,9 @@ export default function MenuOrderScreen(props) {
 
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
-  const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData } = useFormContext();
+  const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
-  const { categoryRef, scrollToLast, scrollToFirst,isRecentOrderOpen,openRecentOrder } = useMenuOrderLogic()
+  const { categoryRef,isRecentOrderOpen,openRecentOrder } = useMenuOrderLogic()
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -222,7 +222,7 @@ export default function MenuOrderScreen(props) {
       </UI.Box>
       {renderCategoryMainList()}
       {
-        cartData && cartData.length >0 && <UI.CbFloatingButton props={props}/>
+        (cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props}/>
       }
       
     </UI.Box>
