@@ -175,11 +175,6 @@ export const UseFormContextProvider = ({children}) => {
       AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
     };
 
-    const deleteItemModifierItem = async (mealItemDetails) => {
-      let updatedCartData = modifierCartItemData.filter((item) => item.Item_Id !==mealItemDetails.Item_Id)
-      setModifierCartItemData(updatedCartData)
-    }
-
     const removeValue = async () => {
       try {
         await AsyncStorage.removeItem('modifier_data')
@@ -226,6 +221,7 @@ export const UseFormContextProvider = ({children}) => {
            
           }
           AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
+          updateModiferItemData(mealItemDetails, newQuantity)
           return updatedCartData;
         });
       } catch (error) {}
@@ -307,6 +303,10 @@ export const UseFormContextProvider = ({children}) => {
           });
 
           AsyncStorage.setItem("modifier_data", JSON.stringify(updatedModifierData));
+          setTimeout(() => {
+            setSelectedModifiers([])
+            modifiersData.current = null
+          }, 1000);
           return updatedModifierData;
         });
       }
@@ -333,6 +333,12 @@ export const UseFormContextProvider = ({children}) => {
       });
     } catch (error) {}
   };
+
+  const deleteModifierItem = (modifierItem) => {
+    let updatedCartData = addedModifierCartData?.filter((item) => item.Item_Id !== modifierItem.Item_Id);
+    setAddedModifierCartData(updatedCartData);
+    AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
+  };
     
     const initialValues = {
       getFormFieldData,
@@ -355,7 +361,6 @@ export const UseFormContextProvider = ({children}) => {
       increaseQuantity,
       modifierCartItemData,
       updateModifierItemQuantity,
-      deleteItemModifierItem,
       getAllSelectedModifiers,
       selectedModifiers,
       setSelectedModifiers,
@@ -367,7 +372,8 @@ export const UseFormContextProvider = ({children}) => {
       getCartData,
       getModifierData,
       commentValue,
-      updateModiferItemData
+      updateModiferItemData,
+      deleteModifierItem
     }
     return (
       <FormContext.Provider
@@ -409,35 +415,4 @@ export const handleCloseClick = (setState, onSearchActivate) => {
   if (onSearchActivate) {
     onSearchActivate(false);
   }
-};
-
-export const handleCheckboxToggle = (modifierIndex, itemIndex, isMaxAllowedOne, isRequired) => {
-  this.setState((prevState) => {
-    const updatedModifiers = { ...prevState.selectedModifiers };
-
-    if (isMaxAllowedOne) {
-  
-      updatedModifiers[modifierIndex] = itemIndex;
-    } else {
-      
-      updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex] || [];
-      
-      if (updatedModifiers[modifierIndex].includes(itemIndex)) {
-     
-        updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex].filter(
-          (i) => i !== itemIndex
-        );
-
-       
-        if (isRequired && updatedModifiers[modifierIndex].length === 0) {
-          return prevState; 
-        }
-      } else {
-       
-        updatedModifiers[modifierIndex].push(itemIndex);
-      }
-    }
-
-    return { selectedModifiers: updatedModifiers };
-  });
 };

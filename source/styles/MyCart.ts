@@ -1,5 +1,6 @@
 import { Platform, StyleSheet } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { isPlatformIos } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
     topContainer:{ flex: 1, padding: 10,backgroundColor:"#fff" },
@@ -167,6 +168,6 @@ export const styles = StyleSheet.create({
       fontFamily:"SourceSansPro_Regular",
       paddingLeft: responsiveWidth(1.2),
       paddingRight: responsiveWidth(0.8),
-      paddingTop:Platform.OS === "ios" && 2
+      paddingTop:isPlatformIos() ? 2 : 4
     },
   }); 

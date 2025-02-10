@@ -3,14 +3,14 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import {  cartConfigResponseData } from '@/source/constants/commonData';
 import uuid from "react-native-uuid";
 import { useEffect, useRef, useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 const pageId='MyCart';
 export const useMyCartLogic = () => {
     const swipeableRefs = useRef({});
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {deleteCartItem }= useFormContext(); 
+    const {addedModifierCartData,getCartData,getModifierData,deleteCartItem,deleteModifierItem,cartData }= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
@@ -18,10 +18,46 @@ export const useMyCartLogic = () => {
     const [isTimeModalSelected,setIsTimeModalSelected] = useState(false)
     const [customTipValue,setCustomTipValue] = useState("")
     const [pickUpTimeLineData,setPickUpTimeLineData] = useState(cartConfigResponseData.Pickup_Times)
+    const [finalCartData, setFinalCartData] = useState([]);
+
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+    const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
+    
+     
+  useEffect(() => {
+    if ((cartData.length > 0 || addedModifierCartData.length > 0)) {
+      setFinalCartData([...cartData, ...addedModifierCartData]);
+    }
+  }, [cartData, addedModifierCartData]);
+
+
 
   useEffect(() => {
     getTipDetails()
-  },[])
+    getCartData();
+    getModifierData();
+    const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard?.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    setTimeout(() => {
+      const updatedShowTime = showPickupTime?.map((items) => {
+        return {
+          label: items.Time,
+          value: items.Time
+        }
+      })
+      setShowPickupTime(updatedShowTime)
+    }, 100);
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const getTipDetails = () => {
     let tipDetails = tipData.map((items) => {
@@ -61,7 +97,13 @@ export const useMyCartLogic = () => {
     }
     delete swipeableRefs.current[item.Item_Id];
     setOpenItemId(null);
-    deleteCartItem(item);
+    if(item.isModifier ===1){
+      deleteModifierItem(item)
+    }else{
+      deleteCartItem(item);
+    }
+    let updatedCartData = finalCartData?.filter((itemDetails) => itemDetails.Item_Id !== item.Item_Id);
+    setFinalCartData(updatedCartData);
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {
@@ -137,6 +179,8 @@ export const useMyCartLogic = () => {
     getCustomTip,
     customTipValue,
     handleSaveTip,
-    scrollViewRef
+    scrollViewRef,
+    finalCartData,
+    keyboardVisible
   };
 };
