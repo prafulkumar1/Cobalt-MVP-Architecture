@@ -7,6 +7,7 @@ import { ImageBackground } from "react-native";
 
 const pageId = 'ProfitCenter';
 const ProfitCenters = (props) => {
+    const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic()
 
     let pageConfigJson = global.appConfigJsonArray?.find(
         (item) => item.PageId === pageId
@@ -20,10 +21,9 @@ const ProfitCenters = (props) => {
         }
         return acc;
       }, {});
-    
+      const { backgroundImage, profitCenterName, timingsText, availabilityStatus, } = configItems;
 
-      const { backgroundImage, profitCenterName, timingsText, availabilityStatus } = configItems;
-      const {navigateToMenuOrder,profitCenterData} = useProfitCenterLogic()
+    
     const RenderingProfitCenter = ({item},props) => {
         const isAvailable = item.STATUS === "Available";
         return (
@@ -48,6 +48,13 @@ const ProfitCenters = (props) => {
             </ImageBackground>
         );
     };
+    if (loading) {
+        return (
+          <UI.Box style={styles.loadingContainer}>
+            <UI.ActivityIndicator size="large" color="#00BFF6" />
+          </UI.Box>
+        );
+      }
     return (
         <UI.ScrollView contentContainerStyle={styles.scrollContent}>
             {

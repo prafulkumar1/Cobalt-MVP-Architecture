@@ -8,13 +8,19 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 const pageId='ProfitCenter';
 export const useProfitCenterLogic = () => {
   const [profitCenterData , setProfitCenterData] = useState(null)
+  const [loading, setLoading] = useState(false);
   const { } = useFormContext();
   
   useEffect(() => {
     getProfitCenterList()
   }, [])
 
+  useEffect(() => {
+    setLoading(false)
+  },[profitCenterData])
+
   const getProfitCenterList = async () => {
+    setLoading(true)
     const params = {
       "MemberID": "09071",
       "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
@@ -52,6 +58,7 @@ export const useProfitCenterLogic = () => {
   return {
     getProfitCenterList,
     navigateToMenuOrder,
-    profitCenterData
+    profitCenterData,
+    loading
   };
 };

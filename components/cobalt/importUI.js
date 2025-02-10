@@ -1,6 +1,6 @@
 import React , { useState } from 'react';
 import "@/global.css";
-export { StyleSheet, ImageBackground,View,ScrollView,TouchableOpacity,Image,Pressable } from 'react-native';
+export { StyleSheet, ImageBackground,View,ScrollView,TouchableOpacity,Image,Pressable,ActivityIndicator } from 'react-native';
 export { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 export { VStack } from '@/components/ui/vstack';
 export { HStack } from '@/components/ui/hstack';

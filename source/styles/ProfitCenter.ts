@@ -54,5 +54,10 @@ export const styles = StyleSheet.create({
         height: responsiveHeight(2.5),
         fontFamily:"SourceSansPro_Regular"
     },
-    blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute"}
+    blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute"},
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });
