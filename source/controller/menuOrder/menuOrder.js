@@ -18,13 +18,10 @@ export const useMenuOrderLogic = (props) => {
     }
 
     useEffect(() => {
-      // console.log(props,"==>>>")
+      setLoading(false)
       getMenuOrderList()
       }, [])
-    
-      // useEffect(() => {
-      //   setLoading(false)
-      // },[])
+  
     
       const getMenuOrderList = async () => {
         const {LocationId} = props?.route?.params
@@ -54,13 +51,12 @@ export const useMenuOrderLogic = (props) => {
           "Search": ""
         }
         let menuOrderResponseData = await postApiCall("MENU_ORDER","GET_MENU_ORDER_LIST", params)
-        // console.log(JSON.stringify(menuOrderResponseData),"===>>>menuOrderResponseData")
 
         if(menuOrderResponseData?.response?.ResponseCode === "Fail"){
           setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
         }else{
           setMenuOrderData(menuOrderResponseData.response)
-          // setMealItems(menuOrderResponseData.response)
+          setLoading(false)
         }
       }
   return {

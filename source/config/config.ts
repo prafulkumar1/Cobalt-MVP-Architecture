@@ -24,6 +24,7 @@ export const endpoints = {
         GET_PROFIT_CENTERS: "MobileOrdering/MO_GetProfitCenters"
     },
     MENU_ORDER:{
-        GET_MENU_ORDER_LIST:"MobileOrdering/MO_GetMenuItems"
+        GET_MENU_ORDER_LIST:"MobileOrdering/MO_GetMenuItems",
+        GET_MENU_ORDER_STATUS:"MobileOrdering/MO_GetItemStatus"
     }
 }

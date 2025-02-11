@@ -10,8 +10,8 @@ import {
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
 import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
-import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel,CheckboxGroup } from '@/components/ui/checkbox';
-import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectDragIndicator,SelectItem } from '../ui/select';
+import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
+import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
@@ -27,6 +27,8 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
+import { postApiCall } from '@/source/utlis/api';
+import * as DeviceInfo from 'expo-device';
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
@@ -412,6 +414,10 @@ class CbAddToCartButton extends React.Component {
     this.mealItemDetails = props.mealItemDetails
     this.style = props.style
     this.cartStyle = props.cartStyle
+    this.state ={
+      isAvailable : 0 ,
+      IsModifierAvailable:0
+    }
   }
   commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
     if(isAvailable ===1 && IsDisable ===0){
@@ -421,16 +427,55 @@ class CbAddToCartButton extends React.Component {
     }
   }
 
-
-  handleAddToCartBtn = (storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity) => {
-    if(this.mealItemDetails?.isModifier ===1){
-      storeSingleItem(this.mealItemDetails);
-      closePreviewModal()
-      increaseQuantity(this.mealItemDetails,false)
-    }else{
-      addItemToCartBtn(this.mealItemDetails)
+   postQuantityApiCall = async(quantity) => {
+      try {
+        const params = {
+          "MemberID": "09071",
+          "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
+          "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
+          "DeviceInfo": [
+            {
+              "DeviceType": DeviceInfo.deviceType,
+              "OSVersion": DeviceInfo.osVersion,
+              "OriginatingIP": "183.82.116.84",
+              "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
+              "Browser": DeviceInfo.osName,
+              "HostName": "183.82.116.84.actcorp.in",
+              "SourcePortNo": "50189"
+            }
+          ],
+          "IsAdmin": "0",
+          "UserName": "Henry, aa Luther",
+          "Role": "Full Access",
+          "UserId": "9837",
+          "Item_ID": this.mealItemDetails?.Item_ID,
+          "Item_Quantity": quantity
+        }          
+        let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
+        return quantityInfo
+      } catch (err) {}
+   }
+   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
+    let quantityInfo = await this.postQuantityApiCall(quantity)
+    console.log(quantityInfo, "===>>>111111111")
+    if (quantityInfo.statusCode === 200) {
+      this.setState({ isAvailable: quantityInfo.response.isAvailable, IsModifierAvailable: response.IsModifierAvailable }, () => {
+        if (this.state.IsModifierAvailable === 1) {
+          storeSingleItem(this.mealItemDetails);
+          closePreviewModal()
+          increaseQuantity(this.mealItemDetails, false)
+        } else {
+          console.log("--->>caleed")
+          addItemToCartBtn(this.mealItemDetails)
+        }
+      })
     }
   }
+
+
+  // handleAddToCartBtn = ( storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
+  //   this.getItemStatus("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity)
+  // }
 
   modifierIncDecBtn = (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
     if (this.mealItemDetails?.isModifier === 1) {
@@ -471,7 +516,7 @@ class CbAddToCartButton extends React.Component {
             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
           ]}
           activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn(storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity)}
+          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
@@ -564,7 +609,6 @@ class CbAccordion extends React.Component {
 
   render() {
     const componentdata = this.AccordionData;
-
     const { expandedIds } = this.state;
     const configItems = global.controlsConfigJson?.reduce((acc, item) => {
       if (["itemTitle", "itemPrice", "itemDescription", "itemCategoryLabel"].includes(item.id)) {
@@ -614,166 +658,169 @@ class CbAccordion extends React.Component {
                         value={subMenuList.SubMenu_Name}
                         style={styles.headerTxt}
                       >
-                        <AccordionHeader style={styles.menuHeader}>
-                          <AccordionTrigger style={styles.subItem}>
-                            {({ isExpanded }) => (
-                              <>
-                                <AccordionTitleText
-                                  style={[
-                                    itemCategoryLabel?.styles
-                                      ? itemCategoryLabel?.styles
-                                      : styles.itemCategoryLabel,
-                                  ]}
-                                >
-                                  {subMenuList?.SubMenu_Name}
-                                </AccordionTitleText>
-                                {isExpanded ? (
-                                  <AccordionIcon
-                                    as={ChevronUpIcon}
-                                    width={22}
-                                    height={22}
-                                    className="ml-3"
-                                  />
-                                ) : (
-                                  <AccordionIcon
-                                    as={ChevronDownIcon}
-                                    width={22}
-                                    height={22}
-                                    className="ml-3"
-                                  />
+                        {
+                          item.Items !==null && 
+                          <>
+                            <AccordionHeader style={styles.menuHeader}>
+                              <AccordionTrigger style={styles.subItem}>
+                                {({ isExpanded }) => (
+                                  <>
+                                    <AccordionTitleText
+                                      style={[
+                                        itemCategoryLabel?.styles
+                                          ? itemCategoryLabel?.styles
+                                          : styles.itemCategoryLabel,
+                                      ]}
+                                    >
+                                      {subMenuList?.SubMenu_Name}
+                                    </AccordionTitleText>
+                                    {isExpanded ? (
+                                      <AccordionIcon
+                                        as={ChevronUpIcon}
+                                        width={22}
+                                        height={22}
+                                        className="ml-3"
+                                      />
+                                    ) : (
+                                      <AccordionIcon
+                                        as={ChevronDownIcon}
+                                        width={22}
+                                        height={22}
+                                        className="ml-3"
+                                      />
+                                    )}
+                                  </>
                                 )}
-                              </>
-                            )}
-                          </AccordionTrigger>
-                        </AccordionHeader>
-                        <AccordionContent>
-                          <CbFlatList
-                            flatlistData={subMenuList.Items}
-                            children={({ item, index }) => {
-                              let box = item;
-                              const lastItem =
-                                index === subMenuList.Items?.length - 1;
-                              const isExpanded = expandedIds.includes(
-                                box?.Item_Id
-                              );
-                              return (
-                                <Box
-                                  key={box?.Item_Id}
-                                  style={[
-                                    styles.subContainer,
-                                    {
-                                      opacity:
-                                        box?.IsAvailable === 1 &&
-                                        box?.IsDisable === 0
-                                          ? 1
-                                          : 0.8,
-                                    },
-                                  ]}
-                                >
-                                  <Box style={styles.rowContainer}>
-                                    <Box style={[styles.textContainer]}>
-                                      <AccordionContentText
-                                        numberOfLines={1}
-                                        style={[
-                                          itemTitle?.styles
-                                            ? itemTitle?.styles
-                                            : styles.mealTypeTitle,
-                                          this.showActiveAvailableColor(
-                                            box?.IsAvailable,
-                                            box?.IsDisable
-                                          ),
-                                          { textAlign: "justify" },
-                                        ]}
-                                      >
-                                        {box?.Item_Name}
-                                      </AccordionContentText>
-                                      <AccordionContentText
-                                        numberOfLines={
-                                          isExpanded ? undefined : 2
-                                        }
-                                        style={[
-                                          itemPrice?.styles
-                                            ? itemPrice?.styles
-                                            : styles.priceTxt,
-                                          this.showActiveAvailableColor(
-                                            box.IsAvailable,
-                                            box.IsDisable
-                                          ),
-                                        ]}
-                                      >
-                                        {`$${
-                                          box?.Price != null ? box?.Price : 0
-                                        }`}
-                                      </AccordionContentText>
-                                      <AccordionContentText
-                                        numberOfLines={
-                                          isExpanded ? undefined : 1
-                                        }
-                                        style={[
-                                          itemDescription?.styles
-                                            ? itemDescription?.styles
-                                            : styles.descriptionTxt,
-                                          this.showActiveAvailableColor(
-                                            box.IsAvailable,
-                                            box.IsDisable
-                                          ),
-                                          {
-                                            textAlign: "left",
-                                            letterSpacing: -0.5,
-                                          },
-                                        ]}
-                                      >
-                                        {box?.Description}
-                                      </AccordionContentText>
-                                      {box?.Description?.length > 35 && (
-                                        <AccordionContentText
-                                          onPress={() =>
-                                            this.handleReadMoreToggle(
-                                              box.Item_Id
-                                            )
-                                          }
-                                          style={styles.underLineTxt}
-                                        >
-                                          {isExpanded
-                                            ? "Show Less"
-                                            : "Read More"}
-                                        </AccordionContentText>
-                                      )}
-                                    </Box>
-
-                                    {box?.Image && (
-                                      <Box style={styles.imageContainer}>
-                                        <TouchableOpacity
-                                          style={{
-                                            backgroundColor:
-                                              "rgba(255, 255, 255, 0.2)",
-                                          }}
-                                          disabled={box.IsAvailable === 0}
-                                        >
-                                          <Image
-                                            source={{ uri: box.Image }}
+                              </AccordionTrigger>
+                            </AccordionHeader>
+                            <AccordionContent>
+                              <CbFlatList
+                                flatlistData={subMenuList.Items}
+                                children={({ item, index }) => {
+                                  let box = item;
+                                  const lastItem =
+                                    index === subMenuList.Items?.length - 1;
+                                  const isExpanded = expandedIds.includes(
+                                    box?.Item_Id
+                                  );
+                                  return (
+                                    <Box
+                                      key={box?.Item_Id}
+                                      style={[
+                                        styles.subContainer,
+                                        {
+                                          opacity:
+                                            box?.IsAvailable === 1 &&
+                                              box?.IsDisable === 0
+                                              ? 1
+                                              : 0.8,
+                                        },
+                                      ]}
+                                    >
+                                      <Box style={styles.rowContainer}>
+                                        <Box style={[styles.textContainer]}>
+                                          <AccordionContentText
+                                            numberOfLines={1}
                                             style={[
-                                              styles.mealTypeImg,
-                                              box.IsAvailable === 0 && {
-                                                opacity: 0.4,
+                                              itemTitle?.styles
+                                                ? itemTitle?.styles
+                                                : styles.mealTypeTitle,
+                                              this.showActiveAvailableColor(
+                                                box?.IsAvailable,
+                                                box?.IsDisable
+                                              ),
+                                              { textAlign: "justify" },
+                                            ]}
+                                          >
+                                            {box?.Item_Name}
+                                          </AccordionContentText>
+                                          <AccordionContentText
+                                            numberOfLines={
+                                              isExpanded ? undefined : 2
+                                            }
+                                            style={[
+                                              itemPrice?.styles
+                                                ? itemPrice?.styles
+                                                : styles.priceTxt,
+                                              this.showActiveAvailableColor(
+                                                box.IsAvailable,
+                                                box.IsDisable
+                                              ),
+                                            ]}
+                                          >
+                                            {`$${box?.Price != null ? box?.Price : 0
+                                              }`}
+                                          </AccordionContentText>
+                                          <AccordionContentText
+                                            numberOfLines={
+                                              isExpanded ? undefined : 1
+                                            }
+                                            style={[
+                                              itemDescription?.styles
+                                                ? itemDescription?.styles
+                                                : styles.descriptionTxt,
+                                              this.showActiveAvailableColor(
+                                                box.IsAvailable,
+                                                box.IsDisable
+                                              ),
+                                              {
+                                                textAlign: "left",
+                                                letterSpacing: -0.5,
                                               },
                                             ]}
+                                          >
+                                            {box?.Description}
+                                          </AccordionContentText>
+                                          {box?.Description?.length > 35 && (
+                                            <AccordionContentText
+                                              onPress={() =>
+                                                this.handleReadMoreToggle(
+                                                  box.Item_Id
+                                                )
+                                              }
+                                              style={styles.underLineTxt}
+                                            >
+                                              {isExpanded
+                                                ? "Show Less"
+                                                : "Read More"}
+                                            </AccordionContentText>
+                                          )}
+                                        </Box>
+
+                                        <Box style={styles.imageContainer}>
+                                          <TouchableOpacity
+                                            style={{
+                                              backgroundColor:
+                                                "rgba(255, 255, 255, 0.2)",
+                                            }}
+                                            disabled={box.IsAvailable === 0}
+                                          >
+                                            <Image
+                                              source={{ uri: box.Image }}
+                                              style={[
+                                                styles.mealTypeImg,
+                                                box.IsAvailable === 0 && {
+                                                  opacity: 0.4,
+                                                },
+                                              ]}
+                                            />
+                                          </TouchableOpacity>
+                                          <CbAddToCartButton
+                                            mealItemDetails={box}
                                           />
-                                        </TouchableOpacity>
-                                        <CbAddToCartButton
-                                          mealItemDetails={box}
-                                        />
+                                        </Box>
                                       </Box>
-                                    )}
-                                  </Box>
-                                  {!lastItem && (
-                                    <Box style={styles.horizontalLine} />
-                                  )}
-                                </Box>
-                              );
-                            }}
-                          />
-                        </AccordionContent>
+                                      {!lastItem && (
+                                        <Box style={styles.horizontalLine} />
+                                      )}
+                                    </Box>
+                                  );
+                                }}
+                              />
+                            </AccordionContent>
+                          </>
+                        }
+                       
                       </AccordionItem>
                     );
                   }}
@@ -860,7 +907,16 @@ class cbSearchbox extends React.Component {
     const Closesource=this.close;
     return (
       <Box
-        style={styles.searchBarContainer}
+        style={{
+          width: showSearchInput ? "100%" : 40,
+          height: 40,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginLeft:9,
+          borderRadius:4,
+          backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+        }}
       >
         {showSearchInput ? (
           <Box
@@ -1361,7 +1417,6 @@ class cbCategoryList extends React.Component {
           );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
-
           return (
             <>
               {menuOrderData?.MenuItems?.map((mealCategory) => {

@@ -68,6 +68,12 @@ export const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 2,
+    backgroundColor:"#fff",
   },
   rowContainer: {
     flexDirection: "row",
@@ -376,16 +382,6 @@ CheckIcon:{color:"#ffff"},
     color: "#4B5154",
     fontSize: 14,
      fontFamily:"SourceSansPro_SemiBold"
-  },
-  searchBarContainer:{
-    width: showSearchInput ? "100%" : 40,
-    height: 40,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft:9,
-    borderRadius:4,
-    backgroundColor: showSearchInput ? "#f0f0f0" : "white",
   },
   searchBarMainContainer:{
     flexDirection: "row",

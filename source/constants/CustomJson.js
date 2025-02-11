@@ -177,7 +177,13 @@ const data = [
       {
         "type": "image",
         "id": "backgroundImage",
-        "imageUrl": ""
+        "imageUrl": "",
+        "style":{
+          "profitCenterImg":{
+            "height":"10",
+            "width":"20"
+          }
+        }
       },
       {
         "type": "text",

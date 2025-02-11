@@ -106,12 +106,9 @@ export default function MenuOrderScreen(props) {
           <UI.Box style={styles.subCategoryContainer}>
             {menuOrderData &&
               menuOrderData?.MenuItems?.map((mealCategory,index) => {
+                const categories = mealCategory?.Categories || [];
+                let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
                 if (mealCategory.IsSelect === 1) {
-                  const categories = mealCategory?.Categories || [];
-                  let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
-                  // const selectedItems = updatedData?.filter(item => item.IsSelect == 1);
-                  // const unSeletedItems = updatedData?.filter(item => item.IsSelect !== 1);
-                  // let updatedCategoryList = [...selectedItems, ...unSeletedItems]
                   return (
                     <>
                       <UI.ScrollView
@@ -119,12 +116,16 @@ export default function MenuOrderScreen(props) {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.categoryListContainer}
                       >
-                        {updatedData.map((items) =>
-                          renderMenuCategoryList(items)
-                        )}
+                        {updatedData &&
+                          updatedData
+                            .map((item) => renderMenuCategoryList(item))}
                       </UI.ScrollView>
                     </>
                   );
+                }else if(updatedData.length === 0){
+                  return(
+                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No categories available</UI.Text>
+                  )
                 }
               })}
           </UI.Box>
