@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View, ToastAndroid, Alert, Vibration} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -27,6 +27,8 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
+import Toast from 'react-native-toast-message';
+import * as Haptics from 'expo-haptics';
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
@@ -520,7 +522,45 @@ class CbAccordion extends React.Component {
     return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
   };
 
+  showErrorToast = (message) => {
+    Toast.show({
+      type: 'error',
+      text1: message,
+      position: 'bottom',
+      visibilityTime: 3000,
+      autoHide: true,
+      bottomOffset: 50,
+      style: { backgroundColor: '#5773a2', borderRadius: 10, padding: 10 },
+      textStyle: { color: '#4B515469', fontSize: 16, fontFamily:"SourceSansPro_Regular" },
+    });
+  
+    if (Platform.OS === 'android') {
+      Vibration.vibrate([200, 500, 200]);
+    } else {
+      Haptics?.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
+
   render() {
+    const toastConfig = {
+      error: ({ text1 }) => (
+        <View
+          style={{
+            backgroundColor: '#00C6FF',
+            paddingVertical: 10,
+            paddingHorizontal: 15,
+            borderRadius: 15,
+            marginBottom: 40,
+            alignSelf: 'center',
+            shadowColor: '#4B515469',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.2,
+            shadowRadius: 4,
+          }}>
+          <Text style={{ color: '#ECECEC', fontSize: 16,fontFamily:"SourceSansPro_SemiBoldItalic" }}>{text1}</Text>
+        </View>
+      ),
+    };
     const componentdata = this.AccordionData;
     const { expandedIds } = this.state;
     const configItems = global.controlsConfigJson?.reduce((acc, item) => {
@@ -741,15 +781,18 @@ class CbAccordion extends React.Component {
                     style={styles.addToCartBtn}
                     btnTextStyle={styles.addCartTxt}
                     onPress={() => {
-                      navigateToScreen(this.props, "MyCart", true,)
-                      addItemToModifierForCart(singleItemDetails)
-                      closePreviewModal()
-                      setTimeout(() => {
-                          commentValue.current = ""
-                      }, 1000);
+                      this.showErrorToast("Please add the modifiers")
+
+                      // navigateToScreen(this.props, "MyCart", true,)
+                      // addItemToModifierForCart(singleItemDetails)
+                      // closePreviewModal()
+                      // setTimeout(() => {
+                      //     commentValue.current = ""
+                      // }, 1000);
                     }}
                   />
                 </Box>
+                <Toast config={toastConfig} />
               </Modal>
             </ScrollView>
           );
