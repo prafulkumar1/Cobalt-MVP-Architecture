@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.2,
     shadowRadius: 6,
     elevation: 2,
     backgroundColor:"#fff",
@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8),
-    paddingTop:isPlatformAndroid() && 4
+    paddingTop:4
   },
   container: {
     flex: 1,

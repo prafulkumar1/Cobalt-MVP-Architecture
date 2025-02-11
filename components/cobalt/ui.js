@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View, Alert} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -457,39 +457,56 @@ class CbAddToCartButton extends React.Component {
    }
    handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
     let quantityInfo = await this.postQuantityApiCall(quantity)
-    console.log(quantityInfo, "===>>>111111111")
     if (quantityInfo.statusCode === 200) {
-      this.setState({ isAvailable: quantityInfo.response.isAvailable, IsModifierAvailable: response.IsModifierAvailable }, () => {
+      this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
           closePreviewModal()
           increaseQuantity(this.mealItemDetails, false)
         } else {
-          console.log("--->>caleed")
           addItemToCartBtn(this.mealItemDetails)
         }
       })
     }
   }
 
-
-  // handleAddToCartBtn = ( storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
-  //   this.getItemStatus("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity)
-  // }
-
-  modifierIncDecBtn = (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
-    if (this.mealItemDetails?.isModifier === 1) {
-      if(operation === "decrement"){
-        updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-      }else{
-        updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-      }
-    } else {
-      if(operation === "decrement"){
-        updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
-      }else{
-        updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
-      }
+  modifierIncDecBtn = async (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
+    let quantityInfo = await this.postQuantityApiCall(requiredQuantity)
+    if(quantityInfo.statusCode ==200){
+      this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
+        if(this.state.isAvailable ===1){
+          if (this.state.IsModifierAvailable === 1) {
+            if(operation === "decrement"){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+            }
+          } else {
+            if(operation === "decrement"){
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
+            }else{
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
+            }
+          }
+        }else{
+          Alert.alert("Item has no stock to place the order for selected quantity")
+        }
+        
+      })
+      // if (this.mealItemDetails?.isModifier === 1) {
+      //   if(operation === "decrement"){
+      //     updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+      //   }else{
+      //     updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+      //   }
+      // } else {
+      //   if(operation === "decrement"){
+      //     updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
+      //   }else{
+      //     updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
+      //   }
+      // }
     }
   }
 
@@ -498,9 +515,9 @@ class CbAddToCartButton extends React.Component {
     const { cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
-    const cartItem = cartData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
+    const cartItem = cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
-    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_Id === this.mealItemDetails.Item_Id);
+    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     
 
