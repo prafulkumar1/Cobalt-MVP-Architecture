@@ -23,6 +23,7 @@ export const UseFormContextProvider = ({children}) => {
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("7:30 AM")
+    const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
     const [currentSelectedVal , setCurrentSelectedVal] = useState("")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
@@ -367,6 +368,8 @@ export const UseFormContextProvider = ({children}) => {
       calculateTotalPrice,
       selectedTime,
       setSelectedTime,
+      selectedLocation,
+      setSelectedLocation,
       addItemToModifierForCart,
       addedModifierCartData,
       getCartData,
