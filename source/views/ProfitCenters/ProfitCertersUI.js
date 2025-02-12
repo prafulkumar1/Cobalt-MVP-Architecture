@@ -1,3 +1,4 @@
+import CbLoader from '@/components/cobalt/cobaltLoader';
 import * as UI from '@/components/cobalt/importUI';
 import { useProfitCenterLogic } from '@/source/controller/ProfitCenter/ProfitCenter';
 import { styles } from '@/source/styles/ProfitCenter';
@@ -49,9 +50,7 @@ const ProfitCenters = (props) => {
     };
     if (loading) {
         return (
-          <UI.Box style={styles.loadingContainer}>
-            <UI.ActivityIndicator size="large" color="#00BFF6" />
-          </UI.Box>
+          <CbLoader />
         );
       }
     return (

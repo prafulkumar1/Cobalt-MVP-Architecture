@@ -4,7 +4,7 @@ import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimens
 
 export const styles = StyleSheet.create({
   subContainer: {
-    width: "95%",
+    width: "94%",
     marginVertical:responsiveHeight(1)
   },
   mealTypeTitle: {
@@ -68,12 +68,6 @@ export const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    elevation: 2,
-    backgroundColor:"#fff",
   },
   rowContainer: {
     flexDirection: "row",

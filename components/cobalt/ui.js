@@ -29,6 +29,7 @@ import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
 import { postApiCall } from '@/source/utlis/api';
 import * as DeviceInfo from 'expo-device';
+import { isPlatformIos } from '@/source/constants/Matrices';
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
@@ -430,24 +431,6 @@ class CbAddToCartButton extends React.Component {
    postQuantityApiCall = async(quantity) => {
       try {
         const params = {
-          "MemberID": "09071",
-          "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
-          "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
-          "DeviceInfo": [
-            {
-              "DeviceType": DeviceInfo.deviceType,
-              "OSVersion": DeviceInfo.osVersion,
-              "OriginatingIP": "183.82.116.84",
-              "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
-              "Browser": DeviceInfo.osName,
-              "HostName": "183.82.116.84.actcorp.in",
-              "SourcePortNo": "50189"
-            }
-          ],
-          "IsAdmin": "0",
-          "UserName": "Henry, aa Luther",
-          "Role": "Full Access",
-          "UserId": "9837",
           "Item_ID": this.mealItemDetails?.Item_ID,
           "Item_Quantity": quantity
         }          
@@ -475,38 +458,28 @@ class CbAddToCartButton extends React.Component {
     let quantityInfo = await this.postQuantityApiCall(requiredQuantity)
     if(quantityInfo.statusCode ==200){
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
-        if(this.state.isAvailable ===1){
-          if (this.state.IsModifierAvailable === 1) {
-            if(operation === "decrement"){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-            }else{
+        if (this.state.IsModifierAvailable === 1) {
+          if(operation === "decrement"){
+            updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+          }else{
+            if(this.state.isAvailable ===1){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-            }
-          } else {
-            if(operation === "decrement"){
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
             }else{
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
+              Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
             }
           }
-        }else{
-          Alert.alert("Item has no stock to place the order for selected quantity")
+        } else {
+          if(operation === "decrement"){
+            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
+          }else{
+            if(this.state.isAvailable ===1){
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
+            }else{
+              Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
+            }
+          }
         }
-        
       })
-      // if (this.mealItemDetails?.isModifier === 1) {
-      //   if(operation === "decrement"){
-      //     updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-      //   }else{
-      //     updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-      //   }
-      // } else {
-      //   if(operation === "decrement"){
-      //     updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
-      //   }else{
-      //     updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
-      //   }
-      // }
     }
   }
 
@@ -653,7 +626,7 @@ class CbAccordion extends React.Component {
               showsHorizontalScrollIndicator={true}
               contentContainerStyle={[
                 styles.mainContainerList,
-                Platform.OS === "ios" && { paddingBottom: "30%" },
+                isPlatformIos() && { paddingBottom: "30%" },
               ]}
               keyboardShouldPersistTaps="handled"
             >
@@ -664,11 +637,8 @@ class CbAccordion extends React.Component {
                 isCollapsible={true}
                 isDisabled={false}
               >
-                <CbFlatList
-                  flatlistData={componentdata}
-                  scrollEnabled={false}
-                  children={({ item }) => {
-                    const subMenuList = item;
+                {
+                  componentdata && componentdata.length > 0 && componentdata.map((subMenuList) => {
                     return (
                       <AccordionItem
                         key={subMenuList.SubMenu_Name}
@@ -676,10 +646,10 @@ class CbAccordion extends React.Component {
                         style={styles.headerTxt}
                       >
                         {
-                          item.Items !==null && 
+                          subMenuList.Items !== null &&
                           <>
                             <AccordionHeader style={styles.menuHeader}>
-                              <AccordionTrigger style={styles.subItem}>
+                              <AccordionTrigger style={styles.subItem} onClick={(event) => event.stopPropagation()}>
                                 {({ isExpanded }) => (
                                   <>
                                     <AccordionTitleText
@@ -718,11 +688,11 @@ class CbAccordion extends React.Component {
                                   const lastItem =
                                     index === subMenuList.Items?.length - 1;
                                   const isExpanded = expandedIds.includes(
-                                    box?.Item_Id
+                                    box?.Item_ID
                                   );
                                   return (
                                     <Box
-                                      key={box?.Item_Id}
+                                      key={box?.Item_ID}
                                       style={[
                                         styles.subContainer,
                                         {
@@ -813,7 +783,7 @@ class CbAccordion extends React.Component {
                                             disabled={box.IsAvailable === 0}
                                           >
                                             <Image
-                                              source={{ uri: box.Image }}
+                                              source={{ uri: box.ImageUrl }}
                                               style={[
                                                 styles.mealTypeImg,
                                                 box.IsAvailable === 0 && {
@@ -837,11 +807,11 @@ class CbAccordion extends React.Component {
                             </AccordionContent>
                           </>
                         }
-                       
+
                       </AccordionItem>
-                    );
-                  }}
-                />
+                    )
+                  })
+                }
               </Accordion>
               <Modal
                 visible={itemDataVisible}
@@ -1440,27 +1410,34 @@ class cbCategoryList extends React.Component {
                 if (mealCategory.IsSelect === 1) {
                   let updatedCategoryData =  typeof mealCategory.Categories === 'string' ? JSON.parse(mealCategory.Categories) : mealCategory.Categories;
                   return (
-                    <CbFlatList
-                        customStyles={{flex:1}}
-                        id={mealCategory.Id}
-                        flatlistData={updatedCategoryData}
-                        horizontal={false}
-                        contentContainerStyle={{flex:1}}
-                        children ={({item}) => {
-                          if(item.IsSelect === 1){
-                            return (
-                              <Box>
-                                <CbAccordion
-                                  AccordionData={item.SubMenu}
-                                  addItemToCartBtn={addItemToCartBtn}
-                                  updateCartItemQuantity={updateCartItemQuantity}
-                                  cartData={cartData}
-                                />
-                              </Box>
-                            );
-                          }
-                        }}
-                    />
+                    // <CbFlatList
+                    //     customStyles={{flex:1}}
+                    //     id={mealCategory.Id}
+                    //     flatlistData={updatedCategoryData}
+                    //     horizontal={false}
+                    //     contentContainerStyle={{flex:1}}
+                    //     children ={({item}) => {
+                         
+                    //     }}
+                    // />
+                    <>
+                    {
+                      updatedCategoryData && updatedCategoryData.map((item) => {
+                        if(item.IsSelect === 1){
+                          return (
+                            <Box>
+                              <CbAccordion
+                                AccordionData={item.SubMenu}
+                                addItemToCartBtn={addItemToCartBtn}
+                                updateCartItemQuantity={updateCartItemQuantity}
+                                cartData={cartData}
+                              />
+                            </Box>
+                          );
+                        }
+                      })
+                    }
+                    </>
                   )
                 }
               })}

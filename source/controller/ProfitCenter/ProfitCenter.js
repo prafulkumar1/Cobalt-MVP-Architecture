@@ -3,6 +3,7 @@ import { useFormContext } from '@/components/cobalt/event';
 import { postApiCall } from '@/source/utlis/api';
 import * as DeviceInfo from 'expo-device';
 import { navigateToScreen } from '@/source/constants/Navigations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const pageId='ProfitCenter';
 export const useProfitCenterLogic = () => {
@@ -21,35 +22,23 @@ export const useProfitCenterLogic = () => {
   const getProfitCenterList = async () => {
     setLoading(true)
     const params = {
-      "MemberID": "09071",
-      "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
-      "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
-      "DeviceInfo": [
-        {
-          "DeviceType": DeviceInfo.deviceType,
-          "OSVersion": DeviceInfo.osVersion,
-          "OriginatingIP": "183.82.116.84",
-          "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
-          "Browser": DeviceInfo.osName,
-          "HostName": "183.82.116.84.actcorp.in",
-          "SourcePortNo": "50189"
-        }
-      ],
-      "IsAdmin": "0",
-      "UserName": "Henry, aa Luther",
-      "Role": "Full Access",
-      "UserId": "9837",
       "FilterDate": "",
       "FilterTime": ""
     }
     let profitCenterResponseData = await postApiCall("PROFIT_CENTER","GET_PROFIT_CENTERS", params)
     if(profitCenterResponseData.statusCode == 200){
-      setProfitCenterData(profitCenterResponseData.response)
+      if(profitCenterResponseData.response?.MealPeriodData.length === 1){
+        const responseData = profitCenterResponseData.response?.MealPeriodData[0]
+        navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData?.LocationName,LocationId:responseData?.LocationId })
+      }else{
+        setProfitCenterData(profitCenterResponseData.response)
+      }
     }
   }
 
-  const navigateToMenuOrder = (props, item) => {
+  const navigateToMenuOrder = async (props, item) => {
     if (item.Isnavigate == 1) {
+      await AsyncStorage.setItem("profit_center",JSON.stringify(item))
       navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
     }
   }

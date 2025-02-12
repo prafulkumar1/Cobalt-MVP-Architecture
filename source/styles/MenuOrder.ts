@@ -84,11 +84,11 @@ export const styles = StyleSheet.create({
       width: "100%",
       alignSelf: "center",
       paddingHorizontal:10,
-      // shadowColor: "#000",
-      // shadowOffset: { width: 0, height: 2 },
-      // shadowOpacity: 0.25,
-      // shadowRadius: 3.84,
-      // elevation:10,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation:10,
       backgroundColor:"#fff",
     },
     forwardIcon:{marginLeft:10},
@@ -124,5 +124,10 @@ export const styles = StyleSheet.create({
     alignItems:"center"
   },
   recentOrderIcon:{width:20,height:20,resizeMode:"contain"},
-  addToCartBtn:{ padding: responsiveWidth(0) }
+  addToCartBtn:{ padding: responsiveWidth(0) },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   });

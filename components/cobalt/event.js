@@ -56,7 +56,7 @@ export const UseFormContextProvider = ({children}) => {
           let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
           return{
             ...items,
-            IsSelect: items.MealPeriod_Id === id ? 1 : 0,
+            IsSelect: updatedCategoryData.length >0 && items.MealPeriod_Id === id ? 1 : 0,
             Categories: updatedCategoryData.map((category, index) => ({
               ...category,
               IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
@@ -104,8 +104,12 @@ export const UseFormContextProvider = ({children}) => {
     const getCartData = async () => {
       try {
         const value = await AsyncStorage.getItem('cart_data');
+        const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+        let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         if (value !== null) {
-          setCartData(JSON.parse(value))
+          const parseData = typeof value == "string" ? JSON.parse(value) : value
+          let cartItems = parseData?.filter((item) => item.profitCenterId === getProfitCenterId.LocationId)
+          setCartData(cartItems)
         } else {
           setCartData([])
         }
@@ -130,22 +134,24 @@ export const UseFormContextProvider = ({children}) => {
       getModifierData()
     },[])
 
-    const addItemToCartBtn = async (data) => {
-      try {
-        setCartData((prevCartData) => {
-          let updatedCartData = [...prevCartData];
-          const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
-          // if (itemIndex !== -1) {
-          //   updatedCartData[itemIndex].quantity += 1;
-          //   updatedCartData[itemIndex].quantityIncPrice +=  data.Price
-          // } else {
-            updatedCartData.push({ ...data, quantity: 1,quantityIncPrice:data.Price });
-          //}    
-          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
-          return updatedCartData;
-        });
-      } catch (error) {}
-    };
+  const addItemToCartBtn = async (data) => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      setCartData((prevCartData) => {
+        let updatedCartData = [...prevCartData];
+        const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
+        // if (itemIndex !== -1) {
+        //   updatedCartData[itemIndex].quantity += 1;
+        //   updatedCartData[itemIndex].quantityIncPrice +=  data.Price
+        // } else {
+        updatedCartData.push({ ...data, quantity: 1, quantityIncPrice: data.Price, profitCenterId: getProfitCenterId.LocationId });
+        //}    
+        AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+        return updatedCartData;
+      });
+    } catch (error) { }
+  };
 
     const updateCartItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
@@ -153,10 +159,10 @@ export const UseFormContextProvider = ({children}) => {
           let updatedCartData;
     
           if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
             updatedCartData = prevCartData.map((item) =>
-              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
             );
           }
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
