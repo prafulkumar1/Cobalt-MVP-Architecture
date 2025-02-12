@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View, Alert} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View, Alert, Animated,} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -1122,110 +1122,6 @@ class cbSelect extends React.Component {
   }
 }
 
-class cbSelectTime extends React.Component {
-  constructor(props) {
-    super();
-    this.id=props.id;
-    this.placeholder= props.placeholder || 'Select';
-    this.isRequired=props.isRequired || false;
-    this.isInvalid=props.isInvalid || false;
-    this.selectLabel=props.Label || '';
-    this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
-    this.style = props.style
-    this.isTimeModalSelected = props.isTimeModalSelected 
-    this.selectItemLabel = props.selectItemLabel
-    this.state = {
-      isSelected:false,
-      selectedTime : ''
-    }
-  }
-
-  render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const selectLabelprop = inputArray?.labelText  || this.selectLabel;
-    const placeholderprop = inputArray?.placeholder || this.placeholder;
-    const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
-    return (
-
-
-      <FormContext.Consumer>
-      {({ selectedTime,setSelectedTime}) => {
-        const buttonArray = global.controlsConfigJson.find(
-          (item) => item.id === this.id
-        );
-        const variant = buttonArray?.variant || this.variant;
-        const buttonText = buttonArray?.text || this.buttonText;
-
-        return (
-          <>
-            <TouchableOpacity
-              onPress={() => this.setState({ isSelected: true })}
-            >
-              <FormControl
-                isRequired={this.isRequired}
-                isInvalid={this.isInvalid}
-                style={this.style}
-              >
-                <FormControlLabel>
-                  <FormControlLabelText>{selectedTime}</FormControlLabelText>
-                </FormControlLabel>
-                <Select>
-                  <SelectPortal
-                    isOpen={this.state.isSelected}
-                    style={{ width:"100%" }}
-                  >
-                    <SelectBackdrop
-                      onPress={() => this.setState({ isSelected: false })}
-                    />
-                    <SelectContent
-                      style={styles.selectedContainer}
-                    >
-                      <Text
-                        style={styles.selectedLabel}
-                      >
-                        {this.selectItemLabel}
-                      </Text>
-
-                      <ScrollView style={styles.dropdownContainer} showsVerticalScrollIndicator={false}>
-                        {selectItems.map((item, index) => (
-                          <SelectItem
-                            key={index}
-                            label={item.label}
-                            value={item.value}
-                            onPress={() => {
-                              this.setState({ isSelected: false });
-                              setSelectedTime(item.value);
-                            }}
-                            style={[
-                              styles.scrollIndicator,
-                              index === 0 && styles.hoverItem,
-                            ]}
-                          />
-                        ))}
-                      </ScrollView>
-
-                      <CbCommonButton
-                        showBtnName={"Done"}
-                        style={styles.doneBtn}
-                        btnTextStyle={styles.doneTxtBtn}
-                        onPress={() => this.setState({ isSelected: false })}
-                      />
-                    </SelectContent>
-                  </SelectPortal>
-                </Select>
-                <FormControlError>
-                  <FormControlErrorText></FormControlErrorText>
-                </FormControlError>
-              </FormControl>
-            </TouchableOpacity>
-          </>
-        );
-      }}
-    </FormContext.Consumer>
-     
-    );
-  }
-}
 
 class cbInput extends React.Component {
 
@@ -1285,6 +1181,116 @@ class cbInput extends React.Component {
           </FormControlError>
         )}
       </FormControl>
+    );
+  }
+}
+
+
+
+class cbSelectTime extends React.Component {
+  constructor(props) {
+    super();
+    this.id = props.id;
+    this.placeholder = props.placeholder || "Select";
+    this.isRequired = props.isRequired || false;
+    this.isInvalid = props.isInvalid || false;
+    this.selectLabel = props.Label || "";
+    this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
+    this.style = props.style;
+    this.selectItemLabel = props.selectItemLabel;
+    this.state = {
+      isSelected: false,
+      selectedIndex: 0,
+    };
+    this.scrollY = new Animated.Value(0);
+    this.scrollRef = React.createRef();
+  }
+
+  updateSelectedTimeAndLocation = (setSelectedTime, setSelectedLocation) => {
+    const selectedItem = this.selectItems[this.state.selectedIndex];
+    if (selectedItem) {
+      if (this.selectItemLabel === "Select Time") {
+        setSelectedTime(selectedItem.value);
+      } else if (this.selectItemLabel === "Select Place") {
+        setSelectedLocation(selectedItem.value);
+      }
+    }
+  };
+
+  handleScroll = (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const index = Math.round(offsetY / 50);
+    if (index !== this.state.selectedIndex) {
+      this.setState({ selectedIndex: index });
+    }
+  };
+
+  scrollToIndex = (index) => {
+    if (this.scrollRef.current) {
+      this.scrollRef.current.scrollToOffset({
+        offset: index * 50,
+        animated: true,
+      });
+      this.setState({ selectedIndex: index });
+    }
+  };
+
+  renderPicker = () => (
+    <FlatList
+      ref={this.scrollRef}
+      data={this.selectItems}
+      keyExtractor={(item, index) => index.toString()}
+      showsVerticalScrollIndicator={false}
+      snapToInterval={50}
+      decelerationRate="normal"
+      contentContainerStyle={{ paddingVertical: 100 }}
+      onMomentumScrollEnd={this.handleScroll}
+      renderItem={({ item, index }) => (
+        <TouchableOpacity onPress={() => this.scrollToIndex(index)} style={styles.item}>
+          <Text style={[styles.timeItem, this.state.selectedIndex === index && styles.selectedText]}>
+            {item.label}
+          </Text>
+        </TouchableOpacity>
+      )}
+    />
+  );
+
+  render() {
+    return (
+      <FormContext.Consumer>
+        {({ selectedTime, setSelectedTime, selectedLocation, setSelectedLocation }) => (
+          <TouchableOpacity onPress={() => this.setState({ isSelected: true })}>
+            <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
+              <FormControlLabel>
+                <FormControlLabelText>
+                  {this.selectItemLabel === "Select Time" ? selectedTime : selectedLocation}
+                </FormControlLabelText>
+              </FormControlLabel>
+              <Select>
+                <SelectPortal isOpen={this.state.isSelected} style={{ width: "100%" }}>
+                  <SelectBackdrop onPress={() => this.setState({ isSelected: false })} />
+                  <SelectContent style={styles.selectedContainer}>
+                    <Text style={styles.selectedLabel}>{this.selectItemLabel}</Text>
+                    <View style={styles.pickerWrapper}>{this.renderPicker()}</View>
+                    <CbCommonButton
+                      showBtnName={"Done"}
+                      style={styles.doneBtn}
+                      btnTextStyle={styles.doneTxtBtn}
+                      onPress={() => {
+                        this.updateSelectedTimeAndLocation(setSelectedTime, setSelectedLocation);
+                        this.setState({ isSelected: false });
+                      }}
+                    />
+                  </SelectContent>
+                </SelectPortal>
+              </Select>
+              <FormControlError>
+                <FormControlErrorText></FormControlErrorText>
+              </FormControlError>
+            </FormControl>
+          </TouchableOpacity>
+        )}
+      </FormContext.Consumer>
     );
   }
 }
