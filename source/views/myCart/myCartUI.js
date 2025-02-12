@@ -39,7 +39,7 @@ export default function MyCartScreen(props) {
      handleDecrement,
      editCommentBtn
    } = useMyCartLogic();
-   const { selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
+   const { cartData,selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
 
 
   const renderModifierList = ({ item }) => {
@@ -96,7 +96,7 @@ export default function MyCartScreen(props) {
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() => handleIncrement(item)}
+                    onPress={() => handleDecrement(item)}
                   >
                     <Icon
                       as={item.quantity === 1 ? TrashIcon : RemoveIcon}
@@ -110,7 +110,7 @@ export default function MyCartScreen(props) {
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() =>handleDecrement(item)}
+                    onPress={() => handleIncrement(item)}
                   >
                     <Icon
                       as={AddIcon}
@@ -232,8 +232,8 @@ export default function MyCartScreen(props) {
     >
       <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
         <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {finalCartData && finalCartData?.length > 0 ? (
-            finalCartData?.map((items) => {
+          {cartData && cartData?.length > 0 ? (
+            cartData?.map((items) => {
               return renderCartItems(items);
             })
           ) : (
@@ -241,11 +241,11 @@ export default function MyCartScreen(props) {
               <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
             </UI.View>
           )}
-          {finalCartData && finalCartData.length > 0 && renderCartPriceCalculations()}
+          {cartData && cartData.length > 0 && renderCartPriceCalculations()}
         </UI.ScrollView>
 
         {
-          finalCartData && finalCartData.length > 0 &&
+          cartData && cartData.length > 0 &&
           <UI.Box>
             {
               cartConfigData.ShowTip === 1 &&

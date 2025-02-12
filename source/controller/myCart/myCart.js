@@ -23,9 +23,6 @@ export const useMyCartLogic = () => {
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
-    
-    const [isAvailable, setIsAvailable] = useState(0);
-    const [isModifierAvailable, setIsModifierAvailable] = useState(0);
      
   useEffect(() => {
     if ((cartData.length > 0 || addedModifierCartData.length > 0)) {
@@ -168,14 +165,11 @@ export const useMyCartLogic = () => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity + 1)
 
     if (quantityInfo.statusCode === 200) {
-      setIsAvailable(quantityInfo?.response.IsAvailable);
-      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
-
       if (quantityInfo?.response.IsModifierAvailable === 1) {
         updateModiferItemData(item, item.quantity + 1);
         updateModifierItemQuantity(item, item.quantity + 1);
       } else {
-        if (isAvailable === 1) {
+        if (quantityInfo?.response.IsAvailable === 1) {
           updateCartItemQuantity(item, item.quantity + 1);
         } else {
           Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
@@ -187,9 +181,6 @@ export const useMyCartLogic = () => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity - 1)
 
     if (quantityInfo.statusCode === 200) {
-      setIsAvailable(quantityInfo?.response.IsAvailable);
-      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
-
       if (quantityInfo?.response.IsModifierAvailable === 1) {
         updateModiferItemData(item, item.quantity - 1);
         updateModifierItemQuantity(item, item.quantity - 1);

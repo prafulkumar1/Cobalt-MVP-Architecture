@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useFormContext } from '@/components/cobalt/event';
 import * as DeviceInfo from 'expo-device';
 import { postApiCall } from '@/source/utlis/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const pageId='MenuOrder';
@@ -25,10 +26,11 @@ export const useMenuOrderLogic = (props) => {
   
     
       const getMenuOrderList = async () => {
-        const {LocationId} = props?.route?.params
         setLoading(true)
+        const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+        let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
-          "LocationId": `${LocationId}`,
+          "LocationId": `${getProfitCenterId.LocationId}`,
           "MealPeriod_Id": "",
           "Category_Id": "",
           "Search": ""
