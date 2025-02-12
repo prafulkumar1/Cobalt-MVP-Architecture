@@ -9,6 +9,7 @@ import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
 import {ChevronRightIcon,ChevronDownIcon } from '@/components/ui/icon';
 import { styles } from "@/source/styles/MenuOrder";
+import CbLoader from "@/components/cobalt/cobaltLoader";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -29,7 +30,7 @@ export default function MenuOrderScreen(props) {
 
   const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
-  const { categoryRef,isRecentOrderOpen,openRecentOrder } = useMenuOrderLogic()
+  const { isRecentOrderOpen,openRecentOrder,errorMessage,loading } = useMenuOrderLogic(props)
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -76,18 +77,18 @@ export default function MenuOrderScreen(props) {
     );
   }
   
-  const renderMenuCategoryList = (categoryItem) => {
+  const renderMenuCategoryList = (item) => {
     return (
       <UI.Box>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(categoryItem.Category_Id)}
+          onPress={() => setMealCategory(item.Category_ID)}
         >
           <UI.Text style={styles.categoryText}>
-            {categoryItem.Category_Name?.toUpperCase()}
+            {item.Category_Name?.toUpperCase()}
           </UI.Text>
-          {categoryItem.IsSelect === 1 && (
+          {item.IsSelect === 1 && (
             <UI.Box
               style={[
                 tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
@@ -105,29 +106,32 @@ export default function MenuOrderScreen(props) {
         <UI.Box style={styles.mainBoxContainer}>
           <UI.Box style={styles.subCategoryContainer}>
             {menuOrderData &&
-              menuOrderData.MenuItems?.map((mealCategory) => {
+              menuOrderData?.MenuItems?.map((mealCategory,index) => {
+                const categories = mealCategory?.Categories || [];
+                let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
                 if (mealCategory.IsSelect === 1) {
-                  const categories = mealCategory?.Categories || [];
                   return (
                     <>
                       <UI.ScrollView
                         horizontal={true}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={styles.categoryListContainer}
-                        ref={categoryRef}
                       >
-                        {categories.map((items) =>
-                          renderMenuCategoryList(items)
-                        )}
+                        {updatedData &&
+                          updatedData
+                            .map((item) => renderMenuCategoryList(item))}
                       </UI.ScrollView>
                     </>
                   );
+                }else if(updatedData.length === 0){
+                  return(
+                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No categories available</UI.Text>
+                  )
                 }
               })}
           </UI.Box>
-          <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-            <UI.cbCategoryList />
-          </UI.ScrollView>
+
+          <UI.cbCategoryList />
         </UI.Box>
       )
     } else {
@@ -185,6 +189,35 @@ export default function MenuOrderScreen(props) {
     );
   };
 
+  const renderMenuOrderItems = () => {
+    if(errorMessage ===""){
+      if(loading){
+        return (
+          <CbLoader />
+        )
+      }else{
+        return(
+          <>
+          <UI.Box style={styles.topContainer}>
+            {menuOrderData &&
+              menuOrderData?.MenuItems?.map((item) => {
+                return renderMealTypeList(item, setMealType);
+              })}
+          </UI.Box>
+
+          {renderCategoryMainList()}
+
+          {(cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props} />}
+        </>
+        )
+      }
+    }else{
+      return(
+        <UI.Text style={styles.emptyMealTxt}>{errorMessage}</UI.Text>
+      )
+    }
+  }
+
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.Box style={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
@@ -212,19 +245,9 @@ export default function MenuOrderScreen(props) {
       {
         isRecentOrderOpen && <OnRecentOrderPress /> 
       }
-      <UI.Box
-        style={styles.topContainer}
-      >
-        {menuOrderData &&
-          menuOrderData.MenuItems?.map((item) => {
-            return renderMealTypeList(item, setMealType);
-          })}
-      </UI.Box>
-      {renderCategoryMainList()}
-      {
-        (cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props}/>
-      }
-      
+
+      {renderMenuOrderItems()}
+
     </UI.Box>
   );
 }

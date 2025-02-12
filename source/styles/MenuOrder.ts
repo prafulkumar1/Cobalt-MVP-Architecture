@@ -1,14 +1,15 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { isPlatformAndroid } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
     mainHeaderContainer:{ display: "flex", flexDirection: "row" },
     recentOrderContainer:{ flexDirection: "row", justifyContent: "space-between", marginLeft: 4, borderBottom: 1, backgroundColor: "#fff", height: 40, alignItems: "center", },
-    mealTypeContainer:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
+    mealTypeContainer:{flexDirection:"row",justifyContent:"flex-start",alignItems:"center"},
     mainContainer:{flex:1,backgroundColor:"#ECECEC"},
     scrollContent: {
       paddingTop:responsiveHeight(0.2),
-      paddingBottom:Platform.OS === "android"&& responsiveHeight(10)
+      paddingBottom:isPlatformAndroid() && responsiveHeight(10)
     },
     categoryText: {
       padding:2,
@@ -25,7 +26,9 @@ export const styles = StyleSheet.create({
       borderRadius: 4,
       borderWidth: 3,
       borderColor: "#00c6ff",
-      // marginTop:6,
+      marginTop:5,
+      position:"absolute",
+      bottom:0
     },
     categoryBtn: {
       flex: 1,
@@ -37,7 +40,7 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5),
+      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5),
       marginHorizontal:5
     },
     inactiveMenuType: {
@@ -46,7 +49,7 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: Platform.OS === "android"?responsiveHeight(5):responsiveHeight(5.5),
+      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5.5),
       borderRadius: 5,
       opacity: 0.8,
       marginHorizontal:5
@@ -59,9 +62,8 @@ export const styles = StyleSheet.create({
     topContainer: {
       flexDirection: "row",
       paddingVertical: 10,
-      alignSelf:"center",
       width:"100%",
-      justifyContent:"center",
+      justifyContent:"flex-start",
       alignItems:"center",
       shadowColor: "#000",
       shadowOffset: { width: 0, height: 2 },
@@ -69,14 +71,12 @@ export const styles = StyleSheet.create({
       shadowRadius: 3.84,
       elevation:1,
       backgroundColor:"#fff",
-      marginBottom:4
+      marginBottom:4,
+      paddingHorizontal:10
     },
     categoryListContainer: {
-      flexDirection: "row",
-      height: Platform.OS === "android" ?responsiveHeight(5):responsiveHeight(5.5),
+      height: isPlatformAndroid() ?responsiveHeight(5):responsiveHeight(5.5),
       paddingTop:responsiveHeight(1.2),
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
     },
     subCategoryContainer: {
       flexDirection: "row",
@@ -84,12 +84,6 @@ export const styles = StyleSheet.create({
       width: "100%",
       alignSelf: "center",
       paddingHorizontal:10,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation:10,
-      backgroundColor:"#fff",
     },
     forwardIcon:{marginLeft:10},
     backWardIcon:{marginRight:10},
@@ -100,8 +94,11 @@ export const styles = StyleSheet.create({
       height:responsiveHeight(10)
     },
     emptyMealTxt:{
-      fontFamily:"SourceSansPro_SemiBoldItalic"
+      fontFamily:"SourceSansPro_SemiBoldItalic",
+      alignSelf:"center",
+      marginTop:responsiveHeight(3)
     },
+    categoryItem:{textAlign:"center",width:"100%"},
     mainBoxContainer: { flex: 1, backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
     recentOrderTxt: { fontSize: 18, fontFamily:"SourceSansPro_SemiBold", lineHeight: 20, marginLeft: 8 },
     rightIconBtn: { right: 20 },
@@ -121,5 +118,10 @@ export const styles = StyleSheet.create({
     alignItems:"center"
   },
   recentOrderIcon:{width:20,height:20,resizeMode:"contain"},
-  addToCartBtn:{ padding: responsiveWidth(0) }
+  addToCartBtn:{ padding: responsiveWidth(0) },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   });

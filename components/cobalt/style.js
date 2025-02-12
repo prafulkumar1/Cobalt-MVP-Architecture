@@ -1,11 +1,11 @@
 import { isPlatformAndroid } from "@/source/constants/Matrices";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
   subContainer: {
-    marginBottom: 25,
-    width: "95%",
+    width: "94%",
+    marginVertical:responsiveHeight(1)
   },
   mealTypeTitle: {
     fontSize: 20,
@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
     paddingRight: responsiveWidth(0.8),
-    paddingTop:isPlatformAndroid() && 4
+    paddingTop:4
   },
   container: {
     flex: 1,
@@ -158,7 +158,7 @@ export const styles = StyleSheet.create({
   accordionHeaderTxt:{color:"#5773a2",fontSize:16},
   mainContainerList:{ flexGrow: 1},
   itemCategoryLabel:{ color: "#5773a2", fontSize: 20 ,fontFamily:"SourceSansPro_Bold",paddingVertical:8},
-  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
   floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
   floatingBtn:{
     width: 72,
@@ -411,5 +411,49 @@ CheckIcon:{color:"#ffff"},
     color: "#000",
     fontFamily: "SourceSansPro_SemiBold",
   },
+  recentOrderContainer:{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  modifierContainer:{
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold"
+  },
+  requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
+  maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  orderSubContainer:{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 10,
+  },
+  itemNameTxt:{
+    color: "#4B5154",
+    fontSize: 14,
+   fontFamily:"SourceSansPro_SemiBoldItalic"
+  },
+  priceMainTxt:{
+    marginLeft: "auto",
+    color: "#4B5154",
+    fontSize: 14,
+     fontFamily:"SourceSansPro_SemiBold"
+  },
+  searchBarMainContainer:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "95%",
+    height: "100%",
+    marginRight: 25
+  },
+  inputBox:{
+    flex: 1,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5,
+    backgroundColor: "#f0f0f0"
+  }
   
 })

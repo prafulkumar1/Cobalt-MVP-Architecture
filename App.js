@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import "@/global.css";
 import 'react-native-gesture-handler';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
@@ -16,6 +16,8 @@ import ItemModifier from './source/views/ItemModifier/ItemModifierUI';
 import MyCartScreen from './source/views/myCart/myCartUI';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Font from 'expo-font';
+import CbLoader from './components/cobalt/cobaltLoader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Global Configurations
 const appConfigJson = '[{"PageId":"Login","Controlls":[{"type":"backgroundImage","id":"loginBackground","styles":{"container":{"flex":1,"resizeMode":"cover","justifyContent":"center","alignItems":"center"}}},{"type":"VStack","id":"VStack1","space":"lg"},{"type":"text","id":"username","placeholder":"User Name/Member ID","labelText":"User Name","variant":"outline","errorMessage":"User Name is Requried.","isDisabled":0,"isInvalid":0,"isReadOnly":0,"isRequired":1},{"type":"password","id":"password","placeholder":"Password","labelText":"Password","variant":"underlined","errorMessage":"Password is Requried.","isDisabled":0,"isInvalid":0,"isReadOnly":0,"isRequired":1},{"type":"checkbox","id":"rememberme","labeltext":"Remember Me"},{"type":"select","id":"department","placeholder":"Department","labelText":"Select Department","options":[{"label":"Dining","value":"dining"},{"label":"Golf","value":"golf"},{"label":"Tennis","value":"tennis"},{"label":"Pool","value":"pool"}]},{"type":"radioButton","id":"gender","alignment":"Horizontal","labelText":"Gender","options":[{"label":"Male","value":"male"},{"label":"Female","value":"female"},{"label":"Others","value":"others"}]},{"type":"button","id":"login","text":"Login","variant":"","backgroundColor":"white","borderRadius":"40"},{"id":"cancel","text":"Cancel","variant":"","backgroundColor":"white","borderRadius":"40"}]}]';
@@ -50,9 +52,7 @@ export default function App() {
 
   if (!fontsLoaded) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#00BFF6" />
-      </View>
+      <CbLoader />
     );
   }
 
@@ -62,21 +62,25 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="MenuOrder"
+              initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />
                 ),
                 headerTitleAlign: 'left',
-                headerTitle: () => (
-                  <View style={styles.headerTitle}>
-                    <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
-                      {route.name === "MenuOrder" 
-                        ? route?.params?.profileCenterTile 
-                        : route.name}
-                    </Text>
-                  </View>
-                ),
+                headerTitle: async() => {
+                  const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+                  let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+                  return(
+                    <View style={styles.headerTitle}>
+                      <Text style={[styles.menuTitle, { fontFamily: 'SourceSansPro_SemiBold' }]}>
+                        {route.name === "MenuOrder" 
+                          ? getProfitCenterId?.LocationName
+                          : route.name}
+                      </Text>
+                    </View>
+                  )
+                },
                 headerRight: () => {
                   const value = route.params?.showHomeButton
                   if(route.name === "ProfitCenters") {

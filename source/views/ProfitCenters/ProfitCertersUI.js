@@ -1,5 +1,5 @@
+import CbLoader from '@/components/cobalt/cobaltLoader';
 import * as UI from '@/components/cobalt/importUI';
-import { ProfitCentersData } from '@/source/constants/commonData';
 import { useProfitCenterLogic } from '@/source/controller/ProfitCenter/ProfitCenter';
 import { styles } from '@/source/styles/ProfitCenter';
 import React from 'react';
@@ -27,16 +27,16 @@ const ProfitCenters = (props) => {
     const RenderingProfitCenter = ({item},props) => {
         const isAvailable = item.STATUS === "Available";
         return (
-            <ImageBackground id="profitCenterBGImage" source={{ uri: backgroundImage?.imageUrl ? backgroundImage?.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
+            <ImageBackground id="backgroundImage" source={{ uri: backgroundImage?.imageUrl ? backgroundImage?.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
                 <UI.Box style={styles.blackShadow} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
                     <UI.Box style={styles.profitCenterOverlay}>
                         <UI.Text id='profitCenterName' numberOfLines={1} style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
-                        <UI.Text id="profitCenterTimings" style={[timingsText?.styles ? timingsText?.timingsText : styles.profitCenterTimings]}>
+                        <UI.Text id="timingsText" style={[timingsText?.styles ? timingsText?.timingsText : styles.profitCenterTimings]}>
                             {item.STATUSTEXT}
                         </UI.Text>
                     </UI.Box>
-                    <UI.Box id="status" style={[
+                    <UI.Box id="availabilityStatus" style={[
                         styles.statusBox,
                         { borderRadius: availabilityStatus?.borderRadius ? availabilityStatus.borderRadius : 20 },
                         isAvailable ? availabilityStatus?.activeBackgroundColor ? { backgroundColor: availabilityStatus?.activeBackgroundColor } :
@@ -50,9 +50,7 @@ const ProfitCenters = (props) => {
     };
     if (loading) {
         return (
-          <UI.Box style={styles.loadingContainer}>
-            <UI.ActivityIndicator size="large" color="#00BFF6" />
-          </UI.Box>
+          <CbLoader />
         );
       }
     return (
