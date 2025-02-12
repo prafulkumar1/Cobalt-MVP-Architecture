@@ -36,7 +36,7 @@ export default function MyCartScreen(props) {
      finalCartData,
      keyboardVisible
    } = useMyCartLogic();
-   const {increaseQuantity,cartData, selectedTime ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity}= useFormContext();
+   const {increaseQuantity,cartData, selectedTime,selectedLocation ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity,closePreviewModal,storeSingleItem}= useFormContext();
 
 
   const renderModifierList = ({ item }) => {
@@ -135,11 +135,22 @@ export default function MyCartScreen(props) {
             </UI.Box>
             {item.comments && (
               <UI.Box style={styles.notesContainer}>
-                <Image
-                  source={require("@/assets/images/icons/messageIcon2x.png")}
-                  style={styles.noteIcon}
-                />
-                <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+                <UI.TouchableOpacity
+                  style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}
+                  onPress={() => {
+                    navigateToScreen(props, "MenuOrder", true, { itemId: item.id })
+                    storeSingleItem(item)
+                    setTimeout(() => {
+                      closePreviewModal()
+                    },1000);
+                  }} 
+                >
+                  <Image
+                    source={require("@/assets/images/icons/messageIcon2x.png")}
+                    style={styles.noteIcon}
+                  />
+                  <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+                </UI.TouchableOpacity>
               </UI.Box>
             )}
           </UI.Box>
@@ -411,7 +422,7 @@ export default function MyCartScreen(props) {
                  <UI.cbSelectTime
                   id={pageId}
                   selectItems={pickupLocations}
-                  Label={selectedTime}
+                  Label={selectedLocation}
                   style={styles.timeBtn}
                   selectItemLabel={"Select Place"}
                 />

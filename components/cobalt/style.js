@@ -347,6 +347,69 @@ CheckIcon:{color:"#ffff"},
   dropdownContainer:{ 
     minHeight:responsiveHeight(30),
     maxHeight: responsiveHeight(45), 
-  }
+  },
+  selectedContainer: {
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+  },
+  pickerWrapper: {
+    height: 250, 
+    overflow: "hidden",
+  },
+  pickerItemWrapper: {
+    height: 50, 
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedItemWrapper: {
+    borderRadius: 5,
+  },
+  scrollIndicator: {
+    fontSize: 16,
+    color: "#333",
+  },
+  selectedItem: {
+    fontWeight: "bold",
+    color: "#007bff",
+  },
+  unselectedItem: {
+    color: "#888",
+  },
+  amPm: {
+    fontSize: 12,
+    color: "#555",
+    marginTop: 5,
+  },
+  doneBtn: {
+    marginTop: 20,
+    paddingHorizontal: 52,
+    paddingVertical:6,
+    backgroundColor: "#5773A2",
+    borderRadius: 25,
+  },
+  doneTxtBtn: {
+    fontSize:21,
+    fontFamily: "SourceSansPro_SemiBold",
+    color: "#fff",
+    textAlign: "center",
+ 
+  },
+  pickerWrapper: {
+    height: 250,
+    overflow: "hidden",
+    width:"50%"
+  },
+  item: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
 
+  },
+  selectedText: {
+    fontSize: 16,
+    color: "#000",
+    fontFamily: "SourceSansPro_SemiBold",
+  },
+  
 })
