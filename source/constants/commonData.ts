@@ -875,3 +875,121 @@ export const cartConfigResponseData = {
   ] 
 
 } 
+
+export const departments =[
+  {
+    "label": "08:00 AM",
+    "value": "08:00 AM"
+  },
+  {
+    "label": "08:30 AM",
+    "value": "08:30 AM"
+  },
+  {
+    "label": "09:00 AM",
+    "value": "09:00 AM"
+  },
+  {
+    "label": "09:30 AM",
+    "value": "09:30 AM"
+  },
+  {
+    "label": "10:00 AM",
+    "value": "10:00 AM"
+  },
+  {
+    "label": "10:30 AM",
+    "value": "10:30 AM"
+  },
+  {
+    "label": "11:00 AM",
+    "value": "11:00 AM"
+  },
+  {
+    "label": "08:00 AM",
+    "value": "08:00 AM"
+  },
+  {
+    "label": "08:30 AM",
+    "value": "08:30 AM"
+  },
+  {
+    "label": "09:00 AM",
+    "value": "09:00 AM"
+  },
+  {
+    "label": "09:30 AM",
+    "value": "09:30 AM"
+  },
+  {
+    "label": "10:00 AM",
+    "value": "10:00 AM"
+  },
+  {
+    "label": "10:30 AM",
+    "value": "10:30 AM"
+  },
+  {
+    "label": "11:00 AM",
+    "value": "11:00 AM"
+  }
+];
+
+export const pickupLocations = [
+  {
+    "label": "IT Department",
+    "value": "IT Department"
+  },
+  {
+    "label": "HR Department",
+    "value": "HR Department"
+  },
+  {
+    "label": "Finance Department",
+    "value": "Finance Department"
+  },
+  {
+    "label": "Logistics Department",
+    "value": "Logistics Department"
+  },
+  {
+    "label": "Security Office",
+    "value": "Security Office"
+  },
+  {
+    "label": "Main Reception",
+    "value": "Main Reception"
+  },
+  {
+    "label": "R&D Center",
+    "value": "R&D Center"
+  },
+  {
+    "label": "Customer Support",
+    "value": "Customer Support"
+  },
+  {
+    "label": "Warehouse A",
+    "value": "Warehouse A"
+  },
+  {
+    "label": "Warehouse B",
+    "value": "Warehouse B"
+  },
+  {
+    "label": "Cafeteria",
+    "value": "Cafeteria"
+  },
+  {
+    "label": "Parking Lot",
+    "value": "Parking Lot"
+  },
+  {
+    "label": "Training Room",
+    "value": "Training Room"
+  },
+  {
+    "label": "Server Room",
+    "value": "Server Room"
+  }
+];

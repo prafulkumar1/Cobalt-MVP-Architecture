@@ -170,4 +170,8 @@ export const styles = StyleSheet.create({
       paddingRight: responsiveWidth(0.8),
       paddingTop:isPlatformIos() ? 2 : 4
     },
+    trashIcon:{ width: 23, height: 23 },
+    addIcon:{ width: 25, height: 25 },
+    commentBtn:{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" },
+    
   }); 

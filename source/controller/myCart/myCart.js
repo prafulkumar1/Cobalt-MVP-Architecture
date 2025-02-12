@@ -4,13 +4,14 @@ import {  cartConfigResponseData } from '@/source/constants/commonData';
 import uuid from "react-native-uuid";
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard } from 'react-native';
+import { postApiCall } from '@/source/utlis/api';
 const pageId='MyCart';
 export const useMyCartLogic = () => {
     const swipeableRefs = useRef({});
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {addedModifierCartData,getCartData,getModifierData,deleteCartItem,deleteModifierItem,cartData }= useFormContext(); 
+    const {addedModifierCartData,getCartData,getModifierData,deleteCartItem,deleteModifierItem,cartData,updateCartItemQuantity,updateModiferItemData ,updateModifierItemQuantity, }= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
@@ -23,6 +24,8 @@ export const useMyCartLogic = () => {
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
     
+    const [isAvailable, setIsAvailable] = useState(0);
+    const [isModifierAvailable, setIsModifierAvailable] = useState(0);
      
   useEffect(() => {
     if ((cartData.length > 0 || addedModifierCartData.length > 0)) {
@@ -70,16 +73,6 @@ export const useMyCartLogic = () => {
     setTipData(tipDetails)
   }
 
-  const getPickupTimeLine = () => {
-    let updatedPickupTimeData = pickUpTimeLineData.map((items) => {
-      return{
-        id:uuid.v4(),
-        tip: items.tip,
-        isSelected:0
-      }
-    })
-    setPickUpTimeLineData(updatedPickupTimeData)
-  }
 
   const closeAllSwipeables = () => {
     Object.keys(swipeableRefs?.current).forEach((key) => {
@@ -161,6 +154,57 @@ export const useMyCartLogic = () => {
       });
     }
   };
+  const postQuantityApiCall = async (item,quantity) => {
+    try {
+      const params = {
+        "Item_ID": item?.Item_ID,
+        "Item_Quantity": quantity
+      }
+      let quantityInfo = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_STATUS", params)
+      return quantityInfo
+    } catch (err) { }
+  }
+  const handleIncrement = async(item) => {
+    let quantityInfo = await postQuantityApiCall(item,item.quantity + 1)
+
+    if (quantityInfo.statusCode === 200) {
+      setIsAvailable(quantityInfo?.response.IsAvailable);
+      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
+
+      if (quantityInfo?.response.IsModifierAvailable === 1) {
+        updateModiferItemData(item, item.quantity + 1);
+        updateModifierItemQuantity(item, item.quantity + 1);
+      } else {
+        if (isAvailable === 1) {
+          updateCartItemQuantity(item, item.quantity + 1);
+        } else {
+          Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
+        }
+      }
+    }
+  }
+  const handleDecrement = async(item) => {
+    let quantityInfo = await postQuantityApiCall(item,item.quantity - 1)
+
+    if (quantityInfo.statusCode === 200) {
+      setIsAvailable(quantityInfo?.response.IsAvailable);
+      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
+
+      if (quantityInfo?.response.IsModifierAvailable === 1) {
+        updateModiferItemData(item, item.quantity - 1);
+        updateModifierItemQuantity(item, item.quantity - 1);
+      } else {
+        updateCartItemQuantity(item, item.quantity - 1);
+      }
+    }
+  }
+  const editCommentBtn = (props,item) => {
+    navigateToScreen(props, "MenuOrder", true, { itemId: item.id })
+    storeSingleItem(item)
+    setTimeout(() => {
+      closePreviewModal()
+    }, 1000);
+  }
   return {
     tipData,
     value,
@@ -181,6 +225,9 @@ export const useMyCartLogic = () => {
     handleSaveTip,
     scrollViewRef,
     finalCartData,
-    keyboardVisible
+    keyboardVisible,
+    handleIncrement,
+    handleDecrement,
+    editCommentBtn
   };
 };

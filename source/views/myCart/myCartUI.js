@@ -4,7 +4,7 @@ import {useFormContext } from '@/components/cobalt/event';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 import { Swipeable } from 'react-native-gesture-handler';
-import {  priceItems } from '@/source/constants/commonData';
+import {  departments, pickupLocations, priceItems } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
@@ -34,9 +34,12 @@ export default function MyCartScreen(props) {
      handleSaveTip,
      scrollViewRef,
      finalCartData,
-     keyboardVisible
+     keyboardVisible,
+     handleIncrement,
+     handleDecrement,
+     editCommentBtn
    } = useMyCartLogic();
-   const {increaseQuantity,cartData, selectedTime,selectedLocation ,updateCartItemQuantity,getCartData,getModifierData,updateModiferItemData ,addedModifierCartData,updateModifierItemQuantity,closePreviewModal,storeSingleItem}= useFormContext();
+   const { selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
 
 
   const renderModifierList = ({ item }) => {
@@ -93,20 +96,13 @@ export default function MyCartScreen(props) {
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() => {
-                      if (item.isModifier === 1) {
-                        updateModiferItemData(item, item.quantity - 1);
-                        updateModifierItemQuantity(item, item.quantity - 1);
-                      } else {
-                        updateCartItemQuantity(item, item.quantity - 1);
-                      }
-                    }}
+                    onPress={() => handleIncrement(item)}
                   >
                     <Icon
                       as={item.quantity === 1 ? TrashIcon : RemoveIcon}
                       color="#5773a2"
                       size={"md"}
-                      style={{ width: 23, height: 23 }}
+                      style={styles.trashIcon}
                     />
                   </UI.TouchableOpacity>
 
@@ -114,20 +110,13 @@ export default function MyCartScreen(props) {
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() => {
-                      if (item.isModifier === 1) {
-                        updateModiferItemData(item, item.quantity + 1);
-                        updateModifierItemQuantity(item, item.quantity + 1);
-                      } else {
-                        updateCartItemQuantity(item, item.quantity + 1);
-                      }
-                    }}
+                    onPress={() =>handleDecrement(item)}
                   >
                     <Icon
                       as={AddIcon}
                       color="#5773a2"
                       size={"xl"}
-                      style={{ width: 25, height: 25 }}
+                      style={styles.addIcon}
                     />
                   </UI.TouchableOpacity>
                 </UI.Box>
@@ -136,14 +125,8 @@ export default function MyCartScreen(props) {
             {item.comments && (
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
-                  style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}
-                  onPress={() => {
-                    navigateToScreen(props, "MenuOrder", true, { itemId: item.id })
-                    storeSingleItem(item)
-                    setTimeout(() => {
-                      closePreviewModal()
-                    },1000);
-                  }} 
+                  style={styles.commentBtn}
+                  onPress={() => editCommentBtn(props,item)} 
                 >
                   <Image
                     source={require("@/assets/images/icons/messageIcon2x.png")}
@@ -242,123 +225,7 @@ export default function MyCartScreen(props) {
       </>
     )
   }
-  const departments =[
-    {
-      "label": "08:00 AM",
-      "value": "08:00 AM"
-    },
-    {
-      "label": "08:30 AM",
-      "value": "08:30 AM"
-    },
-    {
-      "label": "09:00 AM",
-      "value": "09:00 AM"
-    },
-    {
-      "label": "09:30 AM",
-      "value": "09:30 AM"
-    },
-    {
-      "label": "10:00 AM",
-      "value": "10:00 AM"
-    },
-    {
-      "label": "10:30 AM",
-      "value": "10:30 AM"
-    },
-    {
-      "label": "11:00 AM",
-      "value": "11:00 AM"
-    },
-    {
-      "label": "08:00 AM",
-      "value": "08:00 AM"
-    },
-    {
-      "label": "08:30 AM",
-      "value": "08:30 AM"
-    },
-    {
-      "label": "09:00 AM",
-      "value": "09:00 AM"
-    },
-    {
-      "label": "09:30 AM",
-      "value": "09:30 AM"
-    },
-    {
-      "label": "10:00 AM",
-      "value": "10:00 AM"
-    },
-    {
-      "label": "10:30 AM",
-      "value": "10:30 AM"
-    },
-    {
-      "label": "11:00 AM",
-      "value": "11:00 AM"
-    }
-  ];
 
-  const pickupLocations = [
-    {
-      "label": "IT Department",
-      "value": "IT Department"
-    },
-    {
-      "label": "HR Department",
-      "value": "HR Department"
-    },
-    {
-      "label": "Finance Department",
-      "value": "Finance Department"
-    },
-    {
-      "label": "Logistics Department",
-      "value": "Logistics Department"
-    },
-    {
-      "label": "Security Office",
-      "value": "Security Office"
-    },
-    {
-      "label": "Main Reception",
-      "value": "Main Reception"
-    },
-    {
-      "label": "R&D Center",
-      "value": "R&D Center"
-    },
-    {
-      "label": "Customer Support",
-      "value": "Customer Support"
-    },
-    {
-      "label": "Warehouse A",
-      "value": "Warehouse A"
-    },
-    {
-      "label": "Warehouse B",
-      "value": "Warehouse B"
-    },
-    {
-      "label": "Cafeteria",
-      "value": "Cafeteria"
-    },
-    {
-      "label": "Parking Lot",
-      "value": "Parking Lot"
-    },
-    {
-      "label": "Training Room",
-      "value": "Training Room"
-    },
-    {
-      "label": "Server Room",
-      "value": "Server Room"
-    }
-  ];
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}

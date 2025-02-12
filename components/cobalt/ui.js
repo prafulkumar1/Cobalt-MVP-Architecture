@@ -28,7 +28,6 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
 import { postApiCall } from '@/source/utlis/api';
-import * as DeviceInfo from 'expo-device';
 import { isPlatformIos } from '@/source/constants/Matrices';
 
 class CbAccordionlist extends React.Component {
