@@ -198,15 +198,12 @@ export default function MenuOrderScreen(props) {
       }else{
         return(
           <>
-          {
-            menuOrderData?.MenuItems.length !== 1 && 
-            <UI.Box style={styles.topContainer}>
+          <UI.Box style={styles.topContainer}>
             {menuOrderData &&
               menuOrderData?.MenuItems?.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>
-          }
          
           {renderCategoryMainList()}
 

@@ -455,6 +455,18 @@ CheckIcon:{color:"#ffff"},
     borderRadius: 5,
     backgroundColor: "#f0f0f0"
   },
-  selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"}
-  
+  selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
+  crossIcon:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 10,
+    alignSelf: "center",
+    opacity: 1,
+    zIndex: 1000,
+  },
 })

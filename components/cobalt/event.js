@@ -12,8 +12,9 @@ export const useFormContext = () => {
 
 export const UseFormContextProvider = ({children}) => {
     
-    const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(null)
+    const [modifiersResponseData,setModifiersResponseData] = useState(null)
+    const [formData, setFormData] = useState({});
     const [itemDataVisible, setItemDataVisible] = useState(false);
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [cartData, setCartData] = useState(null)
@@ -25,6 +26,7 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedTime,setSelectedTime] = useState("7:30 AM")
     const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
     const [currentSelectedVal , setCurrentSelectedVal] = useState("")
+    const [isVisible, setIsVisible] = useState(false);
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
 
@@ -367,7 +369,11 @@ export const UseFormContextProvider = ({children}) => {
       updateModiferItemData,
       deleteModifierItem,
       setMenuOrderData,
-      menuOrderData
+      menuOrderData,
+      setModifiersResponseData,
+      modifiersResponseData,
+      setIsVisible,
+      isVisible
     }
     return (
       <FormContext.Provider

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon, CloseIcon } from '@/components/ui/icon';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
@@ -29,6 +29,17 @@ import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
 import { postApiCall } from '@/source/utlis/api';
 import { isPlatformIos } from '@/source/constants/Matrices';
+
+export const postQuantityApiCall = async(quantity,itemId) => {
+  try {
+    const params = {
+      "Item_ID":itemId,
+      "Item_Quantity": quantity
+    }          
+    let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
+    return quantityInfo
+  } catch (err) {}
+}
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
@@ -95,18 +106,18 @@ class CbAccordionlist extends React.Component {
       this.screenName === "RecentOrders"
         ? this.componentData.CompletedOrders
         : this.componentData.Modifiers;
-    const defaultOpenItems = componentData.map((_, index) => `item-${index}`);
 
     return (
       <FormContext.Consumer>
-        {({ getAllSelectedModifiers }) => {
+        {({ getAllSelectedModifiers ,modifiersResponseData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
+          const defaultOpenItems = modifiersResponseData?.Categories?.map((_, index) => `item-${index}`);
 
           return (
             <>
-              {componentData.map((order, index) => (
+              {modifiersResponseData && modifiersResponseData?.Categories.map((order, index) => (
                 <Accordion
                   defaultValue={defaultOpenItems}
                   variant="filled"
@@ -153,21 +164,12 @@ class CbAccordionlist extends React.Component {
                                   <AccordionTitleText
                                     style={styles.modifierContainer}
                                   >
-                                    {order.MainModifier}{" "}
-                                    {order.IsRequried === 1 && (
-                                      <AccordionTitleText
-                                        style={styles.requireText}
-                                      >
-                                        (Required)
-                                      </AccordionTitleText>
-                                    )}{" "}
-                                    {order.IsMaxAllowedOne === 1 && (
-                                      <AccordionTitleText
+                                    {order.Category_Name}
+                                    <AccordionTitleText
                                         style={styles.maxAllowedTxt}
                                       >
-                                        (Max allowed 1)
+                                        {order.Message ? `  (${order.Message})`: ""}
                                       </AccordionTitleText>
-                                    )}
                                   </AccordionTitleText>
                                 </Box>
                               )}
@@ -229,7 +231,7 @@ class CbAccordionlist extends React.Component {
                               <Divider />
                             </Box>
                           ))
-                        : order.ModifierItems.map((item, itemIndex) => (
+                        : order?.Modifiers?.map((item, itemIndex) => (
                             <Box
                               key={itemIndex}
                               style={styles.orderSubContainer}
@@ -278,11 +280,11 @@ class CbAccordionlist extends React.Component {
                                   />
                                 </CheckboxIndicator>
                                 <CheckboxLabel style={styles.itemNameTxt}>
-                                  <Text>{item.ItemName}</Text>
+                                  <Text>{item.Modifier_Name}</Text>
                                 </CheckboxLabel>
                               </Checkbox>
                               <AccordionContentText style={styles.priceMainTxt}>
-                                <Text>{`$${item.Price}`}</Text>
+                                <Text>{`$${item.Price !==null?item.Price:0}`}</Text>
                               </AccordionContentText>
                             </Box>
                           ))}
@@ -427,18 +429,9 @@ class CbAddToCartButton extends React.Component {
     }
   }
 
-   postQuantityApiCall = async(quantity) => {
-      try {
-        const params = {
-          "Item_ID": this.mealItemDetails?.Item_ID,
-          "Item_Quantity": quantity
-        }          
-        let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
-        return quantityInfo
-      } catch (err) {}
-   }
+
    handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
-    let quantityInfo = await this.postQuantityApiCall(quantity)
+    let quantityInfo = await postQuantityApiCall(quantity,this.mealItemDetails?.Item_ID)
     if (quantityInfo.statusCode === 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
@@ -454,7 +447,7 @@ class CbAddToCartButton extends React.Component {
 
   modifierIncDecBtn = async (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
     let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
-    let quantityInfo = await this.postQuantityApiCall(requiredQuantity)
+    let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if(quantityInfo.statusCode ==200){
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
@@ -596,6 +589,25 @@ class CbAccordion extends React.Component {
     return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
   };
 
+  openItemDetails = async (box,closePreviewModal,storeSingleItem) => {
+    let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+    if(box.IsAvailable ===1){
+      storeSingleItem({...box,response:quantityInfo.response})
+      closePreviewModal()
+    }
+  }
+  handleCloseItemDetails = (setIsVisible,updateModifierItemQuantity,closePreviewModal,selectedModifiers,setSelectedModifiers,singleItemDetails) => {
+    if (selectedModifiers.length === 0) {
+        setIsVisible(false)
+        updateModifierItemQuantity(singleItemDetails, 0)
+        setTimeout(() => {
+            closePreviewModal()
+        }, 100)
+    } else {
+        setIsVisible(true)
+    }
+}
+
   render() {
     const componentdata = this.AccordionData;
     const { expandedIds } = this.state;
@@ -610,7 +622,7 @@ class CbAccordion extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible,closePreviewModal,singleItemDetails,modifierCartItemData,addItemToModifierForCart,commentValue}) => {
+        {({setIsVisible,itemDataVisible,closePreviewModal,singleItemDetails,modifierCartItemData,addItemToModifierForCart,commentValue,storeSingleItem,updateModifierItemQuantity, selectedModifiers, setSelectedModifiers}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -690,7 +702,10 @@ class CbAccordion extends React.Component {
                                     box?.Item_ID
                                   );
                                   return (
-                                    <Box
+                                    <TouchableOpacity
+                                      activeOpacity={0.5}
+                                      disabled={box.IsAvailable!==1}
+                                      onPress={() => this.openItemDetails(box,closePreviewModal,storeSingleItem)}
                                       key={box?.Item_ID}
                                       style={[
                                         styles.subContainer,
@@ -774,7 +789,7 @@ class CbAccordion extends React.Component {
                                         </Box>
 
                                         <Box style={styles.imageContainer}>
-                                          <TouchableOpacity
+                                          <Box
                                             style={{
                                               backgroundColor:
                                                 "rgba(255, 255, 255, 0.2)",
@@ -790,7 +805,7 @@ class CbAccordion extends React.Component {
                                                 },
                                               ]}
                                             />
-                                          </TouchableOpacity>
+                                          </Box>
                                           <CbAddToCartButton
                                             mealItemDetails={box}
                                           />
@@ -799,7 +814,7 @@ class CbAccordion extends React.Component {
                                       {!lastItem && (
                                         <Box style={styles.horizontalLine} />
                                       )}
-                                    </Box>
+                                    </TouchableOpacity>
                                   );
                                 }}
                               />
@@ -818,6 +833,13 @@ class CbAccordion extends React.Component {
                 animationType="fade"
                 onRequestClose={closePreviewModal}
               >
+                <TouchableOpacity
+                  onPress={() => this.handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
+                  style={styles.crossIcon}
+                >
+                  <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
+
+                </TouchableOpacity>
                 <ScrollView style={styles.modiferItems}>
                   <Box style={styles.blackShadow} />
                   <ItemModifier />

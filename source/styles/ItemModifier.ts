@@ -9,9 +9,9 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         color: "#4B5154",
     },
-    mainContainer:{ flex: 1, position: "relative", backgroundColor: '#fff', borderTopLeftRadius: 35, borderTopRightRadius: 35 },
+    mainContainer:{ flex: 1, backgroundColor: '#fff', borderTopLeftRadius: 35, borderTopRightRadius: 35},
     itemImage: { width: "100%", height: 230, borderTopLeftRadius: 35, borderTopRightRadius: 35 },
-    itemDetailsContainer:{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed' },
+    itemDetailsContainer:{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed',paddingHorizontal:6,},
     foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold'  },
     foodItemPrice:{ fontSize: 18, color: "#4B5154",fontFamily: 'SourceSansPro_SemiBold'  },
     foodDiscripContainer:{ paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed' },
@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
     },
-    rightItemContainer:{ flexDirection: 'row', alignItems: 'center',width:responsiveWidth(26),justifyContent:"space-between",marginRight:responsiveWidth(8)},
+    rightItemContainer:{ flexDirection: 'row', alignItems: 'center',justifyContent:"space-between"},
     addIconBtn:{ 
         flexDirection: 'row', 
         alignItems: 'center',
@@ -79,9 +79,9 @@ export const styles = StyleSheet.create({
     favIcon:{width:"100%",height:"100%"},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
-    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(5.5) },
+    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(5.5)},
     diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
     discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
     modifierSubContainer:{ paddingVertical: 15 },
-    mainList:{flex:1,marginBottom: 80,  }
+    mainList:{marginBottom: responsiveHeight(18),  }
 });
