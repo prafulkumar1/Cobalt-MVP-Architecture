@@ -199,10 +199,18 @@ export default function MenuOrderScreen(props) {
         return(
           <>
           <UI.Box style={styles.topContainer}>
-            {menuOrderData &&
+            {/* {menuOrderData &&
               menuOrderData?.MenuItems?.map((item) => {
                 return renderMealTypeList(item, setMealType);
-              })}
+              })} */}
+              <UI.CbFlatList
+                flatlistData={menuOrderData?.MenuItems}
+                horizontal={true}
+                contentContainerStyle={{flex:1}}
+                children={({item}) =>{
+                  return renderMealTypeList(item, setMealType)
+                }}
+                />
           </UI.Box>
          
           {renderCategoryMainList()}
