@@ -1,6 +1,6 @@
 import { isPlatformAndroid } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
-import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
+import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
   subContainer: {
@@ -179,9 +179,8 @@ export const styles = StyleSheet.create({
   cartCountTxt:{
     position: "absolute",
     bottom: 28,
-    right: 8,
     color: "#FFFFFF",
-    fontSize: 26,
+    fontSize: responsiveFontSize(3.2),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -342,7 +341,8 @@ CheckIcon:{color:"#ffff"},
   },
   selectedLabel:{
     marginVertical: 10,
-    fontFamily: "SourceSansPro_SemiBoldItalic",
+    fontFamily: "SourceSansPro_Italic",
+    color:"#4B5154"
   },
   dropdownContainer:{ 
     minHeight:responsiveHeight(30),
@@ -454,6 +454,19 @@ CheckIcon:{color:"#ffff"},
     borderWidth: 0,
     borderRadius: 5,
     backgroundColor: "#f0f0f0"
-  }
-  
+  },
+  selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
+  crossIcon:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 10,
+    alignSelf: "center",
+    opacity: 1,
+    zIndex: 1000,
+  },
 })

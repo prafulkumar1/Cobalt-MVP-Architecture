@@ -82,17 +82,17 @@ export const useMyCartLogic = () => {
   };
 
   const handleDelete = (item) => {
-    if (openItemId === item.Item_Id && swipeableRefs.current[openItemId]) {
+    if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
       swipeableRefs.current[openItemId].close();
     }
-    delete swipeableRefs.current[item.Item_Id];
+    delete swipeableRefs.current[item.Item_ID];
     setOpenItemId(null);
     if(item.isModifier ===1){
       deleteModifierItem(item)
     }else{
       deleteCartItem(item);
     }
-    let updatedCartData = finalCartData?.filter((itemDetails) => itemDetails.Item_Id !== item.Item_Id);
+    let updatedCartData = finalCartData?.filter((itemDetails) => itemDetails.Item_ID !== item.Item_ID);
     setFinalCartData(updatedCartData);
   };
   const handleSwipeOpen = (itemId) => {

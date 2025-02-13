@@ -4,13 +4,18 @@ import { Image, Modal } from "react-native";
 import { useFormContext } from '@/components/cobalt/event';
 import { styles } from '@/source/styles/ItemModifier';
 import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
+import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import CbLoader from '@/components/cobalt/cobaltLoader';
 
 const pageId = "ItemModifier"
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,  modifierData,setFormFieldData,getFormFieldData } = useFormContext()
+    const {  singleItemDetails,modifierData,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible } = useFormContext()
 
-    const { handleCloseItemDetails,handleDiscardChanges,isVisible,setIsVisible} = useItemModifierLogic()
+    const {ImageUrl,Item_Name,Price,Description,response} = singleItemDetails
+    const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+    const quantity = cartItem ? cartItem.quantity : 0;
+    const { handleCloseItemDetails,handleDiscardChanges,loading} = useItemModifierLogic()
 
     return (
         <>
@@ -21,7 +26,7 @@ const ItemModifier = (props) => {
                             imageJsx={
                                 <Image
                                     alt='image'
-                                    source={{ uri: singleItemDetails?.Image }}
+                                    source={{ uri: ImageUrl?ImageUrl:""}}
                                     style={styles.itemImage}
                                     resizeMode='cover'
                                 />
@@ -29,17 +34,7 @@ const ItemModifier = (props) => {
                         />
                     </UI.TouchableOpacity>
 
-                    <UI.TouchableOpacity
-                        onPress={()=>handleCloseItemDetails()}
-                        style={styles.crossbtn}
-                    >
-                        <Image
-                            alt='Close'
-                            source={require('@/assets/images/icons/Close.png')}
-                            style={styles.crossImage}
-                            tintColor={"#fff"}
-                        />
-                    </UI.TouchableOpacity>
+
 
                     <Modal
                         visible={isVisible}
@@ -80,19 +75,24 @@ const ItemModifier = (props) => {
                     </Modal>
 
                     <UI.Box style={styles.modifierContainer}>
-                        <UI.Box style={styles.itemDetailsContainer}>
+                        <UI.Box style={[styles.itemDetailsContainer,{marginRight:quantity !== 0 && responsiveWidth(5)}]}>
                             <UI.Box style={{ marginTop: 10 }}>
                                 <UI.Text style={styles.foodItemName}>
-                                    {singleItemDetails?.Item_Name}
+                                    {Item_Name?Item_Name:""}
                                 </UI.Text>
                                 <UI.Text style={styles.foodItemPrice}>
-                                    ${singleItemDetails?.Price}
+                                    ${Price}
                                 </UI.Text>
                             </UI.Box>
 
-                            <UI.Box style={styles.rightItemContainer}>
+                            <UI.Box style={[styles.rightItemContainer,{width:quantity!==1?responsiveWidth(17):responsiveWidth(25)}]}>
                                 <UI.TouchableOpacity style={styles.favIconBtn}>
-                                    <UI.CbImage imageJsx={<Image source={require("@/assets/images/icons/Fav3x.png")} style={styles.favIcon} />} />
+                                    {
+                                        modifiersResponseData?.IsFavorite ==1 ?
+                                        <UI.CbImage imageJsx={<Image source={require("@/assets/images/icons/Fav3x.png")} style={styles.favIcon} />} />
+                                        :
+                                        <UI.CbImage imageJsx={<Image source={require("@/assets/images/icons/Notfav3x.png")} style={styles.favIcon} />} />
+                                    }
                                 </UI.TouchableOpacity>
                                 <UI.CbAddToCartButton mealItemDetails={singleItemDetails} style={styles.addBtn} />
                             </UI.Box>
@@ -100,20 +100,27 @@ const ItemModifier = (props) => {
 
                         <UI.Box style={styles.foodDiscripContainer}>
                             <UI.Text style={styles.foodDiscripTxt}>
-                                {singleItemDetails?.Description}
+                                {Description?Description:""}
                             </UI.Text>
                         </UI.Box>
 
                         <UI.Box style={styles.modifierSubContainer}>
-                            <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                            <UI.ScrollView showsVerticalScrollIndicator={false} style={styles.mainList}>
-                                <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" props={props}/>
-                                <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
-                                
-
-                                  <UI.cbForm formId={pageId} setFormFieldData={setFormFieldData} getFormFieldData={getFormFieldData}>
-                                  <UI.cbInput id="Comments" style={styles.commentsBox}/>
+                            
+                            <UI.ScrollView showsVerticalScrollIndicator={false} style={[styles.mainList,{marginBottom:response?.IsModifierAvailable==0? responsiveHeight(10):responsiveHeight(30)}]}>
+                                {
+                                    response?.IsModifierAvailable === 0 &&
+                                        loading ? <CbLoader /> :
+                                        <UI.Box>
+                                            <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                                            <UI.CbAccordionlist componentData={modifierData} screenName="Modifiers" props={props} />
+                                        </UI.Box>
+                                }
+                                <UI.Box>
+                                    <UI.Text style={styles.allergyInfoTxt}>Comment/Allergy Info</UI.Text>
+                                    <UI.cbForm formId={pageId} setFormFieldData={setFormFieldData} getFormFieldData={getFormFieldData}>
+                                        <UI.cbInput id="Comments" style={styles.commentsBox} />
                                     </UI.cbForm>
+                                </UI.Box>
                             </UI.ScrollView>
                         </UI.Box>
                     </UI.Box>

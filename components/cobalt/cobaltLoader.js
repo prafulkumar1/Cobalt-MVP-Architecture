@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View,StyleSheet, ActivityIndicator } from "react-native";
 import Animated, {
   useSharedValue,
   withSequence,
@@ -74,7 +74,7 @@ const CbLoader = () => {
             ))}
           </Svg>
         ) : (
-          <Text style={styles.text}>Hello</Text>
+          <ActivityIndicator/>
         )}
       </View>
     </View>

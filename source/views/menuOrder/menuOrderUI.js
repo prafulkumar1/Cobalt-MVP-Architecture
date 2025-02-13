@@ -125,7 +125,7 @@ export default function MenuOrderScreen(props) {
                   );
                 }else if(updatedData.length === 0){
                   return(
-                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No categories available</UI.Text>
+                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No items available</UI.Text>
                   )
                 }
               })}
@@ -204,7 +204,7 @@ export default function MenuOrderScreen(props) {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>
-
+         
           {renderCategoryMainList()}
 
           {(cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props} />}
