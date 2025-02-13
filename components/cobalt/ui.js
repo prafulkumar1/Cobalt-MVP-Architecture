@@ -840,7 +840,7 @@ class CbAccordion extends React.Component {
                   <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
 
                 </TouchableOpacity>
-                <ScrollView style={styles.modiferItems}>
+                <ScrollView style={styles.modiferItems} bounces={false}>
                   <Box style={styles.blackShadow} />
                   <ItemModifier />
                 </ScrollView>
