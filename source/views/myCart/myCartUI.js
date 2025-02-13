@@ -70,10 +70,10 @@ export default function MyCartScreen(props) {
       <UI.Pressable>
         <Swipeable
           ref={(ref) => {
-            swipeableRefs.current[`${item.Item_Id}`] = ref;
+            swipeableRefs.current[`${item.Item_ID}`] = ref;
           }}
           renderRightActions={renderRightActions}
-          onSwipeableOpen={() => handleSwipeOpen(item.Item_Id)}
+          onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
           <UI.Box
             style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}

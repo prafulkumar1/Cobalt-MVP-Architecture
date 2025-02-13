@@ -397,7 +397,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-              <Text style={styles.cartCountTxt}>{finalQuantity? finalQuantity:0}</Text>
+              <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -464,7 +464,7 @@ class CbAddToCartButton extends React.Component {
             if(this.state.isAvailable ===1){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
             }else{
-              Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
+              Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         } else {
@@ -474,7 +474,7 @@ class CbAddToCartButton extends React.Component {
             if(this.state.isAvailable ===1){
               updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
             }else{
-              Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
+              Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         }
@@ -785,7 +785,7 @@ class CbAccordion extends React.Component {
                                               source={{ uri: box.ImageUrl }}
                                               style={[
                                                 styles.mealTypeImg,
-                                                box.IsAvailable === 0 && {
+                                                box.IsAvailable === 0 && box.IsDisable ===1 && {
                                                   opacity: 0.4,
                                                 },
                                               ]}
@@ -1261,7 +1261,7 @@ class cbSelectTime extends React.Component {
           <TouchableOpacity onPress={() => this.setState({ isSelected: true })}>
             <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
               <FormControlLabel>
-                <FormControlLabelText>
+                <FormControlLabelText style={styles.selectedLabelItem}>
                   {this.selectItemLabel === "Select Time" ? selectedTime : selectedLocation}
                 </FormControlLabelText>
               </FormControlLabel>
@@ -1415,16 +1415,6 @@ class cbCategoryList extends React.Component {
                 if (mealCategory.IsSelect === 1) {
                   let updatedCategoryData =  typeof mealCategory.Categories === 'string' ? JSON.parse(mealCategory.Categories) : mealCategory.Categories;
                   return (
-                    // <CbFlatList
-                    //     customStyles={{flex:1}}
-                    //     id={mealCategory.Id}
-                    //     flatlistData={updatedCategoryData}
-                    //     horizontal={false}
-                    //     contentContainerStyle={{flex:1}}
-                    //     children ={({item}) => {
-                         
-                    //     }}
-                    // />
                     <>
                     {
                       updatedCategoryData && updatedCategoryData.map((item) => {

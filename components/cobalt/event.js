@@ -141,13 +141,7 @@ export const UseFormContextProvider = ({children}) => {
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       setCartData((prevCartData) => {
         let updatedCartData = [...prevCartData];
-        const itemIndex = updatedCartData.findIndex((item) => item.Item_Id === data.Item_Id);
-        // if (itemIndex !== -1) {
-        //   updatedCartData[itemIndex].quantity += 1;
-        //   updatedCartData[itemIndex].quantityIncPrice +=  data.Price
-        // } else {
         updatedCartData.push({ ...data, quantity: 1, quantityIncPrice: data.Price, profitCenterId: getProfitCenterId.LocationId });
-        //}    
         AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
         return updatedCartData;
       });
@@ -176,7 +170,7 @@ export const UseFormContextProvider = ({children}) => {
       setItemDataVisible(!itemDataVisible)
     }
     const deleteCartItem = (mealItemDetails) => {
-      let updatedCartData = cartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+      let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
       setCartData(updatedCartData);
       AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
     };
@@ -188,7 +182,7 @@ export const UseFormContextProvider = ({children}) => {
       try {
         setModifierCartItemData((prevModifierCartItemData) => {
           const updatedModifierData = [...prevModifierCartItemData];
-          const itemIndex = updatedModifierData.findIndex((modifierItem) => modifierItem.Item_Id === item.Item_Id);
+          const itemIndex = updatedModifierData.findIndex((modifierItem) => modifierItem.Item_ID === item.Item_ID);
           if (itemIndex !== -1) {
             updatedModifierData[itemIndex].quantity += 1;
             updatedModifierData[itemIndex].quantityIncPrice = updatedModifierData[itemIndex].Price * updatedModifierData[itemIndex].quantity;
@@ -209,10 +203,10 @@ export const UseFormContextProvider = ({children}) => {
           let updatedCartData;
     
           if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
             updatedCartData = prevCartData.map((item) =>
-              item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
             );
            
           }
@@ -265,7 +259,7 @@ export const UseFormContextProvider = ({children}) => {
       });
   
       setModifierCartItemData(updatedModifierData);
-      const getCurrentItemDetails = updatedModifierData.find((item) => item.Item_Id === singleItemDetails.Item_Id)
+      const getCurrentItemDetails = updatedModifierData.find((item) => item.Item_ID === singleItemDetails.Item_ID)
       singleModifierData.current = {quantity:getCurrentItemDetails?.quantity,quantityIncPrice:getCurrentItemDetails?.quantityIncPrice}
   };
   
@@ -317,10 +311,10 @@ export const UseFormContextProvider = ({children}) => {
         let updatedCartData;
   
         if (newQuantity === 0) {
-          updatedCartData = prevCartData.filter((item) => item.Item_Id !== mealItemDetails.Item_Id);
+          updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
         } else {
           updatedCartData = prevCartData.map((item) =>
-            item.Item_Id === mealItemDetails.Item_Id ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+            item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
           );
          
         }
@@ -331,7 +325,7 @@ export const UseFormContextProvider = ({children}) => {
   };
 
   const deleteModifierItem = (modifierItem) => {
-    let updatedCartData = addedModifierCartData?.filter((item) => item.Item_Id !== modifierItem.Item_Id);
+    let updatedCartData = addedModifierCartData?.filter((item) => item.Item_ID !== modifierItem.Item_ID);
     setAddedModifierCartData(updatedCartData);
     AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
   };
