@@ -114,12 +114,13 @@ class CbAccordionlist extends React.Component {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          const defaultOpenItems = modifiersResponseData?.Categories?.map((_, index) => `item-${index}`);
-
+          let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
+          const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
+ 
           return (
             <>
               <CbFlatList
-                flatlistData={modifiersResponseData?.Categories}
+                flatlistData={categoryData}
                 children={({ item, index }) => {
                   const order = item
                   return (
@@ -380,7 +381,7 @@ class CbBackButton extends React.Component {
   }
   render() {
     return (
-      <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}} style={styles.backArrowHeader}>
+      <TouchableOpacity onPress={()=>this.props.navigation?.goBack()} style={styles.backArrowHeader}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
         }
@@ -835,7 +836,7 @@ class CbAccordion extends React.Component {
                                               backgroundColor:
                                                 "rgba(255, 255, 255, 0.2)",
                                             }}
-                                            disabled={box.IsAvailable === 0}
+                                            disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
                                           >
                                             <ExpoImage
                                               source={{ uri: box.ImageUrl }}
@@ -1483,16 +1484,25 @@ class cbCategoryList extends React.Component {
                     {
                       updatedCategoryData && updatedCategoryData.map((item) => {
                         if(item.IsSelect === 1){
-                          return (
-                            <Box>
-                              <CbAccordion
-                                AccordionData={item.SubMenu}
-                                addItemToCartBtn={addItemToCartBtn}
-                                updateCartItemQuantity={updateCartItemQuantity}
-                                cartData={cartData}
-                              />
-                            </Box>
-                          );
+                          if(item.SubMenu !==null){
+                            return (
+                              <Box>
+                                <CbAccordion
+                                  AccordionData={item.SubMenu}
+                                  addItemToCartBtn={addItemToCartBtn}
+                                  updateCartItemQuantity={updateCartItemQuantity}
+                                  cartData={cartData}
+                                />
+                              </Box>
+                            );
+                          }else{
+                            return(
+                              <Box style={styles.emptyListContainer}>
+                                <Text style={styles.emptyMealTxt}>No items available</Text>
+                              </Box>
+                            )
+                          }
+                         
                         }
                       })
                     }

@@ -6,6 +6,7 @@ import { styles } from '@/source/styles/ItemModifier';
 import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import CbLoader from '@/components/cobalt/cobaltLoader';
+import { CbDottedLine } from '@/source/constants/dottedLine';
 
 const pageId = "ItemModifier"
 const ItemModifier = (props) => {
@@ -15,6 +16,7 @@ const ItemModifier = (props) => {
     const {ImageUrl,Item_Name,Price,Description,response} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
+    let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleCloseItemDetails,handleDiscardChanges,loading} = useItemModifierLogic()
 
     return (
@@ -52,9 +54,9 @@ const ItemModifier = (props) => {
                     styles.rightItemContainer,
                     {
                       width:
-                        quantity !== 1
-                          ? responsiveWidth(17)
-                          : responsiveWidth(25),
+                        quantity >= 1
+                          ? responsiveWidth(25)
+                          : responsiveWidth(17) ,
                     },
                   ]}
                 >
@@ -65,6 +67,7 @@ const ItemModifier = (props) => {
                           <Image
                             source={require("@/assets/images/icons/Fav3x.png")}
                             style={styles.favIcon}
+                            resizeMode='contain'
                           />
                         }
                       />
@@ -74,6 +77,7 @@ const ItemModifier = (props) => {
                           <Image
                             source={require("@/assets/images/icons/Notfav3x.png")}
                             style={styles.favIcon}
+                            resizeMode='contain'
                           />
                         }
                       />
@@ -86,11 +90,17 @@ const ItemModifier = (props) => {
                 </UI.Box>
               </UI.Box>
 
+
+            {
+              Description &&
               <UI.Box style={styles.foodDiscripContainer}>
+                <CbDottedLine length={50} dotSize={6} dotColor="#0000002B" />
                 <UI.Text style={styles.foodDiscripTxt}>
                   {Description ? Description : ""}
                 </UI.Text>
+                <CbDottedLine length={50} dotSize={6} dotColor="#0000002B" />
               </UI.Box>
+            }
 
               <UI.Box style={styles.modifierSubContainer}>
                 <UI.ScrollView
@@ -110,12 +120,15 @@ const ItemModifier = (props) => {
                     <CbLoader />
                   ) : (
                     <UI.Box>
-                      <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                      <UI.CbAccordionlist
-                        componentData={modifierData}
-                        screenName="Modifiers"
-                        props={props}
-                      />
+                      {
+                        categoryData?.length > 0 &&
+                        <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                          <UI.CbAccordionlist
+                            componentData={modifierData}
+                            screenName="Modifiers"
+                            props={props}
+                          /></>
+                      }
                     </UI.Box>
                   )}
                   <UI.Box>
