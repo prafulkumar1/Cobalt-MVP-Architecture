@@ -1,10 +1,11 @@
-import { Platform, StyleSheet } from "react-native";
-import { responsiveWidth,responsiveHeight } from "react-native-responsive-dimensions";
+import { isPlatformAndroid } from "@/source/constants/Matrices";
+import { StyleSheet } from "react-native";
+import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
   subContainer: {
-    marginBottom: 25,
-    width: "95%",
+    width: "94%",
+    marginVertical:responsiveHeight(1)
   },
   mealTypeTitle: {
     fontSize: 20,
@@ -77,10 +78,11 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   quantityTxt: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily:"SourceSansPro_Regular",
     paddingLeft: responsiveWidth(1.2),
-    paddingRight: responsiveWidth(0.8)
+    paddingRight: responsiveWidth(0.8),
+    paddingTop:4
   },
   container: {
     flex: 1,
@@ -156,7 +158,7 @@ export const styles = StyleSheet.create({
   accordionHeaderTxt:{color:"#5773a2",fontSize:16},
   mainContainerList:{ flexGrow: 1},
   itemCategoryLabel:{ color: "#5773a2", fontSize: 20 ,fontFamily:"SourceSansPro_Bold",paddingVertical:8},
-  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',marginTop:responsiveHeight(1),opacity:0.4 },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
   floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
   floatingBtn:{
     width: 72,
@@ -177,9 +179,8 @@ export const styles = StyleSheet.create({
   cartCountTxt:{
     position: "absolute",
     bottom: 28,
-    right: 8,
     color: "#FFFFFF",
-    fontSize: 26,
+    fontSize: responsiveFontSize(3.2),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -333,5 +334,140 @@ CheckIcon:{color:"#ffff"},
   roItemButton:{ width: 30 ,height:30},
   roReoderButton:{ top:10, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
   roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
+  selectedContainer:{
+    minHeight:responsiveHeight(30),
+    maxHeight: responsiveHeight(45),
+    backgroundColor: "white",
+    borderRadius: 10,
+  },
+  selectedLabel:{
+    marginVertical: 10,
+    fontFamily: "SourceSansPro_Italic",
+    color:"#4B5154"
+  },
+  dropdownContainer:{ 
+    minHeight:responsiveHeight(30),
+    maxHeight: responsiveHeight(45), 
+  },
+  selectedContainer: {
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+  },
+  pickerWrapper: {
+    height: 250, 
+    overflow: "hidden",
+  },
+  pickerItemWrapper: {
+    height: 50, 
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  selectedItemWrapper: {
+    borderRadius: 5,
+  },
+  scrollIndicator: {
+    fontSize: 16,
+    color: "#333",
+  },
+  selectedItem: {
+    fontWeight: "bold",
+    color: "#007bff",
+  },
+  unselectedItem: {
+    color: "#888",
+  },
+  amPm: {
+    fontSize: 12,
+    color: "#555",
+    marginTop: 5,
+  },
+  doneBtn: {
+    marginTop: 20,
+    paddingHorizontal: 52,
+    paddingVertical:6,
+    backgroundColor: "#5773A2",
+    borderRadius: 25,
+  },
+  doneTxtBtn: {
+    fontSize:21,
+    fontFamily: "SourceSansPro_SemiBold",
+    color: "#fff",
+    textAlign: "center",
+ 
+  },
+  pickerWrapper: {
+    height: 250,
+    overflow: "hidden",
+    width:"50%"
+  },
+  item: {
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
 
+  },
+  selectedText: {
+    fontSize: 16,
+    color: "#000",
+    fontFamily: "SourceSansPro_SemiBold",
+  },
+  recentOrderContainer:{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-start",
+  },
+  modifierContainer:{
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold"
+  },
+  requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
+  maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  orderSubContainer:{
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 10,
+  },
+  itemNameTxt:{
+    color: "#4B5154",
+    fontSize: 14,
+   fontFamily:"SourceSansPro_SemiBoldItalic"
+  },
+  priceMainTxt:{
+    marginLeft: "auto",
+    color: "#4B5154",
+    fontSize: 14,
+     fontFamily:"SourceSansPro_SemiBold"
+  },
+  searchBarMainContainer:{
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "95%",
+    height: "100%",
+    marginRight: 25
+  },
+  inputBox:{
+    flex: 1,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5,
+    backgroundColor: "#f0f0f0"
+  },
+  selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
+  crossIcon:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: 10,
+    alignSelf: "center",
+    opacity: 1,
+    zIndex: 1000,
+  },
 })

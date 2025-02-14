@@ -3,10 +3,8 @@ import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
-import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import { Swipeable } from 'react-native-gesture-handler';
-import { cartConfigResponseData, priceItems } from '@/source/constants/commonData';
-import { useEffect, useState } from 'react';
+import {  departments, pickupLocations, priceItems } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
@@ -19,11 +17,7 @@ export default function MyCartScreen(props) {
  let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
 
  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
- const [keyboardVisible, setKeyboardVisible] = useState(false);
- const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
 
- 
-  
    const {
      cartConfigData,
      tipData,
@@ -39,33 +33,24 @@ export default function MyCartScreen(props) {
      customTipValue,
      handleSaveTip,
      scrollViewRef,
+     finalCartData,
+     keyboardVisible,
+     handleIncrement,
+     handleDecrement,
+     editCommentBtn
    } = useMyCartLogic();
-   const {cartData, selectedTime ,updateCartItemQuantity }= useFormContext();
+   const { cartData,selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
 
-   useEffect(() => {
-    const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
-      setKeyboardVisible(true);
-    });
-    const keyboardDidHideListener = Keyboard?.addListener('keyboardDidHide', () => {
-      setKeyboardVisible(false);
-    });
 
-    setTimeout(() => {
-      const updatedShowTime = showPickupTime?.map((items) => {
-        return{
-          label:items.Time,
-          value:items.Time
-        }
-      })
-      setShowPickupTime(updatedShowTime)
-    }, 100);
-
-    return () => {
-      keyboardDidHideListener.remove();
-      keyboardDidShowListener.remove();
-    };
-  }, []);
-
+  const renderModifierList = ({ item }) => {
+    return (
+      <UI.TouchableOpacity>
+        <UI.Text style={styles.itemCategory}>
+          {item?.modifier}
+        </UI.Text>
+      </UI.TouchableOpacity>
+    );
+  }
   const renderCartItems = (item) => {
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
@@ -85,10 +70,10 @@ export default function MyCartScreen(props) {
       <UI.Pressable>
         <Swipeable
           ref={(ref) => {
-            swipeableRefs.current[`${item.Item_Id}`] = ref;
+            swipeableRefs.current[`${item.Item_ID}`] = ref;
           }}
           renderRightActions={renderRightActions}
-          onSwipeableOpen={() => handleSwipeOpen(item.Item_Id)}
+          onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
           <UI.Box
             style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
@@ -96,9 +81,11 @@ export default function MyCartScreen(props) {
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
-                <UI.Text style={styles.itemCategory}>
-                  {item.Description}
-                </UI.Text>
+
+                <UI.CbFlatList
+                  flatlistData={item.selectedModifiers}
+                  children={renderModifierList}
+                />
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>
@@ -109,15 +96,13 @@ export default function MyCartScreen(props) {
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() =>
-                      updateCartItemQuantity(item, item.quantity - 1)
-                    }
+                    onPress={() => handleDecrement(item)}
                   >
                     <Icon
                       as={item.quantity === 1 ? TrashIcon : RemoveIcon}
                       color="#5773a2"
                       size={"md"}
-                      style={{ width: 23, height: 23 }}
+                      style={styles.trashIcon}
                     />
                   </UI.TouchableOpacity>
 
@@ -125,28 +110,32 @@ export default function MyCartScreen(props) {
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
-                    onPress={() =>
-                      updateCartItemQuantity(item, item.quantity + 1)
-                    }
+                    onPress={() => handleIncrement(item)}
                   >
                     <Icon
                       as={AddIcon}
                       color="#5773a2"
                       size={"xl"}
-                      style={{ width: 25, height: 25 }}
+                      style={styles.addIcon}
                     />
                   </UI.TouchableOpacity>
                 </UI.Box>
               </UI.Box>
             </UI.Box>
-
-            <UI.Box style={styles.notesContainer}>
-              <Image
-                source={require("@/assets/images/icons/messageIcon2x.png")}
-                style={styles.noteIcon}
-              />
-              <UI.Text style={styles.itemNotes}>sdsandkkdksa</UI.Text>
-            </UI.Box>
+            {item.comments && (
+              <UI.Box style={styles.notesContainer}>
+                <UI.TouchableOpacity
+                  style={styles.commentBtn}
+                  onPress={() => editCommentBtn(props,item)} 
+                >
+                  <Image
+                    source={require("@/assets/images/icons/messageIcon2x.png")}
+                    style={styles.noteIcon}
+                  />
+                  <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+                </UI.TouchableOpacity>
+              </UI.Box>
+            )}
           </UI.Box>
         </Swipeable>
       </UI.Pressable>
@@ -236,14 +225,14 @@ export default function MyCartScreen(props) {
       </>
     )
   }
-  const departments =[{"label": "08:00 AM", "value": "08:00 AM"}, {"label": "08:30 AM", "value": "08:30 AM"}, {"label": "09:00 AM", "value": "09:00 AM"}, {"label": "09:30 AM", "value": "09:30 AM"}, {"label": "10:00 AM", "value": "10:00 AM"}, {"label": "10:30 AM", "value": "10:30 AM"}, {"label": "11:00 AM", "value": "11:00 AM"}];
+
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
         <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {cartData && cartData.length > 0 ? (
+          {cartData && cartData?.length > 0 ? (
             cartData?.map((items) => {
               return renderCartItems(items);
             })
@@ -291,14 +280,19 @@ export default function MyCartScreen(props) {
                   selectItems={departments}
                   Label={selectedTime}
                   style={styles.timeBtn}
+                  selectItemLabel={"Select Time"}
                 />
               </UI.Box>
 
               <UI.Box>
                 <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
-                <UI.TouchableOpacity style={styles.timeBtn}>
-                  <UI.Text style={styles.timeTxt}>Clubhouse Grill</UI.Text>
-                </UI.TouchableOpacity>
+                 <UI.cbSelectTime
+                  id={pageId}
+                  selectItems={pickupLocations}
+                  Label={selectedLocation}
+                  style={styles.timeBtn}
+                  selectItemLabel={"Select Place"}
+                />
               </UI.Box>
             </UI.Box>
 

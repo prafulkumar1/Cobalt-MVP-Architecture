@@ -1,5 +1,6 @@
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { isPlatformIos } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
     topContainer:{ flex: 1, padding: 10,backgroundColor:"#fff" },
@@ -16,7 +17,8 @@ export const styles = StyleSheet.create({
         fontSize:16,
         color:"#4B5154",
         lineHeight:20,
-        fontFamily:"SourceSansPro_SemiBold"
+        fontFamily:"SourceSansPro_SemiBold",
+        paddingBottom:5
       },
       itemCategory:{
         color:"#3B87C1",
@@ -113,7 +115,7 @@ export const styles = StyleSheet.create({
       },
       pickUpContainer:{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", backgroundColor: "#EFEFEF", padding: 10 },
       pickUpTimeTxt:{ textAlign: "center", fontSize: 12,fontFamily:"SourceSansPro_BoldItalic" },
-      timeBtn:{ borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 32, marginTop: 5 },
+      timeBtn:{ borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 32, marginTop: 5, },
       timeTxt:{ color: "#4B5154", fontSize: 18 ,fontFamily:"SourceSansPro_BoldItalic"},
       pickUpPointTxt:{ textAlign: "center",  fontSize: 12,fontFamily:"SourceSansPro_BoldItalic" },
       plcOrdBtn:{ width: 250, height: 45, paddingHorizontal: 25, flexDirection: "row", backgroundColor: "#5773A2", justifyContent: "space-between", alignItems: "center", alignSelf: "center", borderRadius: 23, margin: 20,zIndex:0 },
@@ -141,7 +143,7 @@ export const styles = StyleSheet.create({
     },
     bottomBtn:{
       position: 'absolute',
-      bottom:Platform.OS=="ios"?responsiveHeight(10):responsiveHeight(0),
+      bottom:isPlatformIos()?responsiveHeight(10):responsiveHeight(0),
       left: 0,
       right: 0,
       flexDirection: 'row',
@@ -166,6 +168,10 @@ export const styles = StyleSheet.create({
       fontFamily:"SourceSansPro_Regular",
       paddingLeft: responsiveWidth(1.2),
       paddingRight: responsiveWidth(0.8),
-      paddingTop:Platform.OS === "ios" && 2
+      paddingTop:isPlatformIos() ? 2 : 4
     },
+    trashIcon:{ width: 23, height: 23 },
+    addIcon:{ width: 25, height: 25 },
+    commentBtn:{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" },
+    
   }); 

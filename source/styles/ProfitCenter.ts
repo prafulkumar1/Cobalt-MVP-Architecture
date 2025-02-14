@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
     scrollContent: {
@@ -38,7 +38,9 @@ export const styles = StyleSheet.create({
         right: 11,
         justifyContent: "center",
         alignItems: "center",
-        alignSelf:"center"
+        alignSelf:"center",
+        width: responsiveWidth(22),
+        height: responsiveHeight(3),
     },
     available: {
         backgroundColor: "#00B253",
@@ -47,12 +49,15 @@ export const styles = StyleSheet.create({
         backgroundColor: "#DF2727",
     },
     statusText: {
-        fontSize: 12,
+        fontSize: responsiveFontSize(1.8),
         color: "#FFF",
         textAlign: "center",
-        width: responsiveWidth(20),
-        height: responsiveHeight(2.5),
         fontFamily:"SourceSansPro_Regular"
     },
-    blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute"}
+    blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute"},
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
 });

@@ -25,5 +25,12 @@ export const endpoints = {
     },
     PROFIT_CENTER: {
         GET_PROFIT_CENTERS: "MobileOrdering/MO_GetProfitCenters"
+    },
+    MENU_ORDER:{
+        GET_MENU_ORDER_LIST:"MobileOrdering/MO_GetMenuItems",
+        GET_MENU_ORDER_STATUS:"MobileOrdering/MO_GetItemStatus"
+    },
+    ITEM_MODIFIERS:{
+        GET_ITEM_MODIFIERS:"MobileOrdering/MO_GetItemModifiers"
     }
 }
