@@ -378,6 +378,13 @@ export const RecentordersData={
             "OrderStatus":"Preparing your order",
             "Pickup_Time":"7:00 PM",
             "Pickup_Location":"Clubhouse Grill",
+            "SubTotal":171.00,
+            "ServiceCharge":17.10,
+            "FoodTax":4.40,
+            "StateTax":4.50,
+            "Total":197.00,
+            "Tip":10.00,
+            "GrandTotal":207.00,
             "Items":[
                       { 
                         "ItemName": "Fish and Chips",
@@ -387,6 +394,52 @@ export const RecentordersData={
                         "IsAvailable": 1,
                         "IsFavorite":0,
                         "comment":"This is the comment give by the user while ordering.",
+                        
+                    },
+                    { 
+                      "ItemName": "Chicken Satay Skewers",
+                      "ItemId": "I302",
+                      "Quantity": 1,
+                      "Price": 25.00,
+                      "IsAvailable": 1,
+                      "IsFavorite":0,
+                      "comment":"This is the comment give by the user while ordering.",
+                      "Modifiers":[
+                        {
+                          "ItemId": "I301",
+                          "ItemName": "Peanut sauce or sweet soy glaze",             
+                        },
+                        {
+                            "ItemId": "I301",
+                          "ItemName": "Peanut sauce or sweet soy glaze",
+                        },
+                        {
+                              "ItemId": "I301",
+                          "ItemName": "Peanut sauce or sweet soy glaze",
+                        },
+                      ]
+                    },
+                    { 
+                        "ItemName": "Chicken patties",
+                        "ItemId": "I303",
+                        "Quantity": 1,
+                        "Price": 25.00,
+                        "IsAvailable": 1,
+                        "IsFavorite":0,
+                        "Modifiers":[
+                          {
+                            "ItemId": "I301",
+                            "ItemName": "Peanut sauce or sweet soy glaze",             
+                          },
+                        ]
+                    },
+                    { 
+                          "ItemName": "Coconut Shrimp",
+                          "ItemId": "I304",
+                          "Quantity": 1,
+                          "Price": 25.00,
+                        "IsAvailable": 1,
+                        "IsFavorite":0,
                         "Modifiers":[
                           {
                             "ItemId": "I301",
@@ -400,78 +453,10 @@ export const RecentordersData={
                                 "ItemId": "I301",
                             "ItemName": "Peanut sauce or sweet soy glaze",
                           },
-                        ]
+                        ]               
                     },
-           { 
-            "ItemName": "Chicken Satay Skewers",
-            "ItemId": "I302",
-            "Quantity": 1,
-            "Price": 25.00,
-            "IsAvailable": 1,
-            "IsFavorite":0,
-            "comment":"This is the comment give by the user while ordering.",
-            "Modifiers":[
-              {
-                "ItemId": "I301",
-                "ItemName": "Peanut sauce or sweet soy glaze",             
-              },
-              {
-                  "ItemId": "I301",
-                "ItemName": "Peanut sauce or sweet soy glaze",
-              },
-              {
-                    "ItemId": "I301",
-                "ItemName": "Peanut sauce or sweet soy glaze",
-              },
-            ]
-           },
-           { 
-              "ItemName": "Chicken patties",
-              "ItemId": "I303",
-              "Quantity": 1,
-              "Price": 25.00,
-              "IsAvailable": 1,
-              "IsFavorite":0,
-              "comment":"This is the comment give by the user while ordering.",
-              "Modifiers":[
-                {
-                  "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",             
-                },
-                {
-                    "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",
-                },
-                {
-                      "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",
-                },
-              ]
-           },
-           { 
-                "ItemName": "Coconut Shrimp",
-                "ItemId": "I304",
-                "Quantity": 1,
-                "Price": 25.00,
-              "IsAvailable": 1,
-              "IsFavorite":0,
-              "comment":"This is the comment give by the user while ordering.",
-              "Modifiers":[
-                {
-                  "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",             
-                },
-                {
-                    "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",
-                },
-                {
-                      "ItemId": "I301",
-                  "ItemName": "Peanut sauce or sweet soy glaze",
-                },
-              ]               
-           },
-        ]
+                  ]
+                 
       }
     ],
       "CompletedOrders":[

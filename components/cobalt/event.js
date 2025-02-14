@@ -2,6 +2,7 @@ import { foodOrderData,ModifiersData } from '@/source/constants/commonData';
 import { useEffect, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { postApiCall } from '@/source/utlis/api';
 
 export const FormContext = createContext(); 
 
@@ -10,6 +11,11 @@ export const useFormContext = () => {
   };
 
 export const UseFormContextProvider = ({children}) => {
+
+    // Wait for the API response before using global variables
+    const [AppConfigJson , setAppConfigJsonData] = useState(null);
+
+  
     
     const [formData, setFormData] = useState({});
     const [menuOrderData,setMenuOrderData] = useState(foodOrderData)
@@ -31,6 +37,21 @@ export const UseFormContextProvider = ({children}) => {
     //     },
     //    });
     //  };
+    useEffect(() => {
+      getConfigurations();
+    }, []);
+
+       
+    const getConfigurations = async () => {
+      let AppConfigJsonData = await postApiCall("UI_CONFIGURATIONS", "GET_UI_CONFIGURATIONS", {});
+      if (AppConfigJsonData.statusCode === 200) {
+        setAppConfigJsonData(AppConfigJsonData?.response?.Data);
+      }    
+    };
+
+    const getParticularControls = (PageId) =>{
+    }
+  
     const setFormFieldData = (formId, controlType, controlId, controlValue, isInvalid) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -307,7 +328,9 @@ export const UseFormContextProvider = ({children}) => {
       calculateTotalPrice,
       modifierCart,
       selectedTime,
-      setSelectedTime
+      setSelectedTime,
+      AppConfigJson,
+      getParticularControls
     }
     return (
       <FormContext.Provider
