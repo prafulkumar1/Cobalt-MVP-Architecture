@@ -309,8 +309,6 @@ export const foodOrderData =
 }
 
 export const newData = [
-  //---------
-
   {
     "MealPeriod_Name": "Lunch",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C3",
@@ -324,7 +322,7 @@ export const newData = [
     "SubMenu_Name": "American one",
     "Item_ID": "669F81D3-8D63-473F-8516-9E1FF6617A51",
     "Item_Name": "JUICE 1",
-    "Description": "thid djnfks dsnfkldsn sdfnklsdn dsnfsdklf dsfnkldsn dsnflkdsf",
+    "Description": "thid djnfks dsnfkldsn sdfnklsdn dsnfsdklf dsfnkldsn dsnflkdsfsskkssss",
     "Price": 15.00,
     "ImageUrl": "https://img.freepik.com/free-photo/view-delicious-dish-food_23-2150777711.jpg?ga=GA1.1.178402553.1739770854&semt=ais_authors_boost",
     "IsAvailable": 0,
@@ -419,7 +417,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American cool",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC7494949",
     "Item_Name": "Chocolate Chip Cookie Skillet 2",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -438,7 +436,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American number 1",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC7585JD8",
     "Item_Name": "Chocolate Chip Cookie Skillet 3",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -457,7 +455,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American assad",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-JD393JD",
     "Item_Name": "3 Chocolate Chip Cookie Skillet",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -476,7 +474,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American Classics",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-JDNNJN4848393",
     "Item_Name": "2 Chocolate Chip Cookie Skillet",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -484,8 +482,6 @@ export const newData = [
     "IsAvailable": 1,
     "IsDisable": 0
   },
-  // --------------
-
   {
     "MealPeriod_Name": "Lunch",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C3",
@@ -497,7 +493,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American 6",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9E493749",
     "Item_Name": "2 Chocolate Chip Cookie Skillet",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -505,7 +501,6 @@ export const newData = [
     "IsAvailable": 1,
     "IsDisable": 0
   },
-
   {
     "MealPeriod_Name": "Lunch",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C3",
@@ -517,7 +512,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American 0",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-495303804804",
     "Item_Name": "2 Chocolate Chip Cookie Skillet",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -525,8 +520,6 @@ export const newData = [
     "IsAvailable": 1,
     "IsDisable": 0
   },
-
-
   {
     "MealPeriod_Name": "Lunch",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C3",
@@ -538,7 +531,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American supe",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-040042783783",
     "Item_Name": "Last 1111",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -546,8 +539,6 @@ export const newData = [
     "IsAvailable": 1,
     "IsDisable": 0
   },
-
-
   {
     "MealPeriod_Name": "Lunch",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C3",
@@ -559,7 +550,7 @@ export const newData = [
     "CategoryIsSelect": 0,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644884",
     "SubMenu_Name": "American sgsg",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB-92393493894893JDJDBJ",
     "Item_Name": "Last Ca 5 ttttttt",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,
@@ -567,9 +558,6 @@ export const newData = [
     "IsAvailable": 1,
     "IsDisable": 0
   },
-
-
-////-------
   {
     "MealPeriod_Name": "Dinner",
     "MealPeriod_Id": "65AD2721-6B6C-4590-BEAE-4BEDD46282C6",
@@ -581,7 +569,7 @@ export const newData = [
     "CategoryIsSelect": 1,
     "SubMenu_ID": "0CC3242A-A9A4-422E-AEE9-1C4A49644810",
     "SubMenu_Name": "American Classics 2",
-    "Item_ID": "34677E60-E65D-42DD-85EB-E6BE9EC74592",
+    "Item_ID": "34677E60-E65D-42DD-85EB484848NDNDKD30303",
     "Item_Name": "1 Chocolate Chip Cookie Skillet",
     "Description": "Warm cookie with ice cream.",
     "Price": 15.00,

@@ -4,131 +4,176 @@ import { horizontalScale, isPlatformAndroid } from "../constants/Matrices";
 const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
-    mainHeaderContainer:{ display: "flex", flexDirection: "row" },
-    recentOrderContainer:{ flexDirection: "row", justifyContent: "space-between", marginLeft: 4, borderBottom: 1, backgroundColor: "#fff", height: 40, alignItems: "center", },
-    mealTypeContainer:{flexDirection:"row",justifyContent:"flex-start",alignItems:"center"},
-    mainContainer:{flex:1,backgroundColor:"#ECECEC"},
-    scrollContent: {
-      paddingTop:responsiveHeight(0.2),
-      paddingBottom:isPlatformAndroid() && responsiveHeight(10)
-    },
-    categoryText: {
-      padding:2,
-      fontSize: 18,
-      color: "#4B5154",
-      fontFamily:"SourceSansPro_Bold"
-    },
-    mealTypeLabel: {
-      fontSize: 18,
-      fontFamily:"SourceSansPro_Bold"
-    },
-    bottomStyle: {
-      width: "100%",
-      borderRadius: 4,
-      borderWidth: 3,
-      borderColor: "#00c6ff",
-      marginTop:5,
-      position:"absolute",
-      bottom:5
-    },
-    categoryBtn: {
-      flex: 1,
-      cursor: "pointer",
-      marginRight:responsiveWidth(6)
-    },
-    activeMenuType: {
-      justifyContent: "center",
-      alignItems: "center",
-      alignSelf: "center",
-      width: responsiveWidth(30),
-      marginHorizontal:5,
-      paddingVertical:responsiveHeight(0.5)
-    },
-    inactiveMenuType: {
-      backgroundColor: "#ECECEC",
-      justifyContent: "center",
-      alignItems: "center",
-      alignSelf: "center",
-      width: responsiveWidth(30),
-      borderRadius: 5,
-      opacity: 0.8,
-      marginHorizontal:5,
-      paddingVertical:responsiveHeight(0.5)
-    },
-    timeDurationTxt: {
-      fontSize: 10,
-      marginTop: -5,
-      fontFamily:"SourceSansPro_SemiBoldItalic"
-    },
-    topContainer: {
-      flexDirection: "row",
-      paddingVertical: 10,
-      width:"100%",
-      justifyContent:"flex-start",
-      alignItems:"center",
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation:1,
-      backgroundColor:"#fff",
-      marginBottom:4,
-      paddingHorizontal:10
-    },
-    categoryListContainer: {
-      height: isPlatformAndroid() ?responsiveHeight(5):width*0.111,
-      paddingTop:responsiveHeight(1.2),
-      paddingHorizontal:responsiveWidth(1.5)
-    },
-    subCategoryContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      width: "100%",
-      alignSelf: "center",
-      paddingHorizontal:10,
-    },
-    forwardIcon:{marginLeft:10},
-    backWardIcon:{marginRight:10},
-    emptyListContainer:{
-      justifyContent:"center",
-      alignItems:"center",
-      alignSelf:"center",
-      height:responsiveHeight(10)
-    },
-    emptyMealTxt:{
-      fontFamily:"SourceSansPro_SemiBoldItalic",
-      alignSelf:"center",
-      marginTop:responsiveHeight(3)
-    },
-    categoryItem:{textAlign:"center",width:"100%"},
-    mainBoxContainer: {backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
-    recentOrderTxt: { fontSize: 18, fontFamily:"SourceSansPro_SemiBold", lineHeight: 20, marginLeft: 8 },
-    rightIconBtn: { right: 20 },
-    recentOrderBox: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginLeft: 10 },
-    recentOrderImage:{width: 120, height: 60, borderRadius: 10},
-    recentOrderName:{fontSize: 12, color: "#4B5154", width: 85,fontFamily:"SourceSansPro_Regular"},
-    seeAllRecentOrders:{fontSize: 16, color: "#26BAE2", width: "100%", textAlign: "center",  paddingVertical: 11,fontFamily:"SourceSansPro_SemiBoldItalic"},
-  recentContainer:{paddingLeft: 8, backgroundColor: "#FFFFFF",paddingTop:10},
-  recentMainList:{ flexDirection: "row", justifyContent: "space-between", paddingTop: 5 },
-  addItemToCartBtn:{
-    width:20,
-    height:20,
-    borderWidth:1,
-    borderColor:"#5773A2",
-    borderRadius:5,
-    justifyContent:"center",
-    alignItems:"center"
+  mainHeaderContainer: { display: "flex", flexDirection: "row" },
+  recentOrderContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginLeft: 4,
+    borderBottom: 1,
+    backgroundColor: "#fff",
+    height: 40,
+    alignItems: "center",
   },
-  recentOrderIcon:{width:20,height:20,resizeMode:"contain"},
+  mealTypeContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  mainContainer: { flex: 1, backgroundColor: "#ECECEC" },
+  scrollContent: {
+    paddingTop: responsiveHeight(0.2),
+    paddingBottom: isPlatformAndroid() && responsiveHeight(10),
+  },
+  categoryText: {
+    fontSize: 18,
+    color: "#4B5154",
+    fontFamily: "SourceSansPro_Bold",
+  },
+  mealTypeLabel: {
+    fontSize: 18,
+    fontFamily: "SourceSansPro_Bold",
+  },
+  bottomStyle: {
+    width: "100%",
+    borderRadius: 4,
+    borderWidth: 3,
+    borderColor: "#00c6ff",
+    marginTop: 5,
+    position: "absolute",
+    bottom: -15,
+    zIndex:1
+  },
+  categoryBtn: {
+    marginRight: responsiveWidth(6),
+    zIndex:-1
+  },
+  activeMenuType: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    width: responsiveWidth(30),
+    marginHorizontal: 5,
+    paddingVertical: responsiveHeight(0.5),
+  },
+  inactiveMenuType: {
+    backgroundColor: "#ECECEC",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    width: responsiveWidth(30),
+    borderRadius: 5,
+    opacity: 0.8,
+    marginHorizontal: 5,
+    paddingVertical: responsiveHeight(0.5),
+  },
+  timeDurationTxt: {
+    fontSize: 10,
+    marginTop: -5,
+    fontFamily: "SourceSansPro_SemiBoldItalic",
+  },
+  topContainer: {
+    flexDirection: "row",
+    paddingVertical: 10,
+    width: "100%",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 1,
+    backgroundColor: "#fff",
+    marginBottom: 4,
+    paddingHorizontal: 10,
+  },
+  categoryListContainer: {
+    height: isPlatformAndroid() ? responsiveHeight(5) : width * 0.105,
+    paddingTop: responsiveHeight(1.2),
+    paddingHorizontal: responsiveWidth(2),
+    width: "100%",
+    borderBottomWidth:1.5,
+    borderColor:"#F4F6FB",
+    marginBottom:responsiveHeight(1)
+  },
+  subCategoryContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    alignSelf: "center",
+    paddingHorizontal: 10,
+  },
+  forwardIcon: { marginLeft: 10 },
+  backWardIcon: { marginRight: 10 },
+  emptyListContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    height: responsiveHeight(10),
+  },
+  emptyMealTxt: {
+    fontFamily: "SourceSansPro_SemiBoldItalic",
+    alignSelf: "center",
+    marginTop: responsiveHeight(3),
+  },
+  categoryItem: { textAlign: "center", width: "100%" },
+  mainBoxContainer: { backgroundColor: "#fff" },
+  recentOrderTxt: {
+    fontSize: 18,
+    fontFamily: "SourceSansPro_SemiBold",
+    lineHeight: 20,
+    marginLeft: 8,
+  },
+  rightIconBtn: { right: 20 },
+  recentOrderBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  recentOrderImage: { width: 120, height: 60, borderRadius: 10 },
+  recentOrderName: {
+    fontSize: 12,
+    color: "#4B5154",
+    width: 85,
+    fontFamily: "SourceSansPro_Regular",
+  },
+  seeAllRecentOrders: {
+    fontSize: 16,
+    color: "#26BAE2",
+    width: "100%",
+    textAlign: "center",
+    paddingVertical: 11,
+    fontFamily: "SourceSansPro_SemiBoldItalic",
+  },
+  recentContainer: {
+    paddingLeft: 8,
+    backgroundColor: "#FFFFFF",
+    paddingTop: 10,
+  },
+  recentMainList: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 5,
+  },
+  addItemToCartBtn: {
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: "#5773A2",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  recentOrderIcon: { width: 20, height: 20, resizeMode: "contain" },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   subContainer: {
     width: "94%",
-    marginVertical:responsiveHeight(1),
-    backgroundColor:"#fff",
+    marginVertical: responsiveHeight(1),
+    backgroundColor: "#fff",
   },
   rowContainer: {
     flexDirection: "row",
@@ -141,28 +186,28 @@ export const styles = StyleSheet.create({
   mealTypeTitle: {
     fontSize: 20,
     lineHeight: 20,
-    fontFamily:"SourceSansPro_SemiBold",
-    width:responsiveWidth(45),
-    color:"#4B5154"
+    fontFamily: "SourceSansPro_SemiBold",
+    width: responsiveWidth(45),
+    color: "#4B5154",
   },
   priceTxt: {
     fontSize: 18,
     lineHeight: 20,
     marginVertical: 1.5,
-    fontFamily:"SourceSansPro_SemiBold",
-    color:"#4B5154"
+    fontFamily: "SourceSansPro_SemiBold",
+    color: "#4B5154",
   },
   descriptionTxt: {
     fontSize: 12,
     lineHeight: 16,
-    color: '#6D6D6D',
-    fontFamily:"SourceSansPro_SemiBold",
-    width:responsiveWidth(40),
+    color: "#6D6D6D",
+    fontFamily: "SourceSansPro_SemiBold",
+    width: responsiveWidth(40),
   },
   underLineTxt: {
-    color: '#00C6FF',
+    color: "#00C6FF",
     fontSize: 12,
-    fontFamily:"SourceSansPro_SemiBoldItalic"
+    fontFamily: "SourceSansPro_SemiBoldItalic",
   },
   mealTypeImg: {
     width: responsiveWidth(30),
@@ -170,26 +215,44 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     resizeMode: "cover",
   },
-  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
-  itemCategoryLabel:{ color: "#5773a2", fontSize: responsiveFontSize(2.2) ,fontFamily:"SourceSansPro_SemiBold",paddingVertical:8},
-  cardMainContainer:{
-     backgroundColor:"#fff",
-     flexDirection:"row",
-     justifyContent:"space-between",
-     alignItems:"center",
-     paddingVertical:responsiveHeight(1),
-     marginTop:10
+  horizontalLine: {
+    height: 1,
+    width: "100%",
+    borderRadius: 1,
+    borderWidth: 1,
+    borderColor: "#9F9F9F",
+    borderStyle: "dotted",
+    opacity: 0.4,
+    marginTop: responsiveHeight(2),
   },
-  bottomMiddleContainer:{ marginBottom: 200, marginTop: 10,marginHorizontal:responsiveWidth(1.5),backgroundColor:"#F4F6FB" },
+  itemCategoryLabel: {
+    color: "#5773a2",
+    fontSize: responsiveFontSize(2.5),
+    fontFamily: "SourceSansPro_SemiBold",
+    paddingVertical: 8,
+  },
+  cardMainContainer: {
+    backgroundColor: "#fff",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: responsiveHeight(1.5),
+    marginTop: 10,
+  },
+  bottomMiddleContainer: {
+    marginTop: 10,
+    marginHorizontal: responsiveWidth(2),
+    backgroundColor: "#F4F6FB",
+  },
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
   icon: {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
   },
-  crossIcon:{
+  crossIcon: {
     width: 30,
     height: 30,
     borderRadius: 15,
@@ -197,12 +260,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    top:isPlatformAndroid()?horizontalScale(60):horizontalScale(40),
+    top: horizontalScale(60),
     alignSelf: "center",
     opacity: 1,
     zIndex: 1000,
   },
-  blackShadow:{
+  blackShadow: {
     flex: 1,
     position: "absolute",
     backgroundColor: "#000000",
@@ -216,9 +279,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 6,
     elevation: 10,
-    zIndex:-1
+    zIndex: -1,
   },
-  footerContainer:{
+  footerContainer: {
     backgroundColor: "#fff",
     width: "100%",
     height: 80,
@@ -232,17 +295,30 @@ export const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#ccc",
     paddingHorizontal: 20,
-},
-totalAmountTxt:{ fontSize: 12, color: "#4B5154", fontFamily:"SourceSansPro_Italic" },
-orderAmount:{ fontSize: 24, color: "#4B5154", paddingVertical: 8,fontFamily:"SourceSansPro_SemiBold" },
-addToCartBtn:{
-  backgroundColor: "#5773a2",
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 20,
-  justifyContent: 'center',
-  alignItems: 'center'
-},
-addCartTxt:{ color: "#fff", fontSize: 22,fontFamily:"SourceSansPro_SemiBold", textAlign: 'center' },
-
-  });
+  },
+  totalAmountTxt: {
+    fontSize: 12,
+    color: "#4B5154",
+    fontFamily: "SourceSansPro_Italic",
+  },
+  orderAmount: {
+    fontSize: 24,
+    color: "#4B5154",
+    paddingVertical: 8,
+    fontFamily: "SourceSansPro_SemiBold",
+  },
+  addToCartBtn: {
+    backgroundColor: "#5773a2",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addCartTxt: {
+    color: "#fff",
+    fontSize: 22,
+    fontFamily: "SourceSansPro_SemiBold",
+    textAlign: "center",
+  },
+});

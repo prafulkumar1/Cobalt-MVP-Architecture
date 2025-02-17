@@ -14,6 +14,7 @@ import {  useRef, useState } from "react";
 import { Image as ExpoImage } from 'expo-image';
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
+import { responsiveHeight } from "react-native-responsive-dimensions";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -32,7 +33,20 @@ export default function MenuOrderScreen(props) {
 
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
-  const {menuLoading, menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData ,closePreviewModal,storeSingleItem,itemDataVisible} = useFormContext();
+  const {
+      setMealType, 
+      isCategoryEmpty, 
+      isSearchActive, 
+      handleChangeState,
+      cartData,
+      addedModifierCartData ,
+      closePreviewModal,
+      storeSingleItem,
+      itemDataVisible,
+      addItemToModifierForCart,
+      commentValue,
+      setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails
+    } = useFormContext();
 
   const { isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
   const categoryRefs = useRef({});
@@ -162,6 +176,18 @@ export default function MenuOrderScreen(props) {
     };
 
 
+  const handleCloseItemDetails = () => {
+    if (selectedModifiers.length === 0) {
+        setIsVisible(false)
+        updateModifierItemQuantity(singleItemDetails, 0)
+        setTimeout(() => {
+            closePreviewModal()
+        }, 100)
+    } else {
+        setIsVisible(true)
+    }
+}
+
 
     const showActiveAvailableColor = (isAvailable,IsDisable) => {
       return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
@@ -214,6 +240,7 @@ export default function MenuOrderScreen(props) {
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          contentContainerStyle={{paddingBottom:responsiveHeight(40)}}
         >
           {selectedCategory.map((category) => {
             return (
@@ -295,7 +322,7 @@ export default function MenuOrderScreen(props) {
                                     </UI.Text>
                                     <UI.Text
                                       numberOfLines={
-                                        isExpanded ? undefined : 1
+                                        isExpanded ? undefined : 2
                                       }
                                       style={[
                                         styles.descriptionTxt,
@@ -311,7 +338,7 @@ export default function MenuOrderScreen(props) {
                                     >
                                       {box?.Description}
                                     </UI.Text>
-                                    {box?.Description?.length > 35 && (
+                                    {box?.Description?.length > 68 && (
                                       <UI.Text
                                         onPress={() =>
                                           handleReadMoreToggle(
@@ -374,7 +401,7 @@ export default function MenuOrderScreen(props) {
           onRequestClose={closePreviewModal}
         >
           <UI.TouchableOpacity
-            // onPress={() => this.handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
+            onPress={() => handleCloseItemDetails()}
             style={styles.crossIcon}
           >
             <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
@@ -393,14 +420,13 @@ export default function MenuOrderScreen(props) {
               showBtnName={"Add to Cart"}
               style={styles.addToCartBtn}
               btnTextStyle={styles.addCartTxt}
-            // onPress={() => {
-            //   navigateToScreen(this.props, "MyCart", true);
-            //   addItemToModifierForCart(singleItemDetails);
-            //   closePreviewModal();
-            //   setTimeout(() => {
-            //     commentValue.current = "";
-            //   }, 1000);
-            // }}
+            onPress={() => {
+              addItemToModifierForCart(singleItemDetails);
+              closePreviewModal();
+              setTimeout(() => {
+                commentValue.current = "";
+              }, 1000);
+            }}
             />
           </UI.Box>
         </Modal>

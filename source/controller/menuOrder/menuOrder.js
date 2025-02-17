@@ -26,6 +26,7 @@ export const useMenuOrderLogic = (props) => {
     }
 
     useEffect(() => {
+      setLoading(true)
       const uniqueMealPeriods = mealPeriods
         .filter((item) => item.MealPeriod_Id && item.MealPeriod_Name)
         .reduce((acc, current) => {
@@ -91,6 +92,9 @@ export const useMenuOrderLogic = (props) => {
       }, []);
       
       setSelectedCategory(groupedCategories)
+      setTimeout(() => {
+        setLoading(false)
+      }, 1000);
     }, []);
 
     useEffect(() => {
@@ -101,7 +105,7 @@ export const useMenuOrderLogic = (props) => {
   
     
       const getMenuOrderList = async () => {
-        setLoading(true)
+        // setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
@@ -116,7 +120,7 @@ export const useMenuOrderLogic = (props) => {
           setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
         }else{
           setMenuOrderData(menuOrderResponseData.response)
-          setLoading(false)
+          // setLoading(false)
         }
       }
       const handleCategorySelect = (categoryName) => {
