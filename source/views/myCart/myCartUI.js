@@ -37,7 +37,7 @@ export default function MyCartScreen(props) {
      keyboardVisible,
      handleIncrement,
      handleDecrement,
-     editCommentBtn
+     editCommentBtn,
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
 
@@ -75,8 +75,15 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
-          <UI.Box
-            style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
+          <UI.TouchableOpacity
+            style={styles.cardContainer}
+            onPress={() => {
+              navigateToScreen(props, "MenuOrder", true, {});
+              storeSingleItem(item)
+              setTimeout(() => {
+                closePreviewModal();
+              }, 100);
+            }}
           >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
@@ -136,7 +143,7 @@ export default function MyCartScreen(props) {
                 </UI.TouchableOpacity>
               </UI.Box>
             )}
-          </UI.Box>
+          </UI.TouchableOpacity>
         </Swipeable>
       </UI.Pressable>
     );

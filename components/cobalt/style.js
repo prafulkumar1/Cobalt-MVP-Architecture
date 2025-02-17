@@ -289,7 +289,7 @@ export const styles = StyleSheet.create({
     elevation: 10,
     zIndex:-1
   },
-  modiferItems:{flex:1},
+  modiferItems:{height:"85%",width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
   footerContainer:{
     backgroundColor: "#fff",
     width: "100%",
