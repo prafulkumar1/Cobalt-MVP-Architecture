@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
     favIcon:{width:"100%",height:"100%"},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
-    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(5.5)},
+    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(12)},
     diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
     discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
     modifierSubContainer:{ paddingVertical: 15 },

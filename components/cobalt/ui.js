@@ -193,7 +193,7 @@ class CbAccordionlist extends React.Component {
                     </AccordionHeader>
                     <AccordionContent>
                       {this.screenName == "RecentOrders"
-                        ? order.Items.map((item) => (
+                        ? order.Items?.map((item) => (
                             <Box>
                               <Box style={styles.roAccordionContentouterbox}>
                                 <Box style={styles.roAccordionContentItembox}>
@@ -399,7 +399,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-              <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -569,10 +569,11 @@ class CbAccordion extends React.Component {
   handleReadMoreToggle = (id) => {
     this.setState((prevState) => {
       const isExpanded = prevState.expandedIds.includes(id);
+      const newExpandedIds = isExpanded
+        ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
+        : [...prevState.expandedIds, id];
       return {
-        expandedIds: isExpanded
-          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
-          : [...prevState.expandedIds, id],
+        expandedIds: newExpandedIds,
       };
     });
   };
@@ -626,7 +627,7 @@ class CbAccordion extends React.Component {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          const modifierCartItem = modifierCartItemData?.find((item) => item.Item_Id === singleItemDetails?.Item_Id);
+          const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
           const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
@@ -698,21 +699,26 @@ class CbAccordion extends React.Component {
                                   let box = item;
                                   const lastItem =
                                     index === subMenuList.Items?.length - 1;
-                                  const isExpanded = expandedIds.includes(
-                                    box?.Item_ID
-                                  );
+                                  const isExpanded = this.state.expandedIds.includes(box?.Item_ID);
+
                                   return (
                                     <TouchableOpacity
                                       activeOpacity={0.5}
-                                      disabled={box.IsAvailable!==1}
-                                      onPress={() => this.openItemDetails(box,closePreviewModal,storeSingleItem)}
+                                      disabled={box.IsAvailable !== 1}
+                                      onPress={() =>
+                                        this.openItemDetails(
+                                          box,
+                                          closePreviewModal,
+                                          storeSingleItem
+                                        )
+                                      }
                                       key={box?.Item_ID}
                                       style={[
                                         styles.subContainer,
                                         {
                                           opacity:
                                             box?.IsAvailable === 1 &&
-                                              box?.IsDisable === 0
+                                            box?.IsDisable === 0
                                               ? 1
                                               : 0.8,
                                         },
@@ -749,17 +755,19 @@ class CbAccordion extends React.Component {
                                               ),
                                             ]}
                                           >
-                                            {`$${box?.Price != null ? box?.Price : 0
-                                              }`}
+                                            {`$${
+                                              box?.Price != null
+                                                ? box?.Price
+                                                : 0
+                                            }`}
                                           </AccordionContentText>
                                           <AccordionContentText
                                             numberOfLines={
                                               isExpanded ? undefined : 1
                                             }
                                             style={[
-                                              itemDescription?.styles
-                                                ? itemDescription?.styles
-                                                : styles.descriptionTxt,
+                                              itemDescription?.styles ||
+                                                styles.descriptionTxt,
                                               this.showActiveAvailableColor(
                                                 box.IsAvailable,
                                                 box.IsDisable
@@ -771,12 +779,12 @@ class CbAccordion extends React.Component {
                                             ]}
                                           >
                                             {box?.Description}
-                                          </AccordionContentText>
+                                          </AccordionContentText>                      
                                           {box?.Description?.length > 35 && (
                                             <AccordionContentText
                                               onPress={() =>
                                                 this.handleReadMoreToggle(
-                                                  box.Item_Id
+                                                  box.Item_ID
                                                 )
                                               }
                                               style={styles.underLineTxt}
@@ -800,9 +808,10 @@ class CbAccordion extends React.Component {
                                               source={{ uri: box.ImageUrl }}
                                               style={[
                                                 styles.mealTypeImg,
-                                                box.IsAvailable === 0 && box.IsDisable ===1 && {
-                                                  opacity: 0.4,
-                                                },
+                                                box.IsAvailable === 0 &&
+                                                  box.IsDisable === 1 && {
+                                                    opacity: 0.4,
+                                                  },
                                               ]}
                                             />
                                           </Box>
@@ -840,7 +849,7 @@ class CbAccordion extends React.Component {
                   <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
 
                 </TouchableOpacity>
-                <ScrollView style={styles.modiferItems}>
+                <ScrollView style={styles.modiferItems} bounces={false}>
                   <Box style={styles.blackShadow} />
                   <ItemModifier />
                 </ScrollView>
