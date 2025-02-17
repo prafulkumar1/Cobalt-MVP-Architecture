@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 
 const jsonData = [
-    { MealPeriod_Name: "Breakfast", MealPeriod_Id: "MP102", IsEnabled: 1, Time: "06:00 AM - 10:30 AM" },
+    { MealPeriod_Name: "Breakfast", MealPeriod_Id: "MP102", IsEnabled: 0, Time: "06:00 AM - 10:30 AM" },
     { MealPeriod_Name: "Lunch", MealPeriod_Id: "MP101", IsEnabled: 1, Time: "12:00 PM - 04:30 PM" },
     { MealPeriod_Name: "Dinner", MealPeriod_Id: "MP103", IsEnabled: 1, Time: "05:00 PM - 09:30 PM" },
     {
         MealPeriod_Name: "Lunch", MealPeriod_Id: "MP101",
+        IsEnabled: 1, Time: "06:00 AM - 10:30 AM",
         Category_Name: "Appetizers", Category_Id: "C201",
         Submenu_Name: "Hot", Submenu_Id: "SM301",
         Item_Name: "Seared Salmon Salad", Item_Id: "I301",
@@ -15,6 +16,7 @@ const jsonData = [
     },
     {
         MealPeriod_Name: "Lunch", MealPeriod_Id: "MP101",
+        IsEnabled: 1, Time: "06:00 AM - 10:30 AM",
         Category_Name: "Appetizers", Category_Id: "C201",
         Submenu_Name: "Hot", Submenu_Id: "SM301",
         Item_Name: "Seared Salmon Salad", Item_Id: "I301",
@@ -267,6 +269,7 @@ export default function MenuItems() {
     useEffect(() => {
         const uniqueMealPeriods = [...new Set(jsonData.filter(item => item.MealPeriod_Id).map(item => item.MealPeriod_Name))];
         setMealPeriods(uniqueMealPeriods);
+        console.log(uniqueMealPeriods,"---<<<<1")
         setSelectedMealPeriod(uniqueMealPeriods[0]);
     }, []);
 

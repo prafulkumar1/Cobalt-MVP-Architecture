@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
       borderColor: "#00c6ff",
       marginTop:5,
       position:"absolute",
-      bottom:0
+      bottom:5
     },
     categoryBtn: {
       flex: 1,
@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
       marginTop:responsiveHeight(3)
     },
     categoryItem:{textAlign:"center",width:"100%"},
-    mainBoxContainer: { flex: 1, backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
+    mainBoxContainer: {backgroundColor: "#fff", paddingBottom: responsiveHeight(6) },
     recentOrderTxt: { fontSize: 18, fontFamily:"SourceSansPro_SemiBold", lineHeight: 20, marginLeft: 8 },
     rightIconBtn: { right: 20 },
     recentOrderBox: { flexDirection: "row", alignItems: "center", justifyContent: "center", marginLeft: 10 },

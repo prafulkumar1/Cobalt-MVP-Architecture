@@ -10,6 +10,7 @@ import { RecentOrderData } from "@/source/constants/commonData";
 import {ChevronRightIcon,ChevronDownIcon } from '@/components/ui/icon';
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
+import {  useRef } from "react";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -30,7 +31,8 @@ export default function MenuOrderScreen(props) {
 
   const {menuLoading, menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
-  const { isRecentOrderOpen,openRecentOrder,errorMessage,loading } = useMenuOrderLogic(props)
+  const { isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
+  const categoryRefs = useRef({});
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -77,18 +79,18 @@ export default function MenuOrderScreen(props) {
     );
   }
   
-  const renderMenuCategoryList = (item,mealPeriodId) => {
+  const renderMenuCategoryList = (item) => {
     return (
       <UI.Box>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item,mealPeriodId)}
+          // onPress={() => setMealCategory(item,mealPeriodId)}
         >
           <UI.Text style={styles.categoryText}>
             {item.Category_Name?.toUpperCase()}
           </UI.Text>
-          {item.IsSelect === 1 && (
+          {item.CategoryIsSelect === 1 && (
             <UI.Box
               style={[
                 tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
@@ -101,48 +103,94 @@ export default function MenuOrderScreen(props) {
   }
 
   const renderCategoryMainList = () => {
-    if (!isCategoryEmpty) {
-      return (
-        <UI.Box style={styles.mainBoxContainer}>
-          <UI.Box style={styles.subCategoryContainer}>
-            {menuOrderData &&
-              menuOrderData?.MenuItems?.map((mealCategory,index) => {
-                const categories = mealCategory?.Categories || [];
-                let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
-                if (mealCategory.IsSelect === 1) {
-                  return (
-                    <>
-                      <UI.ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.categoryListContainer}
-                      >
-                        {updatedData &&
-                          updatedData
-                            .map((item) => renderMenuCategoryList(item,mealCategory.MealPeriod_Id))}
-                      </UI.ScrollView>
-                    </>
-                  );
-                }else if(updatedData.length === 0){
-                  return(
-                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No items available</UI.Text>
-                  )
-                }
-              })}
-          </UI.Box>
-              {
-                menuLoading ? <CbLoader /> : <UI.cbCategoryList />
-              }
-        </UI.Box>
-      )
-    } else {
+    const updateCategorySelection = (visibleCategoryId) => {
+      console.log(visibleCategoryId,"-->@")
+      const updatedCategories = selectedCategory.map(category => {
+        return{
+          ...category,
+          CategoryIsSelect: category.Category_ID === visibleCategoryId ? 1 : 0,
+        }
+      });
+      setSelectedCategory(updatedCategories);
+    };
+  
+    const handleLayout = (categoryId, event) => {
+      const layout = event.nativeEvent.layout;
+      categoryRefs.current[categoryId] = layout.y;
+    };
+  
+    const handleScroll = (event) => {
+      const scrollY = event?.nativeEvent?.contentOffset.y;
+      let visibleCategory = null;
+  
+      for (const [categoryId, y] of Object.entries(categoryRefs.current)) {
+        if (scrollY >= y - 50 && scrollY < y + 100) {
+          visibleCategory = categoryId;
+          break;
+        }
+      }
+  
+      if (visibleCategory) {
+        updateCategorySelection(visibleCategory);
+      }
+    };
+  
+    if (isCategoryEmpty) {
       return (
         <UI.Box style={styles.emptyListContainer}>
           <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
         </UI.Box>
-      )
+      );
     }
-  }
+  
+    return (
+      <UI.Box style={styles.mainBoxContainer}>
+        <UI.ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryListContainer}
+        >
+          {selectedCategory.map((group) => renderMenuCategoryList(group))}
+        </UI.ScrollView>
+
+        <UI.ScrollView style={{marginBottom:200,marginTop:20}}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        >
+          {selectedCategory.map((category) => {
+            return (
+              <UI.FlatList
+              onLayout={(e) => handleLayout(category.Category_ID, e)}
+              keyExtractor={(submenu) => submenu.SubMenu_ID}
+                data={category.submenus}
+                renderItem={({ item }) => {
+                  return (
+                    <>
+                      <UI.Text style={{fontSize:20,color:"black",fontWeight:"bold"}}>{item.SubMenu_Name}</UI.Text>
+                      <UI.FlatList
+                        data={item.items}
+                        keyExtractor={(item) => item.Item_ID}
+                        renderItem={(tools) => {
+                          return (
+                            <UI.Box style={{marginTop:20,borderWidth:1}}>
+                              <UI.Text>{tools.item.Item_Name}</UI.Text>
+                              <UI.Text>{"shdvjvdaksdvkajv"}</UI.Text>
+                              <UI.Text>{tools.item.Price}</UI.Text>
+                              <UI.Text>{tools.item.ImageUrl}</UI.Text>
+                            </UI.Box>
+                          );
+                        }}
+                      />
+                    </>
+                  );
+                }}
+              />
+            );
+          })}
+        </UI.ScrollView>
+      </UI.Box>
+    );
+  };
 
   const OnRecentOrderPress = () => {
     const RenderingRecentOrders = ({ item }) => {
@@ -200,8 +248,7 @@ export default function MenuOrderScreen(props) {
         return(
           <>
           <UI.Box style={styles.topContainer}>
-            {menuOrderData &&
-              menuOrderData?.MenuItems?.map((item) => {
+            {mealPeriods.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>
