@@ -269,7 +269,6 @@ export default function MenuItems() {
     useEffect(() => {
         const uniqueMealPeriods = [...new Set(jsonData.filter(item => item.MealPeriod_Id).map(item => item.MealPeriod_Name))];
         setMealPeriods(uniqueMealPeriods);
-        console.log(uniqueMealPeriods,"---<<<<1")
         setSelectedMealPeriod(uniqueMealPeriods[0]);
     }, []);
 

@@ -1,6 +1,6 @@
 import { Dimensions, StyleSheet } from "react-native";
-import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-import { isPlatformAndroid } from "../constants/Matrices";
+import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
+import { horizontalScale, isPlatformAndroid } from "../constants/Matrices";
 const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
@@ -78,6 +78,7 @@ export const styles = StyleSheet.create({
     categoryListContainer: {
       height: isPlatformAndroid() ?responsiveHeight(5):width*0.111,
       paddingTop:responsiveHeight(1.2),
+      paddingHorizontal:responsiveWidth(1.5)
     },
     subCategoryContainer: {
       flexDirection: "row",
@@ -119,10 +120,129 @@ export const styles = StyleSheet.create({
     alignItems:"center"
   },
   recentOrderIcon:{width:20,height:20,resizeMode:"contain"},
-  addToCartBtn:{ padding: responsiveWidth(0) },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  subContainer: {
+    width: "94%",
+    marginVertical:responsiveHeight(1),
+    backgroundColor:"#fff",
+  },
+  rowContainer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  textContainer: {
+    flex: 1,
+  },
+  mealTypeTitle: {
+    fontSize: 20,
+    lineHeight: 20,
+    fontFamily:"SourceSansPro_SemiBold",
+    width:responsiveWidth(45),
+    color:"#4B5154"
+  },
+  priceTxt: {
+    fontSize: 18,
+    lineHeight: 20,
+    marginVertical: 1.5,
+    fontFamily:"SourceSansPro_SemiBold",
+    color:"#4B5154"
+  },
+  descriptionTxt: {
+    fontSize: 12,
+    lineHeight: 16,
+    color: '#6D6D6D',
+    fontFamily:"SourceSansPro_SemiBold",
+    width:responsiveWidth(40),
+  },
+  underLineTxt: {
+    color: '#00C6FF',
+    fontSize: 12,
+    fontFamily:"SourceSansPro_SemiBoldItalic"
+  },
+  mealTypeImg: {
+    width: responsiveWidth(30),
+    height: responsiveHeight(9.5),
+    borderRadius: 5,
+    resizeMode: "cover",
+  },
+  horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
+  itemCategoryLabel:{ color: "#5773a2", fontSize: responsiveFontSize(2.2) ,fontFamily:"SourceSansPro_SemiBold",paddingVertical:8},
+  cardMainContainer:{
+     backgroundColor:"#fff",
+     flexDirection:"row",
+     justifyContent:"space-between",
+     alignItems:"center",
+     paddingVertical:responsiveHeight(1),
+     marginTop:10
+  },
+  bottomMiddleContainer:{ marginBottom: 200, marginTop: 10,marginHorizontal:responsiveWidth(1.5),backgroundColor:"#F4F6FB" },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    width: 20,
+    height: 20,
+  },
+  crossIcon:{
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top:isPlatformAndroid()?horizontalScale(60):horizontalScale(40),
+    alignSelf: "center",
+    opacity: 1,
+    zIndex: 1000,
+  },
+  blackShadow:{
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "#000000",
+    opacity: 0.4,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 10,
+    zIndex:-1
+  },
+  footerContainer:{
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 80,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+    paddingHorizontal: 20,
+},
+totalAmountTxt:{ fontSize: 12, color: "#4B5154", fontFamily:"SourceSansPro_Italic" },
+orderAmount:{ fontSize: 24, color: "#4B5154", paddingVertical: 8,fontFamily:"SourceSansPro_SemiBold" },
+addToCartBtn:{
+  backgroundColor: "#5773a2",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center'
+},
+addCartTxt:{ color: "#fff", fontSize: 22,fontFamily:"SourceSansPro_SemiBold", textAlign: 'center' },
+
   });
