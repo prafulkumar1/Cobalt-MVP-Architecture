@@ -21,7 +21,8 @@ export const UseFormContextProvider = ({children}) => {
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
-    const [modifierData,setModifierData] = useState(ModifiersData)
+
+    // const [modifierData,setModifierData] = useState(ModifiersData)
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("7:30 AM")
@@ -55,35 +56,35 @@ export const UseFormContextProvider = ({children}) => {
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
 
-    const setMealType = (id,IsEnabled) => {
-      if(IsEnabled===1){
-        const updatedMealType = menuOrderData.MenuItems.map((items) => {
-          let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
-          return{
-            ...items,
-            IsSelect: updatedCategoryData.length >0 && items.MealPeriod_Id === id ? 1 : 0,
-            Categories: updatedCategoryData.map((category, index) => ({
-              ...category,
-              IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-            })),
-          }
-        });
+    // const setMealType = (id,IsEnabled) => {
+    //   if(IsEnabled===1){
+    //     const updatedMealType = menuOrderData.MenuItems.map((items) => {
+    //       let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
+    //       return{
+    //         ...items,
+    //         IsSelect: updatedCategoryData.length >0 && items.MealPeriod_Id === id ? 1 : 0,
+    //         Categories: updatedCategoryData.map((category, index) => ({
+    //           ...category,
+    //           IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+    //         })),
+    //       }
+    //     });
       
-        const foodMenuList = {
-          ...menuOrderData,
-          MenuItems: updatedMealType,
-        };
+    //     const foodMenuList = {
+    //       ...menuOrderData,
+    //       MenuItems: updatedMealType,
+    //     };
       
-        let isCategoryEmptyFlag = false;
-        updatedMealType.forEach((items) => {
-          if (items.IsSelect === 1 && items.Categories.length === 0) {
-            isCategoryEmptyFlag = true; 
-          }
-        });
-        setIsCategoryEmpty(isCategoryEmptyFlag);
-        setMenuOrderData(foodMenuList);
-      }
-    };
+    //     let isCategoryEmptyFlag = false;
+    //     updatedMealType.forEach((items) => {
+    //       if (items.IsSelect === 1 && items.Categories.length === 0) {
+    //         isCategoryEmptyFlag = true; 
+    //       }
+    //     });
+    //     setIsCategoryEmpty(isCategoryEmptyFlag);
+    //     setMenuOrderData(foodMenuList);
+    //   }
+    // };
     const setMealCategory = async (categoryData,MealPeriod_Id) => {
       setMenuLoading(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
@@ -127,10 +128,8 @@ export const UseFormContextProvider = ({children}) => {
       try {
         const modifierDataItem = await AsyncStorage.getItem("modifier_data")
         if (modifierDataItem !== null) {
-          setAddedModifierCartData(JSON.parse(modifierDataItem))
           setModifierCartItemData(JSON.parse(modifierDataItem))
         } else {
-          setAddedModifierCartData([])
           setModifierCartItemData([])
         }
       } catch (error) {}
@@ -195,6 +194,7 @@ export const UseFormContextProvider = ({children}) => {
           } else {
             updatedModifierData.push({ ...item, quantity: 1, quantityIncPrice: item.Price });
           }
+          // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedModifierData));
           return updatedModifierData;
         });
       } catch (error) {
@@ -216,8 +216,7 @@ export const UseFormContextProvider = ({children}) => {
             );
            
           }
-          AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
-          updateModiferItemData(mealItemDetails, newQuantity)
+          // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
           return updatedCartData;
         });
       } catch (error) {}
@@ -251,7 +250,7 @@ export const UseFormContextProvider = ({children}) => {
       });
   
       setModifierCartItemData(updatedModifierData);
-      const getCurrentItemDetails = updatedModifierData.find((item) => item.Item_ID === singleItemDetails.Item_ID)
+      const getCurrentItemDetails = updatedModifierData?.find((item) => item.Item_ID === singleItemDetails.Item_ID)
       singleModifierData.current = {quantity:getCurrentItemDetails?.quantity,quantityIncPrice:getCurrentItemDetails?.quantityIncPrice}
   };
   
@@ -294,35 +293,17 @@ export const UseFormContextProvider = ({children}) => {
     }
   }, []);
 
-  const updateModiferItemData = async (mealItemDetails, newQuantity) => {
-    try {
-      setAddedModifierCartData((prevCartData) => {
-        let updatedCartData;
-  
-        if (newQuantity === 0) {
-          updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
-        } else {
-          updatedCartData = prevCartData.map((item) =>
-            item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
-          );
-         
-        }
-        AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
-        return updatedCartData;
-      });
-    } catch (error) {}
-  };
 
   const deleteModifierItem = (modifierItem) => {
     let updatedCartData = addedModifierCartData?.filter((item) => item.Item_ID !== modifierItem.Item_ID);
     setAddedModifierCartData(updatedCartData);
-    AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
+    // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
   };
     
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
-      setMealType,
+      // setMealType,
       setMealCategory,
       isSearchActive,
       handleChangeState,
@@ -335,7 +316,7 @@ export const UseFormContextProvider = ({children}) => {
       deleteCartItem,
       storeSingleItem,
       singleItemDetails,
-      modifierData,
+      // modifierData,
       increaseQuantity,
       modifierCartItemData,
       updateModifierItemQuantity,
@@ -351,7 +332,6 @@ export const UseFormContextProvider = ({children}) => {
       addedModifierCartData,
       getCartData,
       commentValue,
-      updateModiferItemData,
       deleteModifierItem,
       setMenuOrderData,
       menuOrderData,

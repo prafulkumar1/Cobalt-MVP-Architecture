@@ -11,7 +11,7 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity,updateModiferItemData ,updateModifierItemQuantity, }= useFormContext(); 
+    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity ,updateModifierItemQuantity, }= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
@@ -153,15 +153,11 @@ export const useMyCartLogic = () => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity + 1)
 
     if (quantityInfo.statusCode === 200) {
-      if (quantityInfo?.response.IsModifierAvailable === 1) {
-        updateModiferItemData(item, item.quantity + 1);
+      if (quantityInfo?.response.IsAvailable === 1) {
+        updateCartItemQuantity(item, item.quantity + 1);
         updateModifierItemQuantity(item, item.quantity + 1);
       } else {
-        if (quantityInfo?.response.IsAvailable === 1) {
-          updateCartItemQuantity(item, item.quantity + 1);
-        } else {
-          Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
-        }
+        Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
       }
     }
   }
@@ -169,12 +165,8 @@ export const useMyCartLogic = () => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity - 1)
 
     if (quantityInfo.statusCode === 200) {
-      if (quantityInfo?.response.IsModifierAvailable === 1) {
-        updateModiferItemData(item, item.quantity - 1);
-        updateModifierItemQuantity(item, item.quantity - 1);
-      } else {
-        updateCartItemQuantity(item, item.quantity - 1);
-      }
+      updateCartItemQuantity(item, item.quantity - 1);
+      updateModifierItemQuantity(item, item.quantity - 1);
     }
   }
   const editCommentBtn = (props,item) => {

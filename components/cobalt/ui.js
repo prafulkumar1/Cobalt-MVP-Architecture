@@ -357,14 +357,14 @@ class CbFloatingButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {({cartData,addedModifierCartData}) => {
+      {({cartData,modifierCartItemData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
-          const getModifierListQuantity = addedModifierCartData && addedModifierCartData.reduce((total,prev) => total+prev.quantity,0)
+          const getModifierListQuantity = modifierCartItemData && modifierCartItemData.reduce((total,prev) => total+prev.quantity,0)
           const finalQuantity = getFinalQuantity+getModifierListQuantity
           return (
             <View style={styles.floatingContainer}>
@@ -423,22 +423,22 @@ class CbAddToCartButton extends React.Component {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           if(operation === "decrement"){
-            updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-          }else{
-            if(this.state.isAvailable ===1){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+        }else{
+          if(this.state.isAvailable ===1){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-            }else{
+          }else{
               Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         } else {
-          if(operation === "decrement"){
-            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
-          }else{
-            if(this.state.isAvailable ===1){
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
-            }else{
-              Alert.alert(quantityInfo?.response?.ResponseMessage)
+          if (operation === "decrement") {
+            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+          } else {
+            if (this.state.isAvailable === 1) {
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+            } else {
+              Alert.alert(quantityInfo?.response?.ResponseMessage);
             }
           }
         }

@@ -494,7 +494,7 @@ export default function MenuOrderScreen(props) {
          
           {renderCategoryMainList()}
 
-          {(cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props} />}
+          {(cartData?.length > 0 || modifierCartItemData?.length > 0) && <UI.CbFloatingButton props={props} />}
         </>
         )
       }
