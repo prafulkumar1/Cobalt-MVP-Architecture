@@ -48,18 +48,13 @@ export default function MenuOrderScreen(props) {
       setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails
     } = useFormContext();
 
-  const { isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
+  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
   const [itemPositions, setItemPositions] = useState({});
 
   const [expandedIds,setExpandedIds] = useState([])
-  const [expandedSubmenus, setExpandedSubmenus] = useState(
-    selectedCategory.reduce((acc, category) => {
-      acc[category.Category_ID] = true;
-      return acc;
-    }, {})
-  );
+
    const openItemDetails = async (box) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
       if(box.IsAvailable ===1){
@@ -126,7 +121,7 @@ export default function MenuOrderScreen(props) {
   const handleCategoryClick = (categoryId) => {
     const yPosition = itemPositions[categoryId];
     if (yPosition !== undefined && scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ y: yPosition, animated: true });
+      scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
     }
   };
   const renderMenuCategoryList = (item) => {
@@ -168,12 +163,6 @@ export default function MenuOrderScreen(props) {
       categoryRefs.current[categoryId] = layout.y;
     };
 
-    const toggleSubmenu = (categoryId) => {
-      setExpandedSubmenus((prevState) => ({
-        ...prevState,
-        [categoryId]: !prevState[categoryId],
-      }));
-    };
 
 
   const handleCloseItemDetails = () => {
@@ -251,19 +240,22 @@ export default function MenuOrderScreen(props) {
                   const subMenuItem = item
                   return (
                     <>
-                      <UI.TouchableOpacity activeOpacity={0.5} style={styles.cardMainContainer} onPress={() => toggleSubmenu(category.Category_ID)}>
-                        <UI.Text style={styles.itemCategoryLabel}>{item.SubMenu_Name}</UI.Text>
-                        {expandedSubmenus[category.Category_ID] ? (
-                          <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"}/>
-                        ) : (
-                          <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"}/>
-                        )}
-                      </UI.TouchableOpacity>
+                      {
+                          item.SubMenu_Name !==null &&
+                           <UI.TouchableOpacity activeOpacity={0.5} style={styles.cardMainContainer} onPress={() => toggleSubmenu(category.Category_ID)}>
+                           <UI.Text style={styles.itemCategoryLabel}>{item.SubMenu_Name}</UI.Text>
+                           {expandedSubmenus[category.Category_ID] ? (
+                             <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"}/>
+                           ) : (
+                             <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"}/>
+                           )}
+                         </UI.TouchableOpacity>
+                      }
                       {expandedSubmenus[category.Category_ID] && (
-                        <UI.FlatList
-                          data={item.items}
-                          style={{ backgroundColor: "#fff" }}
-                          renderItem={({ item, index }) => {
+                        <UI.CbFlatList
+                          flatlistData={item.items}
+                          customStyles={{ backgroundColor: "#fff" }}
+                          children={({ item, index }) => {
                             let box = item;
                             const lastItem =
                               index === subMenuItem.items?.length - 1;

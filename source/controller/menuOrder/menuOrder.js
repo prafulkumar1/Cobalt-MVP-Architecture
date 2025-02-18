@@ -11,10 +11,11 @@ export const useMenuOrderLogic = (props) => {
   const [isRecentOrderOpen,setIsRecentOrderOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState("")
-  const [mealPeriods, setMealPeriods] = useState(newData);
-  const [categoryData, setCategoryData] = useState(newData);
+  const [mealPeriods, setMealPeriods] = useState([]);
+  const [categoryData, setCategoryData] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState(newData);
+  const [expandedSubmenus, setExpandedSubmenus] = useState({});
 
   const flatListRef = useRef(null);
 
@@ -25,87 +26,58 @@ export const useMenuOrderLogic = (props) => {
       setIsRecentOrderOpen(!isRecentOrderOpen)
     }
 
-    useEffect(() => {
-      setLoading(true)
-      const uniqueMealPeriods = mealPeriods
-        .filter((item) => item.MealPeriod_Id && item.MealPeriod_Name)
-        .reduce((acc, current) => {
-          const isDuplicate = acc.some((item) => item.MealPeriod_Id === current.MealPeriod_Id);
-          if (!isDuplicate) {
-            acc.push({
-              MealPeriod_Name: current.MealPeriod_Name,
-              IsSelect: current.MealPeriodIsSelect,
-              Time: current.Time,
-              MealPeriod_Id: current.MealPeriod_Id,
-            });
-          }
-          return acc;
-        }, []);
-      setMealPeriods(uniqueMealPeriods);
+  const requiredDataFormat = (responseData) => {
+    const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item) => {
+      let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
 
-      const categoryData2 = categoryData.filter((item) => item.MealPeriodIsSelect ===1).map((items) => {
-        return{
-          Category_Name:items.Category_Name,
-          Category_ID:items.Category_ID,
-          CategoryIsSelect:items.CategoryIsSelect
-        }
-      })
-      setCategoryData(categoryData2)
+      if (!category) {
+        category = {
+          Category_ID: item.Category_ID,
+          Category_Name: item.Category_Name,
+          CategoryIsSelect: item.CategoryIsSelect,
+          submenus: [],
+        };
+        acc.push(category);
+      }
 
-      const groupedCategories = newData.filter((items) => items.MealPeriodIsSelect ===1).reduce((acc, item) => {
-        let category = acc.find(cat => cat.Category_ID === item.Category_ID);
-      
-        if (!category) {
-          category = {
-            Category_ID: item.Category_ID,
-            Category_Name: item.Category_Name,
-            CategoryIsSelect: item.CategoryIsSelect,
-            submenus: [],
-          };
-          acc.push(category);
-        }
-      
-        let submenu = category.submenus.find(
-          sub => sub.SubMenu_ID === item.SubMenu_ID
-        );
-      
-        if (!submenu) {
-          submenu = {
-            SubMenu_ID: item.SubMenu_ID,
-            SubMenu_Name: item.SubMenu_Name,
-            items: [],
-          };
-          category.submenus.push(submenu);
-        }
-      
-        submenu.items.push({
-          Item_ID: item.Item_ID,
-          Item_Name: item.Item_Name,
-          Description: item.Description,
-          Price: item.Price,
-          ImageUrl: item.ImageUrl,
-          IsAvailable: item.IsAvailable,
-          IsDisable: item.IsDisable,
-        });
-      
-        return acc;
-      }, []);
-      
-      setSelectedCategory(groupedCategories)
-      setTimeout(() => {
-        setLoading(false)
-      }, 1000);
+      let submenu = category.submenus.find(
+        sub => sub.SubMenu_ID === item.SubMenu_ID
+      );
+
+      if (!submenu) {
+        submenu = {
+          SubMenu_ID: item.SubMenu_ID,
+          SubMenu_Name: item.SubMenu_Name,
+          items: [],
+        };
+        category.submenus.push(submenu);
+      }
+
+      submenu.items.push({
+        Item_ID: item.Item_ID,
+        Item_Name: item.Item_Name,
+        Description: item.Description,
+        Price: item.Price,
+        ImageUrl: item.ImageUrl,
+        IsAvailable: item.IsAvailable,
+        IsDisable: item.IsDisable,
+      });
+
+      return acc;
     }, []);
 
-    useEffect(() => {
-      // getCartData()
-      // setLoading(false)
-      // getMenuOrderList()
-      }, [])
+    setSelectedCategory(groupedCategories)
+  }
+
+  useEffect(() => {
+    // getCartData()
+    // setLoading(false)
+    getMenuOrderList()
+    }, [])
   
     
       const getMenuOrderList = async () => {
-        // setLoading(true)
+        setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
@@ -119,8 +91,30 @@ export const useMenuOrderLogic = (props) => {
         if(menuOrderResponseData?.response?.ResponseCode === "Fail"){
           setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
         }else{
-          setMenuOrderData(menuOrderResponseData.response)
-          // setLoading(false)
+          const uniqueMealPeriods = menuOrderResponseData.response?.MenuItems
+          ?.filter((item) => item.MealPeriod_Id && item.MealPeriod_Name)
+          .reduce((acc, current) => {
+            const isDuplicate = acc.some((item) => item.MealPeriod_Id === current.MealPeriod_Id);
+            if (!isDuplicate) {
+              acc.push({
+                MealPeriod_Name: current.MealPeriod_Name,
+                IsSelect: current.MealPeriodIsSelect,
+                Time: current.Time,
+                MealPeriod_Id: current.MealPeriod_Id,
+              });
+            }
+            return acc;
+          }, []);
+          requiredDataFormat(menuOrderResponseData.response?.MenuItems)
+          setMealPeriods(uniqueMealPeriods);
+          setMenuOrderData(menuOrderResponseData.response?.MenuItems)
+          setExpandedSubmenus(
+            menuOrderResponseData.response?.MenuItems?.reduce((acc, category) => {
+              acc[category.Category_ID] = true;
+              return acc;
+            }, {})
+          )
+          setLoading(false)
         }
       }
       const handleCategorySelect = (categoryName) => {
@@ -136,6 +130,12 @@ export const useMenuOrderLogic = (props) => {
           handleCategorySelect(visibleItem.Category_Name);
         }
       };
+      const toggleSubmenu = (categoryId) => {
+        setExpandedSubmenus((prevState) => ({
+          ...prevState,
+          [categoryId]: !prevState[categoryId],
+        }));
+      };
   return {
     isRecentOrderOpen,
     openRecentOrder,
@@ -146,6 +146,8 @@ export const useMenuOrderLogic = (props) => {
     selectedCategory,
     flatListRef,
     handleViewableItemsChanged,
-    setSelectedCategory
+    setSelectedCategory,
+    expandedSubmenus,
+    toggleSubmenu
   };
 };

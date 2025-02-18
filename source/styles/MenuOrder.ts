@@ -90,7 +90,6 @@ export const styles = StyleSheet.create({
     height: isPlatformAndroid() ? responsiveHeight(5) : width * 0.105,
     paddingTop: responsiveHeight(1.2),
     paddingHorizontal: responsiveWidth(2),
-    width: "100%",
     borderBottomWidth:1.5,
     borderColor:"#F4F6FB",
     marginBottom:responsiveHeight(1)
