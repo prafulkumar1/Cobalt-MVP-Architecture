@@ -285,9 +285,9 @@ export const UseFormContextProvider = ({children}) => {
 
   const addItemToModifierForCart = useCallback((modifierItem) => {
     try {
-      if (modifiersData.current.length === 0) {
-        Alert.alert("Sorry", "Please select the modifiers")
-      } else {
+      // if (modifiersData.current.length === 0) {
+      //   Alert.alert("Sorry", "Please select the modifiers")
+      // } else {
         setAddedModifierCartData((prevModifierCartItemData) => {
           const updatedModifierData = [...prevModifierCartItemData];
           updatedModifierData.push({
@@ -305,7 +305,7 @@ export const UseFormContextProvider = ({children}) => {
           }, 1000);
           return updatedModifierData;
         });
-      }
+      // }
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
@@ -334,6 +334,7 @@ export const UseFormContextProvider = ({children}) => {
     let updatedCartData = addedModifierCartData?.filter((item) => item.Item_ID !== modifierItem.Item_ID);
     setAddedModifierCartData(updatedCartData);
     AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
+    
   };
     
     const initialValues = {

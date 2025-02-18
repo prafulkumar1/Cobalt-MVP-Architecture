@@ -6,6 +6,7 @@ import { styles } from '@/source/styles/ItemModifier';
 import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import CbLoader from '@/components/cobalt/cobaltLoader';
+import { TextInput } from 'react-native-gesture-handler';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 
 const pageId = "ItemModifier"

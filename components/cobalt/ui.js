@@ -42,6 +42,181 @@ export const postQuantityApiCall = async(quantity,itemId) => {
   } catch (err) {}
 }
 
+// class CbAccordionlist extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.id = props.id;
+//     this.screenName = props.screenName;
+//     this.favsource = props.favsource || "";
+//     this.Notfavsource = props.Notfavsource || "";
+//     this.componentData = props.componentData || [];
+
+//     this.state = {
+//       selectedModifiers: {},
+//     };
+//   }
+
+//   handleCheckboxToggle = (modifierIndex, itemIndex, isMaxAllowedOne, isRequired, itemName, getAllSelectedModifiers, price, isChecked) => {
+//     this.setState((prevState) => {
+//       const updatedModifiers = { ...prevState.selectedModifiers };
+//       const addedModifiers = {
+//         id: uuid.v4(),
+//         modifier: itemName,
+//         isChecked: !isChecked,
+//         price: price,
+//         isMaxAllowedOne
+//       };
+
+//       if (isMaxAllowedOne) {
+//         updatedModifiers[modifierIndex] = itemIndex;
+//       } else {
+//         updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex] || [];
+
+//         if (updatedModifiers[modifierIndex].includes(itemIndex)) {
+//           updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex].filter((i) => i !== itemIndex);
+
+//           if (isRequired && updatedModifiers[modifierIndex].length === 0) {
+//             return prevState;
+//           }
+//         } else {
+//           updatedModifiers[modifierIndex].push(itemIndex);
+//         }
+//       }
+//         getAllSelectedModifiers(addedModifiers, itemName);
+
+//       return { selectedModifiers: updatedModifiers };
+//     });
+//   };
+
+//   render() {
+//     const { Notfavsource, favsource, screenName, componentData } = this;
+//     const IsFavorite = 1;
+
+//     return (
+//       <FormContext.Consumer>
+//         {({ getAllSelectedModifiers, modifiersResponseData }) => {
+//           const buttonArray = global.controlsConfigJson.find(item => item.id === this.id);
+//           const categories = Array.isArray(modifiersResponseData?.Categories) ? modifiersResponseData.Categories : [];
+
+//           return (
+//             <>
+//               {categories.length > 0 ? (
+//                 categories.map((order, index) => (
+//                   <Accordion key={index} defaultValue={`item-${index}`} variant="filled" type="single" size="md" style={screenName === "RecentOrders" ? styles.roAccordion : styles.itemDetailsContainer}>
+//                     <AccordionItem value={`item-${index}`} style={styles.itemDetailsSubContainer}>
+//                       <AccordionHeader style={screenName === "RecentOrders" ? styles.roAccordionHeader : styles.subHeader}>
+//                         <AccordionTrigger>
+//                           {({ isExpanded }) => (
+//                             <>
+//                               {screenName === "RecentOrders" ? (
+//                                 <Box key={index} style={styles.roAccordionHeading}>
+//                                   <Image alt="image" source={require("@/assets/images/icons/ROdate.png")} />
+//                                   <Text style={styles.roAccordionTitleText}>
+//                                     Ordered Date: {order.OrderDate}
+//                                   </Text>
+//                                 </Box>
+//                               ) : (
+//                                 <Box style={styles.recentOrderContainer}>
+//                                   <Text style={styles.modifierContainer}>
+//                                     {order.Category_Name}
+//                                     {order.Message && <Text style={styles.maxAllowedTxt}>{`  (${order.Message})`}</Text>}
+//                                   </Text>
+//                                 </Box>
+//                               )}
+//                               {isExpanded ? (
+//                                 <ChevronDownIcon className="ml-3" style={styles.roAccordionIcon} />
+//                               ) : (
+//                                 <ChevronRightIcon className="ml-3" style={styles.roAccordionIcon} />
+//                               )}
+//                             </>
+//                           )}
+//                         </AccordionTrigger>
+//                       </AccordionHeader>
+
+//                       <AccordionContent>
+//                         {screenName === "RecentOrders"
+//                           ? order.Items?.map((item, itemIndex) => (
+//                               <Box key={itemIndex}>
+//                                 <Box style={styles.roAccordionContentouterbox}>
+//                                   <Box style={styles.roAccordionContentItembox}>
+//                                     <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}>
+//                                       {item.ItemName}
+//                                     </Text>
+//                                     <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
+//                                   </Box>
+//                                   <Box style={styles.roImagescetion}>
+//                                     <Image
+//                                       alt="image"
+//                                       source={
+//                                         item.IsFavorite
+//                                           ? favsource ? { uri: favsource } : require("@/assets/images/icons/Fav.png")
+//                                           : Notfavsource ? { uri: Notfavsource } : require("@/assets/images/icons/Notfav.png")
+//                                       }
+//                                       style={styles.roItemImage}
+//                                     />
+//                                     <Button variant="outline" style={styles.roItemButton}>
+//                                       Add
+//                                     </Button>
+//                                   </Box>
+//                                 </Box>
+//                                 <Divider />
+//                               </Box>
+//                             ))
+//                           : order.Modifiers?.map((item, itemIndex) => (
+//                               <Box key={itemIndex} style={styles.orderSubContainer}>
+//                                 <Checkbox
+//                                   isChecked={
+//                                     this.state.selectedModifiers[index] === itemIndex ||
+//                                     (Array.isArray(this.state.selectedModifiers[index]) &&
+//                                       this.state.selectedModifiers[index].includes(itemIndex))
+//                                   }
+//                                   onChange={() =>
+//                                     this.handleCheckboxToggle(
+//                                       index,
+//                                       itemIndex,
+//                                       order.IsMaxAllowedOne === 1,
+//                                       order.IsRequried === 1,
+//                                       item.Modifier_Name,
+//                                       getAllSelectedModifiers,
+//                                       item.Price,
+//                                       this.state.selectedModifiers[index] === itemIndex ||
+//                                         (Array.isArray(this.state.selectedModifiers[index]) &&
+//                                           this.state.selectedModifiers[index].includes(itemIndex))
+//                                     )
+//                                   }
+//                                 >
+//                                   <Checkbox.Indicator style={styles.CheckboxIndicator}>
+//                                     <CheckIcon style={{ color: "#707070", width: 17, height: 17 }} />
+//                                   </Checkbox.Indicator>
+//                                   <Checkbox.Label style={styles.itemNameTxt}>
+//                                     <Text>{item.Modifier_Name}</Text>
+//                                   </Checkbox.Label>
+//                                 </Checkbox>
+//                                 <Text style={styles.priceMainTxt}>{`$${item.Price !== null ? item.Price : 0}`}</Text>
+//                               </Box>
+//                             ))}
+//                         {screenName === "RecentOrders" && order.IsReorder && (
+//                           <Button variant="outline" style={styles.roReoderButton}>
+//                             <Text style={styles.roReordertext}>Re Order</Text>
+//                           </Button>
+//                         )}
+//                       </AccordionContent>
+//                     </AccordionItem>
+//                   </Accordion>
+//                 ))
+//               ) : (
+//                 <Text style={{ textAlign: 'center', padding: 10 }}>No Modifiers Available</Text>
+//               )}
+//             </>
+//           );
+//         }}
+//       </FormContext.Consumer>
+//     );
+//   }
+// }
+
+
+
 class CbAccordionlist extends React.Component {
   constructor(props) {
     super(props);
@@ -50,48 +225,48 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
-     
+
     this.state = {
       selectedModifiers: {},
     };
   }
 
-  handleCheckboxToggle = (
-    modifierIndex,
-    itemIndex,
-    isMaxAllowedOne,
-    isRequired,
-    itemName,
-    getAllSelectedModifiers,
-    price,
-    isChecked
-  ) => {
+
+  extractMaxAllowed(message) {
+    const match = message.match(/\d+/); 
+    return match ? parseInt(match[0], 10) : Infinity; 
+  }
+
+  handleCheckboxToggle = (modifierIndex, itemIndex, message, isRequired, itemName, getAllSelectedModifiers, price, isChecked) => {
+    const maxAllowed = this.extractMaxAllowed(message); 
+
     this.setState((prevState) => {
       const updatedModifiers = { ...prevState.selectedModifiers };
-      const addedModifiers = {
-        id:uuid.v4(),
-        modifier : itemName,
-        isChecked:!isChecked,
-        price:price,
-        isMaxAllowedOne
+
+    
+      if (!isChecked && Array.isArray(updatedModifiers[modifierIndex]) && updatedModifiers[modifierIndex].length >= maxAllowed) {
+      
+        return prevState;
       }
 
-      if (isMaxAllowedOne) {
-        updatedModifiers[modifierIndex] = itemIndex;
-      } else {
-        updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex] || [];
+      const addedModifiers = {
+        id: uuid.v4(),
+        modifier: itemName,
+        isChecked: !isChecked,
+        price: price,
+      };
 
+      if (Array.isArray(updatedModifiers[modifierIndex])) {
         if (updatedModifiers[modifierIndex].includes(itemIndex)) {
-          updatedModifiers[modifierIndex] = updatedModifiers[
-            modifierIndex
-          ].filter((i) => i !== itemIndex);
-
+          updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex].filter((i) => i !== itemIndex);
           if (isRequired && updatedModifiers[modifierIndex].length === 0) {
             return prevState;
           }
         } else {
           updatedModifiers[modifierIndex].push(itemIndex);
         }
+      } else {
+        updatedModifiers[modifierIndex] = [itemIndex];
       }
       getAllSelectedModifiers(addedModifiers,itemName)
 
@@ -100,13 +275,8 @@ class CbAccordionlist extends React.Component {
   };
 
   render() {
-    const Notfavsource = this.Notfavsource;
-    const favsource = this.favsource;
+    const { Notfavsource, favsource, screenName, componentData } = this;
     const IsFavorite = 1;
-    const componentData =
-      this.screenName === "RecentOrders"
-        ? this.componentData.CompletedOrders
-        : this.componentData.Modifiers;
 
     return (
       <FormContext.Consumer>
@@ -343,7 +513,6 @@ class CbAccordionlist extends React.Component {
   }
 }
 
-
 class CbImage extends React.Component {
   constructor(props) {
     super(props);
@@ -416,7 +585,7 @@ class CbFloatingButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {({cartData,addedModifierCartData}) => {
+      {({cartData,addedModifierCartData,carLength, setCartLength}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -425,11 +594,14 @@ class CbFloatingButton extends React.Component {
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
           const getModifierListQuantity = addedModifierCartData && addedModifierCartData.reduce((total,prev) => total+prev.quantity,0)
           const finalQuantity = getFinalQuantity+getModifierListQuantity
+          const cartItemsLength = cartData?.length || 0;
+
           return (
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
                 <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
+                {/* <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{cartItemsLength}</Text> */}
               </TouchableOpacity>
             </View>
           );
@@ -1187,68 +1359,136 @@ class cbSelect extends React.Component {
 }
 
 
-class cbInput extends React.Component {
+// class cbInput extends React.Component {
 
+//   constructor(props) {
+//     super(props);
+//     this.formId = props.formId;
+//     this.id = props.id;
+//     this.labelText = props.labelText || "";
+//     this.variant = props.variant || "outline";
+//     this.input = props.input || 'text';
+//     this.placeholder = props.placeholder || '';
+//     this.errorMessage = props.errorMessage || '';
+//     this.isReadOnly = props.isReadOnly || false;
+//     this.isDisabled = props.isDisabled || false;
+//     this.isRequired = props.isRequired || false;
+//     this.isInvalid = props.isInvalid || false;
+//     this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
+//     this.style = props.style;
+//   }
+  
+
+//   render() {
+//     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
+//     const variantprop = inputArray?.variant  || this.valueariant;
+//     const typeprop = inputArray?.type ||  this.input;
+//     const labelTextprop = inputArray?.labelText || this.labelText;
+//     const placeholderprop = inputArray?.placeholder || this.placeholder;
+//     const errorMessageprop = inputArray?.errorMessage || this.errorMessage;
+//     const isDisabledprop = inputArray?.isDisabled === 1 || this.isDisabled;
+//     const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
+//     const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
+//     //const {getFormFieldData}= useFormContext();
+
+//     //const fieldData =this.getFormFieldData(this.formId,this.id); 
+
+//     return (
+//       <FormControl isDisabled={isDisabledprop} isReadOnly={isReadOnlyprop} isRequired={isRequiredprop}   >
+//         {labelTextprop && (
+//           <FormControlLabel>
+//             <FormControlLabelText>{labelTextprop}</FormControlLabelText>
+//           </FormControlLabel>
+//         )}
+//         <Input variant={variantprop} style={this.style}>
+//           <InputField
+//             id={this.id}
+//             placeholder={placeholderprop}
+//             type={typeprop}
+//             //value={fieldData.value} 
+//           onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
+//           />
+//         </Input>
+//         {isRequiredprop && errorMessageprop && (
+//           <FormControlError>
+//             <FormControlErrorText>
+//               {errorMessageprop}
+//             </FormControlErrorText>
+//           </FormControlError>
+//         )}
+//       </FormControl>
+//     );
+//   }
+// }
+
+class cbInput extends React.Component {
   constructor(props) {
     super(props);
     this.formId = props.formId;
     this.id = props.id;
     this.labelText = props.labelText || "";
     this.variant = props.variant || "outline";
-    this.input = props.input || 'text';
-    this.placeholder = props.placeholder || '';
-    this.errorMessage = props.errorMessage || '';
+    this.input = props.input || "text";
+    this.placeholder = props.placeholder || "";
+    this.errorMessage = props.errorMessage || "";
     this.isReadOnly = props.isReadOnly || false;
     this.isDisabled = props.isDisabled || false;
     this.isRequired = props.isRequired || false;
     this.isInvalid = props.isInvalid || false;
-    this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
+    this.setFormFieldData = typeof props.setFormFieldData === "function" ? props.setFormFieldData : () => {};
     this.style = props.style;
+
+    this.state = {
+      value: "",
+    };
+
+    this.inputRef = React.createRef(); 
   }
-  
+
+  componentDidMount() {
+    if (this.inputRef.current) {
+      this.inputRef.current.focus(); 
+    }
+  }
+
+  handleChange = (value) => {
+    this.setState({ value });
+    this.setFormFieldData(this.formId, "input", this.id, value);
+  };
 
   render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const variantprop = inputArray?.variant  || this.valueariant;
-    const typeprop = inputArray?.type ||  this.input;
-    const labelTextprop = inputArray?.labelText || this.labelText;
-    const placeholderprop = inputArray?.placeholder || this.placeholder;
-    const errorMessageprop = inputArray?.errorMessage || this.errorMessage;
-    const isDisabledprop = inputArray?.isDisabled === 1 || this.isDisabled;
-    const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
-    const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
-    //const {getFormFieldData}= useFormContext();
-
-    //const fieldData =this.getFormFieldData(this.formId,this.id); 
+    const inputConfig = global.controlsConfigJson.find((item) => item.id === this.id) || {};
 
     return (
-      <FormControl isDisabled={isDisabledprop} isReadOnly={isReadOnlyprop} isRequired={isRequiredprop}   >
-        {labelTextprop && (
+      <FormControl
+        isDisabled={inputConfig.isDisabled === 1 || this.isDisabled}
+        isReadOnly={inputConfig.isReadOnly === 1 || this.isReadOnly}
+        isRequired={inputConfig.isRequired === 1 || this.isRequired}
+      >
+        {inputConfig.labelText && (
           <FormControlLabel>
-            <FormControlLabelText>{labelTextprop}</FormControlLabelText>
+            <FormControlLabelText>{inputConfig.labelText}</FormControlLabelText>
           </FormControlLabel>
         )}
-        <Input variant={variantprop} style={this.style}>
+        <Input variant={inputConfig.variant || this.variant} style={this.style}>
           <InputField
+            ref={this.inputRef}
             id={this.id}
-            placeholder={placeholderprop}
-            type={typeprop}
-            //value={fieldData.value} 
-          onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
+            placeholder={inputConfig.placeholder || this.placeholder}
+            type={inputConfig.type || this.input}
+            value={this.state.value}
+            onChangeText={this.handleChange}
           />
         </Input>
-        {isRequiredprop && errorMessageprop && (
+        {inputConfig.isRequired && inputConfig.errorMessage && (
           <FormControlError>
-            <FormControlErrorText>
-              {errorMessageprop}
-            </FormControlErrorText>
+            <FormControlErrorText>{inputConfig.errorMessage}</FormControlErrorText>
           </FormControlError>
         )}
       </FormControl>
     );
   }
 }
-
 
 
 class cbSelectTime extends React.Component {
@@ -1359,17 +1599,14 @@ class cbSelectTime extends React.Component {
   }
 }
 function cbForm({ formId, setFormFieldData, children }) {
-
   const childrenWithProps = React.Children.map(children, (child) =>
     React.isValidElement(child)
       ? React.cloneElement(child, { formId, setFormFieldData })
       : child
   );
 
-
   return <Box>{childrenWithProps}</Box>;
 }
-
 
 class cbVStack extends React.Component {
   constructor(props) {
