@@ -321,4 +321,5 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold",
     textAlign: "center",
   },
+  dropdownIcon:{width:25,height:25}
 });

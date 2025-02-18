@@ -63,7 +63,7 @@ export default function App() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <NavigationContainer>
             <Stack.Navigator
-              initialRouteName="MenuOrder"
+              initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({
                 headerLeft: () => (
                   <UI.CbBackButton navigation={navigation} />

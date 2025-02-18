@@ -527,7 +527,7 @@ export default function MenuOrderScreen(props) {
             </UI.Box>
 
             <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={{width:25,height:25}}/>
+              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
         )}
