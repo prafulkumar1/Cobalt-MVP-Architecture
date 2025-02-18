@@ -46,12 +46,16 @@ export default function MyCartScreen(props) {
     return (
       <UI.TouchableOpacity>
         <UI.Text style={styles.itemCategory}>
-          {item?.modifier}
+          {item?.Modifier_Name}
         </UI.Text>
       </UI.TouchableOpacity>
     );
   }
   const renderCartItems = (item) => {
+    const uniqueModifiers = item.selectedModifiers?.filter((modifier, index, self) => {
+      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      return index === lastIndex;
+    });
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
@@ -83,7 +87,7 @@ export default function MyCartScreen(props) {
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
 
                 <UI.CbFlatList
-                  flatlistData={item.selectedModifiers}
+                  flatlistData={uniqueModifiers}
                   children={renderModifierList}
                 />
               </UI.Box>

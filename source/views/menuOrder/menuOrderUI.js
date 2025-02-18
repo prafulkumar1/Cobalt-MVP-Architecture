@@ -452,7 +452,7 @@ export default function MenuOrderScreen(props) {
             <UI.TouchableOpacity
               activeOpacity={0.5}
             >
-              <UI.CbAddToCartButton mealItemDetails={{}} style={styles.addToCartBtn} />
+              <UI.CbAddToCartButton mealItemDetails={{}} style={styles.recentBtn} />
             </UI.TouchableOpacity>
           </UI.Box>
         </UI.Box>

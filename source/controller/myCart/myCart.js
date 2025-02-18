@@ -11,31 +11,21 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {addedModifierCartData,getCartData,getModifierData,deleteCartItem,deleteModifierItem,cartData,updateCartItemQuantity,updateModiferItemData ,updateModifierItemQuantity, }= useFormContext(); 
+    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity,updateModiferItemData ,updateModifierItemQuantity, }= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
     const [openItemId, setOpenItemId] = useState(null);
     const [isTimeModalSelected,setIsTimeModalSelected] = useState(false)
     const [customTipValue,setCustomTipValue] = useState("")
-    const [pickUpTimeLineData,setPickUpTimeLineData] = useState(cartConfigResponseData.Pickup_Times)
     const [finalCartData, setFinalCartData] = useState([]);
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
-     
-  useEffect(() => {
-    if ((cartData.length > 0 || addedModifierCartData.length > 0)) {
-      setFinalCartData([...cartData, ...addedModifierCartData]);
-    }
-  }, [cartData, addedModifierCartData]);
-
 
 
   useEffect(() => {
     getTipDetails()
-    getCartData();
-    getModifierData();
     const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
@@ -92,8 +82,6 @@ export const useMyCartLogic = () => {
     }else{
       deleteCartItem(item);
     }
-    let updatedCartData = finalCartData?.filter((itemDetails) => itemDetails.Item_ID !== item.Item_ID);
-    setFinalCartData(updatedCartData);
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {

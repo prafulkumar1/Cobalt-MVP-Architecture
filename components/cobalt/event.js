@@ -350,7 +350,6 @@ export const UseFormContextProvider = ({children}) => {
       addItemToModifierForCart,
       addedModifierCartData,
       getCartData,
-      getModifierData,
       commentValue,
       updateModiferItemData,
       deleteModifierItem,
