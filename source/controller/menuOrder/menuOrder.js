@@ -11,7 +11,7 @@ export const useMenuOrderLogic = (props) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState("")
 
-    const { setMenuOrderData,getCartData }= useFormContext();  
+    const { setMenuOrderData,getCartData,menuLoading }= useFormContext();  
 
 
     const openRecentOrder = () => {

@@ -1,6 +1,7 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { isPlatformAndroid } from "../constants/Matrices";
+const { width, height } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
     mainHeaderContainer:{ display: "flex", flexDirection: "row" },
@@ -40,8 +41,8 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5),
-      marginHorizontal:5
+      marginHorizontal:5,
+      paddingVertical:responsiveHeight(0.5)
     },
     inactiveMenuType: {
       backgroundColor: "#ECECEC",
@@ -49,10 +50,10 @@ export const styles = StyleSheet.create({
       alignItems: "center",
       alignSelf: "center",
       width: responsiveWidth(30),
-      height: isPlatformAndroid()?responsiveHeight(5):responsiveHeight(5.5),
       borderRadius: 5,
       opacity: 0.8,
-      marginHorizontal:5
+      marginHorizontal:5,
+      paddingVertical:responsiveHeight(0.5)
     },
     timeDurationTxt: {
       fontSize: 10,
@@ -75,7 +76,7 @@ export const styles = StyleSheet.create({
       paddingHorizontal:10
     },
     categoryListContainer: {
-      height: isPlatformAndroid() ?responsiveHeight(5):responsiveHeight(5.5),
+      height: isPlatformAndroid() ?responsiveHeight(5):width*0.111,
       paddingTop:responsiveHeight(1.2),
     },
     subCategoryContainer: {

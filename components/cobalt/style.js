@@ -1,4 +1,4 @@
-import { isPlatformAndroid } from "@/source/constants/Matrices";
+import { horizontalScale, isPlatformAndroid } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
@@ -161,8 +161,8 @@ export const styles = StyleSheet.create({
   horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
   floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
   floatingBtn:{
-    width: responsiveWidth(17),
-    height: responsiveHeight(8),
+    width: 72,
+    height: 72,
     backgroundColor: "#FF6F00",
     borderRadius: 11,
     justifyContent: "flex-end",
@@ -174,18 +174,20 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    padding:5
   },
   cartCountTxt:{
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(3),
-    fontFamily:"SourceSansPro_SemiBold",
-    padding:5,
-    paddingTop:12,
+    fontSize: responsiveFontSize(3.2),
+    padding: 4,
+    borderRadius: 20,
+    overflow: "hidden",
+    fontFamily:"SourceSansPro_SemiBold"
   },
-  backArrowHeader:{width:responsiveWidth(9),marginRight:10,justifyContent:"center",alignItems:"center"},
-  cartIcon:{width:35,height:35,resizeMode:"contain",margin:10},
+  backArrowHeader:{width:responsiveWidth(9),justifyContent:"center",alignItems:"center",paddingVertical:5,position:"relative",left:-10},
+  cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
     paddingVertical: 10,
     paddingHorizontal: 10,
@@ -462,9 +464,20 @@ CheckIcon:{color:"#ffff"},
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    top:responsiveHeight(8),
+    top:isPlatformAndroid()?horizontalScale(60):horizontalScale(40),
     alignSelf: "center",
     opacity: 1,
     zIndex: 1000,
+  },
+  emptyListContainer:{
+    justifyContent:"center",
+    alignItems:"center",
+    alignSelf:"center",
+    height:responsiveHeight(10)
+  },
+  emptyMealTxt:{
+    fontFamily:"SourceSansPro_SemiBoldItalic",
+    alignSelf:"center",
+    marginTop:responsiveHeight(3)
   },
 })

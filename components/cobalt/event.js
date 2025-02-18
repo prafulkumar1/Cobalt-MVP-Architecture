@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { postApiCall } from '@/source/utlis/api';
 
 export const FormContext = createContext(); 
 
@@ -27,6 +28,7 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
     const [currentSelectedVal , setCurrentSelectedVal] = useState("")
     const [isVisible, setIsVisible] = useState(false);
+    const [menuLoading, setMenuLoading] = useState(false);
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
 
@@ -82,23 +84,25 @@ export const UseFormContextProvider = ({children}) => {
         setMenuOrderData(foodMenuList);
       }
     };
-  
-    const setMealCategory = (id) => {
-      const updatedMealCategory = menuOrderData.MenuItems.map((items) => {
-        let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
-        return{
-          ...items,
-           Categories: updatedCategoryData.map((category) => ({
-            ...category,
-            IsSelect: category.Category_ID === id ? 1:0,
-           })),
-         }
-      });
-      const foodMenuList = {
-       ...menuOrderData,
-       MenuItems: updatedMealCategory,
-      };
-      setMenuOrderData(foodMenuList)
+    const setMealCategory = async (categoryData,MealPeriod_Id) => {
+      setMenuLoading(true)
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const params = {
+        "LocationId": `${getProfitCenterId.LocationId}`,
+        "MealPeriod_Id": MealPeriod_Id,
+        "Category_Id": categoryData.Category_ID,
+        "Search": ""
+      }
+      let menuOrderResponseData = await postApiCall("MENU_ORDER","GET_MENU_ORDER_LIST", params)
+
+      if(menuOrderResponseData?.response?.ResponseCode === "Fail"){
+        Alert.alert(menuOrderResponseData?.response?.ResponseMessage)
+        setMenuLoading(false)
+      }else{
+        setMenuOrderData(menuOrderResponseData.response)
+        setMenuLoading(false)
+      }
     }
 
     const handleChangeState = () => {
@@ -373,7 +377,9 @@ export const UseFormContextProvider = ({children}) => {
       setModifiersResponseData,
       modifiersResponseData,
       setIsVisible,
-      isVisible
+      isVisible,
+      menuLoading,
+      setMenuLoading
     }
     return (
       <FormContext.Provider

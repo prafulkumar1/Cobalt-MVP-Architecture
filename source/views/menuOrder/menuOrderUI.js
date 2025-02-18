@@ -13,8 +13,8 @@ import CbLoader from "@/components/cobalt/cobaltLoader";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
-  let pageConfigJson = global.appConfigJsonArray.find(
-    (item) => item.PageId === pageId
+  let pageConfigJson = global.appConfigJsonArray?.find(
+    (item) => item?.PageId === pageId
   );
 
   global.controlsConfigJson =
@@ -28,7 +28,7 @@ export default function MenuOrderScreen(props) {
 
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
-  const { menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
+  const {menuLoading, menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
 
   const { isRecentOrderOpen,openRecentOrder,errorMessage,loading } = useMenuOrderLogic(props)
 
@@ -37,7 +37,7 @@ export default function MenuOrderScreen(props) {
       <UI.Box style={styles.mealTypeContainer}>
         <UI.TouchableOpacity
           activeOpacity={0.6}
-          style={[
+          style={[  
             mealTypeItem.IsSelect === 1
               ? [
                 styles.activeMenuType,
@@ -77,13 +77,13 @@ export default function MenuOrderScreen(props) {
     );
   }
   
-  const renderMenuCategoryList = (item) => {
+  const renderMenuCategoryList = (item,mealPeriodId) => {
     return (
       <UI.Box>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item.Category_ID)}
+          onPress={() => setMealCategory(item,mealPeriodId)}
         >
           <UI.Text style={styles.categoryText}>
             {item.Category_Name?.toUpperCase()}
@@ -119,7 +119,7 @@ export default function MenuOrderScreen(props) {
                       >
                         {updatedData &&
                           updatedData
-                            .map((item) => renderMenuCategoryList(item))}
+                            .map((item) => renderMenuCategoryList(item,mealCategory.MealPeriod_Id))}
                       </UI.ScrollView>
                     </>
                   );
@@ -130,8 +130,9 @@ export default function MenuOrderScreen(props) {
                 }
               })}
           </UI.Box>
-
-          <UI.cbCategoryList />
+              {
+                menuLoading ? <CbLoader /> : <UI.cbCategoryList />
+              }
         </UI.Box>
       )
     } else {

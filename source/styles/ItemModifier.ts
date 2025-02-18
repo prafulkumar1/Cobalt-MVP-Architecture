@@ -11,11 +11,11 @@ export const styles = StyleSheet.create({
     },
     mainContainer:{ flex: 1, backgroundColor: '#fff', borderTopLeftRadius: 35, borderTopRightRadius: 35},
     itemImage: { width: "100%", height: 230, borderTopLeftRadius: 35, borderTopRightRadius: 35 },
-    itemDetailsContainer:{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed',paddingHorizontal:6,},
+    itemDetailsContainer:{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, paddingHorizontal:6,},
     foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold'  },
     foodItemPrice:{ fontSize: 18, color: "#4B5154",fontFamily: 'SourceSansPro_SemiBold'  },
-    foodDiscripContainer:{ paddingVertical: 15, borderBottomWidth: 0.4, borderStyle: 'dashed' },
-    foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic" },
+    foodDiscripContainer:{},
+    foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_SemiBold"},
     allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_Italic", paddingVertical: 10 },
     commentsBox:{height: 100, borderColor: "#00000026",   borderRadius: 5,paddingBottom:10 ,},
@@ -79,9 +79,9 @@ export const styles = StyleSheet.create({
     favIcon:{width:"100%",height:"100%"},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
-    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(12)},
+    itemMainContainer:{ flex: 1,borderTopRightRadius:20,borderTopLeftRadius:20,marginTop:responsiveHeight(12), },
     diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
     discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
-    modifierSubContainer:{ paddingVertical: 15 },
-    mainList:{marginBottom: responsiveHeight(18),  }
+    modifierSubContainer:{ paddingVertical: responsiveHeight(1) },
+    mainList:{paddingBottom: responsiveHeight(20), }
 });

@@ -20,8 +20,7 @@ export const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     profitCenterName: {
-        fontSize: 24,
-        fontWeight: "bold",
+        fontSize: responsiveFontSize(2.8),
         color: "#FFF",
         paddingTop: 8,
         fontFamily: "SourceSansPro_SemiBold",
