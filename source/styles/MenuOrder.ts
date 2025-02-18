@@ -308,8 +308,6 @@ export const styles = StyleSheet.create({
   },
   addToCartBtn: {
     backgroundColor: "#5773a2",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
