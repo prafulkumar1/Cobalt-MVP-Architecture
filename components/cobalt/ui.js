@@ -1044,24 +1044,39 @@ class CbAccordion extends React.Component {
                   }} 
                 />
               </Accordion>
-              <Modal
+             <Modal
                 visible={itemDataVisible}
                 transparent={true}
                 animationType="fade"
                 onRequestClose={closePreviewModal}
               >
-                <TouchableOpacity
-                  onPress={() => this.handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
-                  style={styles.crossIcon}
-                >
-                  <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
-
-                </TouchableOpacity>
-                  <Box style={styles.blackShadow} />
-                  <ItemModifier />
-                <Box style={styles.footerContainer}>
+ 
+                <Box style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: "100%",
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                 
+                }}>
+                  <TouchableOpacity
+                    onPress={() => this.handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
+                    style={styles.crossIcon}
+                  >
+                    <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
+ 
+                  </TouchableOpacity>
+                 
+                  <Box
+                  style={styles.modiferItems}
+                  >
+                    {/* <Box style={styles.blackShadow} /> */}
+                    <ItemModifier />
+                  </Box>
+                
+                  <Box style={styles.footerContainer}>
                   <Box>
-                    <Text style={styles.totalAmountTxt}>Total Amount</Text>
+                    
                     <Text
                       style={styles.orderAmount}
                     >{`$${singleItemPrice}`}</Text>
@@ -1071,7 +1086,7 @@ class CbAccordion extends React.Component {
                     style={styles.addToCartBtn}
                     btnTextStyle={styles.addCartTxt}
                     onPress={() => {
-                      navigateToScreen(this.props, "MyCart", true);
+                      // navigateToScreen(this.props, "MyCart", true);
                       addItemToModifierForCart(singleItemDetails);
                       closePreviewModal();
                       setTimeout(() => {
@@ -1079,7 +1094,8 @@ class CbAccordion extends React.Component {
                       }, 1000);
                     }}
                   />
-                </Box>
+                   </Box>
+                  
               </Modal>
             </ScrollView>
           );
