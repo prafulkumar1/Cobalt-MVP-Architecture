@@ -11,13 +11,15 @@ import { CbDottedLine } from '@/source/constants/dottedLine';
 const pageId = "ItemModifier"
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,modifierData,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible } = useFormContext()
+    const {  singleItemDetails,modifierData,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData } = useFormContext()
 
     const {ImageUrl,Item_Name,Price,Description,response} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
+    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+    const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
-    const { handleCloseItemDetails,handleDiscardChanges,loading} = useItemModifierLogic()
+    const { handleDiscardChanges,loading} = useItemModifierLogic()
 
     return (
       <>
@@ -39,11 +41,11 @@ const ItemModifier = (props) => {
               <UI.Box
                 style={[
                   styles.itemDetailsContainer,
-                  { marginRight: quantity !== 0 && responsiveWidth(5) },
+                  { marginRight: quantity !== 0 || modifierQuantity !==0 && responsiveWidth(5) },
                 ]}
               >
                 <UI.Box style={{ marginTop: 10 }}>
-                  <UI.Text style={styles.foodItemName}>
+                  <UI.Text style={styles.foodItemName} numberOfLines={2}>
                     {Item_Name ? Item_Name : ""}
                   </UI.Text>
                   <UI.Text style={styles.foodItemPrice}>${Price}</UI.Text>
@@ -54,7 +56,7 @@ const ItemModifier = (props) => {
                     styles.rightItemContainer,
                     {
                       width:
-                        quantity >= 1
+                        quantity >= 1 || modifierQuantity>=1
                           ? responsiveWidth(25)
                           : responsiveWidth(17) ,
                     },

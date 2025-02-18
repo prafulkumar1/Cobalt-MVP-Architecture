@@ -26,9 +26,9 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("7:30 AM")
     const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
-    const [currentSelectedVal , setCurrentSelectedVal] = useState("")
     const [isVisible, setIsVisible] = useState(false);
     const [menuLoading, setMenuLoading] = useState(false);
+    const [priceLoader, setPriceLoader] = useState(false);
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
 
@@ -223,36 +223,22 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
 
-    const getAllSelectedModifiers = (modifiers, itemName) => {    
-      setCurrentSelectedVal(itemName)
+    const getAllSelectedModifiers = (modifiers) => {
+      setPriceLoader(true)    
       setSelectedModifiers((prevState) => {
           let updatedModifiers = [...prevState];
-  
-          if (modifiers.isChecked) {
-              updatedModifiers = updatedModifiers.filter(mod => mod.modifier !== modifiers.modifier);
-              updatedModifiers.push(modifiers);
-          } else {
-              updatedModifiers = updatedModifiers.filter(mod => mod.modifier !== modifiers.modifier);
-          }
+          updatedModifiers.push(modifiers);
           return updatedModifiers;
       });
   };
 
     const calculateTotalPrice = () => {
-      let requiredVal = 0;
-  
-      selectedModifiers.forEach((items) => {
-          if (items.isMaxAllowedOne && items.modifier === currentSelectedVal) {
-              requiredVal = items.price;
-          }
-      });
       const modifiersTotal = selectedModifiers
-          ?.filter((items) => !items.isMaxAllowedOne)
           ?.reduce((total, modifier) => {
-              return modifier.isChecked ? total + modifier.price : total;
+              return modifier.isChecked ? total + modifier.Price : total-modifier.Price;
           }, 0);
   
-      let finalValue = modifiersTotal + requiredVal;
+      let finalValue = Math.ceil(modifiersTotal) 
   
       let updatedModifierData = modifierCartItemData?.map((items) => {
           const basePrice = items.basePrice ?? items.quantityIncPrice;
@@ -281,31 +267,28 @@ export const UseFormContextProvider = ({children}) => {
   useEffect(() => {
       calculateTotalPrice();
       modifiersData.current = selectedModifiers
+      setPriceLoader(false)
   }, [selectedModifiers]);
 
   const addItemToModifierForCart = useCallback((modifierItem) => {
     try {
-      if (modifiersData.current.length === 0) {
-        Alert.alert("Sorry", "Please select the modifiers")
-      } else {
-        setAddedModifierCartData((prevModifierCartItemData) => {
-          const updatedModifierData = [...prevModifierCartItemData];
-          updatedModifierData.push({
-            ...modifierItem,
-            quantity: singleModifierData.current.quantity,
-            quantityIncPrice: singleModifierData.current.quantityIncPrice,
-            comments: commentValue.current || "",
-            selectedModifiers: modifiersData.current
-          });
-
-          AsyncStorage.setItem("modifier_data", JSON.stringify(updatedModifierData));
-          setTimeout(() => {
-            setSelectedModifiers([])
-            modifiersData.current = null
-          }, 1000);
-          return updatedModifierData;
+      setCartData((prevModifierCartItemData) => {
+        const updatedModifierData = [...prevModifierCartItemData];
+        updatedModifierData.push({
+          ...modifierItem,
+          quantity: singleModifierData.current.quantity,
+          quantityIncPrice: singleModifierData.current.quantityIncPrice,
+          comments: commentValue.current || "",
+          selectedModifiers: modifiersData.current
         });
-      }
+
+        AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
+        setTimeout(() => {
+          setSelectedModifiers([])
+          modifiersData.current = null
+        }, 1000);
+        return updatedModifierData;
+      });
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
@@ -378,7 +361,9 @@ export const UseFormContextProvider = ({children}) => {
       setIsVisible,
       isVisible,
       menuLoading,
-      setMenuLoading
+      setMenuLoading,
+      priceLoader,
+      selectedModifiers
     }
     return (
       <FormContext.Provider

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     mainContainer:{ flex: 1, backgroundColor: '#fff', borderTopLeftRadius: 35, borderTopRightRadius: 35},
     itemImage: { width: "100%", height: 230, borderTopLeftRadius: 35, borderTopRightRadius: 35 },
     itemDetailsContainer:{ flexDirection: "row", alignItems: 'center', justifyContent: 'space-between', paddingVertical: 15, paddingHorizontal:6,},
-    foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold'  },
+    foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold',width:responsiveWidth(60) },
     foodItemPrice:{ fontSize: 18, color: "#4B5154",fontFamily: 'SourceSansPro_SemiBold'  },
     foodDiscripContainer:{},
     foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },

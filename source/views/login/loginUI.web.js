@@ -102,7 +102,6 @@ const Menu = [
         <UI.cbRadioButton id='gender' />
         <UI.cbButton id='login' variant='solid' text='signin'/>
         <UI.cbButton id='cancel' variant='link'/>
-        <UI.cbAccordion MenuList={Menu} />
         </UI.cbVStack>
         </UI.ScrollView>
         </UI.cbImageBackground>

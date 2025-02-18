@@ -4,7 +4,7 @@ import {
 } from "@/components/cobalt/event";
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
-import { Image, Modal } from "react-native";
+import { ActivityIndicator, Image, Modal } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
 import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/components/ui/icon';
@@ -45,7 +45,9 @@ export default function MenuOrderScreen(props) {
       itemDataVisible,
       addItemToModifierForCart,
       commentValue,
-      setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails
+      setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails,
+      modifierCartItemData,
+      priceLoader,
     } = useFormContext();
 
   const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
@@ -54,6 +56,9 @@ export default function MenuOrderScreen(props) {
   const [itemPositions, setItemPositions] = useState({});
 
   const [expandedIds,setExpandedIds] = useState([])
+
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
 
    const openItemDetails = async (box) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
@@ -221,7 +226,7 @@ export default function MenuOrderScreen(props) {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryListContainer}
         >
-          {selectedCategory.map((group) => renderMenuCategoryList(group))}
+          {selectedCategory?.map((group) => renderMenuCategoryList(group))}
         </UI.ScrollView>
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
@@ -355,7 +360,7 @@ export default function MenuOrderScreen(props) {
                                       disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
                                     >
                                       <ExpoImage
-                                        source={{ uri: box.ImageUrl }}
+                                        source={{ uri: item.ImageUrl }}
                                         contentFit="cover"
                                         cachePolicy="memory-disk"
                                         style={[
@@ -404,9 +409,12 @@ export default function MenuOrderScreen(props) {
           <UI.Box style={styles.footerContainer}>
             <UI.Box>
               <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-              <UI.Text
+              {
+                priceLoader ? <ActivityIndicator color={"#00C6FF"} size={"small"}/> :  <UI.Text
                 style={styles.orderAmount}
-              >{`$23`}</UI.Text>
+              >{`$${singleItemPrice}`}</UI.Text>
+              }
+             
             </UI.Box>
             <UI.CbCommonButton
               showBtnName={"Add to Cart"}
@@ -415,9 +423,6 @@ export default function MenuOrderScreen(props) {
             onPress={() => {
               addItemToModifierForCart(singleItemDetails);
               closePreviewModal();
-              setTimeout(() => {
-                commentValue.current = "";
-              }, 1000);
             }}
             />
           </UI.Box>
