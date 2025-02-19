@@ -53,12 +53,15 @@ export default function MenuOrderScreen(props) {
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
   const categoryScrollRef = useRef(null);
+  const categoryPositions = useRef({});
   const [itemPositions, setItemPositions] = useState({});
 
   const [expandedIds,setExpandedIds] = useState([])
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
 
    const openItemDetails = async (box) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
@@ -145,9 +148,13 @@ export default function MenuOrderScreen(props) {
       scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
     }
   };
+  const handleCategoryLayout = (event, categoryId) => {
+    const { x } = event.nativeEvent.layout;
+    categoryPositions.current[categoryId] = x;
+  };
   const renderMenuCategoryList = (item) => {
     return (
-      <UI.Box>
+      <UI.Box onLayout={(e) => handleCategoryLayout(e, item.Category_ID)}>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
@@ -177,6 +184,11 @@ export default function MenuOrderScreen(props) {
         }
       });
       setSelectedCategory(updatedCategories);
+
+      const xPosition = categoryPositions.current[visibleCategoryId];
+      if (xPosition !== undefined) {
+        categoryScrollRef.current?.scrollTo({ x: xPosition-200, animated: true });
+      }
     };
   
     const handleLayout = (categoryId, event) => {

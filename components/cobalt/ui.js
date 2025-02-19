@@ -66,7 +66,7 @@ class CbAccordionlist extends React.Component {
         ...category,
         Modifiers: category.Modifiers.map(modifier => ({
           ...modifier,
-          isChecked: value
+          isChecked: modifier.Modifier_Id === item.Modifier_Id ? value : modifier.isChecked
         }))
       }))
     };
@@ -75,7 +75,7 @@ class CbAccordionlist extends React.Component {
     getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
-  isValueChecked = (selectedItem, cartData, itemDataVisible,index) => {
+  isValueChecked = (modifiers,selectedItem, cartData, itemDataVisible,index) => {
     let isModifierSelected = false
     if (itemDataVisible) {
       cartData?.forEach((items) => {
@@ -245,7 +245,7 @@ class CbAccordionlist extends React.Component {
                                   style={styles.orderSubContainer}                   
                                 >
                                   <Checkbox
-                                    // isChecked={this.isValueChecked(order?.Modifiers,item, cartData, itemDataVisible,itemIndex)}
+                                    // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex)}
                                     onChange={(value) =>
                                       this.handleCheckboxToggle(
                                         item,
