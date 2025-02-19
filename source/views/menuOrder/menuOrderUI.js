@@ -265,7 +265,7 @@ export default function MenuOrderScreen(props) {
           scrollEventThrottle={16}
           contentContainerStyle={{paddingBottom:responsiveHeight(40)}}
         >
-          {selectedCategory.map((category) => {
+          {selectedCategory?.map((category) => {
             return (
               <UI.FlatList
                 onLayout={(e) => {handleLayout(category.Category_ID, e);handleItemLayout(category.Category_ID, e)}}

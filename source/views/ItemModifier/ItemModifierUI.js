@@ -19,7 +19,7 @@ const ItemModifier = (props) => {
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
-    const { handleDiscardChanges,loading} = useItemModifierLogic()
+    const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
 
     return (
       <>
@@ -128,6 +128,7 @@ const ItemModifier = (props) => {
                           <UI.CbAccordionlist
                             screenName="Modifiers"
                             props={props}
+                            getAllSelectedModifiers={getAllSelectedModifiers}
                           /></>
                       }
                     </UI.Box>

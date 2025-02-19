@@ -21,7 +21,6 @@ import { Divider } from '@/components/ui/divider';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import {  styles } from './style';
-import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
@@ -47,6 +46,7 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
+    this.getAllSelectedModifiers = props.getAllSelectedModifiers
      
     this.state = {
       selectedModifiers: {},
@@ -55,7 +55,6 @@ class CbAccordionlist extends React.Component {
 
   handleCheckboxToggle = (
     item,
-    getAllSelectedModifiers,
     value,
     modifiersResponseData,
     setModifiersResponseData
@@ -72,7 +71,7 @@ class CbAccordionlist extends React.Component {
     };
   
     setModifiersResponseData(updatedData);
-    getAllSelectedModifiers({ ...item, isChecked: value });
+    this.getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
   isValueChecked = (modifiers,selectedItem, cartData, itemDataVisible,index) => {
@@ -101,7 +100,7 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible, getAllSelectedModifiers ,modifiersResponseData,setModifiersResponseData,cartData}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -249,7 +248,6 @@ class CbAccordionlist extends React.Component {
                                     onChange={(value) =>
                                       this.handleCheckboxToggle(
                                         item,
-                                        getAllSelectedModifiers,
                                         value,
                                         modifiersResponseData,
                                         setModifiersResponseData
@@ -1067,6 +1065,7 @@ class CbFlatList extends React.Component{
     this.customStyles = props.customStyles || {}
     this.extraData = props.extraData || []
     this.scrollEnabled = props.scrollEnabled
+    this.nestedScrollEnabled = props.nestedScrollEnabled
   }
   renderEmptyList = () => {
       return(
@@ -1109,6 +1108,7 @@ class CbFlatList extends React.Component{
         onEndReachedThreshold={0.1}
         extraData = {this.extraData}
         scrollEnabled={this.scrollEnabled}
+        nestedScrollEnabled={this.nestedScrollEnabled}
       />
     );
   }
