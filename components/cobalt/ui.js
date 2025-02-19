@@ -538,7 +538,7 @@ class CbAddToCartButton extends React.Component {
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
 
           <TouchableOpacity
             style={styles.iconBtn}
