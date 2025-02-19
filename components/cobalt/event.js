@@ -56,35 +56,35 @@ export const UseFormContextProvider = ({children}) => {
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
 
-    // const setMealType = (id,IsEnabled) => {
-    //   if(IsEnabled===1){
-    //     const updatedMealType = menuOrderData.MenuItems.map((items) => {
-    //       let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
-    //       return{
-    //         ...items,
-    //         IsSelect: updatedCategoryData.length >0 && items.MealPeriod_Id === id ? 1 : 0,
-    //         Categories: updatedCategoryData.map((category, index) => ({
-    //           ...category,
-    //           IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
-    //         })),
-    //       }
-    //     });
+    const setMealType = (id,IsEnabled) => {
+      if(IsEnabled===1){
+        const updatedMealType = menuOrderData.MenuItems.map((items) => {
+          let updatedCategoryData =  typeof items.Categories === 'string' ? JSON.parse(items.Categories) : items.Categories;
+          return{
+            ...items,
+            IsSelect: updatedCategoryData.length >0 && items.MealPeriod_Id === id ? 1 : 0,
+            Categories: updatedCategoryData.map((category, index) => ({
+              ...category,
+              IsSelect: items.MealPeriod_Id === id && index === 0 ? 1 : 0,
+            })),
+          }
+        });
       
-    //     const foodMenuList = {
-    //       ...menuOrderData,
-    //       MenuItems: updatedMealType,
-    //     };
+        const foodMenuList = {
+          ...menuOrderData,
+          MenuItems: updatedMealType,
+        };
       
-    //     let isCategoryEmptyFlag = false;
-    //     updatedMealType.forEach((items) => {
-    //       if (items.IsSelect === 1 && items.Categories.length === 0) {
-    //         isCategoryEmptyFlag = true; 
-    //       }
-    //     });
-    //     setIsCategoryEmpty(isCategoryEmptyFlag);
-    //     setMenuOrderData(foodMenuList);
-    //   }
-    // };
+        let isCategoryEmptyFlag = false;
+        updatedMealType.forEach((items) => {
+          if (items.IsSelect === 1 && items.Categories.length === 0) {
+            isCategoryEmptyFlag = true; 
+          }
+        });
+        setIsCategoryEmpty(isCategoryEmptyFlag);
+        setMenuOrderData(foodMenuList);
+      }
+    };
     const setMealCategory = async (categoryData,MealPeriod_Id) => {
       setMenuLoading(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
@@ -124,20 +124,8 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
 
-    const getModifierData =async () => {
-      try {
-        const modifierDataItem = await AsyncStorage.getItem("modifier_data")
-        if (modifierDataItem !== null) {
-          setModifierCartItemData(JSON.parse(modifierDataItem))
-        } else {
-          setModifierCartItemData([])
-        }
-      } catch (error) {}
-    };
-
     useEffect(() => {
       getCartData()
-      getModifierData()
     },[])
 
   const addItemToCartBtn = async (data) => {
@@ -187,14 +175,13 @@ export const UseFormContextProvider = ({children}) => {
       try {
         setModifierCartItemData((prevModifierCartItemData) => {
           const updatedModifierData = [...prevModifierCartItemData];
-          const itemIndex = updatedModifierData.findIndex((modifierItem) => modifierItem.Item_ID === item.Item_ID);
+          const itemIndex = updatedModifierData?.findIndex((modifierItem) => modifierItem.Item_ID === item.Item_ID);
           if (itemIndex !== -1) {
             updatedModifierData[itemIndex].quantity += 1;
             updatedModifierData[itemIndex].quantityIncPrice = updatedModifierData[itemIndex].Price * updatedModifierData[itemIndex].quantity;
           } else {
             updatedModifierData.push({ ...item, quantity: 1, quantityIncPrice: item.Price });
           }
-          // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedModifierData));
           return updatedModifierData;
         });
       } catch (error) {
@@ -216,7 +203,6 @@ export const UseFormContextProvider = ({children}) => {
             );
            
           }
-          // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
           return updatedCartData;
         });
       } catch (error) {}
@@ -269,41 +255,43 @@ export const UseFormContextProvider = ({children}) => {
       setPriceLoader(false)
   }, [selectedModifiers]);
 
-  const addItemToModifierForCart = useCallback((modifierItem) => {
-    try {
-      setCartData((prevModifierCartItemData) => {
-        const updatedModifierData = [...prevModifierCartItemData];
-        updatedModifierData.push({
-          ...modifierItem,
-          quantity: singleModifierData.current.quantity,
-          quantityIncPrice: singleModifierData.current.quantityIncPrice,
-          comments: commentValue.current || "",
-          selectedModifiers: modifiersData.current
-        });
 
-        AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
-        setTimeout(() => {
-          setSelectedModifiers([])
-          modifiersData.current = null
-        }, 1000);
-        return updatedModifierData;
+  const addItemToModifierForCart = async (modifierItem) => {
+    try {
+      const existingCartData = await AsyncStorage.getItem("cart_data");
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+  
+      let prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
+  
+      const updatedModifierData = [...prevCartItems];
+  
+      updatedModifierData.push({
+        ...modifierItem,
+        quantity: singleModifierData.current.quantity,
+        quantityIncPrice: singleModifierData.current.quantityIncPrice,
+        comments: commentValue.current || "",
+        selectedModifiers: modifiersData.current,
+        profitCenterId: getProfitCenterId?.LocationId,
       });
+    
+      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
+      setCartData(updatedModifierData);
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
-  }, []);
+  };
 
 
   const deleteModifierItem = (modifierItem) => {
     let updatedCartData = addedModifierCartData?.filter((item) => item.Item_ID !== modifierItem.Item_ID);
     setAddedModifierCartData(updatedCartData);
-    // AsyncStorage.setItem("modifier_data", JSON.stringify(updatedCartData));
   };
     
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
-      // setMealType,
+      setMealType,
       setMealCategory,
       isSearchActive,
       handleChangeState,
@@ -316,7 +304,6 @@ export const UseFormContextProvider = ({children}) => {
       deleteCartItem,
       storeSingleItem,
       singleItemDetails,
-      // modifierData,
       increaseQuantity,
       modifierCartItemData,
       updateModifierItemQuantity,
