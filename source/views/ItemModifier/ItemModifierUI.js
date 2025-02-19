@@ -41,7 +41,7 @@ const ItemModifier = (props) => {
               <UI.Box
                 style={[
                   styles.itemDetailsContainer,
-                  { marginRight: quantity !== 0 || modifierQuantity !==0 && responsiveWidth(5) },
+                  { marginRight: (quantity !== 0 || modifierQuantity !==0) && responsiveWidth(5) },
                 ]}
               >
                 <UI.Box style={{ marginTop: 10 }}>
@@ -56,7 +56,7 @@ const ItemModifier = (props) => {
                     styles.rightItemContainer,
                     {
                       width:
-                        quantity >= 1 || modifierQuantity>=1
+                        (quantity >= 1 || modifierQuantity>=1)
                           ? responsiveWidth(25)
                           : responsiveWidth(17) ,
                     },
@@ -126,7 +126,6 @@ const ItemModifier = (props) => {
                         categoryData?.length > 0 &&
                         <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
                           <UI.CbAccordionlist
-                            componentData={modifierData}
                             screenName="Modifiers"
                             props={props}
                           /></>

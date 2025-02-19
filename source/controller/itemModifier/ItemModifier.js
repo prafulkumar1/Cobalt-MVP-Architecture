@@ -21,23 +21,27 @@ export const useItemModifierLogic = () => {
 
 
     useEffect(() => {
-        setLoading(true)
         getModifiersData()
-        const items = [];
-        foodOrderData.MenuItems.forEach(mealPeriod => {
-            mealPeriod.Categories.forEach(category => {
-                category.Submenu.forEach(submenu => {
-                    submenu.Items.forEach(item => {
-                        items.push(item);
-                    });
-                });
-            });
-        });
-        setItemNames(items);
     }, []);
+
+    function addIsCheckedProperty(item) {
+        let categoryData = typeof item?.Categories == "string"? JSON.parse(item?.Categories): item?.Categories
+        return {
+          ...item,
+          Categories: categoryData.map(category => ({
+            ...category,
+            Modifiers: category.Modifiers.map(modifier => ({
+              ...modifier,
+              isChecked: false
+            }))
+          }))
+        };
+      }
+      
 
     const getModifiersData = async() => {
       try {
+        setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
@@ -49,7 +53,8 @@ export const useItemModifierLogic = () => {
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
-                setModifiersResponseData(modifiersResponse?.response)
+                const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
+                setModifiersResponseData(updatedItem)
             }
             setLoading(false)
         }

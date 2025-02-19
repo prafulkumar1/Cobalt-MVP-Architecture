@@ -39,20 +39,20 @@ export default function MenuOrderScreen(props) {
       isSearchActive, 
       handleChangeState,
       cartData,
-      addedModifierCartData ,
       closePreviewModal,
       storeSingleItem,
       itemDataVisible,
       addItemToModifierForCart,
-      commentValue,
       setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails,
       modifierCartItemData,
       priceLoader,
+      increaseQuantity
     } = useFormContext();
 
   const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
+  const categoryScrollRef = useRef(null);
   const [itemPositions, setItemPositions] = useState({});
 
   const [expandedIds,setExpandedIds] = useState([])
@@ -62,8 +62,9 @@ export default function MenuOrderScreen(props) {
 
    const openItemDetails = async (box) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-      if(box.IsAvailable ===1){
+      if(quantityInfo.response.IsAvailable ===1){
         storeSingleItem({...box,response:quantityInfo.response})
+        increaseQuantity(box)
         closePreviewModal()
       }
     }
@@ -77,6 +78,21 @@ export default function MenuOrderScreen(props) {
         : [...prevExpandedIds, id];
     });
   };
+
+  const handleModifierAddCart = () => {
+    let isItemAvailableInCart = false
+    cartData?.forEach((items) => {
+        if(items.Item_ID === singleItemDetails.Item_ID ){
+          isItemAvailableInCart = true
+        }
+    })
+    if(isItemAvailableInCart){
+      UI.Alert.alert("Item is already available in cart")
+    }else{
+      addItemToModifierForCart(singleItemDetails);
+      closePreviewModal();
+    }
+  }
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -225,6 +241,7 @@ export default function MenuOrderScreen(props) {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryListContainer}
+          ref={categoryScrollRef}
         >
           {selectedCategory?.map((group) => renderMenuCategoryList(group))}
         </UI.ScrollView>
@@ -420,10 +437,7 @@ export default function MenuOrderScreen(props) {
               showBtnName={"Add to Cart"}
               style={styles.addToCartBtn}
               btnTextStyle={styles.addCartTxt}
-            onPress={() => {
-              addItemToModifierForCart(singleItemDetails);
-              closePreviewModal();
-            }}
+            onPress={() => handleModifierAddCart()}
             />
           </UI.Box>
         </Modal>

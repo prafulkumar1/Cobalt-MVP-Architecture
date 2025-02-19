@@ -56,11 +56,40 @@ class CbAccordionlist extends React.Component {
   handleCheckboxToggle = (
     item,
     getAllSelectedModifiers,
-    value
+    value,
+    modifiersResponseData,
+    setModifiersResponseData
   ) => {
-      getAllSelectedModifiers({...item,isChecked:value})
+    const updatedData = {
+      ...modifiersResponseData,
+      Categories: modifiersResponseData.Categories.map(category => ({
+        ...category,
+        Modifiers: category.Modifiers.map(modifier => ({
+          ...modifier,
+          isChecked: value
+        }))
+      }))
+    };
+  
+    setModifiersResponseData(updatedData);
+    getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
+  isValueChecked = (selectedItem, cartData, itemDataVisible,index) => {
+    let isModifierSelected = false
+    if (itemDataVisible) {
+      cartData?.forEach((items) => {
+        return items?.selectedModifiers?.forEach((value) => {
+          if (value.Modifier_Id === selectedItem.Modifier_Id) {
+            isModifierSelected = true
+          }
+        })
+      })
+    } else {
+      isModifierSelected = false
+    }
+    return isModifierSelected
+  } 
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -72,7 +101,7 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({ getAllSelectedModifiers ,modifiersResponseData}) => {
+        {({itemDataVisible, getAllSelectedModifiers ,modifiersResponseData,setModifiersResponseData,cartData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -211,17 +240,19 @@ class CbAccordionlist extends React.Component {
                                children={({item,index}) => {
                                 const itemIndex = index
                                 return(
-                                  <Box
+                                  <TouchableOpacity
                                   key={itemIndex}
-                                  style={styles.orderSubContainer}
+                                  style={styles.orderSubContainer}                   
                                 >
                                   <Checkbox
-                                    
+                                    // isChecked={this.isValueChecked(order?.Modifiers,item, cartData, itemDataVisible,itemIndex)}
                                     onChange={(value) =>
                                       this.handleCheckboxToggle(
                                         item,
                                         getAllSelectedModifiers,
-                                        value
+                                        value,
+                                        modifiersResponseData,
+                                        setModifiersResponseData
                                       )
                                     }
                                   >
@@ -248,7 +279,7 @@ class CbAccordionlist extends React.Component {
                                       item.Price !== null ? item.Price : 0
                                     }`}</Text>
                                   </AccordionContentText>
-                                </Box>
+                                </TouchableOpacity>
                                 )
                                }}
                             />
@@ -401,14 +432,18 @@ class CbAddToCartButton extends React.Component {
   }
 
 
-   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
+   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity,itemDataVisible) => {
     let quantityInfo = await postQuantityApiCall(quantity,this.mealItemDetails?.Item_ID)
     if (quantityInfo.statusCode === 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
-          closePreviewModal()
-          increaseQuantity(this.mealItemDetails, false)
+          if(itemDataVisible){
+            increaseQuantity(this.mealItemDetails, false)
+          }else{
+            closePreviewModal()
+            increaseQuantity(this.mealItemDetails, false)
+          }
         } else {
           addItemToCartBtn(this.mealItemDetails)
         }
@@ -416,17 +451,33 @@ class CbAddToCartButton extends React.Component {
     }
   }
 
-  modifierIncDecBtn = async (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+  modifierIncDecBtn = async (cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+       let isItemAvailableInCart = false
+        cartData?.forEach((items) => {
+            if(items.Item_ID === this.mealItemDetails.Item_ID ){
+              isItemAvailableInCart = true
+            }
+        })
     let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if(quantityInfo.statusCode ==200){
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           if(operation === "decrement"){
+            if(isItemAvailableInCart){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }      
         }else{
           if(this.state.isAvailable ===1){
+            if(isItemAvailableInCart){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+            }   
           }else{
               Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
@@ -448,7 +499,7 @@ class CbAddToCartButton extends React.Component {
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const { cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const {itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
@@ -466,7 +517,7 @@ class CbAddToCartButton extends React.Component {
             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
           ]}
           activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity)}
+          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
@@ -477,7 +528,7 @@ class CbAddToCartButton extends React.Component {
         <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
               this.state.IsModifierAvailable === 1 ? 
@@ -491,7 +542,7 @@ class CbAddToCartButton extends React.Component {
 
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
           >
             <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
           </TouchableOpacity>
