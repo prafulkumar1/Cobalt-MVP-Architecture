@@ -4,6 +4,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-nat
 export const styles = StyleSheet.create({
     scrollContent: {
         paddingHorizontal: 5,
+        flex:1
     },
     profitCenterBGImage: {
         width: "100%",
@@ -59,4 +60,11 @@ export const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
       },
+      emptyMealTxt: {
+        fontFamily: "SourceSansPro_SemiBoldItalic",
+        alignSelf: "center",
+        marginTop: responsiveHeight(3),
+      },
+      emptyMealContainer:{flex:1,justifyContent:"center",alignItems:"center"},
+      loaderContainer:{flex:1,justifyContent:"center",alignItems:"center",backgroundColor:"#fff"}
 });

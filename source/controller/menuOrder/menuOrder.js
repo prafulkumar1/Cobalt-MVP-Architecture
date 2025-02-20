@@ -19,7 +19,7 @@ export const useMenuOrderLogic = (props) => {
 
   const flatListRef = useRef(null);
 
-    const { setMenuOrderData,getCartData,menuLoading }= useFormContext();  
+    const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
 
 
     const openRecentOrder = () => {
@@ -68,10 +68,27 @@ export const useMenuOrderLogic = (props) => {
 
     setSelectedCategory(groupedCategories)
   }
+  const getCartData = async () => {
+      try {
+        const value = await AsyncStorage.getItem('cart_data');
+        const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+        let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+        if (value !== null) {
+          const parseData = typeof value == "string" ? JSON.parse(value) : value
+          let cartItems = parseData?.filter((item) => item.profitCenterId === getProfitCenterId.LocationId)
+          setCartData(cartItems)
+        } else {
+          setCartData([])
+        }
+      } catch (error) {}
+    };
+
+    useEffect(() => {
+      getCartData()
+    },[])
 
   useEffect(() => {
-    // getCartData()
-    // setLoading(false)
+    getCartData()
     getMenuOrderList()
     }, [])
   

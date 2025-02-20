@@ -21,7 +21,6 @@ import { Divider } from '@/components/ui/divider';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import {  styles } from './style';
-import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
@@ -47,49 +46,43 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
+    this.getAllSelectedModifiers = props.getAllSelectedModifiers
      
     this.state = {
-      selectedModifiers: {},
+      selectedModifiers: [],
+      isItemSelected:false,
+      selectedModifierId:""
     };
   }
 
   handleCheckboxToggle = (
     item,
-    getAllSelectedModifiers,
     value,
     modifiersResponseData,
     setModifiersResponseData
   ) => {
-    const updatedData = {
-      ...modifiersResponseData,
-      Categories: modifiersResponseData.Categories.map(category => ({
-        ...category,
-        Modifiers: category.Modifiers.map(modifier => ({
-          ...modifier,
-          isChecked: value
+      const updatedData = {
+        ...modifiersResponseData,
+        Categories: modifiersResponseData.Categories.map(category => ({
+          ...category,
+          Modifiers: category.Modifiers.map(modifier => ({
+            ...modifier,
+          isChecked: modifier.Modifier_Id === item.Modifier_Id ? value : modifier.isChecked
+          }))
         }))
-      }))
-    };
-  
-    setModifiersResponseData(updatedData);
-    getAllSelectedModifiers({ ...item, isChecked: value });
+      };
+    
+      setModifiersResponseData(updatedData);
+    this.getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
-  isValueChecked = (selectedItem, cartData, itemDataVisible,index) => {
-    let isModifierSelected = false
-    if (itemDataVisible) {
-      cartData?.forEach((items) => {
-        return items?.selectedModifiers?.forEach((value) => {
-          if (value.Modifier_Id === selectedItem.Modifier_Id) {
-            isModifierSelected = true
-          }
-        })
-      })
+  isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
+    if (existingCartData && Array.isArray(existingCartData.selectedModifiers)) {
+      return existingCartData.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
     } else {
-      isModifierSelected = false
+      return this.state.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
     }
-    return isModifierSelected
-  } 
+  };
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -101,13 +94,13 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible, getAllSelectedModifiers ,modifiersResponseData,setModifiersResponseData,cartData}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
           const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
- 
+          const existingCartData = cartData && cartData?.find((item) =>item.Item_ID ===  singleItemDetails.Item_ID)
           return (
             <>
               <CbFlatList
@@ -242,20 +235,30 @@ class CbAccordionlist extends React.Component {
                                 return(
                                   <TouchableOpacity
                                   key={itemIndex}
-                                  style={styles.orderSubContainer}                   
+                                  style={styles.orderSubContainer}
                                 >
-                                  <Checkbox
-                                    // isChecked={this.isValueChecked(order?.Modifiers,item, cartData, itemDataVisible,itemIndex)}
-                                    onChange={(value) =>
-                                      this.handleCheckboxToggle(
-                                        item,
-                                        getAllSelectedModifiers,
-                                        value,
-                                        modifiersResponseData,
-                                        setModifiersResponseData
-                                      )
-                                    }
-                                  >
+                                    <Checkbox
+                                      isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
+                                      onChange={(value) => {
+                                        this.setState((prevState) => {
+                                          const filteredModifiers = prevState.selectedModifiers.filter(
+                                            (modifier) => modifier.Modifier_Id !== item.Modifier_Id
+                                          );
+                                          return {
+                                            selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
+                                            isItemSelected:value,
+                                            selectedModifierId:item.Modifier_Id
+                                          };
+                                        }, () => {
+                                          this.handleCheckboxToggle(
+                                            item,
+                                            value,
+                                            modifiersResponseData,
+                                            setModifiersResponseData
+                                          )
+                                        })
+                                      }}
+                                    >
                                     <CheckboxIndicator
                                       style={styles.CheckboxIndicator}
                                     >
@@ -401,7 +404,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?4:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -538,7 +541,7 @@ class CbAddToCartButton extends React.Component {
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
 
           <TouchableOpacity
             style={styles.iconBtn}
@@ -1067,6 +1070,7 @@ class CbFlatList extends React.Component{
     this.customStyles = props.customStyles || {}
     this.extraData = props.extraData || []
     this.scrollEnabled = props.scrollEnabled
+    this.nestedScrollEnabled = props.nestedScrollEnabled
   }
   renderEmptyList = () => {
       return(
@@ -1109,6 +1113,7 @@ class CbFlatList extends React.Component{
         onEndReachedThreshold={0.1}
         extraData = {this.extraData}
         scrollEnabled={this.scrollEnabled}
+        nestedScrollEnabled={this.nestedScrollEnabled}
       />
     );
   }

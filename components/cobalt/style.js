@@ -480,4 +480,8 @@ CheckIcon:{color:"#ffff"},
     alignSelf:"center",
     marginTop:responsiveHeight(3)
   },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
 })
