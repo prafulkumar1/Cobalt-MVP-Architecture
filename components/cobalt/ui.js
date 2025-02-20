@@ -59,20 +59,8 @@ class CbAccordionlist extends React.Component {
     item,
     value,
     modifiersResponseData,
-    setModifiersResponseData
+    setModifiersResponseData,
   ) => {
-      const updatedData = {
-        ...modifiersResponseData,
-        Categories: modifiersResponseData.Categories.map(category => ({
-          ...category,
-          Modifiers: category.Modifiers.map(modifier => ({
-            ...modifier,
-          isChecked: modifier.Modifier_Id === item.Modifier_Id ? value : modifier.isChecked
-          }))
-        }))
-      };
-    
-      setModifiersResponseData(updatedData);
     this.getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
@@ -94,7 +82,7 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails,setSelectedModifiers}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -238,7 +226,7 @@ class CbAccordionlist extends React.Component {
                                   style={styles.orderSubContainer}
                                 >
                                     <Checkbox
-                                      isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
+                                      // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
@@ -250,6 +238,7 @@ class CbAccordionlist extends React.Component {
                                             selectedModifierId:item.Modifier_Id
                                           };
                                         }, () => {
+                                          // setSelectedModifiers(this.state.selectedModifiers);
                                           this.handleCheckboxToggle(
                                             item,
                                             value,
@@ -398,8 +387,6 @@ class CbFloatingButton extends React.Component {
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
-          const getModifierListQuantity = modifierCartItemData && modifierCartItemData.reduce((total,prev) => total+prev.quantity,0)
-          const finalQuantity = getFinalQuantity+getModifierListQuantity
           return (
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>

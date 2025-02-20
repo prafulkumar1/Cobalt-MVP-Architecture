@@ -46,7 +46,8 @@ export default function MenuOrderScreen(props) {
       setIsVisible, updateModifierItemQuantity, selectedModifiers, singleItemDetails,
       modifierCartItemData,
       priceLoader,
-      increaseQuantity
+      increaseQuantity,
+      setSelectedModifiers
     } = useFormContext();
 
   const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
@@ -62,6 +63,7 @@ export default function MenuOrderScreen(props) {
   const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+  const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
 
    const openItemDetails = async (box) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
@@ -263,7 +265,7 @@ export default function MenuOrderScreen(props) {
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          contentContainerStyle={{paddingBottom:responsiveHeight(40)}}
+          contentContainerStyle={{paddingBottom:responsiveHeight(80)}}
         >
           {selectedCategory?.map((category) => {
             return (
@@ -445,7 +447,7 @@ export default function MenuOrderScreen(props) {
                     <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                     <UI.Text
                       style={styles.orderAmount}
-                    >{`$23`}</UI.Text>
+                    >{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
                   </UI.Box>
                   <UI.CbCommonButton
                     showBtnName={"Add to Cart"}

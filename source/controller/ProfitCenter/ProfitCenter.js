@@ -6,7 +6,7 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const pageId='ProfitCenter';
-export const useProfitCenterLogic = () => {
+export const useProfitCenterLogic = (props) => {
   const [profitCenterData , setProfitCenterData] = useState(null)
   const [loading, setLoading] = useState(false);
   const { } = useFormContext();
@@ -25,7 +25,12 @@ export const useProfitCenterLogic = () => {
     if(profitCenterResponseData.statusCode == 200){
       if(profitCenterResponseData.response?.MealPeriodData.length === 1){
         const responseData = profitCenterResponseData.response?.MealPeriodData[0]
-        navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData?.LocationName,LocationId:responseData?.LocationId })
+        if (responseData.Isnavigate == 1) {
+          await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
+          setLoading(false)
+          navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
+          setProfitCenterData(profitCenterResponseData.response)
+        }
     }else{
         setProfitCenterData(profitCenterResponseData.response)
         setLoading(false)

@@ -99,6 +99,7 @@ export const useItemModifierLogic = () => {
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
         updatedModifiers.push(modifiers);
+        console.log(updatedModifiers,"==--->>>@222")
         return updatedModifiers;
       });
     };

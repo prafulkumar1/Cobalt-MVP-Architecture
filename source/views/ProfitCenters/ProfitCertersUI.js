@@ -7,7 +7,7 @@ import { ImageBackground } from "react-native";
 
 const pageId = 'ProfitCenter';
 const ProfitCenters = (props) => {
-    const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic()
+    const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic(props)
 
     let pageConfigJson = global.appConfigJsonArray?.find(
         (item) => item.PageId === pageId
