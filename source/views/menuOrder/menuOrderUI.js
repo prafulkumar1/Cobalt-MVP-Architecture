@@ -4,18 +4,33 @@ import {
 } from "@/components/cobalt/event";
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
-import { Image } from "react-native";
+import { ActivityIndicator, Image, Modal } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
-import {ChevronRightIcon,ChevronDownIcon } from '@/components/ui/icon';
+import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/components/ui/icon';
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
+import {  useRef, useState, useEffect } from "react";
+import { Image as ExpoImage } from 'expo-image';
+import { postQuantityApiCall } from "@/components/cobalt/ui";
+import ItemModifier from "../ItemModifier/ItemModifierUI";
+import { responsiveHeight } from "react-native-responsive-dimensions";
+
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [isSearchTriggered, setIsSearchTriggered] = useState(false); // New local state
+
   let pageConfigJson = global.appConfigJsonArray?.find(
     (item) => item?.PageId === pageId
   );
+
+  const handleSearchPress = () => {
+    setIsSearchTriggered(true); // Set true when search icon is pressed
+    setSearchQuery(""); // Clear previous search query
+  }
 
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
@@ -26,11 +41,103 @@ export default function MenuOrderScreen(props) {
     return acc;
   }, {});
 
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredItems([]);
+    } else {
+      const newFilteredItems = selectedCategory.map(category => ({
+        ...category,
+        submenus: category.submenus.map(submenu => {
+          const lowerCaseQuery = searchQuery.toLowerCase();
+  
+          // First, get items that start with the search query
+          const startsWithQuery = submenu.items.filter(item =>
+            item.Item_Name.toLowerCase().startsWith(lowerCaseQuery)
+          );
+  
+          // Then, get items that contain the search query but don’t start with it
+          const containsQuery = submenu.items.filter(item =>
+            item.Item_Name.toLowerCase().includes(lowerCaseQuery) &&
+            !item.Item_Name.toLowerCase().startsWith(lowerCaseQuery)
+          );
+  
+          return {
+            ...submenu,
+            items: [...startsWithQuery, ...containsQuery], // Maintain order
+          };
+        }).filter(submenu => submenu.items.length > 0),
+      })).filter(category => category.submenus.length > 0);
+  
+      setFilteredItems(newFilteredItems);
+    }
+  }, [searchQuery, selectedCategory]);
+
+
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
-  const {menuLoading, menuOrderData, setMealCategory, setMealType, isCategoryEmpty, isSearchActive, handleChangeState,cartData,addedModifierCartData } = useFormContext();
+  const {
+      setMealType, 
+      isCategoryEmpty, 
+      isSearchActive, 
+      handleChangeState,
+      cartData,
+      closePreviewModal,
+      storeSingleItem,
+      itemDataVisible,
+      addItemToModifierForCart,
+      setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails,
+      modifierCartItemData,
+      priceLoader,
+      increaseQuantity
+    } = useFormContext();
 
-  const { isRecentOrderOpen,openRecentOrder,errorMessage,loading } = useMenuOrderLogic(props)
+  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
+  const categoryRefs = useRef({});
+  const scrollViewRef = useRef(null);
+  const categoryScrollRef = useRef(null);
+  const categoryPositions = useRef({});
+  const [itemPositions, setItemPositions] = useState({});
+
+  const [expandedIds,setExpandedIds] = useState([])
+
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+
+   const openItemDetails = async (box) => {
+      let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+      if(quantityInfo.response.IsAvailable ===1){
+        storeSingleItem({...box,response:quantityInfo.response})
+        increaseQuantity(box)
+        closePreviewModal()
+      }
+    }
+  
+
+  const handleReadMoreToggle = (id) => {
+    setExpandedIds((prevExpandedIds) => {
+      const isExpanded = prevExpandedIds.includes(id);
+      return isExpanded
+        ? prevExpandedIds.filter((expandedId) => expandedId !== id)
+        : [...prevExpandedIds, id];
+    });
+  };
+
+  const handleModifierAddCart = () => {
+    let isItemAvailableInCart = false
+    cartData?.forEach((items) => {
+        if(items.Item_ID === singleItemDetails.Item_ID ){
+          isItemAvailableInCart = true
+        }
+    })
+    if(isItemAvailableInCart){
+      UI.Alert.alert("Item is already available in cart")
+    }else{
+      addItemToModifierForCart(singleItemDetails);
+      closePreviewModal();
+    }
+  }
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -76,19 +183,29 @@ export default function MenuOrderScreen(props) {
       </UI.Box>
     );
   }
-  
-  const renderMenuCategoryList = (item,mealPeriodId) => {
+
+  const handleCategoryClick = (categoryId) => {
+    const yPosition = itemPositions[categoryId];
+    if (yPosition !== undefined && scrollViewRef.current) {
+      scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
+    }
+  };
+  const handleCategoryLayout = (event, categoryId) => {
+    const { x } = event.nativeEvent.layout;
+    categoryPositions.current[categoryId] = x;
+  };
+  const renderMenuCategoryList = (item) => {
     return (
-      <UI.Box>
+      <UI.Box onLayout={(e) => handleCategoryLayout(e, item.Category_ID)}>
         <UI.TouchableOpacity
           style={styles.categoryBtn}
           activeOpacity={0.6}
-          onPress={() => setMealCategory(item,mealPeriodId)}
+          onPress={() => handleCategoryClick(item.Category_ID)}
         >
           <UI.Text style={styles.categoryText}>
             {item.Category_Name?.toUpperCase()}
           </UI.Text>
-          {item.IsSelect === 1 && (
+          {item.CategoryIsSelect === 1 && (
             <UI.Box
               style={[
                 tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
@@ -101,48 +218,387 @@ export default function MenuOrderScreen(props) {
   }
 
   const renderCategoryMainList = () => {
-    if (!isCategoryEmpty) {
-      return (
-        <UI.Box style={styles.mainBoxContainer}>
-          <UI.Box style={styles.subCategoryContainer}>
-            {menuOrderData &&
-              menuOrderData?.MenuItems?.map((mealCategory,index) => {
-                const categories = mealCategory?.Categories || [];
-                let updatedData =  typeof categories === 'string' ? JSON.parse(categories) : categories;
-                if (mealCategory.IsSelect === 1) {
-                  return (
-                    <>
-                      <UI.ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.categoryListContainer}
-                      >
-                        {updatedData &&
-                          updatedData
-                            .map((item) => renderMenuCategoryList(item,mealCategory.MealPeriod_Id))}
-                      </UI.ScrollView>
-                    </>
-                  );
-                }else if(updatedData.length === 0){
-                  return(
-                    <UI.Text style={[styles.emptyMealTxt,styles.categoryItem]}>No items available</UI.Text>
-                  )
-                }
-              })}
-          </UI.Box>
-              {
-                menuLoading ? <CbLoader /> : <UI.cbCategoryList />
-              }
-        </UI.Box>
-      )
+    const updateCategorySelection = (visibleCategoryId) => {
+      const updatedCategories = selectedCategory.map(category => {
+        return{
+          ...category,
+          CategoryIsSelect: category.Category_ID === visibleCategoryId ? 1 : 0,
+        }
+      });
+      setSelectedCategory(updatedCategories);
+
+      const xPosition = categoryPositions.current[visibleCategoryId];
+      if (xPosition !== undefined) {
+        categoryScrollRef.current?.scrollTo({ x: xPosition-200, animated: true });
+      }
+    };
+  
+    const handleLayout = (categoryId, event) => {
+      const layout = event.nativeEvent.layout;
+      categoryRefs.current[categoryId] = layout.y;
+    };
+
+
+
+  const handleCloseItemDetails = () => {
+    if (selectedModifiers.length === 0) {
+        setIsVisible(false)
+        updateModifierItemQuantity(singleItemDetails, 0)
+        setTimeout(() => {
+            closePreviewModal()
+        }, 100)
     } else {
+        setIsVisible(true)
+    }
+}
+
+
+    const showActiveAvailableColor = (isAvailable,IsDisable) => {
+      return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
+    };
+  
+    const handleScroll = (event) => {
+      const scrollY = event?.nativeEvent?.contentOffset.y;
+      let visibleCategory = null;
+  
+      for (const [categoryId, y] of Object.entries(categoryRefs.current)) {
+        if (scrollY >= y - 50 && scrollY < y + 100) {
+          visibleCategory = categoryId;
+          break;
+        }
+      }
+  
+      if (visibleCategory) {
+        updateCategorySelection(visibleCategory);
+      }
+    };
+
+    const handleItemLayout = (categoryId, event) => {
+      const layout = event?.nativeEvent?.layout;
+      setItemPositions((prevPositions) => ({
+        ...prevPositions,
+        [categoryId]: layout.y,
+      }));
+    };
+  
+    if (isCategoryEmpty) {
       return (
         <UI.Box style={styles.emptyListContainer}>
           <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
         </UI.Box>
-      )
+      );
     }
-  }
+    if (isSearchTriggered && searchQuery.trim() === "") {
+      return (
+        <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <UI.Text style={styles.emptyMealTxt}>Start typing to search...</UI.Text>
+        </UI.Box>
+      );
+    }
+  
+    return (
+      <UI.Box style={styles.mainBoxContainer}>
+      {searchQuery.trim() === "" && (
+        <UI.ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryListContainer}
+          ref={categoryScrollRef}
+        >
+          {selectedCategory?.map((group) => renderMenuCategoryList(group))}
+        </UI.ScrollView>
+      )}
+    
+
+        <UI.ScrollView style={styles.bottomMiddleContainer}
+          ref={scrollViewRef}
+          onScroll={handleScroll}
+          showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          contentContainerStyle={{paddingBottom:responsiveHeight(40)}}
+        >
+        
+          {
+            searchQuery.trim() !== "" && filteredItems.length === 0 ? (
+        <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
+      ) : (filteredItems.length > 0 ? (
+            filteredItems.map((category, categoryIndex) => (
+              category.submenus.map((submenu) => (
+                <UI.Box key={`category-${category.Category_ID}-submenu-${submenu.SubMenu_ID}`}>
+                  <UI.Text style={styles.itemCategoryLabel}>
+                    {submenu.SubMenu_Name}
+                  </UI.Text>
+                  {submenu.items.map((box, index) => {
+                    const isExpanded = expandedIds.includes(box?.Item_ID);
+                    return (
+                      <UI.TouchableOpacity
+                        activeOpacity={0.5}
+                        disabled={box.IsAvailable !== 1}
+                        onPress={() => openItemDetails(box)}
+                        key={box?.Item_ID}
+                        style={[
+                          styles.subContainer,
+                          {
+                            opacity: box?.IsAvailable === 1 && box?.IsDisable === 0 ? 1 : 0.8,
+                          },
+                        ]}
+                      >
+                        <UI.Box style={styles.rowContainer}>
+                          <UI.Box style={[styles.textContainer]}>
+                            <UI.Text
+                              numberOfLines={1}
+                              style={[
+                                styles.mealTypeTitle,
+                                showActiveAvailableColor(box?.IsAvailable, box?.IsDisable),
+                                { textAlign: "justify" },
+                              ]}
+                            >
+                              {box?.Item_Name}
+                            </UI.Text>
+                            <UI.Text
+                              numberOfLines={isExpanded ? undefined : 2}
+                              style={[
+                                styles.priceTxt,
+                                showActiveAvailableColor(box.IsAvailable, box.IsDisable),
+                              ]}
+                            >
+                              {`$${box?.Price != null ? box?.Price : 0}`}
+                            </UI.Text>
+                            <UI.Text
+                              numberOfLines={isExpanded ? undefined : 2}
+                              style={[
+                                styles.descriptionTxt,
+                                showActiveAvailableColor(box.IsAvailable, box.IsDisable),
+                                { textAlign: "left", letterSpacing: -0.5 },
+                              ]}
+                            >
+                              {box?.Description}
+                            </UI.Text>
+                            {box?.Description?.length > 68 && (
+                              <UI.Text
+                                onPress={() => handleReadMoreToggle(box.Item_ID)}
+                                style={styles.underLineTxt}
+                              >
+                                {isExpanded ? "Show Less" : "Read More"}
+                              </UI.Text>
+                            )}
+                          </UI.Box>
+                          <UI.Box style={styles.imageContainer}>
+                            <UI.Box
+                              style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                              disabled={box.IsAvailable === 0 && box.IsDisable === 1}
+                            >
+                              <ExpoImage
+                                source={{ uri: box.ImageUrl }}
+                                contentFit="cover"
+                                cachePolicy="memory-disk"
+                                style={[
+                                  styles.mealTypeImg,
+                                  box.IsAvailable === 0 && box.IsDisable === 1 && { opacity: 0.4 },
+                                ]}
+                              />
+                            </UI.Box>
+                            <UI.CbAddToCartButton mealItemDetails={box} />
+                          </UI.Box>
+                        </UI.Box>
+                      </UI.TouchableOpacity>
+                    );
+                  })}
+                </UI.Box>
+              ))
+            ))
+          ) : (
+            selectedCategory.map((category) => {
+            return (
+              <UI.FlatList
+                onLayout={(e) => {handleLayout(category.Category_ID, e);handleItemLayout(category.Category_ID, e)}}
+                data={category.submenus}
+                renderItem={({ item }) => {
+                  const subMenuItem = item
+                  return (
+                    <>
+                      {
+                          item.SubMenu_Name !==null &&
+                           <UI.TouchableOpacity activeOpacity={0.5} style={styles.cardMainContainer} onPress={() => toggleSubmenu(category.Category_ID)}>
+                           <UI.Text style={styles.itemCategoryLabel}>{item.SubMenu_Name}</UI.Text>
+                           {expandedSubmenus[category.Category_ID] ? (
+                             <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"}/>
+                           ) : (
+                             <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"}/>
+                           )}
+                         </UI.TouchableOpacity>
+                      }
+                      {expandedSubmenus[category.Category_ID] && (
+                        <UI.CbFlatList
+                          flatlistData={item.items}
+                          customStyles={{ backgroundColor: "#fff" }}
+                          children={({ item, index }) => {
+                            let box = item;
+                            const lastItem =
+                              index === subMenuItem.items?.length - 1;
+                            const isExpanded = expandedIds.includes(box?.Item_ID);
+
+                            return (
+                              <UI.TouchableOpacity
+                                activeOpacity={0.5}
+                                disabled={box.IsAvailable !== 1}
+                                onPress={() =>
+                                  openItemDetails(box)
+                                }
+                                key={box?.Item_ID}
+                                style={[
+                                  styles.subContainer,
+                                  {
+                                    opacity:
+                                      box?.IsAvailable === 1 &&
+                                        box?.IsDisable === 0
+                                        ? 1
+                                        : 0.8,
+                                  },
+                                ]}
+                              >
+                                <UI.Box style={styles.rowContainer}>
+                                  <UI.Box style={[styles.textContainer]}>
+                                    <UI.Text
+                                      numberOfLines={1}
+                                      style={[
+                                        styles.mealTypeTitle,
+                                        showActiveAvailableColor(
+                                          box?.IsAvailable,
+                                          box?.IsDisable
+                                        ),
+                                        { textAlign: "justify" },
+                                      ]}
+                                    >
+                                      {box?.Item_Name}
+                                    </UI.Text>
+                                    <UI.Text
+                                      numberOfLines={
+                                        isExpanded ? undefined : 2
+                                      }
+                                      style={[
+                                        styles.priceTxt,
+                                        showActiveAvailableColor(
+                                          box.IsAvailable,
+                                          box.IsDisable
+                                        ),
+                                      ]}
+                                    >
+                                      {`$${box?.Price != null
+                                        ? box?.Price
+                                        : 0
+                                        }`}
+                                    </UI.Text>
+                                    <UI.Text
+                                      numberOfLines={
+                                        isExpanded ? undefined : 2
+                                      }
+                                      style={[
+                                        styles.descriptionTxt,
+                                        showActiveAvailableColor(
+                                          box.IsAvailable,
+                                          box.IsDisable
+                                        ),
+                                        {
+                                          textAlign: "left",
+                                          letterSpacing: -0.5,
+                                        },
+                                      ]}
+                                    >
+                                      {box?.Description}
+                                    </UI.Text>
+                                    {box?.Description?.length > 68 && (
+                                      <UI.Text
+                                        onPress={() =>
+                                          handleReadMoreToggle(
+                                            box.Item_ID
+                                          )
+                                        }
+                                        style={styles.underLineTxt}
+                                      >
+                                        {isExpanded
+                                          ? "Show Less"
+                                          : "Read More"}
+                                      </UI.Text>
+                                    )}
+                                  </UI.Box>
+
+                                  <UI.Box style={styles.imageContainer}>
+                                    <UI.Box
+                                      style={{
+                                        backgroundColor:
+                                          "rgba(255, 255, 255, 0.2)",
+                                      }}
+                                      disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
+                                    >
+                                      <ExpoImage
+                                        source={{ uri: item.ImageUrl }}
+                                        contentFit="cover"
+                                        cachePolicy="memory-disk"
+                                        style={[
+                                          styles.mealTypeImg,
+                                          box.IsAvailable === 0 &&
+                                          box.IsDisable === 1 && {
+                                            opacity: 0.4,
+                                          },
+                                        ]}
+                                      />
+                                    </UI.Box>
+                                    <UI.CbAddToCartButton mealItemDetails={box} />
+                                  </UI.Box>
+                                </UI.Box>
+                                {!lastItem && (
+                                  <UI.Box style={styles.horizontalLine} />
+                                )}
+                              </UI.TouchableOpacity>
+                            );
+                          }}
+                        />
+                      )}
+                    </>
+                  );
+                }}
+              />
+            );
+          })))}
+        </UI.ScrollView>
+
+        <Modal
+          visible={itemDataVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePreviewModal}
+        >
+          <UI.TouchableOpacity
+            onPress={() => handleCloseItemDetails()}
+            style={styles.crossIcon}
+          >
+            <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
+
+          </UI.TouchableOpacity>
+          <UI.Box style={styles.blackShadow} />
+          <ItemModifier />
+          <UI.Box style={styles.footerContainer}>
+            <UI.Box>
+              <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+              {
+                priceLoader ? <ActivityIndicator color={"#00C6FF"} size={"small"}/> :  <UI.Text
+                style={styles.orderAmount}
+              >{`$${singleItemPrice}`}</UI.Text>
+              }
+             
+            </UI.Box>
+            <UI.CbCommonButton
+              showBtnName={"Add to Cart"}
+              style={styles.addToCartBtn}
+              btnTextStyle={styles.addCartTxt}
+            onPress={() => handleModifierAddCart()}
+            />
+          </UI.Box>
+        </Modal>
+      </UI.Box>
+    );
+  };
 
   const OnRecentOrderPress = () => {
     const RenderingRecentOrders = ({ item }) => {
@@ -165,7 +621,7 @@ export default function MenuOrderScreen(props) {
             <UI.TouchableOpacity
               activeOpacity={0.5}
             >
-              <UI.CbAddToCartButton mealItemDetails={{}} style={styles.addToCartBtn} />
+              <UI.CbAddToCartButton mealItemDetails={{}} style={styles.recentBtn} />
             </UI.TouchableOpacity>
           </UI.Box>
         </UI.Box>
@@ -200,15 +656,14 @@ export default function MenuOrderScreen(props) {
         return(
           <>
           <UI.Box style={styles.topContainer}>
-            {menuOrderData &&
-              menuOrderData?.MenuItems?.map((item) => {
+            {mealPeriods.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>
          
           {renderCategoryMainList()}
 
-          {(cartData?.length > 0 || addedModifierCartData?.length > 0) && <UI.CbFloatingButton props={props} />}
+          {(cartData?.length > 0 || modifierCartItemData?.length > 0) && <UI.CbFloatingButton props={props} />}
         </>
         )
       }
@@ -223,7 +678,11 @@ export default function MenuOrderScreen(props) {
     <UI.Box style={styles.mainContainer}>
       <UI.Box style={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
         {
-          !isRecentOrderOpen && <UI.cbSearchbox onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
+          !isRecentOrderOpen && <UI.cbSearchbox 
+  onSearch={setSearchQuery} 
+  onSearchPress={handleSearchPress} 
+  isRecentOrderOpen={isRecentOrderOpen} 
+/>
         }
         {!isSearchActive && (
           <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
@@ -238,7 +697,7 @@ export default function MenuOrderScreen(props) {
             </UI.Box>
 
             <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={{width:25,height:25}}/>
+              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
         )}
