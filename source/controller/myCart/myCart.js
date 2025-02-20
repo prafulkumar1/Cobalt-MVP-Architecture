@@ -77,11 +77,9 @@ export const useMyCartLogic = () => {
     }
     delete swipeableRefs.current[item.Item_ID];
     setOpenItemId(null);
-    if(item.isModifier ===1){
-      deleteModifierItem(item)
-    }else{
-      deleteCartItem(item);
-    }
+    deleteCartItem(item);
+    updateModifierItemQuantity(item, 0)
+
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {

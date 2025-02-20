@@ -49,7 +49,9 @@ class CbAccordionlist extends React.Component {
     this.getAllSelectedModifiers = props.getAllSelectedModifiers
      
     this.state = {
-      selectedModifiers: {},
+      selectedModifiers: [],
+      isItemSelected:false,
+      selectedModifierId:""
     };
   }
 
@@ -59,36 +61,28 @@ class CbAccordionlist extends React.Component {
     modifiersResponseData,
     setModifiersResponseData
   ) => {
-    const updatedData = {
-      ...modifiersResponseData,
-      Categories: modifiersResponseData.Categories.map(category => ({
-        ...category,
-        Modifiers: category.Modifiers.map(modifier => ({
-          ...modifier,
+      const updatedData = {
+        ...modifiersResponseData,
+        Categories: modifiersResponseData.Categories.map(category => ({
+          ...category,
+          Modifiers: category.Modifiers.map(modifier => ({
+            ...modifier,
           isChecked: modifier.Modifier_Id === item.Modifier_Id ? value : modifier.isChecked
+          }))
         }))
-      }))
-    };
-  
-    setModifiersResponseData(updatedData);
+      };
+    
+      setModifiersResponseData(updatedData);
     this.getAllSelectedModifiers({ ...item, isChecked: value });
   };
 
-  isValueChecked = (modifiers,selectedItem, cartData, itemDataVisible,index) => {
-    let isModifierSelected = false
-    if (itemDataVisible) {
-      cartData?.forEach((items) => {
-        return items?.selectedModifiers?.forEach((value) => {
-          if (value.Modifier_Id === selectedItem.Modifier_Id) {
-            isModifierSelected = true
-          }
-        })
-      })
+  isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
+    if (existingCartData && Array.isArray(existingCartData.selectedModifiers)) {
+      return existingCartData.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
     } else {
-      isModifierSelected = false
+      return this.state.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
     }
-    return isModifierSelected
-  } 
+  };
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -100,13 +94,13 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
           const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
- 
+          const existingCartData = cartData && cartData?.find((item) =>item.Item_ID ===  singleItemDetails.Item_ID)
           return (
             <>
               <CbFlatList
@@ -241,19 +235,30 @@ class CbAccordionlist extends React.Component {
                                 return(
                                   <TouchableOpacity
                                   key={itemIndex}
-                                  style={styles.orderSubContainer}                   
+                                  style={styles.orderSubContainer}
                                 >
-                                  <Checkbox
-                                    // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex)}
-                                    onChange={(value) =>
-                                      this.handleCheckboxToggle(
-                                        item,
-                                        value,
-                                        modifiersResponseData,
-                                        setModifiersResponseData
-                                      )
-                                    }
-                                  >
+                                    <Checkbox
+                                      isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
+                                      onChange={(value) => {
+                                        this.setState((prevState) => {
+                                          const filteredModifiers = prevState.selectedModifiers.filter(
+                                            (modifier) => modifier.Modifier_Id !== item.Modifier_Id
+                                          );
+                                          return {
+                                            selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
+                                            isItemSelected:value,
+                                            selectedModifierId:item.Modifier_Id
+                                          };
+                                        }, () => {
+                                          this.handleCheckboxToggle(
+                                            item,
+                                            value,
+                                            modifiersResponseData,
+                                            setModifiersResponseData
+                                          )
+                                        })
+                                      }}
+                                    >
                                     <CheckboxIndicator
                                       style={styles.CheckboxIndicator}
                                     >
@@ -399,7 +404,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?4:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );

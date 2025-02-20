@@ -15,10 +15,6 @@ export const useProfitCenterLogic = () => {
     getProfitCenterList()
   }, [])
 
-  useEffect(() => {
-    setLoading(false)
-  },[profitCenterData])
-
   const getProfitCenterList = async () => {
     setLoading(true)
     const params = {
@@ -30,8 +26,9 @@ export const useProfitCenterLogic = () => {
       if(profitCenterResponseData.response?.MealPeriodData.length === 1){
         const responseData = profitCenterResponseData.response?.MealPeriodData[0]
         navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData?.LocationName,LocationId:responseData?.LocationId })
-      }else{
+    }else{
         setProfitCenterData(profitCenterResponseData.response)
+        setLoading(false)
       }
     }
   }

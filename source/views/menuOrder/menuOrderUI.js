@@ -43,7 +43,7 @@ export default function MenuOrderScreen(props) {
       storeSingleItem,
       itemDataVisible,
       addItemToModifierForCart,
-      setIsVisible, updateModifierItemQuantity, selectedModifiers, setSelectedModifiers, singleItemDetails,
+      setIsVisible, updateModifierItemQuantity, selectedModifiers, singleItemDetails,
       modifierCartItemData,
       priceLoader,
       increaseQuantity
@@ -520,7 +520,7 @@ export default function MenuOrderScreen(props) {
          
           {renderCategoryMainList()}
 
-          {(cartData?.length > 0 || modifierCartItemData?.length > 0) && <UI.CbFloatingButton props={props} />}
+          {cartData?.length > 0 && <UI.CbFloatingButton props={props} />}
         </>
         )
       }
