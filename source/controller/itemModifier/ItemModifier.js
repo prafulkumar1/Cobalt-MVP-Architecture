@@ -99,30 +99,58 @@ export const useItemModifierLogic = () => {
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
         updatedModifiers.push(modifiers);
-        console.log(updatedModifiers,"==--->>>@222")
         return updatedModifiers;
       });
     };
 
+    // const calculateTotalPrice = () => {
+    //   const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
+    //     return modifier.isChecked
+    //       ? total + modifier.Price
+    //       : total - modifier.Price;
+    //   }, 0);
+  
+    //   let finalValue = Math.ceil(modifiersTotal);
+    //   console.log(modifierCartItemData,"--->>>>>@2333333")
+  
+    //   let updatedModifierData = modifierCartItemData?.map((items) => {
+    //     const basePrice = items.basePrice ?? items.quantityIncPrice;
+  
+    //     return {
+    //       ...items,
+    //       basePrice: items.quantity > 1 ? ((items.quantity*items.Price)+basePrice):basePrice,
+    //       quantityIncPrice: (Number(basePrice) || 0) + finalValue,
+    //     };
+    //   });
+  
+    //   setModifierCartItemData(updatedModifierData);
+    //   const getCurrentItemDetails = updatedModifierData?.find(
+    //     (item) => item.Item_ID === singleItemDetails.Item_ID
+    //   );
+    //   singleModifierData.current = {
+    //     quantity: getCurrentItemDetails?.quantity,
+    //     quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+    //   };
+    // };
+
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
-        return modifier.isChecked
-          ? total + modifier.Price
-          : total - modifier.Price;
+        return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
       }, 0);
-  
+    
       let finalValue = Math.ceil(modifiersTotal);
-  
+    
       let updatedModifierData = modifierCartItemData?.map((items) => {
         const basePrice = items.basePrice ?? items.quantityIncPrice;
-  
+        const totalItemPrice = items.quantity * (items.Price || 0);
+    
         return {
           ...items,
-          basePrice: basePrice,
-          quantityIncPrice: (Number(basePrice) || 0) + finalValue,
+          basePrice: totalItemPrice + basePrice + finalValue,
+          quantityIncPrice: totalItemPrice + finalValue,
         };
       });
-  
+    
       setModifierCartItemData(updatedModifierData);
       const getCurrentItemDetails = updatedModifierData?.find(
         (item) => item.Item_ID === singleItemDetails.Item_ID

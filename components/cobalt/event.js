@@ -149,14 +149,21 @@ export const UseFormContextProvider = ({children}) => {
         setModifierCartItemData((prevCartData) => {
           let updatedCartData;
     
+          console.log(selectedModifiers,"---->>>modifierItem")
+
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
+            const modifiePrice = selectedModifiers.length === 1 
+            ? selectedModifiers[0].Price 
+            : selectedModifiers.reduce((acc, cur) => acc + cur.Price, 0);
+            console.log(modifiePrice,"--->>>@3")
             updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }
+          console.log(updatedCartData,"---->updatedCartData")
           return updatedCartData;
         });
       } catch (error) {}
