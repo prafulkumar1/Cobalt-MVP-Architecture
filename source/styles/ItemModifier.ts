@@ -57,8 +57,8 @@ export const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: "#fff",
         height: responsiveHeight(55),
-        borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,
+        borderTopLeftRadius: 35,
+        borderTopRightRadius: 35,
         padding: 20,
         justifyContent: 'space-between',
     },
@@ -83,5 +83,18 @@ export const styles = StyleSheet.create({
     diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
     discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
     modifierSubContainer:{ paddingVertical: responsiveHeight(1) },
-    mainList:{paddingBottom: responsiveHeight(20), }
+    mainList:{paddingBottom: responsiveHeight(20), },
+    stickyHeader: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 70,
+        backgroundColor: '#fff',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        elevation: 5,
+        zIndex: 100,
+        flexDirection: 'row', paddingRight: 20, paddingLeft: 12
+    }
 });

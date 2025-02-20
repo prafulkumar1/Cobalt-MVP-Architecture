@@ -280,6 +280,7 @@ export const styles = StyleSheet.create({
     elevation: 10,
     zIndex: -1,
   },
+  modiferItems:{height:responsiveHeight(85),width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
   footerContainer: {
     backgroundColor: "#fff",
     width: "100%",
@@ -326,5 +327,12 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold",
     textAlign: "center",
   },
-  dropdownIcon:{width:25,height:25}
+  dropdownIcon:{width:25,height:25},
+  modalBackground:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: "100%",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  }
 });

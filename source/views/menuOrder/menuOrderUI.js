@@ -414,32 +414,38 @@ export default function MenuOrderScreen(props) {
           animationType="fade"
           onRequestClose={closePreviewModal}
         >
-          <UI.TouchableOpacity
-            onPress={() => handleCloseItemDetails()}
-            style={styles.crossIcon}
-          >
-            <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
+            <UI.Box style={styles.modalBackground}>
+                  <UI.TouchableOpacity
+                    onPress={() =>handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
+                    style={styles.crossIcon}
+                  >
+                    <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
 
-          </UI.TouchableOpacity>
-          <UI.Box style={styles.blackShadow} />
-          <ItemModifier />
-          <UI.Box style={styles.footerContainer}>
-            <UI.Box>
-              <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-              {
-                priceLoader ? <ActivityIndicator color={"#00C6FF"} size={"small"}/> :  <UI.Text
-                style={styles.orderAmount}
-              >{`$${singleItemPrice}`}</UI.Text>
-              }
-             
-            </UI.Box>
-            <UI.CbCommonButton
-              showBtnName={"Add to Cart"}
-              style={styles.addToCartBtn}
-              btnTextStyle={styles.addCartTxt}
-            onPress={() => handleModifierAddCart()}
-            />
-          </UI.Box>
+                  </UI.TouchableOpacity>
+                  <UI.Box 
+                  style={styles.modiferItems}
+                  >
+                    
+                    <ItemModifier />
+                  </UI.Box>
+                  <UI.Box style={styles.footerContainer}>
+                  <UI.Box>
+                    <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                    <UI.Text
+                      style={styles.orderAmount}
+                    >{`$23`}</UI.Text>
+                  </UI.Box>
+                  <UI.CbCommonButton
+                    showBtnName={"Add to Cart"}
+                    style={styles.addToCartBtn}
+                    btnTextStyle={styles.addCartTxt}
+                    onPress={() => {
+                      addItemToModifierForCart(singleItemDetails);
+                      closePreviewModal();
+                    }}
+                  />
+                   </UI.Box>
+                   </UI.Box>
         </Modal>
       </UI.Box>
     );
