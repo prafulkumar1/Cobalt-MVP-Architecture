@@ -46,12 +46,16 @@ export default function MyCartScreen(props) {
     return (
       <UI.TouchableOpacity>
         <UI.Text style={styles.itemCategory}>
-          {item?.modifier}
+          {item?.Modifier_Name}
         </UI.Text>
       </UI.TouchableOpacity>
     );
   }
   const renderCartItems = (item) => {
+    const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
+      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      return modifier.isChecked && index === lastIndex;
+    });
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
@@ -81,11 +85,14 @@ export default function MyCartScreen(props) {
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
-
-                <UI.CbFlatList
-                  flatlistData={item.selectedModifiers}
-                  children={renderModifierList}
-                />
+                {
+                  uniqueModifiers && uniqueModifiers.length > 0 &&
+                  <UI.CbFlatList
+                    flatlistData={uniqueModifiers}
+                    children={renderModifierList}
+                  />
+                }
+                
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>
@@ -213,7 +220,7 @@ export default function MyCartScreen(props) {
             id={"addMorebtn"}
             showBtnName={"Add More"}
             screenName={"MenuOrder"}
-            onPress={()=>navigateToScreen(props, "MenuOrder", true,{})}
+            onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
 

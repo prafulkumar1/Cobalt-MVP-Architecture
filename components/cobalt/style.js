@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(3.2),
+    fontSize: responsiveFontSize(2.9),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -479,5 +479,9 @@ CheckIcon:{color:"#ffff"},
     fontFamily:"SourceSansPro_SemiBoldItalic",
     alignSelf:"center",
     marginTop:responsiveHeight(3)
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 })
