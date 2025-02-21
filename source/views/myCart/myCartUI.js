@@ -52,9 +52,9 @@ export default function MyCartScreen(props) {
     );
   }
   const renderCartItems = (item) => {
-    const uniqueModifiers = item.selectedModifiers?.filter((modifier, index, self) => {
+    const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
       const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-      return index === lastIndex;
+      return modifier.isChecked && index === lastIndex;
     });
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
@@ -85,11 +85,14 @@ export default function MyCartScreen(props) {
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
                 <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
-
-                <UI.CbFlatList
-                  flatlistData={uniqueModifiers}
-                  children={renderModifierList}
-                />
+                {
+                  uniqueModifiers && uniqueModifiers.length > 0 &&
+                  <UI.CbFlatList
+                    flatlistData={uniqueModifiers}
+                    children={renderModifierList}
+                  />
+                }
+                
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>

@@ -66,8 +66,8 @@ export const useItemModifierLogic = () => {
             if(modifiersResponse.response.ResponseCode == "Success"){
                 const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
                 setModifiersResponseData(updatedItem)
+                setLoading(false)
             }
-            setLoading(false)
         }
       } catch (err) {
         setLoading(false)
@@ -102,36 +102,6 @@ export const useItemModifierLogic = () => {
         return updatedModifiers;
       });
     };
-
-    // const calculateTotalPrice = () => {
-    //   const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
-    //     return modifier.isChecked
-    //       ? total + modifier.Price
-    //       : total - modifier.Price;
-    //   }, 0);
-  
-    //   let finalValue = Math.ceil(modifiersTotal);
-    //   console.log(modifierCartItemData,"--->>>>>@2333333")
-  
-    //   let updatedModifierData = modifierCartItemData?.map((items) => {
-    //     const basePrice = items.basePrice ?? items.quantityIncPrice;
-  
-    //     return {
-    //       ...items,
-    //       basePrice: items.quantity > 1 ? ((items.quantity*items.Price)+basePrice):basePrice,
-    //       quantityIncPrice: (Number(basePrice) || 0) + finalValue,
-    //     };
-    //   });
-  
-    //   setModifierCartItemData(updatedModifierData);
-    //   const getCurrentItemDetails = updatedModifierData?.find(
-    //     (item) => item.Item_ID === singleItemDetails.Item_ID
-    //   );
-    //   singleModifierData.current = {
-    //     quantity: getCurrentItemDetails?.quantity,
-    //     quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
-    //   };
-    // };
 
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {

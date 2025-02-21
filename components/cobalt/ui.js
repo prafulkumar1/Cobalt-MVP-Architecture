@@ -60,8 +60,9 @@ class CbAccordionlist extends React.Component {
     value,
     modifiersResponseData,
     setModifiersResponseData,
+    Item_ID
   ) => {
-    this.getAllSelectedModifiers({ ...item, isChecked: value });
+    this.getAllSelectedModifiers({ ...item, isChecked: value,Item_ID });
   };
 
   isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
@@ -82,7 +83,7 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails,setSelectedModifiers}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
@@ -221,7 +222,7 @@ class CbAccordionlist extends React.Component {
                                children={({item,index}) => {
                                 const itemIndex = index
                                 return(
-                                  <TouchableOpacity
+                                  <Box
                                   key={itemIndex}
                                   style={styles.orderSubContainer}
                                 >
@@ -238,12 +239,12 @@ class CbAccordionlist extends React.Component {
                                             selectedModifierId:item.Modifier_Id
                                           };
                                         }, () => {
-                                          // setSelectedModifiers(this.state.selectedModifiers);
                                           this.handleCheckboxToggle(
                                             item,
                                             value,
                                             modifiersResponseData,
-                                            setModifiersResponseData
+                                            setModifiersResponseData,
+                                            singleItemDetails.Item_ID
                                           )
                                         })
                                       }}
@@ -271,7 +272,7 @@ class CbAccordionlist extends React.Component {
                                       item.Price !== null ? item.Price : 0
                                     }`}</Text>
                                   </AccordionContentText>
-                                </TouchableOpacity>
+                                </Box>
                                 )
                                }}
                             />

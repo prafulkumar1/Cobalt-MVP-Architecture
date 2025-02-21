@@ -11,7 +11,7 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity ,updateModifierItemQuantity,setCartData }= useFormContext(); 
+    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity ,updateModifierItemQuantity,setCartData ,setSelectedModifiers}= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
@@ -70,20 +70,6 @@ export const useMyCartLogic = () => {
     });
     setOpenItemId(null);
   };
-  const getCartData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('cart_data');
-      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
-      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
-      if (value !== null) {
-        const parseData = typeof value == "string" ? JSON.parse(value) : value
-        let cartItems = parseData?.filter((item) => item.profitCenterId === getProfitCenterId.LocationId)
-        setCartData(cartItems)
-      } else {
-        setCartData([])
-      }
-    } catch (error) {}
-  };
 
   const handleDelete = (item) => {
     if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
@@ -92,7 +78,7 @@ export const useMyCartLogic = () => {
     delete swipeableRefs.current[item.Item_ID];
     setOpenItemId(null);
     deleteCartItem(item);
-    getCartData()
+    setSelectedModifiers([])
     updateModifierItemQuantity(item, 0)
 
   };
@@ -170,7 +156,7 @@ export const useMyCartLogic = () => {
         updateCartItemQuantity(item, item.quantity + 1);
         updateModifierItemQuantity(item, item.quantity + 1);
       } else {
-        Alert.alert(JSON.stringify(quantityInfo?.response?.ResponseMessage))
+        Alert.alert(quantityInfo?.response?.ResponseMessage)
       }
     }
   }

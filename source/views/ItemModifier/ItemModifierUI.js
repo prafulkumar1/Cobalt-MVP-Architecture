@@ -92,7 +92,7 @@ const ItemModifier = (props) => {
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
           )}
-          scrollEventThrottle={10}>
+         >
           <UI.Box style={[styles.mainContainer, styles.itemMainContainer]}>
             <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
               <UI.CbImage
@@ -175,7 +175,7 @@ const ItemModifier = (props) => {
               }
 
               <UI.Box style={styles.modifierSubContainer}>
-                <UI.ScrollView
+                {/* <UI.ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={{ paddingBottom: responsiveHeight(55) }}
                   style={[
@@ -187,8 +187,8 @@ const ItemModifier = (props) => {
                           : responsiveHeight(30),
                     },
                   ]}
-                >
-                  {response?.IsModifierAvailable === 0 && loading ? (
+                > */}
+                  { loading ? (
                     <CbLoader />
                   ) : (
                     <UI.Box>
@@ -203,7 +203,7 @@ const ItemModifier = (props) => {
                       }
                     </UI.Box>
                   )}
-                  <UI.Box>
+                  <UI.Box style={{paddingBottom:100}}>
                     <UI.Text style={styles.allergyInfoTxt}>
                       Comment/Allergy Info
                     </UI.Text>
@@ -215,7 +215,7 @@ const ItemModifier = (props) => {
                       <UI.cbInput id="Comments" style={styles.commentsBox} />
                     </UI.cbForm>
                   </UI.Box>
-                </UI.ScrollView>
+                {/* </UI.ScrollView> */}
               </UI.Box>
             </UI.Box>
           </UI.Box>

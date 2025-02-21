@@ -47,7 +47,8 @@ export default function MenuOrderScreen(props) {
       modifierCartItemData,
       priceLoader,
       increaseQuantity,
-      setSelectedModifiers
+      setSelectedModifiers,
+      setModifiersResponseData
     } = useFormContext();
 
   const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
@@ -198,12 +199,11 @@ export default function MenuOrderScreen(props) {
       categoryRefs.current[categoryId] = layout.y;
     };
 
-
-
   const handleCloseItemDetails = () => {
     if (selectedModifiers.length === 0) {
         setIsVisible(false)
         updateModifierItemQuantity(singleItemDetails, 0)
+        setModifiersResponseData([])
         setTimeout(() => {
             closePreviewModal()
         }, 100)

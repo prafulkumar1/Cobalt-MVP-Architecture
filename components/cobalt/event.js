@@ -126,8 +126,8 @@ export const UseFormContextProvider = ({children}) => {
 
     const deleteCartItem = (mealItemDetails) => {
       let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
-      setCartData(updatedCartData);
       AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+      setCartData(updatedCartData);
     };
 
     const increaseQuantity = (item) => {
@@ -197,9 +197,10 @@ export const UseFormContextProvider = ({children}) => {
     
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
-      // setTimeout(() => {
-      //   setSelectedModifiers([])
-      // }, 1000);
+      setTimeout(() => {
+        // setSelectedModifiers([])
+        modifiersData.current= null
+      }, 1000);
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
