@@ -217,15 +217,20 @@ class CbAccordionlist extends React.Component {
                                 </Box>
                               ))
                             : 
-                            <CbFlatList
-                              flatlistData={order?.Modifiers}
-                               children={({item,index}) => {
+                            <FlatList
+                              data={order?.Modifiers}
+                              keyExtractor={(item) => `${item.Modifier_Id}`}
+                              removeClippedSubviews={true}
+                              updateCellsBatchingPeriod={100}
+                              windowSize={21}
+                              onEndReachedThreshold={0.1}
+                              renderItem={({ item, index }) => {
                                 const itemIndex = index
-                                return(
+                                return (
                                   <Box
-                                  key={itemIndex}
-                                  style={styles.orderSubContainer}
-                                >
+                                    key={itemIndex}
+                                    style={styles.orderSubContainer}
+                                  >
                                     <Checkbox
                                       // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
                                       onChange={(value) => {
@@ -235,8 +240,8 @@ class CbAccordionlist extends React.Component {
                                           );
                                           return {
                                             selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
-                                            isItemSelected:value,
-                                            selectedModifierId:item.Modifier_Id
+                                            isItemSelected: value,
+                                            selectedModifierId: item.Modifier_Id
                                           };
                                         }, () => {
                                           this.handleCheckboxToggle(
@@ -249,32 +254,31 @@ class CbAccordionlist extends React.Component {
                                         })
                                       }}
                                     >
-                                    <CheckboxIndicator
-                                      style={styles.CheckboxIndicator}
+                                      <CheckboxIndicator
+                                        style={styles.CheckboxIndicator}
+                                      >
+                                        <CheckboxIcon
+                                          as={CheckIcon}
+                                          style={{
+                                            color: "#707070",
+                                            width: 17,
+                                            height: 17,
+                                          }}
+                                        />
+                                      </CheckboxIndicator>
+                                      <CheckboxLabel style={styles.itemNameTxt}>
+                                        <Text>{item.Modifier_Name}</Text>
+                                      </CheckboxLabel>
+                                    </Checkbox>
+                                    <AccordionContentText
+                                      style={styles.priceMainTxt}
                                     >
-                                      <CheckboxIcon
-                                        as={CheckIcon}
-                                        style={{
-                                          color: "#707070",
-                                          width: 17,
-                                          height: 17,
-                                        }}
-                                      />
-                                    </CheckboxIndicator>
-                                    <CheckboxLabel style={styles.itemNameTxt}>
-                                      <Text>{item.Modifier_Name}</Text>
-                                    </CheckboxLabel>
-                                  </Checkbox>
-                                  <AccordionContentText
-                                    style={styles.priceMainTxt}
-                                  >
-                                    <Text>{`$${
-                                      item.Price !== null ? item.Price : 0
-                                    }`}</Text>
-                                  </AccordionContentText>
-                                </Box>
+                                      <Text>{`$${item.Price !== null ? item.Price : 0
+                                        }`}</Text>
+                                    </AccordionContentText>
+                                  </Box>
                                 )
-                               }}
+                              }}
                             />
                             }
                           {this.screenName == "RecentOrders" &&
@@ -1080,7 +1084,6 @@ class CbFlatList extends React.Component{
         renderItem={this.children}
         numColumns={this.numColumns}
         ListEmptyComponent={this.renderEmptyList}
-        initialNumToRender={10}
         ListFooterComponent={this.ListFooterComponent}
         bounces={this.bounces}
         horizontal={this.horizontal}
