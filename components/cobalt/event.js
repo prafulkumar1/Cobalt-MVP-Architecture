@@ -109,8 +109,13 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
+            const modifiePrice = selectedModifiers.length === 1 
+            ? selectedModifiers[0].Price 
+            : selectedModifiers?.reduce((total, modifier) => {
+              return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+            }, 0);
             updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:mealItemDetails.Price * newQuantity } : item
+              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
             );
           }
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
@@ -148,22 +153,20 @@ export const UseFormContextProvider = ({children}) => {
       try {
         setModifierCartItemData((prevCartData) => {
           let updatedCartData;
-    
-          console.log(selectedModifiers,"---->>>modifierItem")
 
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
             const modifiePrice = selectedModifiers.length === 1 
             ? selectedModifiers[0].Price 
-            : selectedModifiers.reduce((acc, cur) => acc + cur.Price, 0);
-            console.log(modifiePrice,"--->>>@3")
+            : selectedModifiers?.reduce((total, modifier) => {
+              return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+            }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }
-          console.log(updatedCartData,"---->updatedCartData")
           return updatedCartData;
         });
       } catch (error) {}
@@ -194,9 +197,9 @@ export const UseFormContextProvider = ({children}) => {
     
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
-      setTimeout(() => {
-        setSelectedModifiers([])
-      }, 1000);
+      // setTimeout(() => {
+      //   setSelectedModifiers([])
+      // }, 1000);
     } catch (error) {
       console.error("Error updating cart item:", error);
     }
