@@ -87,6 +87,8 @@ const ItemModifier = (props) => {
         </Animated.View>
         
         <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          bounces={false}
           contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -175,19 +177,6 @@ const ItemModifier = (props) => {
               }
 
               <UI.Box style={styles.modifierSubContainer}>
-                {/* <UI.ScrollView
-                  showsVerticalScrollIndicator={false}
-                  contentContainerStyle={{ paddingBottom: responsiveHeight(55) }}
-                  style={[
-                    styles.mainList,
-                    {
-                      marginBottom:
-                        response?.IsModifierAvailable == 0
-                          ? responsiveHeight(10)
-                          : responsiveHeight(30),
-                    },
-                  ]}
-                > */}
                   { loading ? (
                     <CbLoader />
                   ) : (
@@ -211,11 +200,10 @@ const ItemModifier = (props) => {
                       formId={pageId}
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
-                    >
-                      <UI.cbInput id="Comments" style={styles.commentsBox} />
+                    >   
+                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4}/>
                     </UI.cbForm>
                   </UI.Box>
-                {/* </UI.ScrollView> */}
               </UI.Box>
             </UI.Box>
           </UI.Box>

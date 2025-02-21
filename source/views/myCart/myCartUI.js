@@ -220,7 +220,7 @@ export default function MyCartScreen(props) {
             id={"addMorebtn"}
             showBtnName={"Add More"}
             screenName={"MenuOrder"}
-            onPress={()=>navigateToScreen(props, "MenuOrder", true,{})}
+            onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
 

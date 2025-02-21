@@ -394,7 +394,7 @@ class CbFloatingButton extends React.Component {
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
           return (
             <View style={styles.floatingContainer}>
-              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
+              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,{profileCenterTile:this.screenProps?.route?.params?.profileCenterTile})}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
                 <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?4:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
@@ -853,6 +853,8 @@ class cbInput extends React.Component {
     this.isInvalid = props.isInvalid || false;
     this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
     this.style = props.style;
+    this.multiline = props.multiline
+    this.numberOfLines = props.numberOfLines
   }
   
 
@@ -882,6 +884,9 @@ class cbInput extends React.Component {
             id={this.id}
             placeholder={placeholderprop}
             type={typeprop}
+            multiline={this.multiline}
+            numberOfLines={this.numberOfLines}
+            style={[{ textAlignVertical: 'top' }, this.style]}
             //value={fieldData.value} 
           onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
           />

@@ -270,23 +270,39 @@ export default function MenuOrderScreen(props) {
           {selectedCategory?.map((category) => {
             return (
               <UI.FlatList
-                onLayout={(e) => {handleLayout(category.Category_ID, e);handleItemLayout(category.Category_ID, e)}}
+                onLayout={(e) => {
+                  handleLayout(category.Category_ID, e);
+                  handleItemLayout(category.Category_ID, e);
+                }}
                 data={category.submenus}
                 renderItem={({ item }) => {
                   const subMenuItem = item
                   return (
                     <>
-                      {
-                          item.SubMenu_Name !==null &&
-                           <UI.TouchableOpacity activeOpacity={0.5} style={styles.cardMainContainer} onPress={() => toggleSubmenu(category.Category_ID)}>
-                           <UI.Text style={styles.itemCategoryLabel}>{item.SubMenu_Name}</UI.Text>
-                           {expandedSubmenus[category.Category_ID] ? (
-                             <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"}/>
-                           ) : (
-                             <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"}/>
-                           )}
-                         </UI.TouchableOpacity>
-                      }
+                      {item.SubMenu_Name !== null && (
+                        <UI.TouchableOpacity
+                          activeOpacity={0.5}
+                          style={styles.cardMainContainer}
+                          onPress={() => toggleSubmenu(category.Category_ID)}
+                        >
+                          <UI.Text style={styles.itemCategoryLabel}>
+                            {item.SubMenu_Name}
+                          </UI.Text>
+                          {expandedSubmenus[category.Category_ID] ? (
+                            <ChevronUpIcon
+                              style={styles.icon}
+                              color="#5773a2"
+                              size={"xl"}
+                            />
+                          ) : (
+                            <ChevronDownIcon
+                              style={styles.icon}
+                              color="#5773a2"
+                              size={"xl"}
+                            />
+                          )}
+                        </UI.TouchableOpacity>
+                      )}
                       {expandedSubmenus[category.Category_ID] && (
                         <UI.CbFlatList
                           flatlistData={item.items}
@@ -301,16 +317,14 @@ export default function MenuOrderScreen(props) {
                               <UI.TouchableOpacity
                                 activeOpacity={0.5}
                                 disabled={box.IsAvailable !== 1}
-                                onPress={() =>
-                                  openItemDetails(box)
-                                }
+                                onPress={() => openItemDetails(box)}
                                 key={box?.Item_ID}
                                 style={[
                                   styles.subContainer,
                                   {
                                     opacity:
                                       box?.IsAvailable === 1 &&
-                                        box?.IsDisable === 0
+                                      box?.IsDisable === 0
                                         ? 1
                                         : 0.8,
                                   },
@@ -332,9 +346,7 @@ export default function MenuOrderScreen(props) {
                                       {box?.Item_Name}
                                     </UI.Text>
                                     <UI.Text
-                                      numberOfLines={
-                                        isExpanded ? undefined : 2
-                                      }
+                                      numberOfLines={isExpanded ? undefined : 2}
                                       style={[
                                         styles.priceTxt,
                                         showActiveAvailableColor(
@@ -343,15 +355,10 @@ export default function MenuOrderScreen(props) {
                                         ),
                                       ]}
                                     >
-                                      {`$${box?.Price != null
-                                        ? box?.Price
-                                        : 0
-                                        }`}
+                                      {`$${box?.Price != null? box?.Price: 0}`}
                                     </UI.Text>
                                     <UI.Text
-                                      numberOfLines={
-                                        isExpanded ? undefined : 2
-                                      }
+                                      numberOfLines={isExpanded ? undefined : 2}
                                       style={[
                                         styles.descriptionTxt,
                                         showActiveAvailableColor(
@@ -369,15 +376,11 @@ export default function MenuOrderScreen(props) {
                                     {box?.Description?.length > 68 && (
                                       <UI.Text
                                         onPress={() =>
-                                          handleReadMoreToggle(
-                                            box.Item_ID
-                                          )
+                                          handleReadMoreToggle(box.Item_ID)
                                         }
                                         style={styles.underLineTxt}
                                       >
-                                        {isExpanded
-                                          ? "Show Less"
-                                          : "Read More"}
+                                        {isExpanded? "Show Less": "Read More"}
                                       </UI.Text>
                                     )}
                                   </UI.Box>
@@ -397,9 +400,9 @@ export default function MenuOrderScreen(props) {
                                         style={[
                                           styles.mealTypeImg,
                                           box.IsAvailable === 0 &&
-                                          box.IsDisable === 1 && {
-                                            opacity: 0.4,
-                                          },
+                                            box.IsDisable === 1 && {
+                                              opacity: 0.4,
+                                            },
                                         ]}
                                       />
                                     </UI.Box>
@@ -428,38 +431,46 @@ export default function MenuOrderScreen(props) {
           animationType="fade"
           onRequestClose={closePreviewModal}
         >
-            <UI.Box style={styles.modalBackground}>
-                  <UI.TouchableOpacity
-                    onPress={() =>handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
-                    style={styles.crossIcon}
-                  >
-                    <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
-
-                  </UI.TouchableOpacity>
-                  <UI.Box 
-                  style={styles.modiferItems}
-                  >
-                    
-                    <ItemModifier />
-                  </UI.Box>
-                  <UI.Box style={styles.footerContainer}>
-                  <UI.Box>
-                    <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-                    <UI.Text
-                      style={styles.orderAmount}
-                    >{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
-                  </UI.Box>
-                  <UI.CbCommonButton
-                    showBtnName={"Add to Cart"}
-                    style={styles.addToCartBtn}
-                    btnTextStyle={styles.addCartTxt}
-                    onPress={() => {
-                      addItemToModifierForCart(singleItemDetails);
-                      closePreviewModal();
-                    }}
-                  />
-                   </UI.Box>
-                   </UI.Box>
+          <UI.Box style={styles.modalBackground}>
+            <UI.TouchableOpacity
+              onPress={() =>
+                handleCloseItemDetails(
+                  setIsVisible,
+                  updateModifierItemQuantity,
+                  closePreviewModal,
+                  selectedModifiers,
+                  setSelectedModifiers,
+                  singleItemDetails
+                )
+              }
+              style={styles.crossIcon}
+            >
+              <Icon
+                as={CloseIcon}
+                color="#fff"
+                size={"md"}
+                style={{ width: 20, height: 20 }}
+              />
+            </UI.TouchableOpacity>
+            <UI.Box style={styles.modiferItems}>
+              <ItemModifier />
+            </UI.Box>
+            <UI.Box style={styles.footerContainer}>
+              <UI.Box>
+                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
+              </UI.Box>
+              <UI.CbCommonButton
+                showBtnName={"Add to Cart"}
+                style={styles.addToCartBtn}
+                btnTextStyle={styles.addCartTxt}
+                onPress={() => {
+                  addItemToModifierForCart(singleItemDetails);
+                  closePreviewModal();
+                }}
+              />
+            </UI.Box>
+          </UI.Box>
         </Modal>
       </UI.Box>
     );

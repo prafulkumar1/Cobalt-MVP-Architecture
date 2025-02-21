@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_SemiBold"},
     allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_Italic", paddingVertical: 10 },
-    commentsBox:{height: 100, borderColor: "#00000026",   borderRadius: 5,paddingBottom:10 ,},
+    commentsBox:{height: 110, borderColor: "#00000026",   borderRadius: 5,paddingTop:10},
     crossbtn: {
         width: 30,
         height: 30,
