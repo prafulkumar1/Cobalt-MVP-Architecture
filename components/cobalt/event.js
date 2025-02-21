@@ -198,7 +198,7 @@ export const UseFormContextProvider = ({children}) => {
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
       setTimeout(() => {
-        // setSelectedModifiers([])
+        setSelectedModifiers([])
         modifiersData.current= null
       }, 1000);
     } catch (error) {
