@@ -27,6 +27,7 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
     const [isVisible, setIsVisible] = useState(false);
     const [priceLoader, setPriceLoader] = useState(false);
+    const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
 
@@ -124,9 +125,9 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
 
-    const deleteCartItem = (mealItemDetails) => {
+    const deleteCartItem = async (mealItemDetails) => {
       let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
-      AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+     await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
       setCartData(updatedCartData);
     };
 
@@ -252,7 +253,9 @@ export const UseFormContextProvider = ({children}) => {
       setCartData,
       setModifierCartItemData,
       modifiersData,
-      singleModifierData
+      singleModifierData,
+      setUpdateOrAddTxt,
+      updateOrAddTxt
     }
     return (
       <FormContext.Provider

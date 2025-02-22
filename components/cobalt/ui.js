@@ -233,6 +233,7 @@ class CbAccordionlist extends React.Component {
                                   >
                                     <Checkbox
                                       // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
+                                      // isChecked={item.isChecked}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
@@ -855,6 +856,7 @@ class cbInput extends React.Component {
     this.style = props.style;
     this.multiline = props.multiline
     this.numberOfLines = props.numberOfLines
+    this.value = props.value
   }
   
 
@@ -873,32 +875,48 @@ class cbInput extends React.Component {
     //const fieldData =this.getFormFieldData(this.formId,this.id); 
 
     return (
-      <FormControl isDisabled={isDisabledprop} isReadOnly={isReadOnlyprop} isRequired={isRequiredprop}   >
-        {labelTextprop && (
-          <FormControlLabel>
-            <FormControlLabelText>{labelTextprop}</FormControlLabelText>
-          </FormControlLabel>
-        )}
-        <Input variant={variantprop} style={this.style}>
-          <InputField
-            id={this.id}
-            placeholder={placeholderprop}
-            type={typeprop}
-            multiline={this.multiline}
-            numberOfLines={this.numberOfLines}
-            style={[{ textAlignVertical: 'top' }, this.style]}
-            //value={fieldData.value} 
-          onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
-          />
-        </Input>
-        {isRequiredprop && errorMessageprop && (
-          <FormControlError>
-            <FormControlErrorText>
-              {errorMessageprop}
-            </FormControlErrorText>
-          </FormControlError>
-        )}
-      </FormControl>
+      <FormContext.Consumer>
+      {({getFormFieldData}) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const value  = getFormFieldData(this.formId,this.id)
+          return (
+            <FormControl
+              isDisabled={isDisabledprop}
+              isReadOnly={isReadOnlyprop}
+              isRequired={isRequiredprop}
+            >
+              {labelTextprop && (
+                <FormControlLabel>
+                  <FormControlLabelText>{labelTextprop}</FormControlLabelText>
+                </FormControlLabel>
+              )}
+              <Input variant={variantprop} style={this.style}>
+                <InputField
+                  id={this.id}
+                  placeholder={placeholderprop}
+                  type={typeprop}
+                  multiline={this.multiline}
+                  numberOfLines={this.numberOfLines}
+                  style={[{ textAlignVertical: "top" }, this.style]}
+                  value={this.value?this.value : value?.value}
+                  onChangeText={(value) => {
+                    this.setFormFieldData(this.formId,'input',this.id,value);
+                  }}
+                />
+              </Input>
+              {isRequiredprop && errorMessageprop && (
+                <FormControlError>
+                  <FormControlErrorText>
+                    {errorMessageprop}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState } from 'react';
 import { useFormContext } from '@/components/cobalt/event';
 import * as DeviceInfo from 'expo-device';
 import { postApiCall } from '@/source/utlis/api';
@@ -83,13 +83,9 @@ export const useMenuOrderLogic = (props) => {
       } catch (error) {}
     };
 
-    useEffect(() => {
-      getCartData()
-    },[])
-
   useEffect(() => {
-    getCartData()
     getMenuOrderList()
+    getCartData()
     }, [])
   
     
