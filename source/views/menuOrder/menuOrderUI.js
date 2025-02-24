@@ -97,8 +97,9 @@ export default function MenuOrderScreen(props) {
     isItemAvailableInCart = true
     }
     })
+    const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
     if(isItemAvailableInCart){
-      updateModifierCartItem(singleItemDetails)
+      updateModifierCartItem(existingCartItem)
     }else{
       addItemToModifierForCart(singleItemDetails);
       closePreviewModal();

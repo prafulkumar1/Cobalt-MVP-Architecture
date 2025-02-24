@@ -27,8 +27,6 @@ export const useItemModifierLogic = () => {
 
 
     useEffect(() => {
-      const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
-      setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
       getModifiersData()
     }, []);
 
@@ -37,10 +35,12 @@ export const useItemModifierLogic = () => {
     
       const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
       const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
+      console.log(getCartDetails?.selectedModifiers,"=---->>@3333")
       const uniqueModifiers = getCartDetails?.selectedModifiers?.filter((modifier, index, self) => {
         const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
         return index === lastIndex;
       });
+      console.log(uniqueModifiers,"--->1235")
       let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
     
       let updatedData = {
@@ -77,6 +77,8 @@ export const useItemModifierLogic = () => {
             if(modifiersResponse.response.ResponseCode == "Success"){
                 const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
                 setModifiersResponseData(updatedItem)
+                const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
+                setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
                 setLoading(false)
             }
         }

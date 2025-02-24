@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
         fontFamily:"SourceSansPro_SemiBold"
       },
       tipMainContainer:{
-        width:90,
+        width:83,
         height:40,
         justifyContent:"center",
         alignItems:"center",

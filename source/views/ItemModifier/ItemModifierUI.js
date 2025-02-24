@@ -24,6 +24,11 @@ const ItemModifier = (props) => {
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
+    if(loading){
+      return(
+        <CbLoader />
+      )
+    }
     return (
       <>
         <Animated.View
@@ -89,7 +94,7 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }}
+          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35}}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
@@ -177,21 +182,17 @@ const ItemModifier = (props) => {
               }
 
               <UI.Box style={styles.modifierSubContainer}>
-                  { loading ? (
-                    <CbLoader />
-                  ) : (
-                    <UI.Box>
-                      {
-                        categoryData?.length > 0 &&
-                        <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                          <UI.CbAccordionlist
-                            screenName="Modifiers"
-                            props={props}
-                            getAllSelectedModifiers={getAllSelectedModifiers}
-                          /></>
-                      }
-                    </UI.Box>
-                  )}
+                <UI.Box>
+                  {
+                    categoryData?.length > 0 &&
+                    <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                      <UI.CbAccordionlist
+                        screenName="Modifiers"
+                        props={props}
+                        getAllSelectedModifiers={getAllSelectedModifiers}
+                      /></>
+                  }
+                </UI.Box>
                   <UI.Box style={{paddingBottom:100}}>
                     <UI.Text style={styles.allergyInfoTxt}>
                       Comment/Allergy Info
