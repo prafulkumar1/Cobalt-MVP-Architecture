@@ -887,7 +887,7 @@ class cbInput extends React.Component {
     this.style = props.style;
     this.multiline = props.multiline
     this.numberOfLines = props.numberOfLines
-    this.value = props.value
+    // this.value = props.value
   }
   
 
@@ -911,7 +911,7 @@ class cbInput extends React.Component {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          const value  = getFormFieldData(this.formId,this.id)
+          // const value  = getFormFieldData(this.formId,this.id)
           return (
             <FormControl
               isDisabled={isDisabledprop}
@@ -931,7 +931,7 @@ class cbInput extends React.Component {
                   multiline={this.multiline}
                   numberOfLines={this.numberOfLines}
                   style={[{ textAlignVertical: "top" }, this.style]}
-                  value={this.value?this.value : value?.value}
+                  // value={this.value?this.value : value?.value}
                   onChangeText={(value) => {
                     this.setFormFieldData(this.formId,'input',this.id,value);
                   }}
