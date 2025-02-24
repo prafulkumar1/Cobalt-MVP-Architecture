@@ -94,7 +94,7 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35,flex:1}}
+          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35}}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }

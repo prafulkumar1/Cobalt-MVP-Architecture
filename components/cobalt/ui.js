@@ -65,11 +65,13 @@ class CbAccordionlist extends React.Component {
     modifiersResponseData,
     setModifiersResponseData,
     Item_ID,
-    Category_Id
+    Category_Id,
+    order
   ) => {
- 
+    const numberMatch = order.Message.match(/\d+/);
+    let maxVal = numberMatch ? parseInt(numberMatch[0]) : null; 
     const updatedModifiersResponseData = { ...modifiersResponseData };
- 
+    
     const categoryIndex = updatedModifiersResponseData?.Categories.findIndex(
       (category) => category.Category_Id === Category_Id
     );
@@ -278,7 +280,8 @@ class CbAccordionlist extends React.Component {
                                             modifiersResponseData,
                                             setModifiersResponseData,
                                             singleItemDetails.Item_ID,
-                                            order.Category_Id
+                                            order.Category_Id,
+                                            order
                                           )
                                         })
                                       }}

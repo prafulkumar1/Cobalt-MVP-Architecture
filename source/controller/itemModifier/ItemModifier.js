@@ -73,8 +73,8 @@ export const useItemModifierLogic = () => {
             if(modifiersResponse.response.ResponseCode == "Success"){
                 const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
                 setModifiersResponseData(updatedItem)
-                const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
-                setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
+                // const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
+                // setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
                 setLoading(false)
             }
         }
