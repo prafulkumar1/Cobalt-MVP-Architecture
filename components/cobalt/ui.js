@@ -25,10 +25,11 @@ import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
-import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
+import { handleSearchClick, handleClearClick, handleCloseClick,transformStyles } from "./event";
 import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
 import { postApiCall } from '@/source/utlis/api';
 import { isPlatformIos } from '@/source/constants/Matrices';
+import { remapProps } from 'react-native-css-interop';
 
 export const postQuantityApiCall = async(quantity,itemId) => {
   try {
@@ -48,16 +49,17 @@ class CbBackButton extends React.Component {
     this.source = props.source;
   }
   render() {
-    const ImageScourec='https://cobaltportal.mycobaltsoftware.com:4430/devsite/shared/Cobalt/MediaLibrary/devArchivePath/AppMenu/AppIcons/MobileOrdering_Icons/Back.png';
-  
+    const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+     const ImageSource = buttonArray?.ImageSource || this.source;
+     const Styles=buttonArray?.Styles;
     return (
 
       <FormContext.Consumer>
         {({ AppConfigJson }) => {
           return (
-            <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={styles.backArrowHeader}>
+            <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={Styles? Styles?.backArrowHeader : styles.backArrowHeader}>
               {
-                ImageScourec ? <Image source={{ uri: ImageScourec }} style={styles.BackIcon} /> : <Image alt='image' source={require("@/assets/images/icons/Back.png")} />
+                ImageSource ? <Image source={{ uri: ImageSource }} style={Styles? Styles?.BackIcon : styles.BackIcon} /> : <Image alt='image' source={require("@/assets/images/icons/Back.png")} />
               }
             </TouchableOpacity>
           );
@@ -66,6 +68,85 @@ class CbBackButton extends React.Component {
     );
   }
 }
+
+
+class CbBox extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id=props.id;
+    this.Conditionalstyle=props.Conditionalstyle || {};
+    this.styles= props.styles || {};
+  
+  }
+  render() {
+    const ControlConfig = global.controlsConfigJson.find((item) => item.id === this.id);
+     const Styles=ControlConfig?.Styles || this.styles;
+     const StyleProps = transformStyles(Styles);
+    return (
+      <Box style={[StyleProps[Object.keys(Styles)[0]],this.Conditionalstyle]} >
+         {this.props.children}
+       </Box>
+    );
+  }
+}
+
+
+
+class CbText extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id=props.id;
+    this.strikeThrough=props.strikeThrough || "false";
+  }
+  render() {
+    const ControlConfig = global.controlsConfigJson.find((item) => item.id === this.id);
+    const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
+     const Styles=ControlConfig?.Styles;
+     const StyleProps = transformStyles(Styles);    
+    return (
+      <Text strikeThrough={StrikeThrough} style={StyleProps[Object.keys(Styles)[0]]} >
+         {this.props.children}
+        </Text>
+    );
+  }
+}
+class CbHomeButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id=props.id;
+    this.source = props.source;
+  }
+  render() {
+    const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
+     const ImageSource = buttonArray?.ImageSource || this.source;
+     const Styles=buttonArray?.Styles;
+    return (
+      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
+        {
+          this.source ? <Image source={{ uri: this.source}} style={Styles? Styles?.HomeIcon : styles.HomeIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={Styles? Styles?.HomeIcon : styles.HomeIcon} />
+        }
+      </TouchableOpacity>
+
+    );
+  }
+}
+ const CbHeaderBackground = (ControlId) => {
+  const ControlConfig = global.controlsConfigJson.find((item) => item.id === ControlId);
+   const BgColor=ControlConfig?.BGColor;
+    return {
+      headerStyle: {
+        backgroundColor: BgColor, 
+      },
+    };
+  };
+  const CbHeaderTitle = (ControlId,Title) => {
+    const ControlConfig = global.controlsConfigJson.find((item) => item.id === ControlId);
+    const Styles=ControlConfig?.Styles?.menuTitle || {};
+      return {
+         headerTitle:Title,
+         headerTitleStyle: {...Styles}
+      };
+    };
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
@@ -372,22 +453,6 @@ class CbImage extends React.Component {
 
 
 
-class CbHomeButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.source = props.source;
-  }
-  render() {
-    return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
-        {
-          this.source ? <Image source={{ uri: this.source}} style={{width:24,height:24}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={{width:24,height:24}} />
-        }
-      </TouchableOpacity>
-
-    );
-  }
-}
 
 class CbFloatingButton extends React.Component {
   constructor(props) {
@@ -1048,12 +1113,12 @@ class cbImageBackground extends React.Component {
 
   render() {
     const { children } = this.props;
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const sourceprop = inputArray?.source  || this.source;
-    const styleprop = inputArray?.styles ||  this.styles;
-
+    const ControlConfig = global.controlsConfigJson.find(item => item.id === this.id);
+    const sourceprop = ControlConfig?.source  || this.source;
+    const Styles = ControlConfig?.Styles ||  this.styles;
+    const StyleProps = transformStyles(Styles);
     return (
-      <ImageBackground source={sourceprop} alt='login' style={styleprop?.container} >
+      <ImageBackground source={sourceprop} alt='login' style={StyleProps?.BGImage} >
         {children}
       </ImageBackground>
     );
@@ -1530,6 +1595,9 @@ CbAddToCartButton.displayName = "CbAddToCartButton"
 CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
 cbSelectTime.displayName='cbSelectTime';
+CbHeaderBackground.displayName='CbHeaderBackground';
+CbText.displayName='CbText';
+CbHeaderTitle.displayName='CbHeaderTitle';
+CbBox.displayName='CbBox';
 
-
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
+ export {CbHeaderTitle,CbBox,CbText,cbSelectTime,CbCommonButton, CbHomeButton,CbHeaderBackground, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };

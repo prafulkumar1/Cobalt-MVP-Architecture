@@ -1,38 +1,81 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabaseAsync('Config.db');
+let db;
 
 const createTable = async () => {
-  (await db).execAsync(`
+  db = await SQLite.openDatabaseAsync('Config.db');
+
+  await db.execAsync(`
     CREATE TABLE IF NOT EXISTS Config (
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
       key TEXT UNIQUE, 
-      value TEXT
+      JsonValue TEXT
     );
   `);
 };
 
-const saveConfig = async (key,value) => {
-  console.log(value,"---1");
-   (await db).execAsync(`INSERT INTO Config (key, value) VALUES ('${key}', '${value}'); `);
-   
+const saveConfig = async (key, value) => {
+  const jsonString = JSON.stringify(value);
+  try {
+    (await db).execAsync(
+      `INSERT INTO Config (key, JsonValue) VALUES ('${key}', '${jsonString}');`,
+    );
+  } catch (error) {
+    console.error('Error saving config:', error);
+  }
 };
 
-const clearConfig= async () =>{
-  (await db).execAsync(`DELETE FROM Config; `);
-}
+const getConfig = async (key) => {
+  try {
+    const result = await (await db).getFirstAsync(
+      `SELECT JsonValue FROM Config WHERE key = '${key}';`,
+    );
+    if (result?.JsonValue) {
+      const parsedValue = JSON.parse(result.JsonValue);
+      return parsedValue;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting config:', error);
+    return null;
+  }
+};
 
 
-const getConfig = async (key)=>{
- const req=(await db);
-  const getvValue = await req.getFirstAsync(`SELECT value FROM Config WHERE key ='${key}';`);
-  // const parsedData= JSON.parse(result);
-  console.log("===>>",getvValue)
-  return getvValue
-
-}
 
 
+const getTableStructure = async () => {
+  try {
+    const result = await db.getAllAsync(
+      `SELECT sql FROM sqlite_master WHERE type='table' AND name='Config';`
+    );
+    if (result.length > 0) {
+      console.log('Table Structure:', result[0].sql);
+    } else {
+      console.log('Table "Config" does not exist.');
+    }
+  } catch (error) {
+    console.error('Error getting table structure:', error);
+  }
+};
+const clearTable = async () => {
+  try {
+    await db.execAsync(`DELETE FROM Config;`);
+    console.log('All records from "Config" table deleted successfully.');
+  } catch (error) {
+    console.error('Error deleting data from table:', error);
+  }
+};
 
-export { createTable,saveConfig, getConfig,clearConfig};
+
+// const clearConfig = async () => {
+//   try {
+//     await db.execAsync(`DELETE FROM Config;`);
+//     console.log('All config entries cleared.');
+//   } catch (error) {
+//     console.error('Error clearing config:', error);
+//   }
+// };
+
+export { createTable, saveConfig, getConfig,getTableStructure,clearTable };

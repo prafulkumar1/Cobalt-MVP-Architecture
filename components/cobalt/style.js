@@ -187,7 +187,9 @@ export const styles = StyleSheet.create({
     fontFamily:"SourceSansPro_SemiBold"
   },
   backArrowHeader:{width:responsiveWidth(9),marginRight:10,justifyContent:"center",alignItems:"center"},
-  BackIcon:{width:12,height:24},
+  BackIcon:{width:responsiveWidth(2),height:responsiveWidth(5)},
+  HomeIcon:{width:24,height:24},
+  HeaderBackground:{ backgroundColor: "red" },
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
     paddingVertical: 10,

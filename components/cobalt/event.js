@@ -4,6 +4,43 @@ import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
 import { Alert } from 'react-native';
+import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions";
+
+export const transformStyles = (styles) => {
+  if (!styles || typeof styles !== "object") return {};
+
+  // Helper function to apply responsiveWidth and responsiveHeight
+  const applyResponsive = (styleObj) => {
+    if (!styleObj || typeof styleObj !== "object") return styleObj;
+
+    return Object.keys(styleObj).reduce((acc, key) => {
+      const value = styleObj[key];
+
+      if (typeof value === "string") {
+        if (value.startsWith("responsiveWidth")) {
+          const num = parseFloat(value.match(/\d+/)?.[0]); // Extract number
+          acc[key] = isNaN(num) ? value : responsiveWidth(num);
+        } else if (value.startsWith("responsiveHeight")) {
+          const num = parseFloat(value.match(/\d+/)?.[0]); // Extract number
+          acc[key] = isNaN(num) ? value : responsiveHeight(num);
+        } else {
+          acc[key] = value;
+        }
+      } else {
+        acc[key] = value;
+      }
+
+      return acc;
+    }, {});
+  };
+
+  // Process multiple style objects while maintaining class names
+  return Object.fromEntries(
+    Object.entries(styles).map(([className, styleObject]) => [className, applyResponsive(styleObject)])
+  );
+};
+
+
 
 export const FormContext = createContext(); 
 

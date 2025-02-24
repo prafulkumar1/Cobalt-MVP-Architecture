@@ -4,48 +4,53 @@ import { useProfitCenterLogic } from '@/source/controller/ProfitCenter/ProfitCen
 import { styles } from '@/source/styles/ProfitCenter';
 import React from 'react';
 import { ImageBackground } from "react-native";
-
+import  { useEffect, useState } from 'react';
+import { loadPageConfig } from '@/source/constants/ConfigLoad';
 const pageId = 'ProfitCenter';
+global.controlsConfigJson=[];
+
+
+
+
 const ProfitCenters = (props) => {
     const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic()
+    const [configLoaded, setConfigLoaded] = useState(false);
 
-    let pageConfigJson = global.appConfigJsonArray?.find(
-        (item) => item.PageId === pageId
-      );
+    const fetchConfig = async () => {
+
+      global.controlsConfigJson = await loadPageConfig('ProfitCenter');
+      console.log("=====>", JSON.stringify(global.controlsConfigJson));
+      setConfigLoaded(true);
+    };
     
-      global.controlsConfigJson =
-        pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-      const configItems = global.controlsConfigJson?.reduce((acc, item) => {
-        if (["backgroundImage", "profitCenterName", "timingsText", "availabilityStatus"].includes(item.id)) {
-          acc[item.id] = item;
-        }
-        return acc;
-      }, {});
-      const { backgroundImage, profitCenterName, timingsText, availabilityStatus, } = configItems;
-
+    useEffect(() => {
+      fetchConfig();
+    }, []);
+    
+    if ( !configLoaded) {
+        return (
+          <CbLoader />
+        );
+      }
     
     const RenderingProfitCenter = ({item},props) => {
+        // console.log(global.controlsConfigJson,"123")
         const isAvailable = item.STATUS === "Available";
         return (
-            <ImageBackground id="backgroundImage" source={{ uri: backgroundImage?.imageUrl ? backgroundImage?.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
-                <UI.Box style={styles.blackShadow} />
+            <UI.cbImageBackground id="ProfitCenterBGImage" source={{ uri:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
+                <UI.CbBox id='BoxContainer' style={styles.blackShadow} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
-                    <UI.Box style={styles.profitCenterOverlay}>
-                        <UI.Text id='profitCenterName' numberOfLines={1} style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
-                        <UI.Text id="timingsText" style={[timingsText?.styles ? timingsText?.timingsText : styles.profitCenterTimings]}>
+                    <UI.CbBox id='BoxTextContainer' style={styles.profitCenterOverlay}>
+                        <UI.CbText id='ProfitCenterName' numberOfLines={1} style={[ styles.profitCenterName]}>{item.LocationName}</UI.CbText>
+                        <UI.CbText id="TimingsText" style={[ styles.profitCenterTimings]}>
                             {item.STATUSTEXT}
-                        </UI.Text>
-                    </UI.Box>
-                    <UI.Box id="availabilityStatus" style={[
-                        styles.statusBox,
-                        { borderRadius: availabilityStatus?.borderRadius ? availabilityStatus.borderRadius : 20 },
-                        isAvailable ? availabilityStatus?.activeBackgroundColor ? { backgroundColor: availabilityStatus?.activeBackgroundColor } :
-                            styles.available : availabilityStatus?.inactiveBackgroundColor ? { backgroundColor: availabilityStatus?.inactiveBackgroundColor } : styles.closed
-                    ]}>
-                        <UI.Text style={styles.statusText}>{item.STATUS}</UI.Text>
-                    </UI.Box>
+                        </UI.CbText>
+                    </UI.CbBox>
+                    <UI.CbBox id="AvailabilityStatus" style={styles.statusBox} Conditionalstyle={isAvailable ? styles.available : styles.closed}>
+                        <UI.CbText id="AvailabilityStatusText" style={styles.statusText}>{item.STATUS}</UI.CbText>
+                    </UI.CbBox>
                 </UI.TouchableOpacity>
-            </ImageBackground>
+            </UI.cbImageBackground>
         );
     };
     if (loading) {
