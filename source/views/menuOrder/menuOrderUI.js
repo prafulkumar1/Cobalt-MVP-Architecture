@@ -4,7 +4,7 @@ import {
 } from "@/components/cobalt/event";
 import { Icon } from '@/components/ui/icon';
 import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
-import { ActivityIndicator, Image, Modal } from "react-native";
+import {  Image, Modal } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
 import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/components/ui/icon';
@@ -45,13 +45,15 @@ export default function MenuOrderScreen(props) {
       addItemToModifierForCart,
       setIsVisible, updateModifierItemQuantity, selectedModifiers, singleItemDetails,
       modifierCartItemData,
-      priceLoader,
       increaseQuantity,
       setSelectedModifiers,
-      setModifiersResponseData
+      setModifiersResponseData,
+      updateOrAddTxt,
+      setUpdateOrAddTxt,
+      modifiersResponseData
     } = useFormContext();
 
-  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory} = useMenuOrderLogic(props)
+  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory,getCartData} = useMenuOrderLogic(props)
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
   const categoryScrollRef = useRef(null);
@@ -59,6 +61,8 @@ export default function MenuOrderScreen(props) {
   const [itemPositions, setItemPositions] = useState({});
 
   const [expandedIds,setExpandedIds] = useState([])
+  const [updatedTotalPrice,setUpdatedTotalPrice] = useState("")
+  const [isItemEditable , setIsItemEditable] = useState(false)
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
@@ -66,14 +70,38 @@ export default function MenuOrderScreen(props) {
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
 
-   const openItemDetails = async (box) => {
-      let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-      if(quantityInfo.response.IsAvailable ===1){
-        storeSingleItem({...box,response:quantityInfo.response})
-        increaseQuantity(box)
-        closePreviewModal()
-      }
+  // const openItemDetails = async (box) => {    
+  //   console.log(modifiersResponseData,"---->cart dataa")
+  //   const isItemAvailableInCart = cartData.some(item => item.Item_ID === box.Item_ID);
+  //   const getCartDetails = cartData?.find((item) => item.Item_ID === box.Item_ID)
+  //   try {
+  //     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID);
+  
+  //     if (quantityInfo?.response?.IsAvailable === 1) {
+  //       if(isItemAvailableInCart){
+  //         setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
+  //         setIsItemEditable(!isItemEditable)
+  //         storeSingleItem({...getCartDetails,response: quantityInfo.response});
+  //         increaseQuantity(box);
+  //         closePreviewModal();
+  //       }else{
+  //         storeSingleItem({ ...box, response: quantityInfo.response });
+  //         increaseQuantity(box);
+  //         closePreviewModal();
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching quantity info:", error);
+  //   }
+  // };
+  const openItemDetails = async (box) => {
+    let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+    if(quantityInfo.response.IsAvailable ===1){
+      storeSingleItem({...box,response:quantityInfo.response})
+      increaseQuantity(box)
+      closePreviewModal()
     }
+  }
   
 
   const handleReadMoreToggle = (id) => {
@@ -88,9 +116,9 @@ export default function MenuOrderScreen(props) {
   const handleModifierAddCart = () => {
     let isItemAvailableInCart = false
     cartData?.forEach((items) => {
-        if(items.Item_ID === singleItemDetails.Item_ID ){
-          isItemAvailableInCart = true
-        }
+    if(items.Item_ID === singleItemDetails.Item_ID ){
+    isItemAvailableInCart = true
+    }
     })
     if(isItemAvailableInCart){
       UI.Alert.alert("Item is already available in cart")
@@ -458,10 +486,11 @@ export default function MenuOrderScreen(props) {
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
+                {/* <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text> */}
+                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?updatedTotalPrice:singleItemPrice}`}</UI.Text>
               </UI.Box>
               <UI.CbCommonButton
-                showBtnName={"Add to Cart"}
+                showBtnName={updateOrAddTxt}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
                 onPress={() => {

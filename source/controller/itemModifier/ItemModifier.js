@@ -32,18 +32,22 @@ export const useItemModifierLogic = () => {
     function addIsCheckedProperty(item) {
       if (!item) return item;
     
+      const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
+      const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
       let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
     
-      const updatedData = {
+      let updatedData = {
         ...item,
         Categories: categoryData.map(category => ({
           ...category,
-          Modifiers: category.Modifiers.map(modifier => ({
-            ...modifier,
-            isChecked: cartData?.some(cartItem =>
-              cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
-            )
-          }))
+          Modifiers: isItemAvailableInCart
+            ? getCartDetails?.selectedModifiers
+            : category.Modifiers.map(modifier => ({
+                ...modifier,
+                isChecked: cartData?.some(cartItem =>
+                  cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                )
+              }))
         }))
       };
       return updatedData;
