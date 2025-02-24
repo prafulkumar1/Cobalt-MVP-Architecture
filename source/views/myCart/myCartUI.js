@@ -56,6 +56,7 @@ export default function MyCartScreen(props) {
       const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
       return modifier.isChecked && index === lastIndex;
     });
+    const quantityIncPrice =  Math.floor(item?.quantityIncPrice * 100) /100
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
@@ -99,7 +100,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.rightContainer}>
                 <UI.Text
                   style={styles.itemPrice}
-                >{`$${item.quantityIncPrice}`}</UI.Text>
+                >{`$${quantityIncPrice}`}</UI.Text>
 
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
@@ -134,7 +135,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
-                  onPress={() => editCommentBtn(props,item)} 
+                  // onPress={() => editCommentBtn(props,item)} 
                 >
                   <Image
                     source={require("@/assets/images/icons/messageIcon2x.png")}

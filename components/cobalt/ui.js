@@ -84,7 +84,7 @@ class CbAccordionlist extends React.Component {
         const selectedModifiers = category.Modifiers.filter(modifier => modifier.isChecked).length;
         if(maxVal !== 0){
           if (value && selectedModifiers >= maxVal) {
-            alert(`You cannot select more than ${maxVal} modifiers for this category.`);
+            alert(`Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.`);
             return;
         }
         }
@@ -314,8 +314,11 @@ class CbAccordionlist extends React.Component {
                                     <AccordionContentText
                                       style={styles.priceMainTxt}
                                     >
-                                      <Text>{`$${item.Price !== null ? item.Price : 0
-                                        }`}</Text>
+                                      {
+                                        (item.Price !== null && item.Price !==0 ) && 
+                                        <Text>{`$${item.Price}`}</Text>
+                                      }
+                                      
                                     </AccordionContentText>
                                   </Box>
                                 )
