@@ -13,7 +13,7 @@ global.controlsConfigJson=[];
 
 
 const ProfitCenters = (props) => {
-    const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic()
+    const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic(props)
     const [configLoaded, setConfigLoaded] = useState(false);
 
     const fetchConfig = async () => {
@@ -53,21 +53,32 @@ const ProfitCenters = (props) => {
             </UI.cbImageBackground>
         );
     };
-    if (loading) {
-        return (
-          <CbLoader />
-        );
-      }
+    const renderProfitCenters = () => {
+        if (loading) {
+            return (
+                <UI.Box style={styles.loaderContainer}>
+                    <CbLoader />
+                </UI.Box>
+            )
+        } else if (profitCenterData?.MealPeriodData.length === 0) {
+            return (
+                <UI.Box style={styles.emptyMealContainer}>
+                    <UI.Text style={styles.emptyMealTxt}>No profit centers available</UI.Text>
+                </UI.Box>
+            )
+        } else {
+              return (
+                <UI.CbFlatList
+                    flatlistData={profitCenterData?.MealPeriodData}
+                    children={(item) => RenderingProfitCenter(item, props)}
+                    scrollEnabled={false}
+                />
+            )
+        }
+    }
     return (
         <UI.ScrollView contentContainerStyle={styles.scrollContent}>
-            {
-                profitCenterData?.MealPeriodData && 
-                <UI.CbFlatList
-                flatlistData={profitCenterData?.MealPeriodData}
-                children={(item) => RenderingProfitCenter(item,props)}
-                scrollEnabled={false}
-            />
-            }
+            {renderProfitCenters()}
         </UI.ScrollView>
     );
 };

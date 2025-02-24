@@ -1,4 +1,4 @@
-import { isPlatformAndroid } from "@/source/constants/Matrices";
+import { horizontalScale, isPlatformAndroid } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
@@ -180,13 +180,13 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(3.2),
+    fontSize: responsiveFontSize(2.9),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
     fontFamily:"SourceSansPro_SemiBold"
   },
-  backArrowHeader:{width:responsiveWidth(9),marginRight:10,justifyContent:"center",alignItems:"center"},
+  backArrowHeader:{width:responsiveWidth(9),justifyContent:"center",alignItems:"center",paddingVertical:5,position:"relative",left:-10},
   BackIcon:{width:responsiveWidth(2),height:responsiveWidth(5)},
   HomeIcon:{width:24,height:24},
   HeaderBackground:{ backgroundColor: "red" },
@@ -467,9 +467,24 @@ CheckIcon:{color:"#ffff"},
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    top: 10,
+    top:isPlatformAndroid()?horizontalScale(60):horizontalScale(40),
     alignSelf: "center",
     opacity: 1,
     zIndex: 1000,
+  },
+  emptyListContainer:{
+    justifyContent:"center",
+    alignItems:"center",
+    alignSelf:"center",
+    height:responsiveHeight(10)
+  },
+  emptyMealTxt:{
+    fontFamily:"SourceSansPro_SemiBoldItalic",
+    alignSelf:"center",
+    marginTop:responsiveHeight(3)
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
   },
 })
