@@ -261,7 +261,7 @@ export default function MyCartScreen(props) {
                 <UI.Box style={styles.tipContainer}>
                   <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                 </UI.Box>
-                <UI.ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                <UI.ScrollView scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                   {
                     tipData && tipData.map((item, index) => {
                       return renderAddTip(item, index)

@@ -35,21 +35,17 @@ export const useItemModifierLogic = () => {
     
       const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
       const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
-      console.log(getCartDetails?.selectedModifiers,"=---->>@3333")
-      const uniqueModifiers = getCartDetails?.selectedModifiers?.filter((modifier, index, self) => {
-        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-        return index === lastIndex;
-      });
-      console.log(uniqueModifiers,"--->1235")
+      // const uniqueModifiers = getCartDetails?.selectedModifiers?.filter((modifier, index, self) => {
+      //   const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      //   return index === lastIndex;
+      // });
       let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
     
       let updatedData = {
         ...item,
         Categories: categoryData.map(category => ({
           ...category,
-          Modifiers: isItemAvailableInCart
-            ? uniqueModifiers
-            : category.Modifiers.map(modifier => ({
+          Modifiers: category.Modifiers.map(modifier => ({
                 ...modifier,
                 isChecked: cartData?.some(cartItem =>
                   cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)

@@ -334,5 +334,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: "100%",
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  }
+  },
+  mainItemContainer:{backgroundColor:"#fff"}
 });

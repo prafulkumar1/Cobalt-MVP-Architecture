@@ -30,6 +30,9 @@ export const useProfitCenterLogic = (props) => {
           setLoading(false)
           navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
           setProfitCenterData(profitCenterResponseData.response)
+        }else{
+          setProfitCenterData(profitCenterResponseData.response)
+          setLoading(false)
         }
     }else{
         setProfitCenterData(profitCenterResponseData.response)
