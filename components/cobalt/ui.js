@@ -35,7 +35,7 @@ export const postQuantityApiCall = async(quantity,itemId) => {
     const params = {
       "Item_ID":itemId,
       "Item_Quantity": quantity,
-      "LocationId":`${getProfitCenterId.LocationId}`
+      "Location_Id":`${getProfitCenterId.LocationId}`
     }          
     let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
     return quantityInfo
@@ -55,7 +55,8 @@ class CbAccordionlist extends React.Component {
     this.state = {
       selectedModifiers: [],
       isItemSelected:false,
-      selectedModifierId:""
+      selectedModifierId:"",
+      requireModifiers:{}
     };
   }
 
@@ -67,32 +68,40 @@ class CbAccordionlist extends React.Component {
     Item_ID,
     Category_Id,
     order
-  ) => {
+) => {
     const numberMatch = order.Message.match(/\d+/);
-    let maxVal = numberMatch ? parseInt(numberMatch[0]) : null; 
+    let maxVal = numberMatch ? parseInt(numberMatch[0]) : 0; 
+
     const updatedModifiersResponseData = { ...modifiersResponseData };
-    
+
     const categoryIndex = updatedModifiersResponseData?.Categories.findIndex(
-      (category) => category.Category_Id === Category_Id
+        (category) => category.Category_Id === Category_Id
     );
-  
+
     if (categoryIndex !== -1) {
-      const category = updatedModifiersResponseData.Categories[categoryIndex];
-  
-      const modifierIndex = category.Modifiers.findIndex(
-        (modifier) => modifier.Modifier_Id === item.Modifier_Id
-      );
-  
-      if (modifierIndex !== -1) {
-        category.Modifiers[modifierIndex].isChecked = value;
-      }
+        const category = updatedModifiersResponseData.Categories[categoryIndex];
+
+        const selectedModifiers = category.Modifiers.filter(modifier => modifier.isChecked).length;
+        if(maxVal !== 0){
+          if (value && selectedModifiers >= maxVal) {
+            alert(`You cannot select more than ${maxVal} modifiers for this category.`);
+            return;
+        }
+        }
+       
+        const modifierIndex = category.Modifiers.findIndex(
+            (modifier) => modifier.Modifier_Id === item.Modifier_Id
+        );
+
+        if (modifierIndex !== -1) {
+            category.Modifiers[modifierIndex].isChecked = value;
+        }
     }
-  
+
     setModifiersResponseData(updatedModifiersResponseData);
-    // console.log("Updated Modifiers Response Data:", JSON.stringify(updatedModifiersResponseData, null, 2));
-    
-    this.getAllSelectedModifiers({ ...item, isChecked: value,Item_ID });
-  };
+
+    this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID });
+};
 
   isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
     if (existingCartData && Array.isArray(existingCartData.selectedModifiers)) {

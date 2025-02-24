@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(2.9),
+    fontSize: responsiveFontSize(2.6),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",

@@ -123,7 +123,7 @@ export const useMenuOrderLogic = (props) => {
           setMenuOrderData(menuOrderResponseData.response?.MenuItems)
           setExpandedSubmenus(
             menuOrderResponseData.response?.MenuItems?.reduce((acc, category) => {
-              acc[category.Category_ID] = true;
+              acc[category?.SubMenu_ID] = true;
               return acc;
             }, {})
           )

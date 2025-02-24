@@ -296,12 +296,12 @@ export default function MenuOrderScreen(props) {
                         <UI.TouchableOpacity
                           activeOpacity={0.5}
                           style={styles.cardMainContainer}
-                          onPress={() => toggleSubmenu(category.Category_ID)}
+                          onPress={() => toggleSubmenu(subMenuItem.SubMenu_ID)}
                         >
                           <UI.Text style={styles.itemCategoryLabel}>
                             {item.SubMenu_Name}
                           </UI.Text>
-                          {expandedSubmenus[category.Category_ID] ? (
+                          {expandedSubmenus[subMenuItem.SubMenu_ID] ? (
                             <ChevronUpIcon
                               style={styles.icon}
                               color="#5773a2"
@@ -317,7 +317,7 @@ export default function MenuOrderScreen(props) {
                         </UI.TouchableOpacity>
                       )}
                       <UI.Box style={styles.mainItemContainer}>
-                      {expandedSubmenus[category.Category_ID] && (
+                      {expandedSubmenus[subMenuItem.SubMenu_ID] && (
                         item.items.map((item,index) => {
                           let box = item;
                           const lastItem =
