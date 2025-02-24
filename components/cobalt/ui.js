@@ -26,12 +26,16 @@ import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const postQuantityApiCall = async(quantity,itemId) => {
   try {
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
     const params = {
       "Item_ID":itemId,
-      "Item_Quantity": quantity
+      "Item_Quantity": quantity,
+      "LocationId":`${getProfitCenterId.LocationId}`
     }          
     let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
     return quantityInfo
@@ -60,8 +64,31 @@ class CbAccordionlist extends React.Component {
     value,
     modifiersResponseData,
     setModifiersResponseData,
-    Item_ID
+    Item_ID,
+    Category_Id
   ) => {
+ 
+    const updatedModifiersResponseData = { ...modifiersResponseData };
+ 
+    const categoryIndex = updatedModifiersResponseData?.Categories.findIndex(
+      (category) => category.Category_Id === Category_Id
+    );
+  
+    if (categoryIndex !== -1) {
+      const category = updatedModifiersResponseData.Categories[categoryIndex];
+  
+      const modifierIndex = category.Modifiers.findIndex(
+        (modifier) => modifier.Modifier_Id === item.Modifier_Id
+      );
+  
+      if (modifierIndex !== -1) {
+        category.Modifiers[modifierIndex].isChecked = value;
+      }
+    }
+  
+    setModifiersResponseData(updatedModifiersResponseData);
+    // console.log("Updated Modifiers Response Data:", JSON.stringify(updatedModifiersResponseData, null, 2));
+    
     this.getAllSelectedModifiers({ ...item, isChecked: value,Item_ID });
   };
 
@@ -233,7 +260,7 @@ class CbAccordionlist extends React.Component {
                                   >
                                     <Checkbox
                                       // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
-                                      // isChecked={item.isChecked}
+                                      isChecked={item.isChecked}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
@@ -250,7 +277,8 @@ class CbAccordionlist extends React.Component {
                                             value,
                                             modifiersResponseData,
                                             setModifiersResponseData,
-                                            singleItemDetails.Item_ID
+                                            singleItemDetails.Item_ID,
+                                            order.Category_Id
                                           )
                                         })
                                       }}

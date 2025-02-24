@@ -50,7 +50,8 @@ export default function MenuOrderScreen(props) {
       setModifiersResponseData,
       updateOrAddTxt,
       setUpdateOrAddTxt,
-      modifiersResponseData
+      modifiersResponseData,
+      updateModifierCartItem
     } = useFormContext();
 
   const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory,getCartData} = useMenuOrderLogic(props)
@@ -70,30 +71,6 @@ export default function MenuOrderScreen(props) {
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
 
-  // const openItemDetails = async (box) => {    
-  //   console.log(modifiersResponseData,"---->cart dataa")
-  //   const isItemAvailableInCart = cartData.some(item => item.Item_ID === box.Item_ID);
-  //   const getCartDetails = cartData?.find((item) => item.Item_ID === box.Item_ID)
-  //   try {
-  //     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID);
-  
-  //     if (quantityInfo?.response?.IsAvailable === 1) {
-  //       if(isItemAvailableInCart){
-  //         setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
-  //         setIsItemEditable(!isItemEditable)
-  //         storeSingleItem({...getCartDetails,response: quantityInfo.response});
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }else{
-  //         storeSingleItem({ ...box, response: quantityInfo.response });
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching quantity info:", error);
-  //   }
-  // };
   const openItemDetails = async (box) => {
     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
     if(quantityInfo.response.IsAvailable ===1){
@@ -121,7 +98,7 @@ export default function MenuOrderScreen(props) {
     }
     })
     if(isItemAvailableInCart){
-      UI.Alert.alert("Item is already available in cart")
+      updateModifierCartItem(singleItemDetails)
     }else{
       addItemToModifierForCart(singleItemDetails);
       closePreviewModal();
@@ -302,6 +279,7 @@ export default function MenuOrderScreen(props) {
                   handleLayout(category.Category_ID, e);
                   handleItemLayout(category.Category_ID, e);
                 }}
+                scrollEnabled={false}
                 data={category.submenus}
                 renderItem={({ item }) => {
                   const subMenuItem = item
@@ -333,6 +311,7 @@ export default function MenuOrderScreen(props) {
                       )}
                       {expandedSubmenus[category.Category_ID] && (
                         <UI.CbFlatList
+                          scrollEnabled={false}
                           flatlistData={item.items}
                           customStyles={{ backgroundColor: "#fff" }}
                           children={({ item, index }) => {
@@ -487,16 +466,13 @@ export default function MenuOrderScreen(props) {
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 {/* <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text> */}
-                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?updatedTotalPrice:singleItemPrice}`}</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?totalCartPrice:singleItemPrice}`}</UI.Text>
               </UI.Box>
               <UI.CbCommonButton
                 showBtnName={updateOrAddTxt}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
-                onPress={() => {
-                  addItemToModifierForCart(singleItemDetails);
-                  closePreviewModal();
-                }}
+                onPress={() => handleModifierAddCart()}
               />
             </UI.Box>
           </UI.Box>

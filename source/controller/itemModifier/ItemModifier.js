@@ -21,12 +21,15 @@ export const useItemModifierLogic = () => {
         modifierCartItemData,
         setModifierCartItemData,
         modifiersData,
-        singleModifierData
+        singleModifierData,
+        setUpdateOrAddTxt
     } = useFormContext()
 
 
     useEffect(() => {
-        getModifiersData()
+      const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
+      setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
+      getModifiersData()
     }, []);
 
     function addIsCheckedProperty(item) {
@@ -34,6 +37,10 @@ export const useItemModifierLogic = () => {
     
       const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
       const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
+      const uniqueModifiers = getCartDetails?.selectedModifiers?.filter((modifier, index, self) => {
+        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+        return index === lastIndex;
+      });
       let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
     
       let updatedData = {
@@ -41,7 +48,7 @@ export const useItemModifierLogic = () => {
         Categories: categoryData.map(category => ({
           ...category,
           Modifiers: isItemAvailableInCart
-            ? getCartDetails?.selectedModifiers
+            ? uniqueModifiers
             : category.Modifiers.map(modifier => ({
                 ...modifier,
                 isChecked: cartData?.some(cartItem =>

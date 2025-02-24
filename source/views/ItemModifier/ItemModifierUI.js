@@ -201,7 +201,7 @@ const ItemModifier = (props) => {
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
                     >   
-                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} value={singleItemDetails?.comments} formId={pageId}/>
+                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} value={cartItem !== undefined ? cartItem?.comments : ""} formId={pageId}/>
                     </UI.cbForm>
                   </UI.Box>
               </UI.Box>

@@ -88,6 +88,7 @@ export default function MyCartScreen(props) {
                 {
                   uniqueModifiers && uniqueModifiers.length > 0 &&
                   <UI.CbFlatList
+                    scrollEnabled = {false}
                     flatlistData={uniqueModifiers}
                     children={renderModifierList}
                   />

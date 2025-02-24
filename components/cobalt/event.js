@@ -199,6 +199,7 @@ export const UseFormContextProvider = ({children}) => {
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
       setTimeout(() => {
+        formData.ItemModifier_Comments = ""
         setSelectedModifiers([])
         modifiersData.current= null
       }, 1000);
@@ -206,6 +207,8 @@ export const UseFormContextProvider = ({children}) => {
       console.error("Error updating cart item:", error);
     }
   };
+  
+  const updateModifierCartItem = (cartItem) => {}
 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
@@ -255,7 +258,8 @@ export const UseFormContextProvider = ({children}) => {
       modifiersData,
       singleModifierData,
       setUpdateOrAddTxt,
-      updateOrAddTxt
+      updateOrAddTxt,
+      updateModifierCartItem
     }
     return (
       <FormContext.Provider
