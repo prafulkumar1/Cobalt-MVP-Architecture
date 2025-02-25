@@ -94,14 +94,16 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35}}
+          contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
           )}
          >
           <UI.Box style={[styles.mainContainer, styles.itemMainContainer]}>
-            <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
+            {
+              ImageUrl && 
+              <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
               <UI.CbImage
                 imageJsx={
                   <Image
@@ -113,6 +115,7 @@ const ItemModifier = (props) => {
                 }
               />
             </UI.TouchableOpacity>
+            }
 
             <UI.Box style={styles.modifierContainer}>
               <UI.Box

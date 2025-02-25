@@ -195,11 +195,15 @@ class CbAccordionlist extends React.Component {
                                     <AccordionIcon
                                       as={ChevronDownIcon}
                                       size={"md"}
+                                      color='#4B5154'
+                                      style={styles.collapseIcon}
                                     />
                                   ) : (
                                     <AccordionIcon
                                       as={ChevronUpIcon}
                                       size={"md"}
+                                      color='#4B5154'
+                                      style={styles.collapseIcon}
                                     />
                                   )}
                                 </>
@@ -416,12 +420,21 @@ class CbHomeButton extends React.Component {
     this.source = props.source;
   }
   render() {
+    console.log(this.props)
     return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
-        {
-          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
-        }
-      </TouchableOpacity>
+      <FormContext.Consumer>
+      {({setIsExitProfitCenter}) => {
+          return (
+            <TouchableOpacity onPress={()=>{
+              navigateToScreen(this.props,'ProfitCenters')
+            }}>
+            {
+              this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
+            }
+          </TouchableOpacity>
+          );
+        }}
+      </FormContext.Consumer>
 
     );
   }

@@ -50,7 +50,8 @@ export default function MenuOrderScreen(props) {
       updateOrAddTxt,
       setUpdateOrAddTxt,
       modifiersResponseData,
-      updateModifierCartItem
+      updateModifierCartItem,
+      isExitProfitCenter,setIsExitProfitCenter
     } = useFormContext();
 
   const {
@@ -586,6 +587,44 @@ export default function MenuOrderScreen(props) {
       }
 
       {renderMenuOrderItems()}
+
+      <Modal
+        visible={isExitProfitCenter}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsExitProfitCenter(false)}
+      >
+        <UI.View
+          style={styles.modalContainer}
+          onPress={() => setIsExitProfitCenter(false)}
+        />
+
+        <UI.Box style={styles.confirmMdl}>
+          <UI.Box style={styles.innerModal}>
+            <UI.Box style={styles.innerModalMsgContainer}>
+              <UI.Text style={styles.innerModalAlertTxt}>
+              Are you sure you want to leave the profit center? All items in your cart will be deleted if you proceed
+              </UI.Text>
+
+              <UI.Box style={styles.discardBtn}>
+                <UI.TouchableOpacity
+                  onPress={() => setIsExitProfitCenter(false)}
+                  style={styles.modalNoYesBtn}
+                >
+                  <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
+                </UI.TouchableOpacity>
+
+                <UI.TouchableOpacity
+                  onPress={() => props.navigation.goBack()}
+                  style={styles.modalNoYesBtn}
+                >
+                  <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
+                </UI.TouchableOpacity>
+              </UI.Box>
+            </UI.Box>
+          </UI.Box>
+        </UI.Box>
+      </Modal>
 
     </UI.Box>
   );

@@ -30,6 +30,7 @@ export const UseFormContextProvider = ({children}) => {
     const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
+    const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
 
   
     const commentValue = useRef("")
@@ -296,7 +297,8 @@ export const UseFormContextProvider = ({children}) => {
       singleModifierData,
       setUpdateOrAddTxt,
       updateOrAddTxt,
-      updateModifierCartItem
+      updateModifierCartItem,
+      isExitProfitCenter,setIsExitProfitCenter
     }
     return (
       <FormContext.Provider

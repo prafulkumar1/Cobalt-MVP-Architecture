@@ -514,5 +514,5 @@ CheckIcon:{color:"#ffff"},
     lineHeight:15
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
-
+  collapseIcon:{right:18}
 })

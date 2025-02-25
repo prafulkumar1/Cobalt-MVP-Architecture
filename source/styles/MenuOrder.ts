@@ -335,5 +335,42 @@ export const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  mainItemContainer:{backgroundColor:"#fff"}
+  mainItemContainer:{backgroundColor:"#fff"},
+  modalContainer: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+},
+innerModalAlertTxt:{ fontSize: 24, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(50),marginTop:responsiveHeight(3) },
+innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
+innerModal:{
+    width: '100%',
+    backgroundColor: "#fff",
+    height: responsiveHeight(35),
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    padding: 20,
+    justifyContent: 'space-between',
+},
+confirmMdl:{
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+},
+diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
+discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
+modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21,fontFamily:"SourceSansPro_SemiBold" },
+modalNoYesBtn: {
+  padding: 10,
+  backgroundColor: "#fff",
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: "#5773A2",
+  borderRadius: 32,
+  width: responsiveWidth(37)
+},
 });
