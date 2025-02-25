@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon,ChevronUpIcon, CircleIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
@@ -194,14 +194,12 @@ class CbAccordionlist extends React.Component {
                                   {isExpanded ? (
                                     <AccordionIcon
                                       as={ChevronDownIcon}
-                                      className="ml-3"
-                                      style={styles.roAccordionIcon}
+                                      size={"md"}
                                     />
                                   ) : (
                                     <AccordionIcon
-                                      as={ChevronRightIcon}
-                                      className="ml-3"
-                                      style={styles.roAccordionIcon}
+                                      as={ChevronUpIcon}
+                                      size={"md"}
                                     />
                                   )}
                                 </>

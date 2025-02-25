@@ -183,15 +183,12 @@ const ItemModifier = (props) => {
 
               <UI.Box style={styles.modifierSubContainer}>
                 <UI.Box>
-                  {
-                    categoryData?.length > 0 &&
-                    <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                      <UI.CbAccordionlist
-                        screenName="Modifiers"
-                        props={props}
-                        getAllSelectedModifiers={getAllSelectedModifiers}
-                      /></>
-                  }
+                  {Array.isArray(categoryData) && categoryData.length > 0 && (
+                    <>
+                    <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                    <UI.CbAccordionlist screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}    />
+                    </>
+                  )}
                 </UI.Box>
                   <UI.Box style={{paddingBottom:100}}>
                     <UI.Text style={styles.allergyInfoTxt}>

@@ -43,6 +43,7 @@ export const useItemModifierLogic = () => {
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
+              const item = modifiersResponse.response
               let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
               let updatedData = {
                 ...item,
