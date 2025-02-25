@@ -15,7 +15,7 @@ export const useItemModifierLogic = () => {
         selectedModifiers,
         setSelectedModifiers,
         updateModifierItemQuantity,
-        isVisible, 
+        isVisible,
         setIsVisible,
         cartData,
         modifierCartItemData,
@@ -29,34 +29,6 @@ export const useItemModifierLogic = () => {
     useEffect(() => {
       getModifiersData()
     }, []);
-
-    function addIsCheckedProperty(item) {
-      if (!item) return item;
-    
-      const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
-      const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
-      // const uniqueModifiers = getCartDetails?.selectedModifiers?.filter((modifier, index, self) => {
-      //   const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-      //   return index === lastIndex;
-      // });
-      let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
-    
-      let updatedData = {
-        ...item,
-        Categories: categoryData.map(category => ({
-          ...category,
-          Modifiers: category.Modifiers.map(modifier => ({
-                ...modifier,
-                isChecked: cartData?.some(cartItem =>
-                  cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
-                )
-              }))
-        }))
-      };
-      return updatedData;
-    }
-      
-
     const getModifiersData = async() => {
       try {
         setLoading(true)
@@ -71,11 +43,23 @@ export const useItemModifierLogic = () => {
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
-                const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
-                setModifiersResponseData(updatedItem)
-                // const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
+              let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
+              let updatedData = {
+                ...item,
+                Categories: categoryData?.map(category => ({
+                  ...category,
+                  Modifiers: category.Modifiers.map(modifier => ({
+                        ...modifier,
+                        isChecked: cartData?.some(cartItem =>
+                          cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        )
+                      }))
+                }))
+              };
+               setModifiersResponseData(updatedData)
+               setLoading(false)
+                 // const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
                 // setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
-                setLoading(false)
             }
         }
       } catch (err) {

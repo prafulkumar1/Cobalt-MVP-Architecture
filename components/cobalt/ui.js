@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated,} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated, Modal,} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -56,7 +56,9 @@ class CbAccordionlist extends React.Component {
       selectedModifiers: [],
       isItemSelected:false,
       selectedModifierId:"",
-      requireModifiers:{}
+      requireModifiers:{},
+      isToastMessageVisiable:false,
+      toastMessage:""
     };
   }
 
@@ -84,7 +86,11 @@ class CbAccordionlist extends React.Component {
         const selectedModifiers = category.Modifiers.filter(modifier => modifier.isChecked).length;
         if(maxVal !== 0){
           if (value && selectedModifiers >= maxVal) {
-            alert(`Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.`);
+            this.setState({isToastMessageVisiable:true,toastMessage:`Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.`},() => {
+              setTimeout(() => {
+                  this.setState({isToastMessageVisiable:false,toastMessage:""})
+              }, 3000);
+            })
             return;
         }
         }
@@ -103,13 +109,6 @@ class CbAccordionlist extends React.Component {
     this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID });
 };
 
-  isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
-    if (existingCartData && Array.isArray(existingCartData.selectedModifiers)) {
-      return existingCartData.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
-    } else {
-      return this.state.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
-    }
-  };
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -255,75 +254,85 @@ class CbAccordionlist extends React.Component {
                                 </Box>
                               ))
                             : 
-                            <FlatList
-                              data={order?.Modifiers}
-                              keyExtractor={(item) => `${item.Modifier_Id}`}
-                              removeClippedSubviews={true}
-                              updateCellsBatchingPeriod={100}
-                              windowSize={21}
-                              onEndReachedThreshold={0.1}
-                              renderItem={({ item, index }) => {
-                                const itemIndex = index
-                                return (
-                                  <Box
-                                    key={itemIndex}
-                                    style={styles.orderSubContainer}
-                                  >
-                                    <Checkbox
-                                      // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
-                                      isChecked={item.isChecked}
-                                      onChange={(value) => {
-                                        this.setState((prevState) => {
-                                          const filteredModifiers = prevState.selectedModifiers.filter(
-                                            (modifier) => modifier.Modifier_Id !== item.Modifier_Id
-                                          );
-                                          return {
-                                            selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
-                                            isItemSelected: value,
-                                            selectedModifierId: item.Modifier_Id
-                                          };
-                                        }, () => {
-                                          this.handleCheckboxToggle(
-                                            item,
-                                            value,
-                                            modifiersResponseData,
-                                            setModifiersResponseData,
-                                            singleItemDetails.Item_ID,
-                                            order.Category_Id,
-                                            order
-                                          )
-                                        })
-                                      }}
+                            <>
+                              <FlatList
+                                data={order?.Modifiers}
+                                keyExtractor={(item) => `${item.Modifier_Id}`}
+                                removeClippedSubviews={true}
+                                updateCellsBatchingPeriod={100}
+                                windowSize={21}
+                                onEndReachedThreshold={0.1}
+                                renderItem={({ item, index }) => {
+                                  const itemIndex = index
+                                  return (
+                                    <Box
+                                      key={itemIndex}
+                                      style={styles.orderSubContainer}
                                     >
-                                      <CheckboxIndicator
-                                        style={styles.CheckboxIndicator}
+                                      <Checkbox
+                                        isChecked={item.isChecked}
+                                        onChange={(value) => {
+                                          this.setState((prevState) => {
+                                            const filteredModifiers = prevState.selectedModifiers.filter(
+                                              (modifier) => modifier.Modifier_Id !== item.Modifier_Id
+                                            );
+                                            return {
+                                              selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
+                                              isItemSelected: value,
+                                              selectedModifierId: item.Modifier_Id
+                                            };
+                                          }, () => {
+                                            this.handleCheckboxToggle(
+                                              item,
+                                              value,
+                                              modifiersResponseData,
+                                              setModifiersResponseData,
+                                              singleItemDetails.Item_ID,
+                                              order.Category_Id,
+                                              order
+                                            )
+                                          })
+                                        }}
                                       >
-                                        <CheckboxIcon
-                                          as={CheckIcon}
-                                          style={{
-                                            color: "#707070",
-                                            width: 17,
-                                            height: 17,
-                                          }}
-                                        />
-                                      </CheckboxIndicator>
-                                      <CheckboxLabel style={styles.itemNameTxt}>
-                                        <Text>{item.Modifier_Name}</Text>
-                                      </CheckboxLabel>
-                                    </Checkbox>
-                                    <AccordionContentText
-                                      style={styles.priceMainTxt}
-                                    >
-                                      {
-                                        (item.Price !== null && item.Price !==0 ) && 
-                                        <Text>{`$${item.Price}`}</Text>
-                                      }
-                                      
-                                    </AccordionContentText>
-                                  </Box>
-                                )
-                              }}
-                            />
+                                        <CheckboxIndicator
+                                          style={styles.CheckboxIndicator}
+                                        >
+                                          <CheckboxIcon
+                                            as={CheckIcon}
+                                            style={{
+                                              color: "#707070",
+                                              width: 17,
+                                              height: 17,
+                                            }}
+                                          />
+                                        </CheckboxIndicator>
+                                        <CheckboxLabel style={styles.itemNameTxt}>
+                                          <Text>{item.Modifier_Name}</Text>
+                                        </CheckboxLabel>
+                                      </Checkbox>
+                                      <AccordionContentText
+                                        style={styles.priceMainTxt}
+                                      >
+                                        {
+                                          (item.Price !== null && item.Price !== 0) &&
+                                          <Text>{`$${item.Price}`}</Text>
+                                        }
+
+                                      </AccordionContentText>
+                                    </Box>
+                                  )
+                                }}
+                              />
+                              {
+                                this.state.isToastMessageVisiable &&
+                                <CbToastMessage
+                                  message={this.state.toastMessage}
+                                  isToastMessageVisiable={this.state.isToastMessageVisiable}
+                                  transparent={true}
+                                  onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
+                                />
+                              }
+                            </>
                             }
                           {this.screenName == "RecentOrders" &&
                           order.IsReorder ? (
@@ -490,7 +499,7 @@ class CbAddToCartButton extends React.Component {
     }
   }
 
-  modifierIncDecBtn = async (cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+  modifierIncDecBtn = async (itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
        let isItemAvailableInCart = false
         cartData?.forEach((items) => {
             if(items.Item_ID === this.mealItemDetails.Item_ID ){
@@ -501,7 +510,7 @@ class CbAddToCartButton extends React.Component {
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if(quantityInfo.statusCode ==200){
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
-        if (this.state.IsModifierAvailable === 1) {
+        if (this.state.IsModifierAvailable ===1) {
           if(operation === "decrement"){
             if(isItemAvailableInCart){
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
@@ -523,10 +532,18 @@ class CbAddToCartButton extends React.Component {
           }
         } else {
           if (operation === "decrement") {
-            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+            if(itemDataVisible){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }else{
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+            }
           } else {
             if (this.state.isAvailable === 1) {
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+              if(itemDataVisible){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+              }else{
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+              }
             } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage);
             }
@@ -538,7 +555,7 @@ class CbAddToCartButton extends React.Component {
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const {itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const {modifiersResponseData,itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
@@ -567,7 +584,7 @@ class CbAddToCartButton extends React.Component {
         <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
               this.state.IsModifierAvailable === 1 ? 
@@ -581,7 +598,7 @@ class CbAddToCartButton extends React.Component {
 
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
           >
             <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
           </TouchableOpacity>
@@ -1208,6 +1225,36 @@ class CbCommonButton extends React.Component {
 }
 
 
+class CbToastMessage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalVisible: false,
+    };
+    this.message = props.message
+    this.isToastMessageVisiable = this.isToastMessageVisiable
+    this.transparent = props.transparent
+  }
+
+  render() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={this.transparent}
+        visible={this.isToastMessageVisiable}
+      >
+        <Box style={styles.centeredView}>
+          <Box style={[styles.blackShadow]} />
+          <Box style={styles.modalView}>
+            <Text style={styles.modalText}>{this.message}</Text>
+          </Box>
+        </Box>
+      </Modal>
+    );
+  }
+}
+
+
 CbHomeButton.display='CbHomeButton';
 CbBackButton.display='CbBackButton';
 CbImage.displayName='CbImage';
@@ -1226,6 +1273,7 @@ CbAddToCartButton.displayName = "CbAddToCartButton"
 CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
 cbSelectTime.displayName='cbSelectTime';
+CbToastMessage.displayName = "CbToastMessage"
 
 
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage };

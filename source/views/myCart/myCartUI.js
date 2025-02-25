@@ -97,7 +97,7 @@ export default function MyCartScreen(props) {
                 
               </UI.Box>
 
-              <UI.Box style={styles.rightContainer}>
+              <UI.Box style={[styles.rightContainer,{right:(item.quantity >=10 | `${quantityIncPrice}`.length >= 5 )?21:0}]}>
                 <UI.Text
                   style={styles.itemPrice}
                 >{`$${quantityIncPrice}`}</UI.Text>

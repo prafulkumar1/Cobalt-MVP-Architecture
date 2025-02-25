@@ -210,6 +210,7 @@ export const UseFormContextProvider = ({children}) => {
   
   const updateModifierCartItem = async (updatedItem) => {
     try {
+      console.log(updatedItem,"--->itemsssss")
       if(modifiersResponseData?.Categories.length > 0){
         const existingCartData = await AsyncStorage.getItem("cart_data");
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
@@ -233,6 +234,10 @@ export const UseFormContextProvider = ({children}) => {
           closePreviewModal()
         }, 1000);
       }else{
+        // singleModifierData.current = {
+        //   quantity: getCurrentItemDetails?.quantity,
+        //   quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+        // };
         addItemToModifierForCart(singleItemDetails)
       }
     } catch (error) {
