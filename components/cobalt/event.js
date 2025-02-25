@@ -411,9 +411,21 @@ export const handleClearClick = (setState, searchValue, onSearchActivate) => {
   }
 };
 
-export const handleCloseClick = (setState, onSearchActivate) => {
+export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
   setState({ showSearchInput: false, searchValue: "" });
+
+  // Call handleClear if it's provided
+  if (handleClear) {
+    handleClear();
+  }
+
+  // Call onSearchActivate if it's provided
   if (onSearchActivate) {
     onSearchActivate(false);
+  }
+
+  // Call onBackPress to reset the list when exiting search
+  if (onBackPress) {
+    onBackPress();
   }
 };

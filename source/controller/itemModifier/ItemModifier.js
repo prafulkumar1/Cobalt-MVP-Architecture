@@ -36,6 +36,38 @@ export const useItemModifierLogic = () => {
         setItemNames(items);
     }, []);
 
+    function addIsCheckedProperty(item) {
+      if (!item) return item;
+    
+      let categoryData = [];
+      try {
+        categoryData = typeof item?.Categories === "string"
+          ? JSON.parse(item?.Categories)
+          : Array.isArray(item?.Categories)
+          ? item?.Categories
+          : [];
+      } catch (error) {
+        console.error("Error parsing Categories:", error);
+      }
+    
+      let updatedData = {
+        ...item,
+        Categories: categoryData.map(category => ({
+          ...category,
+          Modifiers: Array.isArray(category?.Modifiers)
+            ? category.Modifiers.map(modifier => ({
+                ...modifier,
+                isChecked: cartData?.some(cartItem =>
+                  cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                )
+              }))
+            : []
+        }))
+      };
+      return updatedData;
+    }
+    
+
     const getModifiersData = async() => {
       try {
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")

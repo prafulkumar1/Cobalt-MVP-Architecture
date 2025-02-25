@@ -37,8 +37,10 @@ export const styles = StyleSheet.create({
         fontSize:16,
         color:"#4B5154",
         lineHeight:20,
-        paddingRight:10,
-        fontFamily:"SourceSansPro_SemiBold"
+        paddingRight:54,
+        right: 15,
+        fontFamily:"SourceSansPro_SemiBold",
+        width : "28%"
       },
       rightContainer:{ flexDirection: "row", alignItems: "center" },
       cardContainer:{ 

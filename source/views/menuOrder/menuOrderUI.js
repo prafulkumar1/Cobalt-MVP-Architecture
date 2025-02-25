@@ -11,7 +11,6 @@ import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/compo
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
 import {  useRef, useState, useEffect } from "react";
-import { Image as ExpoImage } from 'expo-image';
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { responsiveHeight } from "react-native-responsive-dimensions";
@@ -27,10 +26,6 @@ export default function MenuOrderScreen(props) {
     (item) => item?.PageId === pageId
   );
 
-  const handleSearchPress = () => {
-    setIsSearchTriggered(true); // Set true when search icon is pressed
-    setSearchQuery(""); // Clear previous search query
-  }
 
   global.controlsConfigJson =
     pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
@@ -45,33 +40,56 @@ export default function MenuOrderScreen(props) {
     if (searchQuery.trim() === "") {
       setFilteredItems([]);
     } else {
-      const newFilteredItems = selectedCategory.map(category => ({
-        ...category,
-        submenus: category.submenus.map(submenu => {
-          const lowerCaseQuery = searchQuery.toLowerCase();
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      
+      // Flatten all items across all categories and submenus safely
+      let allItems = selectedCategory.flatMap(category => 
+        (category.submenus || []).flatMap(submenu => 
+          (submenu.items || []).map(item => ({
+            ...item,
+            categoryName: category.Category_Name || "",  // Handle undefined
+            subMenuName: submenu.SubMenu_Name || ""    // Handle undefined
+          }))
+        )
+      );
   
-          // First, get items that start with the search query
-          const startsWithQuery = submenu.items.filter(item =>
-            item.Item_Name.toLowerCase().startsWith(lowerCaseQuery)
-          );
+      // First, get items that start with the search query
+      const startsWithQuery = allItems.filter(item =>
+        item?.Item_Name?.toLowerCase().startsWith(lowerCaseQuery)
+      );
   
-          // Then, get items that contain the search query but don’t start with it
-          const containsQuery = submenu.items.filter(item =>
-            item.Item_Name.toLowerCase().includes(lowerCaseQuery) &&
-            !item.Item_Name.toLowerCase().startsWith(lowerCaseQuery)
-          );
+      // Then, get items that contain the search query but don’t start with it
+      const containsQuery = allItems.filter(item =>
+        item?.Item_Name?.toLowerCase().includes(lowerCaseQuery) &&
+        !item?.Item_Name?.toLowerCase().startsWith(lowerCaseQuery)
+      );
   
-          return {
-            ...submenu,
-            items: [...startsWithQuery, ...containsQuery], // Maintain order
-          };
-        }).filter(submenu => submenu.items.length > 0),
-      })).filter(category => category.submenus.length > 0);
+      // Merge and sort by relevance
+      const sortedItems = [...startsWithQuery, ...containsQuery];
+  
+      // Group back into categories and submenus
+      const newFilteredItems = sortedItems.reduce((acc, item) => {
+        if (!item.Item_Name) return acc; // Skip if item name is empty
+  
+        let category = acc.find(c => c.Category_Name === item.categoryName);
+        if (!category) {
+          category = { Category_Name: item.categoryName, submenus: [] };
+          acc.push(category);
+        }
+  
+        let submenu = category.submenus.find(s => s.SubMenu_Name === item.subMenuName);
+        if (!submenu) {
+          submenu = { SubMenu_Name: item.subMenuName, items: [] };
+          category.submenus.push(submenu);
+        }
+  
+        submenu.items.push(item);
+        return acc;
+      }, []);
   
       setFilteredItems(newFilteredItems);
     }
   }, [searchQuery, selectedCategory]);
-
 
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
@@ -216,7 +234,17 @@ export default function MenuOrderScreen(props) {
       </UI.Box>
     );
   }
+  const handleSearchPress = () => {
+    setIsSearchTriggered(true); // Set true when search icon is pressed
+    setSearchQuery(""); // Clear previous search query
+  }
 
+  const handleBackPress = () => {
+    setSearchQuery(""); // Clear search query
+    setFilteredItems(selectedCategory); // Restore all items
+    setIsSearchTriggered(false); // Disable search mode
+  };
+  
   const renderCategoryMainList = () => {
     const updateCategorySelection = (visibleCategoryId) => {
       const updatedCategories = selectedCategory.map(category => {
@@ -288,17 +316,18 @@ export default function MenuOrderScreen(props) {
         </UI.Box>
       );
     }
+
     if (isSearchTriggered && searchQuery.trim() === "") {
       return (
         <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <UI.Text style={styles.emptyMealTxt}>Start typing to search...</UI.Text>
+          <UI.Text style={styles.emptyMealTxt}>Search...</UI.Text>
         </UI.Box>
       );
     }
   
     return (
       <UI.Box style={styles.mainBoxContainer}>
-      {searchQuery.trim() === "" && (
+ {searchQuery.trim() === "" && (
         <UI.ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -308,7 +337,6 @@ export default function MenuOrderScreen(props) {
           {selectedCategory?.map((group) => renderMenuCategoryList(group))}
         </UI.ScrollView>
       )}
-    
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
           ref={scrollViewRef}
@@ -317,98 +345,126 @@ export default function MenuOrderScreen(props) {
           scrollEventThrottle={16}
           contentContainerStyle={{paddingBottom:responsiveHeight(40)}}
         >
-        
-          {
+         {
             searchQuery.trim() !== "" && filteredItems.length === 0 ? (
         <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
-      ) : (filteredItems.length > 0 ? (
-            filteredItems.map((category, categoryIndex) => (
-              category.submenus.map((submenu) => (
-                <UI.Box key={`category-${category.Category_ID}-submenu-${submenu.SubMenu_ID}`}>
-                  <UI.Text style={styles.itemCategoryLabel}>
-                    {submenu.SubMenu_Name}
-                  </UI.Text>
-                  {submenu.items.map((box, index) => {
-                    const isExpanded = expandedIds.includes(box?.Item_ID);
-                    return (
-                      <UI.TouchableOpacity
-                        activeOpacity={0.5}
-                        disabled={box.IsAvailable !== 1}
-                        onPress={() => openItemDetails(box)}
-                        key={box?.Item_ID}
-                        style={[
-                          styles.subContainer,
-                          {
-                            opacity: box?.IsAvailable === 1 && box?.IsDisable === 0 ? 1 : 0.8,
-                          },
-                        ]}
-                      >
-                        <UI.Box style={styles.rowContainer}>
-                          <UI.Box style={[styles.textContainer]}>
-                            <UI.Text
-                              numberOfLines={1}
-                              style={[
-                                styles.mealTypeTitle,
-                                showActiveAvailableColor(box?.IsAvailable, box?.IsDisable),
-                                { textAlign: "justify" },
-                              ]}
-                            >
-                              {box?.Item_Name}
-                            </UI.Text>
-                            <UI.Text
-                              numberOfLines={isExpanded ? undefined : 2}
-                              style={[
-                                styles.priceTxt,
-                                showActiveAvailableColor(box.IsAvailable, box.IsDisable),
-                              ]}
-                            >
-                              {`$${box?.Price != null ? box?.Price : 0}`}
-                            </UI.Text>
-                            <UI.Text
-                              numberOfLines={isExpanded ? undefined : 2}
-                              style={[
-                                styles.descriptionTxt,
-                                showActiveAvailableColor(box.IsAvailable, box.IsDisable),
-                                { textAlign: "left", letterSpacing: -0.5 },
-                              ]}
-                            >
-                              {box?.Description}
-                            </UI.Text>
-                            {box?.Description?.length > 68 && (
+      ) : (
+        filteredItems.length > 0 ? (
+      <UI.FlatList
+        data={filteredItems}
+        keyExtractor={(category) => `category-${category.Category_ID}`}
+        renderItem={({ item: category }) => (
+          <UI.FlatList
+            data={category.submenus}
+            keyExtractor={(submenu) => `submenu-${submenu.SubMenu_ID}`}
+            renderItem={({ item: submenu }) => (
+              <>
+                <UI.TouchableOpacity
+                  activeOpacity={0.5}
+                  style={styles.cardMainContainer}
+                  onPress={() => toggleSubmenu(category.Category_ID)}
+                >
+                  <UI.Text style={styles.itemCategoryLabel}>{submenu.SubMenu_Name}</UI.Text>
+                  {expandedSubmenus[category.Category_ID] ? (
+                    <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"} />
+                  ) : (
+                    <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"} />
+                  )}
+                </UI.TouchableOpacity>
+
+                {expandedSubmenus[category.Category_ID] && (
+                  <UI.CbFlatList
+                    flatlistData={submenu.items}
+                    customStyles={{ backgroundColor: "#fff" }}
+                    children={({ item: box, index }) => {
+                      const isExpanded = expandedIds.includes(box?.Item_ID);
+                      return (
+                        <UI.TouchableOpacity
+                          activeOpacity={0.5}
+                          disabled={box.IsAvailable !== 1}
+                          onPress={() => openItemDetails(box)}
+                          key={box?.Item_ID}
+                          style={[
+                            styles.subContainer,
+                            {
+                              opacity: box?.IsAvailable === 1 && box?.IsDisable === 0 ? 1 : 0.8,
+                            },
+                          ]}
+                        >
+                          <UI.Box style={styles.rowContainer}>
+                            <UI.Box style={[styles.textContainer]}>
                               <UI.Text
-                                onPress={() => handleReadMoreToggle(box.Item_ID)}
-                                style={styles.underLineTxt}
-                              >
-                                {isExpanded ? "Show Less" : "Read More"}
-                              </UI.Text>
-                            )}
-                          </UI.Box>
-                          <UI.Box style={styles.imageContainer}>
-                            <UI.Box
-                              style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-                              disabled={box.IsAvailable === 0 && box.IsDisable === 1}
-                            >
-                              <ExpoImage
-                                source={{ uri: box.ImageUrl }}
-                                contentFit="cover"
-                                cachePolicy="memory-disk"
+                                numberOfLines={1}
                                 style={[
-                                  styles.mealTypeImg,
-                                  box.IsAvailable === 0 && box.IsDisable === 1 && { opacity: 0.4 },
+                                  styles.mealTypeTitle,
+                                  showActiveAvailableColor(box?.IsAvailable, box?.IsDisable),
+                                  { textAlign: "justify" },
                                 ]}
-                              />
+                              >
+                                {box?.Item_Name}
+                              </UI.Text>
+                              <UI.Text
+                                numberOfLines={isExpanded ? undefined : 2}
+                                style={[
+                                  styles.priceTxt,
+                                  showActiveAvailableColor(box.IsAvailable, box.IsDisable),
+                                ]}
+                              >
+                                {`$${box?.Price != null ? box?.Price : 0}`}
+                              </UI.Text>
+                              <UI.Text
+                                numberOfLines={isExpanded ? undefined : 2}
+                                style={[
+                                  styles.descriptionTxt,
+                                  showActiveAvailableColor(box.IsAvailable, box.IsDisable),
+                                  { textAlign: "left", letterSpacing: -0.5 },
+                                ]}
+                              >
+                                {box?.Description}
+                              </UI.Text>
+                              {box?.Description?.length > 68 && (
+                                <UI.Text
+                                  onPress={() => handleReadMoreToggle(box.Item_ID)}
+                                  style={styles.underLineTxt}
+                                >
+                                  {isExpanded ? "Show Less" : "Read More"}
+                                </UI.Text>
+                              )}
                             </UI.Box>
-                            <UI.CbAddToCartButton mealItemDetails={box} />
+
+                            <UI.Box style={styles.imageContainer}>
+                              <UI.Box
+                                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                                disabled={box.IsAvailable === 0 && box.IsDisable === 1}
+                              >
+                                <Image
+                                  source={{ uri: box.ImageUrl }}
+                                  style={[
+                                    styles.mealTypeImg,
+                                    box.IsAvailable === 0 && box.IsDisable === 1 && {
+                                      opacity: 0.4,
+                                    },
+                                  ]}
+                                />
+                              </UI.Box>
+                              <UI.CbAddToCartButton mealItemDetails={box} />
+                            </UI.Box>
                           </UI.Box>
-                        </UI.Box>
-                      </UI.TouchableOpacity>
-                    );
-                  })}
-                </UI.Box>
-              ))
-            ))
-          ) : (
-            selectedCategory.map((category) => {
+                        </UI.TouchableOpacity>
+                      );
+                    }}
+                  />
+                )}
+              </>
+            )}
+          />
+        )}
+      />
+          ): (
+            
+            
+            
+            selectedCategory?.map((category) => {
             return (
               <UI.FlatList
                 onLayout={(e) => {handleLayout(category.Category_ID, e);handleItemLayout(category.Category_ID, e)}}
@@ -682,6 +738,7 @@ export default function MenuOrderScreen(props) {
   onSearch={setSearchQuery} 
   onSearchPress={handleSearchPress} 
   isRecentOrderOpen={isRecentOrderOpen} 
+  onBackPress={handleBackPress} // <-- Add this
 />
         }
         {!isSearchActive && (

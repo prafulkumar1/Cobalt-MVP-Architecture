@@ -3,7 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import "@/global.css";
 import 'react-native-gesture-handler';
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, NativeModules,Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
@@ -28,6 +28,15 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const { NativeNavigationModule } = NativeModules; // iOS Native Module
+
+  const backAction = () => {
+    console.log('tapped');
+    if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
+        NativeNavigationModule.navigateToNative(); // Call native iOS navigation
+    }
+    return true; // Prevent default back behavior
+};
 
   useEffect(() => {
     async function loadFonts() {
@@ -64,9 +73,21 @@ export default function App() {
             <Stack.Navigator
               initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({
-                headerLeft: () => (
-                  <UI.CbBackButton navigation={navigation} />
-                ),
+                headerLeft: () => {
+              if(route.name === "ProfitCenters"){
+                return (
+                  <UI.TouchableOpacity onPress={()=>backAction()} style={styles.homeHeader}>
+                           {
+          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
+        }
+        </UI.TouchableOpacity>
+                )
+              }else{
+                return(
+                <UI.CbBackButton navigation={navigation}  />
+              )
+              }              
+            },
                 headerTitleAlign: 'left',
                 headerTitle: async() => {
                   const getProfitCenterItem = await AsyncStorage.getItem("profit_center")

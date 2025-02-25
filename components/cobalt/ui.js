@@ -638,7 +638,13 @@ class cbSearchbox extends React.Component {
           <Box
             style={styles.searchBarMainContainer}
           >
-            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 10 }} >
+            <TouchableOpacity   onPress={() => handleCloseClick(
+  this.setState.bind(this), 
+  this.props.onSearchActivate, 
+  this.props.onSearch, // handleClear function
+  this.props.onBackPress // New function to reset the list
+)}
+ style={{ marginLeft: 10 }} >
               {
                 Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }

@@ -90,6 +90,7 @@ export default function MyCartScreen(props) {
 
               <UI.Box style={styles.rightContainer}>
                 <UI.Text
+                numberOfLines={1}
                   style={styles.itemPrice}
                 >{`$${item.quantityIncPrice}`}</UI.Text>
 
