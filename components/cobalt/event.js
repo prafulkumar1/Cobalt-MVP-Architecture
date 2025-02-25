@@ -206,6 +206,7 @@ export const UseFormContextProvider = ({children}) => {
     
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
+      setFormFieldData("ItemModifier","","Comments","",false)
       setTimeout(() => {
         formData.ItemModifier_Comments = ""
         setSelectedModifiers([])
@@ -224,12 +225,20 @@ export const UseFormContextProvider = ({children}) => {
         const getProfitCenterId = getProfitCenterItem ? JSON.parse(getProfitCenterItem) : null;
     
         const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
-    
-        const updatedCartItems = prevCartItems.map((item) =>
-          item.Item_ID === updatedItem.Item_ID
-            ? { ...item, ...updatedItem, profitCenterId: getProfitCenterId?.LocationId }
-            : item
-        );
+        
+        const updatedCartItems = prevCartItems.map((item) =>{
+          if(item.Item_ID === updatedItem.Item_ID){
+            return{
+              ...item, 
+              comments: commentValue.current || "",
+              selectedModifiers:[...item.selectedModifiers,...modifiersData.current], 
+              profitCenterId: getProfitCenterId?.LocationId
+            }
+          }else{
+            return item
+          }
+        }
+      );
     
         await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
     
@@ -247,6 +256,7 @@ export const UseFormContextProvider = ({children}) => {
       console.error("Error updating cart item:", error);
     }
   };
+  const updateWithoutModifierCartItem = (data) => {}
 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
@@ -298,7 +308,8 @@ export const UseFormContextProvider = ({children}) => {
       setUpdateOrAddTxt,
       updateOrAddTxt,
       updateModifierCartItem,
-      isExitProfitCenter,setIsExitProfitCenter
+      isExitProfitCenter,setIsExitProfitCenter,
+      updateWithoutModifierCartItem
     }
     return (
       <FormContext.Provider

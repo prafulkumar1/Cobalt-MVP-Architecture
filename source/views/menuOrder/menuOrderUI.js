@@ -14,6 +14,7 @@ import {  useRef, useState } from "react";
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { responsiveHeight } from "react-native-responsive-dimensions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -51,7 +52,10 @@ export default function MenuOrderScreen(props) {
       setUpdateOrAddTxt,
       modifiersResponseData,
       updateModifierCartItem,
-      isExitProfitCenter,setIsExitProfitCenter
+      isExitProfitCenter,
+      setIsExitProfitCenter,
+      setModifierCartItemData,
+      updateWithoutModifierCartItem
     } = useFormContext();
 
   const {
@@ -85,6 +89,7 @@ export default function MenuOrderScreen(props) {
     storeSingleItem({...box,response:quantityInfo.response})
     increaseQuantity(box)
     closePreviewModal()
+    setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
   }
   
 
@@ -105,12 +110,23 @@ export default function MenuOrderScreen(props) {
     }
     })
     const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
+    let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
     if(isItemAvailableInCart){
-      updateModifierCartItem(existingCartItem)
+      if(categoryData?.length > 0){
+        updateModifierCartItem(existingCartItem)
+      }else{
+        updateWithoutModifierCartItem(existingCartItem)
+      }
     }else{
       addItemToModifierForCart(singleItemDetails);
       closePreviewModal();
     }
+  }
+  const removeCartItems = async() => {
+    props.navigation?.goBack()
+    setIsExitProfitCenter(false)
+    setModifierCartItemData([])
+    await AsyncStorage.removeItem('cart_data')
   }
 
   const renderMealTypeList = (mealTypeItem) => {
@@ -344,7 +360,7 @@ export default function MenuOrderScreen(props) {
                               <UI.Box style={styles.rowContainer}>
                                 <UI.Box style={[styles.textContainer]}>
                                   <UI.Text
-                                    numberOfLines={1}
+                                    numberOfLines={2}
                                     style={[
                                       styles.mealTypeTitle,
                                       showActiveAvailableColor(
@@ -560,72 +576,98 @@ export default function MenuOrderScreen(props) {
 
   return (
     <UI.Box style={styles.mainContainer}>
-      <UI.Box style={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
-        {
-          !isRecentOrderOpen && <UI.cbSearchbox onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
-        }
+      <UI.Box
+        style={[
+          styles.mainHeaderContainer,
+          isRecentOrderOpen ? { marginTop: 6 } : { marginVertical: 6 },
+        ]}
+      >
+        {!isRecentOrderOpen && (
+          <UI.cbSearchbox
+            onSearchActivate={() => handleChangeState()}
+            isRecentOrderOpen={isRecentOrderOpen && true}
+          />
+        )}
         {!isSearchActive && (
-          <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
-
+          <UI.TouchableOpacity
+            style={[
+              styles.recentOrderContainer,
+              { width: isRecentOrderOpen ? "100%" : "90%" },
+            ]}
+            onPress={() => openRecentOrder()}
+          >
             <UI.Box style={styles.recentOrderBox}>
-              <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
+              <UI.TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <UI.CbImage
+                  imageJsx={
+                    <Image
+                      source={require("@/assets/images/icons/ROCart3x.png")}
+                      style={styles.recentOrderIcon}
+                    />
+                  }
+                />
               </UI.TouchableOpacity>
-              <UI.Text style={styles.recentOrderTxt}>
-                Recent Orders
-              </UI.Text>
+              <UI.Text style={styles.recentOrderTxt}>Recent Orders</UI.Text>
             </UI.Box>
 
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
+            <UI.TouchableOpacity
+              style={styles.rightIconBtn}
+              onPress={() => openRecentOrder()}
+            >
+              <Icon
+                as={isRecentOrderOpen ? ChevronDownIcon : ChevronRightIcon}
+                style={styles.dropdownIcon}
+              />
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
         )}
       </UI.Box>
-      {
-        isRecentOrderOpen && <OnRecentOrderPress /> 
-      }
+      {isRecentOrderOpen && <OnRecentOrderPress />}
 
       {renderMenuOrderItems()}
 
-      <Modal
-        visible={isExitProfitCenter}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setIsExitProfitCenter(false)}
-      >
-        <UI.View
-          style={styles.modalContainer}
-          onPress={() => setIsExitProfitCenter(false)}
-        />
+      {isExitProfitCenter && (
+        <Modal
+          visible={isExitProfitCenter}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsExitProfitCenter(false)}
+        >
+          <UI.View
+            style={styles.modalContainer}
+            onPress={() => setIsExitProfitCenter(false)}
+          />
 
-        <UI.Box style={styles.confirmMdl}>
-          <UI.Box style={styles.innerModal}>
-            <UI.Box style={styles.innerModalMsgContainer}>
-              <UI.Text style={styles.innerModalAlertTxt}>
-              Are you sure you want to leave the profit center? All items in your cart will be deleted if you proceed
-              </UI.Text>
+          <UI.Box style={styles.confirmMdl}>
+            <UI.Box style={styles.innerModal}>
+              <UI.Box style={styles.innerModalMsgContainer}>
+                <UI.Text style={styles.innerModalAlertTxt}>
+                  Are you sure you want to leave the profit center? All items in
+                  your cart will be deleted if you proceed
+                </UI.Text>
 
-              <UI.Box style={styles.discardBtn}>
-                <UI.TouchableOpacity
-                  onPress={() => setIsExitProfitCenter(false)}
-                  style={styles.modalNoYesBtn}
-                >
-                  <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
-                </UI.TouchableOpacity>
+                <UI.Box style={styles.discardBtn}>
+                  <UI.TouchableOpacity
+                    onPress={() => setIsExitProfitCenter(false)}
+                    style={styles.modalNoYesBtn}
+                  >
+                    <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
+                  </UI.TouchableOpacity>
 
-                <UI.TouchableOpacity
-                  onPress={() => props.navigation.goBack()}
-                  style={styles.modalNoYesBtn}
-                >
-                  <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
-                </UI.TouchableOpacity>
+                  <UI.TouchableOpacity
+                    onPress={() => removeCartItems()}
+                    style={styles.modalNoYesBtn}
+                  >
+                    <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
+                  </UI.TouchableOpacity>
+                </UI.Box>
               </UI.Box>
             </UI.Box>
           </UI.Box>
-        </UI.Box>
-      </Modal>
-
+        </Modal>
+      )}
     </UI.Box>
   );
 }

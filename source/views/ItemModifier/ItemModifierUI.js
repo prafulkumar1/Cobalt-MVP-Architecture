@@ -14,7 +14,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 }
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData } = useFormContext()
+    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
 
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -202,8 +202,8 @@ const ItemModifier = (props) => {
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
                     >   
-                      {/* <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} value={cartItem !== undefined ? cartItem?.comments : ""} formId={pageId}/> */}
                       <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/>
+                      {/* <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/> */}
                     </UI.cbForm>
                   </UI.Box>
               </UI.Box>

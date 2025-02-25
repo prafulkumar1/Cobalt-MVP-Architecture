@@ -404,12 +404,26 @@ class CbBackButton extends React.Component {
     this.source = props.source;
   }
   render() {
+    const state = this.props.navigation.getState();
+    const currentRoute = state.routes[state.index]?.name;
     return (
-      <TouchableOpacity onPress={()=>this.props.navigation?.goBack()} style={styles.backArrowHeader}>
+      <FormContext.Consumer>
+      {({setIsExitProfitCenter}) => {
+          return (
+            <TouchableOpacity onPress={()=>{
+              if(currentRoute === "MenuOrder"){
+                setIsExitProfitCenter(true)
+              }else{
+                this.props.navigation?.goBack()
+              }
+            }} style={styles.backArrowHeader}>
         {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
         }
       </TouchableOpacity>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -420,22 +434,12 @@ class CbHomeButton extends React.Component {
     this.source = props.source;
   }
   render() {
-    console.log(this.props)
     return (
-      <FormContext.Consumer>
-      {({setIsExitProfitCenter}) => {
-          return (
-            <TouchableOpacity onPress={()=>{
-              navigateToScreen(this.props,'ProfitCenters')
-            }}>
-            {
-              this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
-            }
-          </TouchableOpacity>
-          );
-        }}
-      </FormContext.Consumer>
-
+      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
+      {
+        this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
+      }
+    </TouchableOpacity>
     );
   }
 }
@@ -927,7 +931,7 @@ class cbInput extends React.Component {
     this.style = props.style;
     this.multiline = props.multiline
     this.numberOfLines = props.numberOfLines
-    // this.value = props.value
+    this.value = props.value
   }
   
 
@@ -951,7 +955,7 @@ class cbInput extends React.Component {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          // const value  = getFormFieldData(this.formId,this.id)
+          const value  = getFormFieldData(this.formId,this.id)
           return (
             <FormControl
               isDisabled={isDisabledprop}
@@ -971,7 +975,7 @@ class cbInput extends React.Component {
                   multiline={this.multiline}
                   numberOfLines={this.numberOfLines}
                   style={[{ textAlignVertical: "top" }, this.style]}
-                  // value={this.value?this.value : value?.value}
+                  value={this.value?this.value : value?.value}
                   onChangeText={(value) => {
                     this.setFormFieldData(this.formId,'input',this.id,value);
                   }}

@@ -186,7 +186,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 20,
     fontFamily: "SourceSansPro_SemiBold",
-    width: responsiveWidth(45),
+    width: responsiveWidth(55),
     color: "#4B5154",
   },
   priceTxt: {
@@ -345,7 +345,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
 },
-innerModalAlertTxt:{ fontSize: 24, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(50),marginTop:responsiveHeight(3) },
+innerModalAlertTxt:{ fontSize: 22, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(80),marginTop:responsiveHeight(3) },
 innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
 innerModal:{
     width: '100%',
