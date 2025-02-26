@@ -14,7 +14,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 }
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData } = useFormContext()
+    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
 
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -24,6 +24,11 @@ const ItemModifier = (props) => {
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
+    if(loading){
+      return(
+        <CbLoader />
+      )
+    }
     return (
       <>
         <Animated.View
@@ -89,14 +94,16 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }}
+          contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
           )}
          >
           <UI.Box style={[styles.mainContainer, styles.itemMainContainer]}>
-            <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
+            {
+              ImageUrl && 
+              <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
               <UI.CbImage
                 imageJsx={
                   <Image
@@ -108,6 +115,7 @@ const ItemModifier = (props) => {
                 }
               />
             </UI.TouchableOpacity>
+            }
 
             <UI.Box style={styles.modifierContainer}>
               <UI.Box
@@ -177,21 +185,14 @@ const ItemModifier = (props) => {
               }
 
               <UI.Box style={styles.modifierSubContainer}>
-                  { loading ? (
-                    <CbLoader />
-                  ) : (
-                    <UI.Box>
-                      {
-                        categoryData?.length > 0 &&
-                        <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                          <UI.CbAccordionlist
-                            screenName="Modifiers"
-                            props={props}
-                            getAllSelectedModifiers={getAllSelectedModifiers}
-                          /></>
-                      }
-                    </UI.Box>
+                <UI.Box>
+                  {Array.isArray(categoryData) && categoryData.length > 0 && (
+                    <>
+                    <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                    <UI.CbAccordionlist screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}    />
+                    </>
                   )}
+                </UI.Box>
                   <UI.Box style={{paddingBottom:100}}>
                     <UI.Text style={styles.allergyInfoTxt}>
                       Comment/Allergy Info
@@ -201,7 +202,8 @@ const ItemModifier = (props) => {
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
                     >   
-                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} value={singleItemDetails?.comments} formId={pageId}/>
+                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/>
+                      {/* <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/> */}
                     </UI.cbForm>
                   </UI.Box>
               </UI.Box>

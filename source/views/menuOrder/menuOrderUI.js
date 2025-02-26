@@ -11,10 +11,10 @@ import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/compo
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
 import {  useRef, useState } from "react";
-import { Image as ExpoImage } from 'expo-image';
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { responsiveHeight } from "react-native-responsive-dimensions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -50,57 +50,47 @@ export default function MenuOrderScreen(props) {
       setModifiersResponseData,
       updateOrAddTxt,
       setUpdateOrAddTxt,
-      modifiersResponseData
+      modifiersResponseData,
+      updateModifierCartItem,
+      isExitProfitCenter,
+      setIsExitProfitCenter,
+      setModifierCartItemData,
+      updateWithoutModifierCartItem
     } = useFormContext();
 
-  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory,getCartData} = useMenuOrderLogic(props)
-  const categoryRefs = useRef({});
-  const scrollViewRef = useRef(null);
-  const categoryScrollRef = useRef(null);
-  const categoryPositions = useRef({});
-  const [itemPositions, setItemPositions] = useState({});
+  const {
+      toggleSubmenu,
+      expandedSubmenus,
+      isRecentOrderOpen,
+      openRecentOrder,
+      errorMessage,
+      loading,
+      mealPeriods,
+      selectedCategory,
+      setSelectedCategory,
+      itemPositions, 
+      setItemPositions,
+      expandedIds,
+      setExpandedIds,
+      categoryRefs,
+      scrollViewRef,
+      categoryScrollRef,
+      categoryPositions,
+    } = useMenuOrderLogic(props)
 
-  const [expandedIds,setExpandedIds] = useState([])
-  const [updatedTotalPrice,setUpdatedTotalPrice] = useState("")
-  const [isItemEditable , setIsItemEditable] = useState(false)
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
+  const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100  : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
 
-  // const openItemDetails = async (box) => {    
-  //   console.log(modifiersResponseData,"---->cart dataa")
-  //   const isItemAvailableInCart = cartData.some(item => item.Item_ID === box.Item_ID);
-  //   const getCartDetails = cartData?.find((item) => item.Item_ID === box.Item_ID)
-  //   try {
-  //     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID);
-  
-  //     if (quantityInfo?.response?.IsAvailable === 1) {
-  //       if(isItemAvailableInCart){
-  //         setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
-  //         setIsItemEditable(!isItemEditable)
-  //         storeSingleItem({...getCartDetails,response: quantityInfo.response});
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }else{
-  //         storeSingleItem({ ...box, response: quantityInfo.response });
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching quantity info:", error);
-  //   }
-  // };
   const openItemDetails = async (box) => {
     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    if(quantityInfo.response.IsAvailable ===1){
-      storeSingleItem({...box,response:quantityInfo.response})
-      increaseQuantity(box)
-      closePreviewModal()
-    }
+    storeSingleItem({...box,response:quantityInfo.response})
+    increaseQuantity(box)
+    closePreviewModal()
+    setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
   }
   
 
@@ -120,12 +110,24 @@ export default function MenuOrderScreen(props) {
     isItemAvailableInCart = true
     }
     })
+    const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
+    let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
     if(isItemAvailableInCart){
-      UI.Alert.alert("Item is already available in cart")
+      if(categoryData?.length > 0){
+        updateModifierCartItem(existingCartItem)
+      }else{
+        updateWithoutModifierCartItem(existingCartItem)
+      }
     }else{
       addItemToModifierForCart(singleItemDetails);
       closePreviewModal();
     }
+  }
+  const removeCartItems = async() => {
+    props.navigation?.goBack()
+    setIsExitProfitCenter(false)
+    setModifierCartItemData([])
+    await AsyncStorage.removeItem('cart_data')
   }
 
   const renderMealTypeList = (mealTypeItem) => {
@@ -302,6 +304,7 @@ export default function MenuOrderScreen(props) {
                   handleLayout(category.Category_ID, e);
                   handleItemLayout(category.Category_ID, e);
                 }}
+                scrollEnabled={false}
                 data={category.submenus}
                 renderItem={({ item }) => {
                   const subMenuItem = item
@@ -311,12 +314,12 @@ export default function MenuOrderScreen(props) {
                         <UI.TouchableOpacity
                           activeOpacity={0.5}
                           style={styles.cardMainContainer}
-                          onPress={() => toggleSubmenu(category.Category_ID)}
+                          onPress={() => toggleSubmenu(subMenuItem.SubMenu_ID)}
                         >
                           <UI.Text style={styles.itemCategoryLabel}>
                             {item.SubMenu_Name}
                           </UI.Text>
-                          {expandedSubmenus[category.Category_ID] ? (
+                          {expandedSubmenus[subMenuItem.SubMenu_ID] ? (
                             <ChevronUpIcon
                               style={styles.icon}
                               color="#5773a2"
@@ -331,120 +334,116 @@ export default function MenuOrderScreen(props) {
                           )}
                         </UI.TouchableOpacity>
                       )}
-                      {expandedSubmenus[category.Category_ID] && (
-                        <UI.CbFlatList
-                          flatlistData={item.items}
-                          customStyles={{ backgroundColor: "#fff" }}
-                          children={({ item, index }) => {
-                            let box = item;
-                            const lastItem =
-                              index === subMenuItem.items?.length - 1;
-                            const isExpanded = expandedIds.includes(box?.Item_ID);
-
-                            return (
-                              <UI.TouchableOpacity
-                                activeOpacity={0.5}
-                                disabled={box.IsAvailable !== 1}
-                                onPress={() => openItemDetails(box)}
-                                key={box?.Item_ID}
-                                style={[
-                                  styles.subContainer,
-                                  {
-                                    opacity:
-                                      box?.IsAvailable === 1 &&
-                                      box?.IsDisable === 0
-                                        ? 1
-                                        : 0.8,
-                                  },
-                                ]}
-                              >
-                                <UI.Box style={styles.rowContainer}>
-                                  <UI.Box style={[styles.textContainer]}>
-                                    <UI.Text
-                                      numberOfLines={1}
-                                      style={[
-                                        styles.mealTypeTitle,
-                                        showActiveAvailableColor(
-                                          box?.IsAvailable,
-                                          box?.IsDisable
-                                        ),
-                                        { textAlign: "justify" },
-                                      ]}
-                                    >
-                                      {box?.Item_Name}
-                                    </UI.Text>
-                                    <UI.Text
-                                      numberOfLines={isExpanded ? undefined : 2}
-                                      style={[
-                                        styles.priceTxt,
-                                        showActiveAvailableColor(
-                                          box.IsAvailable,
-                                          box.IsDisable
-                                        ),
-                                      ]}
-                                    >
-                                      {`$${box?.Price != null? box?.Price: 0}`}
-                                    </UI.Text>
-                                    <UI.Text
-                                      numberOfLines={isExpanded ? undefined : 2}
-                                      style={[
-                                        styles.descriptionTxt,
-                                        showActiveAvailableColor(
-                                          box.IsAvailable,
-                                          box.IsDisable
-                                        ),
-                                        {
-                                          textAlign: "left",
-                                          letterSpacing: -0.5,
-                                        },
-                                      ]}
-                                    >
-                                      {box?.Description}
-                                    </UI.Text>
-                                    {box?.Description?.length > 68 && (
-                                      <UI.Text
-                                        onPress={() =>
-                                          handleReadMoreToggle(box.Item_ID)
-                                        }
-                                        style={styles.underLineTxt}
-                                      >
-                                        {isExpanded? "Show Less": "Read More"}
+                      <UI.Box style={styles.mainItemContainer}>
+                      {expandedSubmenus[subMenuItem.SubMenu_ID] && (
+                        item.items.map((item,index) => {
+                          let box = item;
+                          const lastItem =
+                            index === subMenuItem.items?.length - 1;
+                          const isExpanded = expandedIds.includes(box?.Item_ID);
+                          return (
+                            <UI.TouchableOpacity
+                              activeOpacity={0.5}
+                              disabled={box.IsAvailable === 0}
+                              onPress={() => openItemDetails(box)}
+                              key={box?.Item_ID}
+                              style={[
+                                styles.subContainer,
+                                {
+                                  opacity:
+                                    box?.IsAvailable === 1 &&
+                                    box?.IsDisable === 0
+                                      ? 1
+                                      : 0.8,
+                                },
+                              ]}
+                            >
+                              <UI.Box style={styles.rowContainer}>
+                                <UI.Box style={[styles.textContainer]}>
+                                  <UI.Text
+                                    numberOfLines={2}
+                                    style={[
+                                      styles.mealTypeTitle,
+                                      showActiveAvailableColor(
+                                        box?.IsAvailable,
+                                        box?.IsDisable
+                                      ),
+                                      { textAlign: "justify" },
+                                    ]}
+                                  >
+                                    {box?.Item_Name}
+                                  </UI.Text>
+                                  <UI.Text
+                                    numberOfLines={isExpanded ? undefined : 2}
+                                    style={[
+                                      styles.priceTxt,
+                                      showActiveAvailableColor(
+                                        box.IsAvailable,
+                                        box.IsDisable
+                                      ),
+                                    ]}
+                                  >
+                                    {`$${box?.Price != null? box?.Price: 0}`}
+                                  </UI.Text>
+                                  <UI.Text
+                                    numberOfLines={isExpanded ? undefined : 2}
+                                    style={[
+                                      styles.descriptionTxt,
+                                      showActiveAvailableColor(
+                                        box.IsAvailable,
+                                        box.IsDisable
+                                      ),
+                                      {
+                                        textAlign: "left",
+                                        letterSpacing: -0.5,
+                                      },
+                                    ]}
+                                  >
+                                    {box?.Description}
+                                  </UI.Text>
+                                  {box?.Description?.length > 68 && (
+                                    <UI.TouchableOpacity onPress={() =>
+                                      handleReadMoreToggle(box.Item_ID)
+                                    }>
+                                      <UI.Text style={styles.underLineTxt}>
+                                        {isExpanded ? "Show Less" : "Read More"}
                                       </UI.Text>
-                                    )}
-                                  </UI.Box>
-
-                                  <UI.Box style={styles.imageContainer}>
-                                    <UI.Box
-                                      style={{
-                                        backgroundColor:
-                                          "rgba(255, 255, 255, 0.2)",
-                                      }}
-                                      disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
-                                    >
-                                      <ExpoImage
-                                        source={{ uri: item.ImageUrl }}
-                                        contentFit="cover"
-                                        cachePolicy="memory-disk"
-                                        style={[
-                                          styles.mealTypeImg,
-                                          box.IsAvailable === 0 &&
-                                            box.IsDisable === 1 && {
-                                              opacity: 0.4,
-                                            },
-                                        ]}
-                                      />
-                                    </UI.Box>
-                                    <UI.CbAddToCartButton mealItemDetails={box} />
-                                  </UI.Box>
+                                    </UI.TouchableOpacity>
+                                   
+                                  )}
                                 </UI.Box>
-                                {!lastItem && (
-                                  <UI.Box style={styles.horizontalLine} />
-                                )}
-                              </UI.TouchableOpacity>
-                            );
-                          }}
-                        />
+
+                                <UI.Box style={styles.imageContainer}>
+                                  <UI.Box
+                                    style={{
+                                      backgroundColor:
+                                        "rgba(255, 255, 255, 0.2)",
+                                    }}
+                                    disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
+                                  >
+                                    <Image
+                                      source={{ uri: item.ImageUrl }}
+                                      style={[
+                                        styles.mealTypeImg,
+                                        box.IsAvailable === 0 &&
+                                          box.IsDisable === 1 && {
+                                            opacity: 0.4,
+                                          },
+                                      ]}
+                                    />
+                                  </UI.Box>
+                                  <UI.CbAddToCartButton mealItemDetails={box} />
+                                </UI.Box>
+                              </UI.Box>
+                              {!lastItem && (
+                                <UI.Box style={styles.horizontalLine} />
+                              )}
+                            </UI.TouchableOpacity>
+                          );
+                        })
+                        
                       )}
+                      </UI.Box>
                     </>
                   );
                 }}
@@ -487,16 +486,13 @@ export default function MenuOrderScreen(props) {
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 {/* <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text> */}
-                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?updatedTotalPrice:singleItemPrice}`}</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?totalCartPrice:singleItemPrice}`}</UI.Text>
               </UI.Box>
               <UI.CbCommonButton
                 showBtnName={updateOrAddTxt}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
-                onPress={() => {
-                  addItemToModifierForCart(singleItemDetails);
-                  closePreviewModal();
-                }}
+                onPress={() => handleModifierAddCart()}
               />
             </UI.Box>
           </UI.Box>
@@ -581,34 +577,98 @@ export default function MenuOrderScreen(props) {
 
   return (
     <UI.Box style={styles.mainContainer}>
-      <UI.Box style={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
-        {
-          !isRecentOrderOpen && <UI.cbSearchbox onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
-        }
+      <UI.Box
+        style={[
+          styles.mainHeaderContainer,
+          isRecentOrderOpen ? { marginTop: 6 } : { marginVertical: 6 },
+        ]}
+      >
+        {!isRecentOrderOpen && (
+          <UI.cbSearchbox
+            onSearchActivate={() => handleChangeState()}
+            isRecentOrderOpen={isRecentOrderOpen && true}
+          />
+        )}
         {!isSearchActive && (
-          <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
-
+          <UI.TouchableOpacity
+            style={[
+              styles.recentOrderContainer,
+              { width: isRecentOrderOpen ? "100%" : "90%" },
+            ]}
+            onPress={() => openRecentOrder()}
+          >
             <UI.Box style={styles.recentOrderBox}>
-              <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
+              <UI.TouchableOpacity
+                onPress={() => this.props.navigation.goBack()}
+              >
+                <UI.CbImage
+                  imageJsx={
+                    <Image
+                      source={require("@/assets/images/icons/ROCart3x.png")}
+                      style={styles.recentOrderIcon}
+                    />
+                  }
+                />
               </UI.TouchableOpacity>
-              <UI.Text style={styles.recentOrderTxt}>
-                Recent Orders
-              </UI.Text>
+              <UI.Text style={styles.recentOrderTxt}>Recent Orders</UI.Text>
             </UI.Box>
 
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
+            <UI.TouchableOpacity
+              style={styles.rightIconBtn}
+              onPress={() => openRecentOrder()}
+            >
+              <Icon
+                as={isRecentOrderOpen ? ChevronDownIcon : ChevronRightIcon}
+                style={styles.dropdownIcon}
+              />
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
         )}
       </UI.Box>
-      {
-        isRecentOrderOpen && <OnRecentOrderPress /> 
-      }
+      {isRecentOrderOpen && <OnRecentOrderPress />}
 
       {renderMenuOrderItems()}
 
+      {isExitProfitCenter && (
+        <Modal
+          visible={isExitProfitCenter}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setIsExitProfitCenter(false)}
+        >
+          <UI.View
+            style={styles.modalContainer}
+            onPress={() => setIsExitProfitCenter(false)}
+          />
+
+          <UI.Box style={styles.confirmMdl}>
+            <UI.Box style={styles.innerModal}>
+              <UI.Box style={styles.innerModalMsgContainer}>
+                <UI.Text style={styles.innerModalAlertTxt}>
+                  Are you sure you want to leave the profit center? All items in
+                  your cart will be deleted if you proceed
+                </UI.Text>
+
+                <UI.Box style={styles.discardBtn}>
+                  <UI.TouchableOpacity
+                    onPress={() => setIsExitProfitCenter(false)}
+                    style={styles.modalNoYesBtn}
+                  >
+                    <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
+                  </UI.TouchableOpacity>
+
+                  <UI.TouchableOpacity
+                    onPress={() => removeCartItems()}
+                    style={styles.modalNoYesBtn}
+                  >
+                    <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
+                  </UI.TouchableOpacity>
+                </UI.Box>
+              </UI.Box>
+            </UI.Box>
+          </UI.Box>
+        </Modal>
+      )}
     </UI.Box>
   );
 }

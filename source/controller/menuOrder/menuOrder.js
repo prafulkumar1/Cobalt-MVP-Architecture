@@ -8,18 +8,24 @@ import { newData } from '@/source/constants/commonData';
 
 const pageId='MenuOrder';
 export const useMenuOrderLogic = (props) => {
+
+  const categoryRefs = useRef({});
+  const scrollViewRef = useRef(null);
+  const categoryScrollRef = useRef(null);
+  const categoryPositions = useRef({});
+
   const [isRecentOrderOpen,setIsRecentOrderOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState("")
   const [mealPeriods, setMealPeriods] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-
   const [selectedCategory, setSelectedCategory] = useState(newData);
   const [expandedSubmenus, setExpandedSubmenus] = useState({});
+  const [itemPositions, setItemPositions] = useState({});
+  const [expandedIds,setExpandedIds] = useState([])
 
-  const flatListRef = useRef(null);
 
-    const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
+  const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
 
 
     const openRecentOrder = () => {
@@ -94,7 +100,7 @@ export const useMenuOrderLogic = (props) => {
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
-          "LocationId": `${getProfitCenterId.LocationId}`,
+          "Location_Id": `${getProfitCenterId.LocationId}`,
           "MealPeriod_Id": "",
           "Category_Id": "",
           "Search": ""
@@ -103,6 +109,9 @@ export const useMenuOrderLogic = (props) => {
 
         if(menuOrderResponseData?.response?.ResponseCode === "Fail"){
           setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
+        }else if(menuOrderResponseData ===undefined){
+          setErrorMessage("Something went wrong!Please try again")
+          setLoading(false)
         }else{
           const uniqueMealPeriods = menuOrderResponseData.response?.MenuItems
           ?.filter((item) => item.MealPeriod_Id && item.MealPeriod_Name)
@@ -123,7 +132,7 @@ export const useMenuOrderLogic = (props) => {
           setMenuOrderData(menuOrderResponseData.response?.MenuItems)
           setExpandedSubmenus(
             menuOrderResponseData.response?.MenuItems?.reduce((acc, category) => {
-              acc[category.Category_ID] = true;
+              acc[category?.SubMenu_ID] = true;
               return acc;
             }, {})
           )
@@ -157,10 +166,17 @@ export const useMenuOrderLogic = (props) => {
     mealPeriods,
     categoryData,
     selectedCategory,
-    flatListRef,
     handleViewableItemsChanged,
     setSelectedCategory,
     expandedSubmenus,
-    toggleSubmenu
+    toggleSubmenu,
+    itemPositions, 
+    setItemPositions,
+    expandedIds,
+    setExpandedIds,
+    categoryRefs,
+    scrollViewRef,
+    categoryScrollRef,
+    categoryPositions
   };
 };

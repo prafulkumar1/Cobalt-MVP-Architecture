@@ -27,13 +27,13 @@ const ProfitCenters = (props) => {
     const RenderingProfitCenter = ({item},props) => {
         const isAvailable = item.STATUS === "Available";
         return (
-            <ImageBackground id="backgroundImage" source={{ uri: backgroundImage?.imageUrl ? backgroundImage?.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
-                <UI.Box style={styles.blackShadow} />
+            <ImageBackground id="backgroundImage" source={{ uri: item?.ImageUrl ? item?.ImageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE3CETL_OertJKScoHfblxs6CBrKGVCmVESw&s" }} style={styles.profitCenterBGImage}>
+                <UI.Box style={[styles.blackShadow, {opacity:item.ImageUrl ==null ? 0.5 : 1}]} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
                     <UI.Box style={styles.profitCenterOverlay}>
                         <UI.Text id='profitCenterName' numberOfLines={1} style={[profitCenterName?.styles ? profitCenterName?.styles : styles.profitCenterName]}>{item.LocationName}</UI.Text>
                         <UI.Text id="timingsText" style={[timingsText?.styles ? timingsText?.timingsText : styles.profitCenterTimings]}>
-                            {item.STATUSTEXT}
+                            {item.StatusText}
                         </UI.Text>
                     </UI.Box>
                     <UI.Box id="availabilityStatus" style={[
