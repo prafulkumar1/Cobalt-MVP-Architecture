@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated, Modal,} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated, Modal, Pressable,} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -89,7 +89,7 @@ class CbAccordionlist extends React.Component {
             this.setState({isToastMessageVisiable:true,toastMessage:`Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.`},() => {
               setTimeout(() => {
                   this.setState({isToastMessageVisiable:false,toastMessage:""})
-              }, 3000);
+              }, 6000);
             })
             return;
         }
@@ -1259,7 +1259,7 @@ class CbToastMessage extends React.Component {
         visible={this.isToastMessageVisiable}
       >
         <Box style={styles.centeredView}>
-          <Box style={[styles.blackShadow]} />
+          <Pressable style={[styles.blackShadow]} />
           <Box style={styles.modalView}>
             <Text style={styles.modalText}>{this.message}</Text>
           </Box>

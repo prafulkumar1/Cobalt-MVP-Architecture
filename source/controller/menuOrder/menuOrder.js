@@ -94,7 +94,7 @@ export const useMenuOrderLogic = (props) => {
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
-          "LocationId": `${getProfitCenterId.LocationId}`,
+          "Location_Id": `${getProfitCenterId.LocationId}`,
           "MealPeriod_Id": "",
           "Category_Id": "",
           "Search": ""
@@ -103,6 +103,9 @@ export const useMenuOrderLogic = (props) => {
 
         if(menuOrderResponseData?.response?.ResponseCode === "Fail"){
           setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
+        }else if(menuOrderResponseData ===undefined){
+          setErrorMessage("Something went wrong!Please try again")
+          setLoading(false)
         }else{
           const uniqueMealPeriods = menuOrderResponseData.response?.MenuItems
           ?.filter((item) => item.MealPeriod_Id && item.MealPeriod_Name)
