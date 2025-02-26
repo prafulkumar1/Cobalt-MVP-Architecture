@@ -607,14 +607,13 @@ class CbAddToCartButton extends React.Component {
             onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
-              this.state.IsModifierAvailable === 1 ? 
-              <Icon as={modifierQuantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
-              : 
-              <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
+              
+              <Icon as={(quantity === 1 && modifierQuantity === 1) ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
+          {/* <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text> */}
+          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
 
           <TouchableOpacity
             style={styles.iconBtn}
