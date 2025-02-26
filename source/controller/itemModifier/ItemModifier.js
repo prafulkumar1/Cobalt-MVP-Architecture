@@ -51,8 +51,13 @@ export const useItemModifierLogic = () => {
                   ...category,
                   Modifiers: category.Modifiers.map(modifier => ({
                         ...modifier,
-                        isChecked: cartData?.some(cartItem =>
-                          cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        isChecked: cartData?.some(cartItem =>{
+                          const uniqueModifiers = cartItem?.selectedModifiers?.filter((modifier, index, self) => {
+                            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+                            return modifier.isChecked && index === lastIndex;
+                          });
+                         return uniqueModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        }
                         )
                       }))
                 }))
