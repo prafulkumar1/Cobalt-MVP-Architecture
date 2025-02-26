@@ -100,7 +100,7 @@ export const useMenuOrderLogic = (props) => {
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
-          "Location_Id": `${getProfitCenterId.LocationId}`,
+          "LocationId": `${getProfitCenterId.LocationId}`,
           "MealPeriod_Id": "",
           "Category_Id": "",
           "Search": ""
