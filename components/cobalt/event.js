@@ -3,7 +3,6 @@ import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
 import { Alert } from 'react-native';
-import { postApiCall } from '@/source/utlis/api';
 
 export const FormContext = createContext(); 
 

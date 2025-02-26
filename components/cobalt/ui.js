@@ -42,31 +42,6 @@ export const postQuantityApiCall = async(quantity,itemId) => {
   } catch (err) {}
 }
 
-class CbBackButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.id=props.id;
-    this.source = props.source;
-  }
-  render() {
-    const ImageScourec='https://cobaltportal.mycobaltsoftware.com:4430/devsite/shared/Cobalt/MediaLibrary/devArchivePath/AppMenu/AppIcons/MobileOrdering_Icons/Back.png';
-  
-    return (
-
-      <FormContext.Consumer>
-        {({ AppConfigJson }) => {
-          return (
-            <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={styles.backArrowHeader}>
-              {
-                ImageScourec ? <Image source={{ uri: ImageScourec }} style={styles.BackIcon} /> : <Image alt='image' source={require("@/assets/images/icons/Back.png")} />
-              }
-            </TouchableOpacity>
-          );
-        }}
-      </FormContext.Consumer>
-    );
-  }
-}
 
 class CbAccordionlist extends React.Component {
   constructor(props) {
