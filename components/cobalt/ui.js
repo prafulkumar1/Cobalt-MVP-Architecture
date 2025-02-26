@@ -1229,7 +1229,7 @@ class CbCommonButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {(updateOrAddTxt) => {
+        {({updateOrAddTxt}) => {
           return (
             <Box>
               <TouchableOpacity
