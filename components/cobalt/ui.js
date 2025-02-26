@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, ScrollView, Platform,Modal,View, Alert, Animated,} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated,} from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon, CloseIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
 import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
@@ -21,14 +21,11 @@ import { Divider } from '@/components/ui/divider';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import {  styles } from './style';
-import uuid from  "react-native-uuid"
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
-import ItemModifier from '@/source/views/ItemModifier/ItemModifierUI';
 import { postApiCall } from '@/source/utlis/api';
-import { isPlatformIos } from '@/source/constants/Matrices';
 
 export const postQuantityApiCall = async(quantity,itemId) => {
   try {
@@ -75,55 +72,32 @@ class CbAccordionlist extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
+    this.getAllSelectedModifiers = props.getAllSelectedModifiers
      
     this.state = {
-      selectedModifiers: {},
+      selectedModifiers: [],
+      isItemSelected:false,
+      selectedModifierId:""
     };
   }
 
   handleCheckboxToggle = (
-    modifierIndex,
-    itemIndex,
-    isMaxAllowedOne,
-    isRequired,
-    itemName,
-    getAllSelectedModifiers,
-    price,
-    isChecked
+    item,
+    value,
+    modifiersResponseData,
+    setModifiersResponseData,
+    Item_ID
   ) => {
-    this.setState((prevState) => {
-      const updatedModifiers = { ...prevState.selectedModifiers };
-      const addedModifiers = {
-        id:uuid.v4(),
-        modifier : itemName,
-        isChecked:!isChecked,
-        price:price,
-        isMaxAllowedOne
-      }
-
-      if (isMaxAllowedOne) {
-        updatedModifiers[modifierIndex] = itemIndex;
-      } else {
-        updatedModifiers[modifierIndex] = updatedModifiers[modifierIndex] || [];
-
-        if (updatedModifiers[modifierIndex].includes(itemIndex)) {
-          updatedModifiers[modifierIndex] = updatedModifiers[
-            modifierIndex
-          ].filter((i) => i !== itemIndex);
-
-          if (isRequired && updatedModifiers[modifierIndex].length === 0) {
-            return prevState;
-          }
-        } else {
-          updatedModifiers[modifierIndex].push(itemIndex);
-        }
-      }
-      getAllSelectedModifiers(addedModifiers,itemName)
-
-      return { selectedModifiers: updatedModifiers };
-    });
+    this.getAllSelectedModifiers({ ...item, isChecked: value,Item_ID });
   };
 
+  isValueChecked = (modifiers, selectedItem, cartData, itemDataVisible, index, existingCartData) => {
+    if (existingCartData && Array.isArray(existingCartData.selectedModifiers)) {
+      return existingCartData.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
+    } else {
+      return this.state.selectedModifiers.some(item => item.Modifier_Id === selectedItem.Modifier_Id);
+    }
+  };
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -135,202 +109,228 @@ class CbAccordionlist extends React.Component {
 
     return (
       <FormContext.Consumer>
-        {({ getAllSelectedModifiers ,modifiersResponseData}) => {
+        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          const defaultOpenItems = modifiersResponseData?.Categories?.map((_, index) => `item-${index}`);
-
+          let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
+          const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
+          const existingCartData = cartData && cartData?.find((item) =>item.Item_ID ===  singleItemDetails.Item_ID)
           return (
             <>
-              {modifiersResponseData && modifiersResponseData?.Categories.map((order, index) => (
-                <Accordion
-                  defaultValue={defaultOpenItems}
-                  variant="filled"
-                  type="single"
-                  size="md"
-                  style={
-                    this.screenName === "RecentOrders"
-                      ? styles.roAccordion
-                      : styles.itemDetailsContainer
-                  }
-                >
-                  <AccordionItem
-                    value={`item-${index}`}
-                    style={styles.itemDetailsSubContainer}
-                  >
-                    <AccordionHeader
+              <CbFlatList
+                flatlistData={categoryData}
+                children={({ item, index }) => {
+                  const order = item
+                  return (
+                    <Accordion
+                      defaultValue={defaultOpenItems}
+                      variant="filled"
+                      type="single"
+                      size="md"
                       style={
                         this.screenName === "RecentOrders"
-                          ? styles.roAccordionHeader
-                          : styles.subHeader
+                          ? styles.roAccordion
+                          : styles.itemDetailsContainer
                       }
                     >
-                      <AccordionTrigger>
-                        {({ isExpanded }) => {
-                          return (
-                            <>
-                              {this.screenName === "RecentOrders" ? (
-                                <Box
-                                  key={index}
-                                  style={styles.roAccordionHeading}
-                                >
-                                  <Image
-                                    alt="image"
-                                    source={require("@/assets/images/icons/ROdate.png")}
-                                  />
-                                  <AccordionTitleText
-                                    style={styles.roAccordionTitleText}
-                                  >
-                                    Ordered Date: {order.OrderDate}
-                                  </AccordionTitleText>
-                                </Box>
-                              ) : (
-                                <Box style={styles.recentOrderContainer}>
-                                  <AccordionTitleText
-                                    style={styles.modifierContainer}
-                                  >
-                                    {order.Category_Name}
-                                    <AccordionTitleText
-                                        style={styles.maxAllowedTxt}
+                      <AccordionItem
+                        value={`item-${index}`}
+                        style={styles.itemDetailsSubContainer}
+                      >
+                        <AccordionHeader
+                          style={
+                            this.screenName === "RecentOrders"
+                              ? styles.roAccordionHeader
+                              : styles.subHeader
+                          }
+                        >
+                          <AccordionTrigger>
+                            {({ isExpanded }) => {
+                              return (
+                                <>
+                                  {this.screenName === "RecentOrders" ? (
+                                    <Box
+                                      key={index}
+                                      style={styles.roAccordionHeading}
+                                    >
+                                      <Image
+                                        alt="image"
+                                        source={require("@/assets/images/icons/ROdate.png")}
+                                      />
+                                      <AccordionTitleText
+                                        style={styles.roAccordionTitleText}
                                       >
-                                        {order.Message ? `  (${order.Message})`: ""}
+                                        Ordered Date: {order.OrderDate}
                                       </AccordionTitleText>
-                                  </AccordionTitleText>
-                                </Box>
-                              )}
-                              {isExpanded ? (
-                                <AccordionIcon
-                                  as={ChevronDownIcon}
-                                  className="ml-3"
-                                  style={styles.roAccordionIcon}
-                                />
-                              ) : (
-                                <AccordionIcon
-                                  as={ChevronRightIcon}
-                                  className="ml-3"
-                                  style={styles.roAccordionIcon}
-                                />
-                              )}
-                            </>
-                          );
-                        }}
-                      </AccordionTrigger>
-                    </AccordionHeader>
-                    <AccordionContent>
-                      {this.screenName == "RecentOrders"
-                        ? order.Items.map((item) => (
-                            <Box>
-                              <Box style={styles.roAccordionContentouterbox}>
-                                <Box style={styles.roAccordionContentItembox}>
-                                  <Text
-                                    style={styles.roItemName}
-                                    strikeThrough={!item.IsAvailable}
+                                    </Box>
+                                  ) : (
+                                    <Box style={styles.recentOrderContainer}>
+                                      <AccordionTitleText
+                                        style={styles.modifierContainer}
+                                      >
+                                        {order.Category_Name}
+                                        <AccordionTitleText
+                                          style={styles.maxAllowedTxt}
+                                        >
+                                          {order.Message
+                                            ? `  (${order.Message})`
+                                            : ""}
+                                        </AccordionTitleText>
+                                      </AccordionTitleText>
+                                    </Box>
+                                  )}
+                                  {isExpanded ? (
+                                    <AccordionIcon
+                                      as={ChevronDownIcon}
+                                      className="ml-3"
+                                      style={styles.roAccordionIcon}
+                                    />
+                                  ) : (
+                                    <AccordionIcon
+                                      as={ChevronRightIcon}
+                                      className="ml-3"
+                                      style={styles.roAccordionIcon}
+                                    />
+                                  )}
+                                </>
+                              );
+                            }}
+                          </AccordionTrigger>
+                        </AccordionHeader>
+                        <AccordionContent>
+                          {this.screenName == "RecentOrders"
+                            ? order.Items?.map((item) => (
+                                <Box>
+                                  <Box
+                                    style={styles.roAccordionContentouterbox}
                                   >
-                                    {" "}
-                                    {item.ItemName}{" "}
-                                  </Text>
-                                  <Text
-                                    style={styles.roItemprice}
-                                  >{`$${item.Price}`}</Text>
+                                    <Box
+                                      style={styles.roAccordionContentItembox}
+                                    >
+                                      <Text
+                                        style={styles.roItemName}
+                                        strikeThrough={!item.IsAvailable}
+                                      >
+                                        {" "}
+                                        {item.ItemName}{" "}
+                                      </Text>
+                                      <Text
+                                        style={styles.roItemprice}
+                                      >{`$${item.Price}`}</Text>
+                                    </Box>
+                                    <Box style={styles.roImagescetion}>
+                                      <Image
+                                        alt="image"
+                                        source={
+                                          item.IsFavorite
+                                            ? favsource
+                                              ? { uri: favsource }
+                                              : require("@/assets/images/icons/Fav.png")
+                                            : Notfavsource
+                                            ? { uri: Notfavsource }
+                                            : require("@/assets/images/icons/Notfav.png")
+                                        }
+                                        style={styles.roItemImage}
+                                      />
+                                      <CbAddToCartButton
+                                        mealItemDetails={{}}
+                                        style={styles.roItemButton}
+                                      />
+                                    </Box>
+                                  </Box>
+                                  <Divider />
                                 </Box>
-                                <Box style={styles.roImagescetion}>
-                                  <Image
-                                    alt="image"
-                                    source={
-                                      item.IsFavorite
-                                        ? favsource
-                                          ? { uri: favsource }
-                                          : require("@/assets/images/icons/Fav.png")
-                                        : Notfavsource
-                                        ? { uri: Notfavsource }
-                                        : require("@/assets/images/icons/Notfav.png")
-                                    }
-                                    style={styles.roItemImage}
-                                  />
-                                  <CbAddToCartButton
-                                    mealItemDetails={{}}
-                                    style={styles.roItemButton}
-                                  />
-                                </Box>
-                              </Box>
-                              <Divider />
-                            </Box>
-                          ))
-                        : order?.Modifiers?.map((item, itemIndex) => (
-                            <Box
-                              key={itemIndex}
-                              style={styles.orderSubContainer}
+                              ))
+                            : 
+                            <FlatList
+                              data={order?.Modifiers}
+                              keyExtractor={(item) => `${item.Modifier_Id}`}
+                              removeClippedSubviews={true}
+                              updateCellsBatchingPeriod={100}
+                              windowSize={21}
+                              onEndReachedThreshold={0.1}
+                              renderItem={({ item, index }) => {
+                                const itemIndex = index
+                                return (
+                                  <Box
+                                    key={itemIndex}
+                                    style={styles.orderSubContainer}
+                                  >
+                                    <Checkbox
+                                      // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
+                                      // isChecked={item.isChecked}
+                                      onChange={(value) => {
+                                        this.setState((prevState) => {
+                                          const filteredModifiers = prevState.selectedModifiers.filter(
+                                            (modifier) => modifier.Modifier_Id !== item.Modifier_Id
+                                          );
+                                          return {
+                                            selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
+                                            isItemSelected: value,
+                                            selectedModifierId: item.Modifier_Id
+                                          };
+                                        }, () => {
+                                          this.handleCheckboxToggle(
+                                            item,
+                                            value,
+                                            modifiersResponseData,
+                                            setModifiersResponseData,
+                                            singleItemDetails.Item_ID
+                                          )
+                                        })
+                                      }}
+                                    >
+                                      <CheckboxIndicator
+                                        style={styles.CheckboxIndicator}
+                                      >
+                                        <CheckboxIcon
+                                          as={CheckIcon}
+                                          style={{
+                                            color: "#707070",
+                                            width: 17,
+                                            height: 17,
+                                          }}
+                                        />
+                                      </CheckboxIndicator>
+                                      <CheckboxLabel style={styles.itemNameTxt}>
+                                        <Text>{item.Modifier_Name}</Text>
+                                      </CheckboxLabel>
+                                    </Checkbox>
+                                    <AccordionContentText
+                                      style={styles.priceMainTxt}
+                                    >
+                                      <Text>{`$${item.Price !== null ? item.Price : 0
+                                        }`}</Text>
+                                    </AccordionContentText>
+                                  </Box>
+                                )
+                              }}
+                            />
+                            }
+                          {this.screenName == "RecentOrders" &&
+                          order.IsReorder ? (
+                            <Button
+                              variant="outline"
+                              style={styles.roReoderButton}
                             >
-                              <Checkbox
-                                isChecked={
-                                  this.state.selectedModifiers[index] ===
-                                    itemIndex ||
-                                  (Array.isArray(
-                                    this.state.selectedModifiers[index]
-                                  ) &&
-                                    this.state.selectedModifiers[
-                                      index
-                                    ].includes(itemIndex))
-                                }
-                                onChange={() =>
-                                  this.handleCheckboxToggle(
-                                    index,
-                                    itemIndex,
-                                    order.IsMaxAllowedOne === 1,
-                                    order.IsRequried === 1,
-                                    item.ItemName,
-                                    getAllSelectedModifiers,
-                                    item.Price,
-                                    this.state.selectedModifiers[index] ===
-                                      itemIndex ||
-                                      (Array.isArray(
-                                        this.state.selectedModifiers[index]
-                                      ) &&
-                                        this.state.selectedModifiers[
-                                          index
-                                        ].includes(itemIndex))
-                                  )
-                                }
+                              <ButtonText
+                                style={styles.roReordertext}
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
                               >
-                                <CheckboxIndicator
-                                  style={styles.CheckboxIndicator}
-                                >
-                                  <CheckboxIcon
-                                    as={CheckIcon}
-                                    style={{
-                                      color: "#707070",
-                                      width: 17,
-                                      height: 17,
-                                    }}
-                                  />
-                                </CheckboxIndicator>
-                                <CheckboxLabel style={styles.itemNameTxt}>
-                                  <Text>{item.Modifier_Name}</Text>
-                                </CheckboxLabel>
-                              </Checkbox>
-                              <AccordionContentText style={styles.priceMainTxt}>
-                                <Text>{`$${item.Price !==null?item.Price:0}`}</Text>
-                              </AccordionContentText>
-                            </Box>
-                          ))}
-                      {this.screenName == "RecentOrders" && order.IsReorder ? (
-                        <Button variant="outline" style={styles.roReoderButton}>
-                          <ButtonText
-                            style={styles.roReordertext}
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                          >
-                            Re Order
-                          </ButtonText>
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ))}
+                                Re Order
+                              </ButtonText>
+                            </Button>
+                          ) : (
+                            ""
+                          )}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  );
+                }}
+              />
             </>
           );
         }}
@@ -370,7 +370,21 @@ class CbImage extends React.Component {
   }
 }
 
-
+class CbBackButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.source = props.source;
+  }
+  render() {
+    return (
+      <TouchableOpacity onPress={()=>this.props.navigation?.goBack()} style={styles.backArrowHeader}>
+        {
+          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
+        }
+      </TouchableOpacity>
+    );
+  }
+}
 
 class CbHomeButton extends React.Component {
   constructor(props) {
@@ -398,20 +412,18 @@ class CbFloatingButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {({cartData,addedModifierCartData}) => {
+      {({cartData,modifierCartItemData}) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
-          const getModifierListQuantity = addedModifierCartData && addedModifierCartData.reduce((total,prev) => total+prev.quantity,0)
-          const finalQuantity = getFinalQuantity+getModifierListQuantity
           return (
             <View style={styles.floatingContainer}>
-              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,)}>
+              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,{profileCenterTile:this.screenProps?.route?.params?.profileCenterTile})}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-              <Text style={[styles.cartCountTxt,{right:finalQuantity >= 10?4:10}]}>{finalQuantity? finalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?4:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -442,14 +454,18 @@ class CbAddToCartButton extends React.Component {
   }
 
 
-   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity) => {
+   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity,itemDataVisible) => {
     let quantityInfo = await postQuantityApiCall(quantity,this.mealItemDetails?.Item_ID)
     if (quantityInfo.statusCode === 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
-          closePreviewModal()
-          increaseQuantity(this.mealItemDetails, false)
+          if(itemDataVisible){
+            increaseQuantity(this.mealItemDetails, false)
+          }else{
+            closePreviewModal()
+            increaseQuantity(this.mealItemDetails, false)
+          }
         } else {
           addItemToCartBtn(this.mealItemDetails)
         }
@@ -457,29 +473,45 @@ class CbAddToCartButton extends React.Component {
     }
   }
 
-  modifierIncDecBtn = async (updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+  modifierIncDecBtn = async (cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+       let isItemAvailableInCart = false
+        cartData?.forEach((items) => {
+            if(items.Item_ID === this.mealItemDetails.Item_ID ){
+              isItemAvailableInCart = true
+            }
+        })
     let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if(quantityInfo.statusCode ==200){
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           if(operation === "decrement"){
-            updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-          }else{
-            if(this.state.isAvailable ===1){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+            if(isItemAvailableInCart){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
             }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }      
+        }else{
+          if(this.state.isAvailable ===1){
+            if(isItemAvailableInCart){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+            }   
+          }else{
               Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         } else {
-          if(operation === "decrement"){
-            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1)
-          }else{
-            if(this.state.isAvailable ===1){
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity+1)
-            }else{
-              Alert.alert(quantityInfo?.response?.ResponseMessage)
+          if (operation === "decrement") {
+            updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+          } else {
+            if (this.state.isAvailable === 1) {
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+            } else {
+              Alert.alert(quantityInfo?.response?.ResponseMessage);
             }
           }
         }
@@ -489,17 +521,14 @@ class CbAddToCartButton extends React.Component {
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const { cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const {itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
-    const cartItem = cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     
-
-
-  
     if ( quantity === 0 && modifierQuantity === 0) {
       return (
         <TouchableOpacity
@@ -510,7 +539,7 @@ class CbAddToCartButton extends React.Component {
             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
           ]}
           activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity)}
+          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
@@ -521,21 +550,21 @@ class CbAddToCartButton extends React.Component {
         <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
-              this.mealItemDetails?.isModifier === 1 ? 
+              this.state.IsModifierAvailable === 1 ? 
               <Icon as={modifierQuantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
               : 
               <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{this.mealItemDetails?.isModifier === 1 ? modifierQuantity : quantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
 
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+            onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
           >
             <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
           </TouchableOpacity>
@@ -560,328 +589,6 @@ class CbAddToCartButton extends React.Component {
         );
       }}
     </FormContext.Consumer>
-    );
-  }
-}
-
-
-class CbAccordion extends React.Component {
-  constructor(props) {
-    super(props);
-    this.AccordionData = Array.isArray(props.AccordionData) ? props.AccordionData : [];
-    this.addItemToCartBtn = props.addItemToCartBtn
-    this.updateCartItemQuantity = props.updateCartItemQuantity
-    this.cartData = props.cartData || []
-    this.state = {
-      expandedIds: [],
-    };
-  }
-
-
-  handleReadMoreToggle = (id) => {
-    this.setState((prevState) => {
-      const isExpanded = prevState.expandedIds.includes(id);
-      return {
-        expandedIds: isExpanded
-          ? prevState.expandedIds.filter((expandedId) => expandedId !== id)
-          : [...prevState.expandedIds, id],
-      };
-    });
-  };
-  commonStyles = (isAvailable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1){
-      return primaryColor
-    }else{
-      return secondaryColor
-    }
-  }
-
-
-  showActiveAvailableColor = (isAvailable,IsDisable) => {
-    return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
-  };
-
-  openItemDetails = async (box,closePreviewModal,storeSingleItem) => {
-    let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    if(box.IsAvailable ===1){
-      storeSingleItem({...box,response:quantityInfo.response})
-      closePreviewModal()
-    }
-  }
-  handleCloseItemDetails = (setIsVisible,updateModifierItemQuantity,closePreviewModal,selectedModifiers,setSelectedModifiers,singleItemDetails) => {
-    if (selectedModifiers.length === 0) {
-        setIsVisible(false)
-        updateModifierItemQuantity(singleItemDetails, 0)
-        setTimeout(() => {
-            closePreviewModal()
-        }, 100)
-    } else {
-        setIsVisible(true)
-    }
-}
-
-  render() {
-    const componentdata = this.AccordionData;
-    const { expandedIds } = this.state;
-    const configItems = global.controlsConfigJson?.reduce((acc, item) => {
-      if (["itemTitle", "itemPrice", "itemDescription", "itemCategoryLabel"].includes(item.id)) {
-        acc[item.id] = item;
-      }
-      return acc;
-    }, {});
-
-    const { itemTitle, itemPrice, itemDescription, itemCategoryLabel } = configItems;
-
-    return (
-      <FormContext.Consumer>
-        {({setIsVisible,itemDataVisible,closePreviewModal,singleItemDetails,modifierCartItemData,addItemToModifierForCart,commentValue,storeSingleItem,updateModifierItemQuantity, selectedModifiers, setSelectedModifiers}) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
-          const modifierCartItem = modifierCartItemData?.find((item) => item.Item_Id === singleItemDetails?.Item_Id);
-          const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
-          const variant = buttonArray?.variant || this.variant;
-          const buttonText = buttonArray?.text || this.buttonText;
-
-          return (
-            <ScrollView
-              showsVerticalScrollIndicator={true}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={[
-                styles.mainContainerList,
-                isPlatformIos() && { paddingBottom: "30%" },
-              ]}
-              keyboardShouldPersistTaps="handled"
-            >
-              <Accordion
-                defaultValue={componentdata?.map((item) => item.SubMenu_Name)}
-                variant="filled"
-                type="multiple"
-                isCollapsible={true}
-                isDisabled={false}
-              >
-                {
-                  componentdata && componentdata.length > 0 && componentdata.map((subMenuList) => {
-                    return (
-                      <AccordionItem
-                        key={subMenuList.SubMenu_Name}
-                        value={subMenuList.SubMenu_Name}
-                        style={styles.headerTxt}
-                      >
-                        {
-                          subMenuList.Items !== null &&
-                          <>
-                            <AccordionHeader style={styles.menuHeader}>
-                              <AccordionTrigger style={styles.subItem} onClick={(event) => event.stopPropagation()}>
-                                {({ isExpanded }) => (
-                                  <>
-                                    <AccordionTitleText
-                                      style={[
-                                        itemCategoryLabel?.styles
-                                          ? itemCategoryLabel?.styles
-                                          : styles.itemCategoryLabel,
-                                      ]}
-                                    >
-                                      {subMenuList?.SubMenu_Name}
-                                    </AccordionTitleText>
-                                    {isExpanded ? (
-                                      <AccordionIcon
-                                        as={ChevronUpIcon}
-                                        width={22}
-                                        height={22}
-                                        className="ml-3"
-                                      />
-                                    ) : (
-                                      <AccordionIcon
-                                        as={ChevronDownIcon}
-                                        width={22}
-                                        height={22}
-                                        className="ml-3"
-                                      />
-                                    )}
-                                  </>
-                                )}
-                              </AccordionTrigger>
-                            </AccordionHeader>
-                            <AccordionContent>
-                              <CbFlatList
-                                flatlistData={subMenuList.Items}
-                                children={({ item, index }) => {
-                                  let box = item;
-                                  const lastItem =
-                                    index === subMenuList.Items?.length - 1;
-                                  const isExpanded = expandedIds.includes(
-                                    box?.Item_ID
-                                  );
-                                  return (
-                                    <TouchableOpacity
-                                      activeOpacity={0.5}
-                                      disabled={box.IsAvailable!==1}
-                                      onPress={() => this.openItemDetails(box,closePreviewModal,storeSingleItem)}
-                                      key={box?.Item_ID}
-                                      style={[
-                                        styles.subContainer,
-                                        {
-                                          opacity:
-                                            box?.IsAvailable === 1 &&
-                                              box?.IsDisable === 0
-                                              ? 1
-                                              : 0.8,
-                                        },
-                                      ]}
-                                    >
-                                      <Box style={styles.rowContainer}>
-                                        <Box style={[styles.textContainer]}>
-                                          <AccordionContentText
-                                            numberOfLines={1}
-                                            style={[
-                                              itemTitle?.styles
-                                                ? itemTitle?.styles
-                                                : styles.mealTypeTitle,
-                                              this.showActiveAvailableColor(
-                                                box?.IsAvailable,
-                                                box?.IsDisable
-                                              ),
-                                              { textAlign: "justify" },
-                                            ]}
-                                          >
-                                            {box?.Item_Name}
-                                          </AccordionContentText>
-                                          <AccordionContentText
-                                            numberOfLines={
-                                              isExpanded ? undefined : 2
-                                            }
-                                            style={[
-                                              itemPrice?.styles
-                                                ? itemPrice?.styles
-                                                : styles.priceTxt,
-                                              this.showActiveAvailableColor(
-                                                box.IsAvailable,
-                                                box.IsDisable
-                                              ),
-                                            ]}
-                                          >
-                                            {`$${box?.Price != null ? box?.Price : 0
-                                              }`}
-                                          </AccordionContentText>
-                                          <AccordionContentText
-                                            numberOfLines={
-                                              isExpanded ? undefined : 1
-                                            }
-                                            style={[
-                                              itemDescription?.styles
-                                                ? itemDescription?.styles
-                                                : styles.descriptionTxt,
-                                              this.showActiveAvailableColor(
-                                                box.IsAvailable,
-                                                box.IsDisable
-                                              ),
-                                              {
-                                                textAlign: "left",
-                                                letterSpacing: -0.5,
-                                              },
-                                            ]}
-                                          >
-                                            {box?.Description}
-                                          </AccordionContentText>
-                                          {box?.Description?.length > 35 && (
-                                            <AccordionContentText
-                                              onPress={() =>
-                                                this.handleReadMoreToggle(
-                                                  box.Item_Id
-                                                )
-                                              }
-                                              style={styles.underLineTxt}
-                                            >
-                                              {isExpanded
-                                                ? "Show Less"
-                                                : "Read More"}
-                                            </AccordionContentText>
-                                          )}
-                                        </Box>
-
-                                        <Box style={styles.imageContainer}>
-                                          <Box
-                                            style={{
-                                              backgroundColor:
-                                                "rgba(255, 255, 255, 0.2)",
-                                            }}
-                                            disabled={box.IsAvailable === 0}
-                                          >
-                                            <Image
-                                              source={{ uri: box.ImageUrl }}
-                                              style={[
-                                                styles.mealTypeImg,
-                                                box.IsAvailable === 0 && box.IsDisable ===1 && {
-                                                  opacity: 0.4,
-                                                },
-                                              ]}
-                                            />
-                                          </Box>
-                                          <CbAddToCartButton
-                                            mealItemDetails={box}
-                                          />
-                                        </Box>
-                                      </Box>
-                                      {!lastItem && (
-                                        <Box style={styles.horizontalLine} />
-                                      )}
-                                    </TouchableOpacity>
-                                  );
-                                }}
-                              />
-                            </AccordionContent>
-                          </>
-                        }
-
-                      </AccordionItem>
-                    )
-                  })
-                }
-              </Accordion>
-              <Modal
-                visible={itemDataVisible}
-                transparent={true}
-                animationType="fade"
-                onRequestClose={closePreviewModal}
-              >
-                <TouchableOpacity
-                  onPress={() => this.handleCloseItemDetails(setIsVisible, updateModifierItemQuantity, closePreviewModal, selectedModifiers, setSelectedModifiers, singleItemDetails)}
-                  style={styles.crossIcon}
-                >
-                  <Icon as={CloseIcon} color="#fff" size={'md'} style={{ width: 20, height: 20 }} />
-
-                </TouchableOpacity>
-                <ScrollView style={styles.modiferItems}>
-                  <Box style={styles.blackShadow} />
-                  <ItemModifier />
-                </ScrollView>
-                <Box style={styles.footerContainer}>
-                  <Box>
-                    <Text style={styles.totalAmountTxt}>Total Amount</Text>
-                    <Text
-                      style={styles.orderAmount}
-                    >{`$${singleItemPrice}`}</Text>
-                  </Box>
-                  <CbCommonButton
-                    showBtnName={"Add to Cart"}
-                    style={styles.addToCartBtn}
-                    btnTextStyle={styles.addCartTxt}
-                    onPress={() => {
-                      navigateToScreen(this.props, "MyCart", true);
-                      addItemToModifierForCart(singleItemDetails);
-                      closePreviewModal();
-                      setTimeout(() => {
-                        commentValue.current = "";
-                      }, 1000);
-                    }}
-                  />
-                </Box>
-              </Modal>
-            </ScrollView>
-          );
-        }}
-      </FormContext.Consumer>
     );
   }
 }
@@ -1173,6 +880,9 @@ class cbInput extends React.Component {
     this.isInvalid = props.isInvalid || false;
     this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
     this.style = props.style;
+    this.multiline = props.multiline
+    this.numberOfLines = props.numberOfLines
+    this.value = props.value
   }
   
 
@@ -1191,29 +901,48 @@ class cbInput extends React.Component {
     //const fieldData =this.getFormFieldData(this.formId,this.id); 
 
     return (
-      <FormControl isDisabled={isDisabledprop} isReadOnly={isReadOnlyprop} isRequired={isRequiredprop}   >
-        {labelTextprop && (
-          <FormControlLabel>
-            <FormControlLabelText>{labelTextprop}</FormControlLabelText>
-          </FormControlLabel>
-        )}
-        <Input variant={variantprop} style={this.style}>
-          <InputField
-            id={this.id}
-            placeholder={placeholderprop}
-            type={typeprop}
-            //value={fieldData.value} 
-          onChangeText={(value) => {this.setFormFieldData(this.formId,'input',this.id,value);} }
-          />
-        </Input>
-        {isRequiredprop && errorMessageprop && (
-          <FormControlError>
-            <FormControlErrorText>
-              {errorMessageprop}
-            </FormControlErrorText>
-          </FormControlError>
-        )}
-      </FormControl>
+      <FormContext.Consumer>
+      {({getFormFieldData}) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const value  = getFormFieldData(this.formId,this.id)
+          return (
+            <FormControl
+              isDisabled={isDisabledprop}
+              isReadOnly={isReadOnlyprop}
+              isRequired={isRequiredprop}
+            >
+              {labelTextprop && (
+                <FormControlLabel>
+                  <FormControlLabelText>{labelTextprop}</FormControlLabelText>
+                </FormControlLabel>
+              )}
+              <Input variant={variantprop} style={this.style}>
+                <InputField
+                  id={this.id}
+                  placeholder={placeholderprop}
+                  type={typeprop}
+                  multiline={this.multiline}
+                  numberOfLines={this.numberOfLines}
+                  style={[{ textAlignVertical: "top" }, this.style]}
+                  value={this.value?this.value : value?.value}
+                  onChangeText={(value) => {
+                    this.setFormFieldData(this.formId,'input',this.id,value);
+                  }}
+                />
+              </Input>
+              {isRequiredprop && errorMessageprop && (
+                <FormControlError>
+                  <FormControlErrorText>
+                    {errorMessageprop}
+                  </FormControlErrorText>
+                </FormControlError>
+              )}
+            </FormControl>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -1382,6 +1111,7 @@ class CbFlatList extends React.Component{
     this.customStyles = props.customStyles || {}
     this.extraData = props.extraData || []
     this.scrollEnabled = props.scrollEnabled
+    this.nestedScrollEnabled = props.nestedScrollEnabled
   }
   renderEmptyList = () => {
       return(
@@ -1398,12 +1128,11 @@ class CbFlatList extends React.Component{
     return (
       <FlatList
         ref={this.ref}
+        keyExtractor={this.keyExtractor}
         data={this.flatlistData}
         renderItem={this.children}
-        keyExtractor={(_) => uuid.v1()}
         numColumns={this.numColumns}
         ListEmptyComponent={this.renderEmptyList}
-        initialNumToRender={10}
         ListFooterComponent={this.ListFooterComponent}
         bounces={this.bounces}
         horizontal={this.horizontal}
@@ -1424,56 +1153,8 @@ class CbFlatList extends React.Component{
         onEndReachedThreshold={0.1}
         extraData = {this.extraData}
         scrollEnabled={this.scrollEnabled}
+        nestedScrollEnabled={this.nestedScrollEnabled}
       />
-    );
-  }
-}
-class cbCategoryList extends React.Component {
-  constructor(props) {
-    super();
-    this.id = props.id;
-  }
-
-  render() {
-    return (
-      <FormContext.Consumer>
-        {({ menuOrderData,addItemToCartBtn,updateCartItemQuantity,cartData}) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
-          const variant = buttonArray?.variant || this.variant;
-          const buttonText = buttonArray?.text || this.buttonText;
-          return (
-            <>
-              {menuOrderData?.MenuItems?.map((mealCategory) => {
-                if (mealCategory.IsSelect === 1) {
-                  let updatedCategoryData =  typeof mealCategory.Categories === 'string' ? JSON.parse(mealCategory.Categories) : mealCategory.Categories;
-                  return (
-                    <>
-                    {
-                      updatedCategoryData && updatedCategoryData.map((item) => {
-                        if(item.IsSelect === 1){
-                          return (
-                            <Box>
-                              <CbAccordion
-                                AccordionData={item.SubMenu}
-                                addItemToCartBtn={addItemToCartBtn}
-                                updateCartItemQuantity={updateCartItemQuantity}
-                                cartData={cartData}
-                              />
-                            </Box>
-                          );
-                        }
-                      })
-                    }
-                    </>
-                  )
-                }
-              })}
-            </>
-          );
-        }}
-      </FormContext.Consumer>
     );
   }
 }
@@ -1521,9 +1202,7 @@ cbImageBackground.displayName='cbImageBackground';
 cbRadioButton.displayName='cbRadioButton';
 cbVStack.displayName='cbVStack';
 cbForm.displayName='cbForm';
-CbAccordion.displayName='CbAccordion';
 CbFlatList.displayName = "CbFlatList"
-cbCategoryList.displayName = "cbCategoryList"
 cbSearchbox.displayName='cbSearchbox';
 CbFloatingButton.displayName='CbFloatingButton';
 CbAddToCartButton.displayName = "CbAddToCartButton"
@@ -1532,4 +1211,4 @@ CbAccordionlist.displayName='CbAccordionlist';
 cbSelectTime.displayName='cbSelectTime';
 
 
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbAccordion,CbFlatList,cbCategoryList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist };
