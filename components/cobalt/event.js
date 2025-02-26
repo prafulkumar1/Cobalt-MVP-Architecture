@@ -228,6 +228,7 @@ export const UseFormContextProvider = ({children}) => {
         formData.ItemModifier_Comments = ""
         setSelectedModifiers([])
         modifiersData.current= null
+        singleModifierData.current = null
       }, 1000);
     } catch (error) {
       console.error("Error updating cart item:", error);
@@ -274,7 +275,38 @@ export const UseFormContextProvider = ({children}) => {
       console.error("Error updating cart item:", error);
     }
   };
-  const updateWithoutModifierCartItem = (data) => {}
+  const updateWithoutModifierCartItem = async (updatedItem) => {
+    const existingCartData = await AsyncStorage.getItem("cart_data");
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+    const getProfitCenterId = getProfitCenterItem
+      ? JSON.parse(getProfitCenterItem)
+      : null;
+
+    const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
+    const updatedCartItems = prevCartItems.map((item) => {
+      if (item.Item_ID === updatedItem.Item_ID) {
+        return {
+          ...item,
+          comments: commentValue.current || "",
+          profitCenterId: getProfitCenterId?.LocationId,
+          quantity: singleModifierData?.current?.quantity,
+          quantityIncPrice:singleModifierData?.current?.quantityIncPrice,
+        };
+      } else {
+        return item;
+      }
+    });
+
+    await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
+    setCartData(updatedCartItems);
+    setFormFieldData("ItemModifier", "", "Comments", "", false);
+
+    setTimeout(() => {
+      formData.ItemModifier_Comments = "";
+      closePreviewModal();
+      singleModifierData.current = null
+    }, 1000);
+  };
 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)

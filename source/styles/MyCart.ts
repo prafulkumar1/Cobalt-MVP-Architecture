@@ -32,7 +32,8 @@ export const styles = StyleSheet.create({
         fontSize:12,
         paddingLeft:8,
         fontFamily:"SourceSansPro_SemiBoldItalic",
-        top:-2
+        top:-4,
+        width:responsiveWidth(80),
       },
       itemPrice:{
         fontSize:16,
@@ -99,7 +100,7 @@ export const styles = StyleSheet.create({
         alignSelf:"center"
       },
       tipCount:{fontSize:14,fontFamily: "SourceSansPro_SemiBold"},
-      cartItemContainer:{ width: responsiveWidth(55) },
+      cartItemContainer:{  },
       addToCartBtn:{ padding: responsiveWidth(2) },
       cartEmptyContainer:{ alignSelf: "center" },
       priceContainer:{

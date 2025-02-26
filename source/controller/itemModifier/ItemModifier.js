@@ -65,7 +65,6 @@ export const useItemModifierLogic = () => {
               };
                setModifiersResponseData(updatedData)
               const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
-              console.log(cartItem,"--->load")
               setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
               if(cartItem !==undefined){
                 setUpdateOrAddTxt("Update Cart")

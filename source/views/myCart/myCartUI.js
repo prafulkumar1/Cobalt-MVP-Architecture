@@ -135,7 +135,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
-                  // onPress={() => editCommentBtn(props,item)} 
+                  onPress={() => editCommentBtn(props,item)} 
                 >
                   <Image
                     source={require("@/assets/images/icons/messageIcon2x.png")}

@@ -556,6 +556,7 @@ class CbAddToCartButton extends React.Component {
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
             }else{
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              updateModifierItemQuantity(this.mealItemDetails, cartQuantity-1);
             }
           } else {
             if (this.state.isAvailable === 1) {
@@ -563,6 +564,7 @@ class CbAddToCartButton extends React.Component {
                 updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
               }else{
                 updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+                updateModifierItemQuantity(this.mealItemDetails, cartQuantity+1)
               }
             } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage);
@@ -572,6 +574,21 @@ class CbAddToCartButton extends React.Component {
       })
     }
   }
+  renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
+    if(itemDataVisible){
+        if(modifierQuantity === 1){
+          return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }else{
+          return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }
+    }else{
+      if(quantity === 1){
+        return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      } else{
+        return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      }
+    }
+  };
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
@@ -607,8 +624,7 @@ class CbAddToCartButton extends React.Component {
             onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
-              
-              <Icon as={(quantity === 1 && modifierQuantity === 1) ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
+              this.renderIcons(quantity,modifierQuantity,itemDataVisible)
             }
           </TouchableOpacity>
 

@@ -12,7 +12,7 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {deleteCartItem,deleteModifierItem,updateCartItemQuantity ,updateModifierItemQuantity,setCartData ,setSelectedModifiers}= useFormContext(); 
+    const {deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
     const [value,setValue]  =useState(0)
@@ -177,7 +177,7 @@ export const useMyCartLogic = () => {
     storeSingleItem(item)
     setTimeout(() => {
       closePreviewModal()
-    }, 1000);
+    }, 500);
   }
   return {
     tipData,
