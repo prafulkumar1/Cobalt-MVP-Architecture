@@ -67,16 +67,17 @@ export default function MenuOrderScreen(props) {
       loading,
       mealPeriods,
       selectedCategory,
-      setSelectedCategory
+      setSelectedCategory,
+      itemPositions, 
+      setItemPositions,
+      expandedIds,
+      setExpandedIds,
+      categoryRefs,
+      scrollViewRef,
+      categoryScrollRef,
+      categoryPositions,
     } = useMenuOrderLogic(props)
 
-  const categoryRefs = useRef({});
-  const scrollViewRef = useRef(null);
-  const categoryScrollRef = useRef(null);
-  const categoryPositions = useRef({});
-  const [itemPositions, setItemPositions] = useState({});
-
-  const [expandedIds,setExpandedIds] = useState([])
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100  : 0;

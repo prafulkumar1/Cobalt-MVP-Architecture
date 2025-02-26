@@ -8,18 +8,24 @@ import { newData } from '@/source/constants/commonData';
 
 const pageId='MenuOrder';
 export const useMenuOrderLogic = (props) => {
+
+  const categoryRefs = useRef({});
+  const scrollViewRef = useRef(null);
+  const categoryScrollRef = useRef(null);
+  const categoryPositions = useRef({});
+
   const [isRecentOrderOpen,setIsRecentOrderOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState("")
   const [mealPeriods, setMealPeriods] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-
   const [selectedCategory, setSelectedCategory] = useState(newData);
   const [expandedSubmenus, setExpandedSubmenus] = useState({});
+  const [itemPositions, setItemPositions] = useState({});
+  const [expandedIds,setExpandedIds] = useState([])
 
-  const flatListRef = useRef(null);
 
-    const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
+  const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
 
 
     const openRecentOrder = () => {
@@ -160,10 +166,17 @@ export const useMenuOrderLogic = (props) => {
     mealPeriods,
     categoryData,
     selectedCategory,
-    flatListRef,
     handleViewableItemsChanged,
     setSelectedCategory,
     expandedSubmenus,
-    toggleSubmenu
+    toggleSubmenu,
+    itemPositions, 
+    setItemPositions,
+    expandedIds,
+    setExpandedIds,
+    categoryRefs,
+    scrollViewRef,
+    categoryScrollRef,
+    categoryPositions
   };
 };
