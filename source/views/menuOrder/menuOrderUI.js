@@ -55,7 +55,8 @@ export default function MenuOrderScreen(props) {
       isExitProfitCenter,
       setIsExitProfitCenter,
       setModifierCartItemData,
-      updateWithoutModifierCartItem
+      updateWithoutModifierCartItem,
+      setFormFieldData
     } = useFormContext();
 
   const {

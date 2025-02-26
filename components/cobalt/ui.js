@@ -980,10 +980,11 @@ class cbInput extends React.Component {
                   multiline={this.multiline}
                   numberOfLines={this.numberOfLines}
                   style={[{ textAlignVertical: "top" }, this.style]}
-                  value={this.value?this.value : value?.value}
+                  value={ value?.value? value?.value : this.value}
                   onChangeText={(value) => {
                     this.setFormFieldData(this.formId,'input',this.id,value);
                   }}
+                  onFocus={() => this.setFormFieldData(this.formId,'input',this.id,value?.value )}
                 />
               </Input>
               {isRequiredprop && errorMessageprop && (

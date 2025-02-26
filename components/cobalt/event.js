@@ -263,6 +263,7 @@ export const UseFormContextProvider = ({children}) => {
         
         setTimeout(() => {
           formData.ItemModifier_Comments = "";
+          setFormFieldData("ItemModifier","","Comments","",false)
           setSelectedModifiers([]);
           closePreviewModal()
         }, 1000);
