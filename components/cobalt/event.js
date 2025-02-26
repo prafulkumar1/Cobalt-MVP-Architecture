@@ -33,6 +33,7 @@ export const UseFormContextProvider = ({children}) => {
     const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
+    const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
 
   
     const commentValue = useRef("")
@@ -186,6 +187,13 @@ export const UseFormContextProvider = ({children}) => {
             );
            
           }
+          const getCurrentItemDetails = updatedCartData?.find(
+            (item) => item.Item_ID === singleItemDetails.Item_ID
+          );
+          singleModifierData.current = {
+            quantity: getCurrentItemDetails?.quantity,
+            quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+          };
           return updatedCartData;
         });
       } catch (error) {}
@@ -216,7 +224,9 @@ export const UseFormContextProvider = ({children}) => {
     
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setCartData(updatedModifierData);
+      setFormFieldData("ItemModifier","","Comments","",false)
       setTimeout(() => {
+        formData.ItemModifier_Comments = ""
         setSelectedModifiers([])
         modifiersData.current= null
       }, 1000);
@@ -224,6 +234,47 @@ export const UseFormContextProvider = ({children}) => {
       console.error("Error updating cart item:", error);
     }
   };
+  
+  const updateModifierCartItem = async (updatedItem) => {
+    try {
+      if(modifiersResponseData?.Categories.length > 0){
+        const existingCartData = await AsyncStorage.getItem("cart_data");
+        const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+        const getProfitCenterId = getProfitCenterItem ? JSON.parse(getProfitCenterItem) : null;
+    
+        const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
+        
+        const updatedCartItems = prevCartItems.map((item) =>{
+          if(item.Item_ID === updatedItem.Item_ID){
+            return{
+              ...item, 
+              comments: commentValue.current || "",
+              selectedModifiers:[...item.selectedModifiers,...modifiersData.current], 
+              profitCenterId: getProfitCenterId?.LocationId
+            }
+          }else{
+            return item
+          }
+        }
+      );
+    
+        await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
+    
+        setCartData(updatedCartItems);
+        
+        setTimeout(() => {
+          formData.ItemModifier_Comments = "";
+          setSelectedModifiers([]);
+          closePreviewModal()
+        }, 1000);
+      }else{
+        addItemToModifierForCart(singleItemDetails)
+      }
+    } catch (error) {
+      console.error("Error updating cart item:", error);
+    }
+  };
+  const updateWithoutModifierCartItem = (data) => {}
 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
@@ -275,7 +326,10 @@ export const UseFormContextProvider = ({children}) => {
       modifiersData,
       singleModifierData,
       setUpdateOrAddTxt,
-      updateOrAddTxt
+      updateOrAddTxt,
+      updateModifierCartItem,
+      isExitProfitCenter,setIsExitProfitCenter,
+      updateWithoutModifierCartItem
     }
     return (
       <FormContext.Provider

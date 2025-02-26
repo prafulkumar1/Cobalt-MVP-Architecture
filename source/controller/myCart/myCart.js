@@ -5,6 +5,7 @@ import uuid from "react-native-uuid";
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard } from 'react-native';
 import { postApiCall } from '@/source/utlis/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const pageId='MyCart';
 export const useMyCartLogic = () => {
     const swipeableRefs = useRef({});
@@ -140,9 +141,12 @@ export const useMyCartLogic = () => {
   };
   const postQuantityApiCall = async (item,quantity) => {
     try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const params = {
         "Item_ID": item?.Item_ID,
-        "Item_Quantity": quantity
+        "Item_Quantity": quantity,
+        "LocationId":`${getProfitCenterId.LocationId}`
       }
       let quantityInfo = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_STATUS", params)
       return quantityInfo

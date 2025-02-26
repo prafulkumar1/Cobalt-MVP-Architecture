@@ -31,7 +31,8 @@ export const styles = StyleSheet.create({
         color:"#6D6D6D",
         fontSize:12,
         paddingLeft:8,
-        fontFamily:"SourceSansPro_SemiBoldItalic"
+        fontFamily:"SourceSansPro_SemiBoldItalic",
+        top:-2
       },
       itemPrice:{
         fontSize:16,
@@ -53,7 +54,7 @@ export const styles = StyleSheet.create({
         backgroundColor:"#fff",
         margin:4,
       },
-      notesContainer:{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", paddingTop: 5 },
+      notesContainer:{ flexDirection: "row", justifyContent: "flex-start", paddingTop: 5 },
       swipeActionContainer:{
         backgroundColor:"#FF0000",
         width:90,
@@ -83,7 +84,7 @@ export const styles = StyleSheet.create({
         fontFamily:"SourceSansPro_SemiBold"
       },
       tipMainContainer:{
-        width:90,
+        width:83,
         height:40,
         justifyContent:"center",
         alignItems:"center",
@@ -172,6 +173,6 @@ export const styles = StyleSheet.create({
     },
     trashIcon:{ width: 23, height: 23 },
     addIcon:{ width: 25, height: 25 },
-    commentBtn:{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center" },
+    commentBtn:{ flexDirection: "row", justifyContent: "flex-start",alignItems:"flex-start" },
     
   }); 

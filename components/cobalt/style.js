@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(2.9),
+    fontSize: responsiveFontSize(2.6),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -485,4 +485,35 @@ CheckIcon:{color:"#ffff"},
     flexDirection: 'row',
     marginBottom: 20,
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent:"center",
+    alignSelf:"center",
+    shadowColor: '#000',
+    width:responsiveWidth(85),
+    height:responsiveHeight(7),
+    marginBottom:responsiveHeight(10),
+    borderColor:"#3B87C1",
+    borderWidth:2
+  },
+  textStyle: {
+    color: 'white',
+    textAlign: 'center',
+    fontFamily:"SourceSansPro_SemiBold"
+  },
+  modalText: {
+    textAlign: 'left',
+    fontFamily:"SourceSansPro_SemiBold",
+    padding:10,
+    lineHeight:15
+  },
+  blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
+  collapseIcon:{right:18}
 })
