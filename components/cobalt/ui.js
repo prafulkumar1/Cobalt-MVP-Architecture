@@ -42,6 +42,7 @@ export const postQuantityApiCall = async(quantity,itemId) => {
   } catch (err) {}
 }
 
+
 class CbAccordionlist extends React.Component {
   constructor(props) {
     super(props);
@@ -437,7 +438,7 @@ class CbHomeButton extends React.Component {
     return (
       <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
       {
-        this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
+        this.source ? <Image source={{ uri: this.source}} style={{width:24,height:24}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={{width:24,height:24}} />
       }
     </TouchableOpacity>
     );

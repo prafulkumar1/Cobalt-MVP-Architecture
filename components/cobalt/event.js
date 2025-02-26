@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 import { postApiCall } from '@/source/utlis/api';
+import { Alert } from 'react-native';
 
 export const FormContext = createContext(); 
 
@@ -11,6 +11,8 @@ export const useFormContext = () => {
   };
 
 export const UseFormContextProvider = ({children}) => {
+  const [AppConfigJson , setAppConfigJsonData] = useState(null);
+
     
     const [menuOrderData,setMenuOrderData] = useState(null)
     const [modifiersResponseData,setModifiersResponseData] = useState(null)
@@ -42,6 +44,21 @@ export const UseFormContextProvider = ({children}) => {
         commentValue.current = formData.ItemModifier_Comments?.value
       }
     },[formData])
+    useEffect(() => {
+      getConfigurations();
+    }, []);
+
+       
+    const getConfigurations = async () => {
+      let AppConfigJsonData = await postApiCall("UI_CONFIGURATIONS", "GET_UI_CONFIGURATIONS", {});
+      if (AppConfigJsonData.statusCode === 200) {
+        setAppConfigJsonData(AppConfigJsonData?.response?.Data);
+      }    
+    };
+
+    const getParticularControls = (PageId) =>{
+    }
+  
     const setFormFieldData = (formId, controlType, controlId, controlValue, isInvalid) => {
       setFormData((prevFormData) => ({
         ...prevFormData,
@@ -287,6 +304,8 @@ export const UseFormContextProvider = ({children}) => {
       setSelectedModifiers,
       selectedTime,
       setSelectedTime,
+      AppConfigJson,
+      getParticularControls,
       selectedLocation,
       setSelectedLocation,
       addItemToModifierForCart,
