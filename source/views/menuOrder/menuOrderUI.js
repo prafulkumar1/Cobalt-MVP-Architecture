@@ -91,7 +91,6 @@ export default function MenuOrderScreen(props) {
     storeSingleItem({...box,response:quantityInfo.response})
     increaseQuantity(box)
     closePreviewModal()
-    setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
   }
   
 
@@ -231,6 +230,7 @@ export default function MenuOrderScreen(props) {
     };
 
   const handleCloseItemDetails = () => {
+    setFormFieldData("ItemModifier","","Comments","",false)
     if (selectedModifiers.length === 0) {
         setIsVisible(false)
         updateModifierItemQuantity(singleItemDetails, 0)
@@ -490,7 +490,7 @@ export default function MenuOrderScreen(props) {
                 <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?totalCartPrice:singleItemPrice}`}</UI.Text>
               </UI.Box>
               <UI.CbCommonButton
-                showBtnName={updateOrAddTxt}
+                showBtnName={""}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
                 onPress={() => handleModifierAddCart()}

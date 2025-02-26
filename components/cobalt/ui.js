@@ -1228,19 +1228,25 @@ class CbCommonButton extends React.Component {
   }
   render() {
     return (
-      <Box>
-        <TouchableOpacity
-          style={[this.style ? this.style : styles.mediumBtn]}
-          onPress={() => this?.onPress()}
-        >
-          {
-            this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
-          }
-          <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
-            {this.showBtnName}
-          </Text>
-        </TouchableOpacity>
-      </Box>
+      <FormContext.Consumer>
+        {(updateOrAddTxt) => {
+          return (
+            <Box>
+              <TouchableOpacity
+                style={[this.style ? this.style : styles.mediumBtn]}
+                onPress={() => this?.onPress()}
+              >
+                {
+                  this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
+                }
+                <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
+                  {this.showBtnName?this.showBtnName:updateOrAddTxt}
+                </Text>
+              </TouchableOpacity>
+            </Box>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }

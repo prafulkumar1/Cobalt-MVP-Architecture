@@ -22,7 +22,8 @@ export const useItemModifierLogic = () => {
         setModifierCartItemData,
         modifiersData,
         singleModifierData,
-        setUpdateOrAddTxt
+        setUpdateOrAddTxt,
+        setFormFieldData
     } = useFormContext()
 
 
@@ -63,9 +64,15 @@ export const useItemModifierLogic = () => {
                 }))
               };
                setModifiersResponseData(updatedData)
+              const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
+              console.log(cartItem,"--->load")
+              setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
+              if(cartItem !==undefined){
+                setUpdateOrAddTxt("Update Cart")
+              }else{
+                setUpdateOrAddTxt("Add to Cart")
+              }
                setLoading(false)
-                 // const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
-                // setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
             }
         }
       } catch (err) {

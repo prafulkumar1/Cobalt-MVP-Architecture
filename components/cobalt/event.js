@@ -222,8 +222,8 @@ export const UseFormContextProvider = ({children}) => {
       });
     
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
-      setCartData(updatedModifierData);
       setFormFieldData("ItemModifier","","Comments","",false)
+      setCartData(updatedModifierData);
       setTimeout(() => {
         formData.ItemModifier_Comments = ""
         setSelectedModifiers([])
@@ -258,12 +258,12 @@ export const UseFormContextProvider = ({children}) => {
       );
     
         await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
+        setFormFieldData("ItemModifier","","Comments","",false)
     
         setCartData(updatedCartItems);
         
         setTimeout(() => {
           formData.ItemModifier_Comments = "";
-          setFormFieldData("ItemModifier","","Comments","",false)
           setSelectedModifiers([]);
           closePreviewModal()
         }, 1000);
