@@ -409,11 +409,15 @@ class CbBackButton extends React.Component {
     const currentRoute = state.routes[state.index]?.name;
     return (
       <FormContext.Consumer>
-      {({setIsExitProfitCenter}) => {
+      {({setIsExitProfitCenter,menuOrderData,cartData}) => {
           return (
             <TouchableOpacity onPress={()=>{
               if(currentRoute === "MenuOrder"){
-                setIsExitProfitCenter(true)
+                if(menuOrderData !==null && cartData.length > 0) {
+                  setIsExitProfitCenter(true)
+                }else{
+                  this.props.navigation?.goBack()
+                }
               }else{
                 this.props.navigation?.goBack()
               }
