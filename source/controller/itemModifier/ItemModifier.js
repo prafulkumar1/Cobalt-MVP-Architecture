@@ -110,14 +110,14 @@ export const useItemModifierLogic = () => {
 
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
-        return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+        return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
       }, 0);
     
       let finalValue = Math.ceil(modifiersTotal);
     
       let updatedModifierData = modifierCartItemData?.map((items) => {
         const basePrice = items.basePrice ?? items.quantityIncPrice;
-        const totalItemPrice = items.quantity * (items.Price || 0);
+        const totalItemPrice = items.quantity * (parseFloat(items.Price) || 0);
     
         return {
           ...items,

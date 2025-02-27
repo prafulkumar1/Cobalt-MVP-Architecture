@@ -129,9 +129,9 @@ export const UseFormContextProvider = ({children}) => {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
             const modifiePrice = selectedModifiers.length === 1 
-            ? selectedModifiers[0].Price 
+            ? parseFloat(selectedModifiers[0].Price) 
             : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
@@ -177,9 +177,9 @@ export const UseFormContextProvider = ({children}) => {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
             const modifiePrice = selectedModifiers.length === 1 
-            ? selectedModifiers[0].Price 
+            ? parseFloat(selectedModifiers[0].Price) 
             : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item

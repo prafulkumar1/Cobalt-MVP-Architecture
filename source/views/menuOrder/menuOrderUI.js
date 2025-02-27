@@ -34,7 +34,6 @@ export default function MenuOrderScreen(props) {
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
   const {
-      setMealType, 
       isCategoryEmpty, 
       isSearchActive, 
       handleChangeState,
@@ -77,6 +76,7 @@ export default function MenuOrderScreen(props) {
       scrollViewRef,
       categoryScrollRef,
       categoryPositions,
+      setMealType
     } = useMenuOrderLogic(props)
 
 
@@ -150,7 +150,7 @@ export default function MenuOrderScreen(props) {
               ]
               : styles.inactiveMenuType,
           ]}
-          onPress={() => setMealType(mealTypeItem.MealPeriod_Id,mealTypeItem.IsEnabled)}
+          onPress={() => setMealType(mealTypeItem,mealTypeItem.IsEnabled)}
       >
           <UI.Text
             style={[

@@ -238,8 +238,8 @@ class CbAccordionlist extends React.Component {
                                       style={styles.priceMainTxt}
                                     >
                                       {
-                                        (item.Price !== null && item.Price !== 0) &&
-                                        <Text>{`$${item.Price}`}</Text>
+                                        (item.Price !== null && parseFloat(item.Price) !== 0) &&
+                                        <Text>{`$${parseFloat(item.Price).toFixed(2)}`}</Text>
                                       }
 
                                     </AccordionContentText>

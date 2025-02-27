@@ -25,7 +25,7 @@ export const useMenuOrderLogic = (props) => {
   const [expandedIds,setExpandedIds] = useState([])
 
 
-  const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
+  const { setMenuOrderData,setCartData,menuOrderData }= useFormContext();  
 
 
     const openRecentOrder = () => {
@@ -123,6 +123,7 @@ export const useMenuOrderLogic = (props) => {
                 IsSelect: current.MealPeriodIsSelect,
                 Time: current.Time,
                 MealPeriod_Id: current.MealPeriod_Id,
+                IsEnabled:current.IsEnabled
               });
             }
             return acc;
@@ -158,6 +159,17 @@ export const useMenuOrderLogic = (props) => {
           [categoryId]: !prevState[categoryId],
         }));
       };
+      const setMealType = (mealTypeItem,IsEnabled) => {
+        if(IsEnabled===1){
+          const uniqueMealPeriods = mealPeriods.map((item) => ({
+            ...item,
+            IsSelect: item.MealPeriod_Id === mealTypeItem.MealPeriod_Id ? 1 : 0,
+          }));
+          const responseData = menuOrderData.filter((val) => val.MealPeriod_Name === mealTypeItem.MealPeriod_Name)?.map((items) => ({...items,MealPeriodIsSelect:1}));
+          requiredDataFormat(responseData)  
+          setMealPeriods(uniqueMealPeriods)
+        }
+      };
   return {
     isRecentOrderOpen,
     openRecentOrder,
@@ -177,6 +189,7 @@ export const useMenuOrderLogic = (props) => {
     categoryRefs,
     scrollViewRef,
     categoryScrollRef,
-    categoryPositions
+    categoryPositions,
+    setMealType
   };
 };
