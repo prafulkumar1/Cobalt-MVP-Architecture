@@ -31,6 +31,10 @@ export const endpoints = {
         GET_MENU_ORDER_STATUS:"MobileOrdering/MO_GetItemStatus"
     },
     ITEM_MODIFIERS:{
-        GET_ITEM_MODIFIERS:"MobileOrdering/MO_GetItemModifiers"
+        GET_ITEM_MODIFIERS:"MobileOrdering/MO_GetItemModifiers",
+    },
+    CART:{
+        GET_CART_CONFIG:"MobileOrdering/MO_GetCartConfig",
+        GET_CART_PRICE:"MobileOrdering/MO_GetCartPrice"
     }
 }

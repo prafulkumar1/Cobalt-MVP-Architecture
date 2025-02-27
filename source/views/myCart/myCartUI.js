@@ -4,11 +4,12 @@ import {useFormContext } from '@/components/cobalt/event';
 import { Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 import { Swipeable } from 'react-native-gesture-handler';
-import {  departments, pickupLocations, priceItems } from '@/source/constants/commonData';
+import {  priceItems } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
+import CbLoader from '@/components/cobalt/cobaltLoader';
 
 
 const pageId='MyCart';
@@ -33,13 +34,15 @@ export default function MyCartScreen(props) {
      customTipValue,
      handleSaveTip,
      scrollViewRef,
-     finalCartData,
      keyboardVisible,
      handleIncrement,
      handleDecrement,
-     editCommentBtn
+     editCommentBtn,
+     loading,
+     showPickupTime,
+     showPickupLocation
    } = useMyCartLogic();
-   const { cartData,selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
+   const { cartData,selectedTime,selectedLocation}= useFormContext();
 
 
   const renderModifierList = ({ item }) => {
@@ -94,7 +97,6 @@ export default function MyCartScreen(props) {
                     children={renderModifierList}
                   />
                 }
-                
               </UI.Box>
 
               <UI.Box style={styles.rightContainer}>
@@ -165,12 +167,9 @@ export default function MyCartScreen(props) {
             <TextInput
               placeholder='Custom'
               placeholderTextColor="#00BFF6"
-              placeholderStyle={{ fontFamily: "SourceSansPro_SemiBold", textAlign: "center" }}
+              placeholderStyle={styles.inputBox}
               keyboardType='phone-pad'
-              style={{
-                color:"#4D4F50",
-                fontFamily:"SourceSansPro_SemiBold"
-              }}
+              style={styles.enteredTxt}
               onFocus={() => handleResetTip()}
               onBlur={() => handleResetTip()}
               onChangeText={(value) => getCustomTip(value)}
@@ -239,86 +238,99 @@ export default function MyCartScreen(props) {
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
-        <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-          {cartData && cartData?.length > 0 ? (
-            cartData?.map((items) => {
-              return renderCartItems(items);
-            })
-          ) : (
-            <UI.View style={styles.cartEmptyContainer}>
-              <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
-            </UI.View>
-          )}
-          {cartData && cartData.length > 0 && renderCartPriceCalculations()}
-        </UI.ScrollView>
+      {
+        loading ? <CbLoader />
+          :
+          <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
+            <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+              {cartData && cartData?.length > 0 ? (
+                cartData?.map((items) => {
+                  return renderCartItems(items);
+                })
+              ) : (
+                <UI.View style={styles.cartEmptyContainer}>
+                  <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
+                </UI.View>
+              )}
+              {cartData && cartData.length > 0 && renderCartPriceCalculations()}
+            </UI.ScrollView>
 
-        {
-          cartData && cartData.length > 0 &&
-          <UI.Box>
             {
-              cartConfigData.ShowTip === 1 &&
-              <>
-                <UI.Box style={styles.tipContainer}>
-                  <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
-                </UI.Box>
-                <UI.ScrollView scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
-                  {
-                    tipData && tipData.map((item, index) => {
-                      return renderAddTip(item, index)
-                    })
-                  }
-                </UI.ScrollView>
-              </>
+              cartData && cartData.length > 0 &&
+              <UI.Box>
+                {
+                  cartConfigData?.ShowTip === 1 &&
+                  <>
+                    <UI.Box style={styles.tipContainer}>
+                      <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
+                    </UI.Box>
+                    <UI.ScrollView scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                      {
+                        tipData && tipData?.map((item, index) => {
+                          return renderAddTip(item, index)
+                        })
+                      }
+                    </UI.ScrollView>
+                  </>
+                }
+
+                {keyboardVisible && (
+                  <UI.Box
+                    style={styles.bottomBtn}
+                  >
+                    <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => Keyboard.dismiss()} />
+                    <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
+                  </UI.Box>
+                )}
+
+                {
+                  (cartConfigData?.ShowPickupLocation === 1 || cartConfigData?.ShowPickupTime === 1)
+                  && <UI.Box style={styles.pickUpContainer}>
+                    {
+                      cartConfigData?.ShowPickupTime === 1 &&
+                      <UI.Box>
+                        <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
+                        <UI.cbSelectTime
+                          id={pageId}
+                          selectItems={showPickupTime}
+                          Label={selectedTime}
+                          style={styles.timeBtn}
+                          selectItemLabel={"Select Time"}
+                        />
+                      </UI.Box>
+                    }
+
+                    {
+                      cartConfigData?.ShowPickupLocation &&
+                      <UI.Box>
+                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
+                        <UI.cbSelectTime
+                          id={pageId}
+                          selectItems={showPickupLocation}
+                          Label={selectedLocation}
+                          style={styles.timeBtn}
+                          selectItemLabel={"Select Place"}
+                        />
+                      </UI.Box>
+                    }
+                  </UI.Box>
+                }
+
+                <UI.TouchableOpacity style={styles.plcOrdBtn}>
+                  <UI.Box style={styles.plcMainContainer}>
+                    <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
+                    <UI.Text style={styles.totalPrcTxt}>$206.60</UI.Text>
+                  </UI.Box>
+                  <UI.Box style={styles.verticalLn} />
+                  <UI.Box style={styles.plcOrderTxtContainer}>
+                    <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>
+                  </UI.Box>
+                </UI.TouchableOpacity>
+
+              </UI.Box>
             }
-
-            {keyboardVisible && (
-              <UI.Box
-                style={styles.bottomBtn}
-              >
-                <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => Keyboard.dismiss()} />
-                <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
-              </UI.Box>
-            )}
-
-            <UI.Box style={styles.pickUpContainer}>
-              <UI.Box>
-                <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
-                <UI.cbSelectTime
-                  id={pageId}
-                  selectItems={departments}
-                  Label={selectedTime}
-                  style={styles.timeBtn}
-                  selectItemLabel={"Select Time"}
-                />
-              </UI.Box>
-
-              <UI.Box>
-                <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
-                 <UI.cbSelectTime
-                  id={pageId}
-                  selectItems={pickupLocations}
-                  Label={selectedLocation}
-                  style={styles.timeBtn}
-                  selectItemLabel={"Select Place"}
-                />
-              </UI.Box>
-            </UI.Box>
-
-            <UI.TouchableOpacity style={styles.plcOrdBtn}>
-              <UI.Box style={styles.plcMainContainer}>
-                <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
-                <UI.Text style={styles.totalPrcTxt}>$206.60</UI.Text>
-              </UI.Box>
-              <UI.Box style={styles.verticalLn} />
-              <UI.Box style={styles.plcOrderTxtContainer}>
-                <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>
-              </UI.Box>
-            </UI.TouchableOpacity>
-
-          </UI.Box>
-        }
-      </UI.TouchableOpacity>
+          </UI.TouchableOpacity>
+      }
 
     </KeyboardAvoidingView>
 

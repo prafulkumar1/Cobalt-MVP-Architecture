@@ -1,6 +1,6 @@
 import {useFormContext } from '@/components/cobalt/event';
 import { navigateToScreen } from '@/source/constants/Navigations';
-import {  cartConfigResponseData } from '@/source/constants/commonData';
+import {  cartConfigResponseData, departments, pickupLocations } from '@/source/constants/commonData';
 import uuid from "react-native-uuid";
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Keyboard } from 'react-native';
@@ -12,20 +12,22 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
 
-    const {deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+    const {cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
-    const [cartConfigData,setCartCofigData] = useState(cartConfigResponseData)
+    const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
     const [openItemId, setOpenItemId] = useState(null);
     const [isTimeModalSelected,setIsTimeModalSelected] = useState(false)
     const [customTipValue,setCustomTipValue] = useState("")
-    const [finalCartData, setFinalCartData] = useState([]);
+    const [loading , setLoading] = useState(false)
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
-    const [showPickupTime,setShowPickupTime] = useState(cartConfigResponseData.Pickup_Times)
+    const [showPickupTime,setShowPickupTime] = useState(departments)
+    const [showPickupLocation,setShowPickupLocation] = useState(pickupLocations)
 
 
   useEffect(() => {
+    getCartConfigData()
     getTipDetails()
     const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
@@ -59,6 +61,38 @@ export const useMyCartLogic = () => {
       }
     })
     setTipData(tipDetails)
+  }
+  const getCartConfigData = async () => {
+    try {
+      setLoading(true)
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const params = {   
+        "Location_Id":`${getProfitCenterId?.LocationId}`,
+        "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id
+      }
+      let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
+      const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.Time,value:item.Time}))
+      const showPickLocationData = cartInfo?.response?.Pickup_Locations?.map((item) => ({label:item.Time,value:item.Time}))
+      setCartCofigData(cartInfo?.response)
+      setLoading(false)
+      showPickupTime(showTimeData)
+      setShowPickupLocation(showPickLocationData)
+    } catch (err) { }
+  }
+
+  const getCartPrice = async () => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const cartItemIds = cartData?.map((item) => ({ItemId:item.Item_ID}))
+      const params = {   
+        "Location_Id":`${getProfitCenterId?.LocationId}`,
+         "Items":cartItemIds
+      }
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE", params)
+      console.log(cartInfo,"infooooo")
+    } catch (err) { }
   }
 
 
@@ -198,10 +232,12 @@ export const useMyCartLogic = () => {
     customTipValue,
     handleSaveTip,
     scrollViewRef,
-    finalCartData,
     keyboardVisible,
     handleIncrement,
     handleDecrement,
-    editCommentBtn
+    editCommentBtn,
+    loading,
+    showPickupTime,
+    showPickupLocation
   };
 };

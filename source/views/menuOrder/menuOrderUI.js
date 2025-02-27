@@ -245,7 +245,7 @@ export default function MenuOrderScreen(props) {
 
 
     const showActiveAvailableColor = (isAvailable,IsDisable) => {
-      return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
+      return { color: (isAvailable === 1 &&IsDisable===0)  ? "#4B5154" : "#4B515469" };
     };
   
     const handleScroll = (event) => {
@@ -345,15 +345,15 @@ export default function MenuOrderScreen(props) {
                           return (
                             <UI.TouchableOpacity
                               activeOpacity={0.5}
-                              disabled={box.IsAvailable === 0}
+                              disabled={(box.IsAvailable === 0 && box.IsDisable === 1)}
                               onPress={() => openItemDetails(box)}
                               key={box?.Item_ID}
                               style={[
                                 styles.subContainer,
                                 {
                                   opacity:
-                                    box?.IsAvailable === 1 &&
-                                    box?.IsDisable === 0
+                                    (box?.IsAvailable === 1 &&
+                                    box?.IsDisable === 0)
                                       ? 1
                                       : 0.8,
                                 },
@@ -420,7 +420,7 @@ export default function MenuOrderScreen(props) {
                                       backgroundColor:
                                         "rgba(255, 255, 255, 0.2)",
                                     }}
-                                    disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
+                                    disabled={(box.IsAvailable === 0 && box.IsDisable === 1) ? true : false}
                                   >
                                     <Image
                                       source={{ uri: item.ImageUrl }}
@@ -558,7 +558,7 @@ export default function MenuOrderScreen(props) {
         return(
           <>
           <UI.Box style={styles.topContainer}>
-            {mealPeriods.map((item) => {
+            {mealPeriods?.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>

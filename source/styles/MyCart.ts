@@ -175,5 +175,9 @@ export const styles = StyleSheet.create({
     trashIcon:{ width: 23, height: 23 },
     addIcon:{ width: 25, height: 25 },
     commentBtn:{ flexDirection: "row", justifyContent: "flex-start",alignItems:"flex-start" },
-    
+    inputBox:{ fontFamily: "SourceSansPro_SemiBold", textAlign: "center" },
+    enteredTxt:{
+      color:"#4D4F50",
+      fontFamily:"SourceSansPro_SemiBold"
+    }
   }); 
