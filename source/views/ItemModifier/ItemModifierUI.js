@@ -260,4 +260,3 @@ const ItemModifier = (props) => {
 
 export default ItemModifier;
 
-
