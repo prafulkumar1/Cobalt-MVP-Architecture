@@ -126,7 +126,7 @@ export const UseFormContextProvider = ({children}) => {
           let updatedCartData;
     
           if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
           } else {
             const modifiePrice = selectedModifiers.length === 1 
             ? parseFloat(selectedModifiers[0].Price) 
@@ -134,7 +134,7 @@ export const UseFormContextProvider = ({children}) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
             updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
+              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
             );
           }
           AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
@@ -174,7 +174,7 @@ export const UseFormContextProvider = ({children}) => {
           let updatedCartData;
 
           if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
           } else {
             const modifiePrice = selectedModifiers.length === 1 
             ? parseFloat(selectedModifiers[0].Price) 
@@ -182,7 +182,7 @@ export const UseFormContextProvider = ({children}) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
             updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
+              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }

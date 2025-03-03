@@ -40,7 +40,12 @@ export default function MyCartScreen(props) {
      editCommentBtn,
      loading,
      showPickupTime,
-     showPickupLocation
+     showPickupLocation,
+     isCustomTipAdded,
+     textInputRef,
+     myCartData,
+     priceBreakDownData,
+     grandTotal
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
 
@@ -88,12 +93,12 @@ export default function MyCartScreen(props) {
           >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
-                <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
+                <UI.Text style={styles.itemTitle}>{item.ItemName}</UI.Text>
                 {
-                  uniqueModifiers && uniqueModifiers.length > 0 &&
+                  item?.Modifiers && item.Modifiers.length > 0 &&
                   <UI.CbFlatList
                     scrollEnabled = {false}
-                    flatlistData={uniqueModifiers}
+                    flatlistData={item.Modifiers}
                     children={renderModifierList}
                   />
                 }
@@ -102,7 +107,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.rightContainer}>
                 <UI.Text
                   style={styles.itemPrice}
-                >{`$${quantityIncPrice}`}</UI.Text>
+                >{`$${item.TotalPrice}`}</UI.Text>
 
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
@@ -117,7 +122,7 @@ export default function MyCartScreen(props) {
                     />
                   </UI.TouchableOpacity>
 
-                  <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
+                  <UI.Text style={styles.quantityTxt}>{item.Quantity}</UI.Text>
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
@@ -156,15 +161,29 @@ export default function MyCartScreen(props) {
   const renderAddTip = (tipDetails,index) => {
     let lastIndex = tipData.length - 1;
     let item = tipDetails
+    const isCustomAdded = item.isCustomAdded === 1;
+    const isSelected = item.isSelected === 1;
+  
+    const containerStyle = isCustomAdded
+      ? styles.customTipItem
+      : [
+          styles.tipMainContainer,
+          { backgroundColor: isSelected ? '#00BFF6' : '#fff' },
+        ];
+  
+    const textStyle = isCustomAdded
+      ? [styles.tipCount, { color: '#000' }]
+      : [styles.tipCount, { color: isSelected ? '#fff' : '#00BFF6' }];
     return(
      <>
-         <UI.TouchableOpacity style={[styles.tipMainContainer,{backgroundColor:item.isSelected===1?"#00BFF6":"#fff"}]} onPress={() => addTip(tipDetails)}>
-         <UI.Text style={[styles.tipCount,{color:item.isSelected===1?"#fff":"#00BFF6"}]}>{item.tip}</UI.Text>
-       </UI.TouchableOpacity>
-        { 
-       lastIndex === index &&  
-          <UI.Box style={[styles.tipMainContainer,{ backgroundColor:"#fff",}]} >
+        <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>
+          <UI.Text style={textStyle}>{item.tip}</UI.Text>
+        </UI.TouchableOpacity>
+       {
+        (lastIndex === index && isCustomTipAdded) && 
+        <UI.Box style={[styles.tipMainContainer,{ backgroundColor:"#fff",}]} >
             <TextInput
+              ref={textInputRef}
               placeholder='Custom'
               placeholderTextColor="#00BFF6"
               placeholderStyle={styles.inputBox}
@@ -176,7 +195,7 @@ export default function MyCartScreen(props) {
               value={customTipValue}
             />
           </UI.Box>
-       } 
+       }
        
      </>
     )
@@ -196,8 +215,8 @@ export default function MyCartScreen(props) {
   const PriceDetails = () => (
     <UI.Box style={styles.priceContainer}>
       <UI.Box style={styles.priceSubContainer}>
-        {priceItems.map((item, index) => (
-          <PriceRow key={index} label={item.label} value={item.value} />
+        {priceBreakDownData && priceBreakDownData?.map((item, index) => (
+          <PriceRow key={index} label={item.Label} value={item.Value} />
         ))}
       </UI.Box>
     </UI.Box>
@@ -243,8 +262,8 @@ export default function MyCartScreen(props) {
           :
           <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
             <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-              {cartData && cartData?.length > 0 ? (
-                cartData?.map((items) => {
+              {myCartData && myCartData?.length > 0 ? (
+                myCartData?.map((items) => {
                   return renderCartItems(items);
                 })
               ) : (
@@ -252,7 +271,7 @@ export default function MyCartScreen(props) {
                   <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
                 </UI.View>
               )}
-              {cartData && cartData.length > 0 && renderCartPriceCalculations()}
+              {myCartData && myCartData.length > 0 && renderCartPriceCalculations()}
             </UI.ScrollView>
 
             {
@@ -319,7 +338,7 @@ export default function MyCartScreen(props) {
                 <UI.TouchableOpacity style={styles.plcOrdBtn}>
                   <UI.Box style={styles.plcMainContainer}>
                     <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
-                    <UI.Text style={styles.totalPrcTxt}>$206.60</UI.Text>
+                    <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal}`}</UI.Text>
                   </UI.Box>
                   <UI.Box style={styles.verticalLn} />
                   <UI.Box style={styles.plcOrderTxtContainer}>

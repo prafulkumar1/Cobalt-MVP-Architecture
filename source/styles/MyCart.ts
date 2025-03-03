@@ -99,6 +99,19 @@ export const styles = StyleSheet.create({
         elevation: 3,
         alignSelf:"center"
       },
+      customTipItem:{
+        width:83,
+        height:40,
+        justifyContent:"center",
+        alignItems:"center",
+        borderRadius:10,
+        marginHorizontal:5,
+        marginVertical:10,
+        borderWidth:2,
+        borderColor:"#00BFF6",
+        alignSelf:"center",
+        backgroundColor:"#fff"
+      },
       tipCount:{fontSize:14,fontFamily: "SourceSansPro_SemiBold"},
       cartItemContainer:{  },
       addToCartBtn:{ padding: responsiveWidth(2) },
@@ -123,7 +136,7 @@ export const styles = StyleSheet.create({
       plcOrdBtn:{ width: 250, height: 45, paddingHorizontal: 25, flexDirection: "row", backgroundColor: "#5773A2", justifyContent: "space-between", alignItems: "center", alignSelf: "center", borderRadius: 23, margin: 20,zIndex:0 },
       plcMainContainer:{ paddingRight: 10 },
       totalAmtTxt:{ color: "#ffffff", fontSize: 12, fontFamily:"SourceSansPro_SemiBoldItalic" },
-      totalPrcTxt:{ fontSize: 16, color: "#FFFFFF", top: -4, fontFamily:"SourceSansPro_Bold" },
+      totalPrcTxt:{ fontSize: 16, color: "#FFFFFF", top: -4, fontFamily:"SourceSansPro_Bold" ,textAlign:"center"},
       verticalLn:{ height: 30, borderWidth: 0.7, borderColor: "#93A5C4" },
       plcOrderTxtContainer:{ width: "70%" },
       plcOrderTxt:{

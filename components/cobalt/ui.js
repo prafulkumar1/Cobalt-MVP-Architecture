@@ -148,14 +148,25 @@ class CbAccordionlist extends React.Component {
                                       style={styles.modifierContainer}
                                     >
                                       {order.Category_Name}
-                                      <AccordionTitleText
-                                        style={styles.maxAllowedTxt}
-                                      >
-                                        {order.Message
-                                          ? `  (${order.Message})`
-                                          : ""}
-                                      </AccordionTitleText>
+                                      <Box style={styles.quantityMessage}>
+                                        {
+                                          order.DisplayOption && 
+                                          <Text
+                                          style={styles.requiredTxt}
+                                        >
+                                          {` (${(order.DisplayOption)}) `}
+                                        </Text>
+                                        }
+                                        <Text
+                                          style={styles.maxAllowedTxt}
+                                        >
+                                          {order.Message
+                                            ? `(${order.Message})`
+                                            : ""}
+                                        </Text>
+                                      </Box>
                                     </AccordionTitleText>
+                                    
                                   </Box>
                                   {isExpanded ? (
                                     <AccordionIcon
