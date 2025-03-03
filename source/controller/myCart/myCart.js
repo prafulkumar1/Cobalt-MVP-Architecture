@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
 
-    const {cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+    const {cartData,menuOrderData,deleteCartItem,updateCartItemQuantity2 ,updateModifierItemQuantity2,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -115,14 +115,14 @@ export const useMyCartLogic = () => {
   };
 
   const handleDelete = async(item) => {
-    if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
+    if (openItemId === item.ItemId && swipeableRefs.current[openItemId]) {
       swipeableRefs.current[openItemId].close();
     }
-    delete swipeableRefs.current[item.Item_ID];
+    delete swipeableRefs.current[item.ItemId];
     setOpenItemId(null);
     deleteCartItem(item);
     setSelectedModifiers([])
-    updateModifierItemQuantity(item, 0)
+    updateModifierItemQuantity2(item, 0)
     await postQuantityApiCall(item,0)
   };
   const handleSwipeOpen = (itemId) => {
@@ -208,14 +208,17 @@ export const useMyCartLogic = () => {
       return quantityInfo
     } catch (err) { }
   }
+  useEffect(() => {
+    getCartPrice()
+  },[cartData])
+
   const handleIncrement = async(item) => {
     let quantityInfo = await postQuantityApiCall(item,item.Quantity + 1)
 
     if (quantityInfo.statusCode === 200) {
       if (quantityInfo?.response.IsAvailable === 1) {
-        updateCartItemQuantity(item, item.Quantity + 1);
-        updateModifierItemQuantity(item, item.Quantity + 1);
-        getCartPrice()
+        updateCartItemQuantity2(item, item.Quantity + 1);
+        updateModifierItemQuantity2(item, item.Quantity + 1);
       } else {
         Alert.alert(quantityInfo?.response?.ResponseMessage)
       }
@@ -225,9 +228,8 @@ export const useMyCartLogic = () => {
     let quantityInfo = await postQuantityApiCall(item,item.Quantity - 1)
 
     if (quantityInfo.statusCode === 200) {
-      updateCartItemQuantity(item, item.Quantity - 1);
-      updateModifierItemQuantity(item, item.Quantity - 1);
-      getCartPrice()
+      updateCartItemQuantity2(item, item.Quantity - 1);
+      updateModifierItemQuantity2(item, item.Quantity - 1);
     }
   }
   const editCommentBtn = (props,item) => {
