@@ -181,6 +181,7 @@ function RenderingFavoritesList() {
 
 
 export default function RecentordersScreen(props) { 
+
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   
       
@@ -200,12 +201,14 @@ export default function RecentordersScreen(props) {
         {isRecentOrder ? 
             <>
               <RenderingPendingOrders />
-              <UI.CbAccordionlist componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
+              <UI.CbRecentAccordion componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
           </>
           : 
           <RenderingFavoritesList />  
         }
       </UI.ScrollView>
+      <UI.CbFloatingButton props={props} ></UI.CbFloatingButton>
+
     </UI.Box>    
       
   );
