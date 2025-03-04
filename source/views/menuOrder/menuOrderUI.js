@@ -81,7 +81,7 @@ export default function MenuOrderScreen(props) {
 
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100  : 0;
+  const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
@@ -179,6 +179,13 @@ export default function MenuOrderScreen(props) {
     const yPosition = itemPositions[categoryId];
     if (yPosition !== undefined && scrollViewRef.current) {
       scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
+      const updateData = selectedCategory.map((items) => {
+        return{
+          ...items,
+          CategoryIsSelect : items.Category_ID === categoryId ? 1 : 0
+        }
+      })
+      setSelectedCategory(updateData);
     }
   };
   const handleCategoryLayout = (event, categoryId) => {

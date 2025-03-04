@@ -22,6 +22,7 @@ export const useMyCartLogic = () => {
     const [customTipValue,setCustomTipValue] = useState("")
     const [loading , setLoading] = useState(false)
     const [isCustomTipAdded,setIsCustomTipAdded] = useState(true)
+    const [tipKeyboardOpen,setTipKeyboardOpen] = useState(false)
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState(departments)
@@ -29,6 +30,9 @@ export const useMyCartLogic = () => {
     const [myCartData,setMyCartData] =  useState([])
     const [priceBreakDownData,setPriceBreakDownData] = useState([])
     const [grandTotal,setGrandTotal] = useState(0)
+    const [isPriceLoaded,setIsPriceLoaded]= useState(0)
+    const [orderInstruction,setOrderInstruction]= useState("")
+    const [tipSelection,setTipSelection]= useState(null)
 
 
   useEffect(() => {
@@ -74,7 +78,7 @@ export const useMyCartLogic = () => {
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const params = {   
-        "Location_Id":`${getProfitCenterId?.LocationId}`,
+        "LocationId":`${getProfitCenterId?.LocationId}`,
         "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id
       }
       let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
@@ -89,17 +93,21 @@ export const useMyCartLogic = () => {
 
   const getCartPrice = async () => {
     try {
+      setIsPriceLoaded(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
+      console.log(JSON.stringify(cartItemIds),"-->jsjsjs")
+
       const params = {   
-        "LocationId":`${getProfitCenterId?.LocationId}`,
+        "Location_Id":`${getProfitCenterId?.LocationId}`,
          "Items":cartItemIds,
       }
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE", params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
+      setIsPriceLoaded(false)
     } catch (err) { }
   }
 
@@ -150,6 +158,8 @@ export const useMyCartLogic = () => {
       const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:1}:{...item,isSelected:0})
       setTipData(removeLastItem)
       setIsCustomTipAdded(true)
+      setCustomTipValue("")
+      setTipSelection({"tip": tipDetails.tip,"tip_value":"" })
     }
   }
 
@@ -165,12 +175,15 @@ export const useMyCartLogic = () => {
       }
     })
     setTipData(updatedTipDetails)
+    setTipKeyboardOpen(true)
   }
 
   const getCustomTip = (value) =>{
      const numericValue = value.replace(/[^0-9]/g, '');
      setCustomTipValue(numericValue ? `$${numericValue}` : '');
      customTip.current = numericValue ? `$${numericValue}` : ''
+     handleResetTip()
+     setTipSelection({"tip":"","tip_value": value})
   }
 
   const handleSaveTip = () => {
@@ -239,6 +252,37 @@ export const useMyCartLogic = () => {
       closePreviewModal()
     }, 500);
   }
+  const handlePlaceOrder = async() => {
+    try {
+      // setIsPriceLoaded(true)
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
+      const params = {
+        "OrderDetails": {
+          "LocationId": `${getProfitCenterId?.LocationId}`,
+          "PickupTime": "09:00 AM",
+          "PickupLocationId": "sjcjdc1bjdbcj2324nn",
+          "Instructions": orderInstruction,
+          "GrandTotal": grandTotal,
+          "Items": cartItemIds,
+          "tip": tipSelection?.tip ? tipSelection?.tip : "",
+          "tip_value": tipSelection?.tip_value ? tipSelection?.tip_value : "",
+        }
+      }
+      console.log(JSON.stringify(params),"---prasjjsjsjsj")
+      // let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
+      // console.log(placeOrderDetails,"---292922929929")
+
+      // if(placeOrderDetails.response?.ResponseCode === "Success"){
+      //   Alert.alert(placeOrderDetails.response?.ResponseMessage)
+      // }
+      // setIsPriceLoaded(false)
+    } catch (err) { }
+  }
+  const orderInstructions = (text) => {
+    setOrderInstruction(text)
+  }
   return {
     tipData,
     value,
@@ -269,6 +313,12 @@ export const useMyCartLogic = () => {
     textInputRef,
     myCartData,
     priceBreakDownData,
-    grandTotal
+    grandTotal,
+    isPriceLoaded,
+    handlePlaceOrder,
+    tipKeyboardOpen,
+    orderInstruction,
+    orderInstructions,
+    setTipKeyboardOpen
   };
 };

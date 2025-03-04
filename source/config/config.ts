@@ -17,6 +17,7 @@
 // useEffect(() => {
 //     // getBaseUrl()
 // }, [])
+// https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
 export const baseURL = "https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/"
 
 export const endpoints = {
@@ -35,6 +36,7 @@ export const endpoints = {
     },
     CART:{
         GET_CART_CONFIG:"MobileOrdering/MO_GetCartConfig",
-        GET_CART_PRICE:"MobileOrdering/MO_GetCartPrice"
+        GET_CART_PRICE:"MobileOrdering/MO_GetCartPrice",
+        PLACE_ORDER:"MobileOrdering/MO_SaveOrderdetails "
     }
 }

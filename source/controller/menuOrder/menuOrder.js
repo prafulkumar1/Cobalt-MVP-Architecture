@@ -32,48 +32,48 @@ export const useMenuOrderLogic = (props) => {
       setIsRecentOrderOpen(!isRecentOrderOpen)
     }
 
-  const requiredDataFormat = (responseData) => {
-    const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item) => {
-      let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
-
-      if (!category) {
-        category = {
-          Category_ID: item.Category_ID,
-          Category_Name: item.Category_Name,
-          CategoryIsSelect: item.CategoryIsSelect,
-          submenus: [],
-        };
-        acc.push(category);
-      }
-
-      let submenu = category.submenus.find(
-        sub => sub.SubMenu_ID === item.SubMenu_ID
-      );
-
-      if (!submenu) {
-        submenu = {
-          SubMenu_ID: item.SubMenu_ID,
-          SubMenu_Name: item.SubMenu_Name,
-          items: [],
-        };
-        category.submenus.push(submenu);
-      }
-
-      submenu.items.push({
-        Item_ID: item.Item_ID,
-        Item_Name: item.Item_Name,
-        Description: item.Description,
-        Price: item.Price,
-        ImageUrl: item.ImageUrl,
-        IsAvailable: item.IsAvailable,
-        IsDisable: item.IsDisable,
-      });
-
-      return acc;
-    }, []);
-
-    setSelectedCategory(groupedCategories)
-  }
+    const requiredDataFormat = (responseData) => {
+      const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item, index) => {
+        let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
+    
+        if (!category) {
+          category = {
+            Category_ID: item.Category_ID,
+            Category_Name: item.Category_Name,
+            CategoryIsSelect: index === 0 ? 1 : 0,
+            submenus: [],
+          };
+          acc.push(category);
+        }
+    
+        let submenu = category.submenus.find(
+          sub => sub.SubMenu_ID === item.SubMenu_ID
+        );
+    
+        if (!submenu) {
+          submenu = {
+            SubMenu_ID: item.SubMenu_ID,
+            SubMenu_Name: item.SubMenu_Name,
+            items: [],
+          };
+          category.submenus.push(submenu);
+        }
+    
+        submenu.items.push({
+          Item_ID: item.Item_ID,
+          Item_Name: item.Item_Name,
+          Description: item.Description,
+          Price: item.Price,
+          ImageUrl: item.ImageUrl,
+          IsAvailable: item.IsAvailable,
+          IsDisable: item.IsDisable,
+        });
+    
+        return acc;
+      }, []);
+    
+      setSelectedCategory(groupedCategories)
+    }
   const getCartData = async () => {
       try {
         const value = await AsyncStorage.getItem('cart_data');

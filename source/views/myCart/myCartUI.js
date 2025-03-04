@@ -1,7 +1,7 @@
 
 import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
-import { Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
+import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 import { Swipeable } from 'react-native-gesture-handler';
 import {  priceItems } from '@/source/constants/commonData';
@@ -45,9 +45,16 @@ export default function MyCartScreen(props) {
      textInputRef,
      myCartData,
      priceBreakDownData,
-     grandTotal
+     grandTotal,
+     isPriceLoaded,
+     handlePlaceOrder,
+     tipKeyboardOpen,
+     orderInstruction,
+     orderInstructions,
+     setTipKeyboardOpen
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
+   
 
 
   const renderModifierList = ({ item }) => {
@@ -60,11 +67,6 @@ export default function MyCartScreen(props) {
     );
   }
   const renderCartItems = (item) => {
-    const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
-      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-      return modifier.isChecked && index === lastIndex;
-    });
-    const quantityIncPrice =  Math.floor(item?.quantityIncPrice * 100) /100
     const renderRightActions = (progress, dragX) => {
       const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
@@ -115,7 +117,7 @@ export default function MyCartScreen(props) {
                     onPress={() => handleDecrement(item)}
                   >
                     <Icon
-                      as={item.quantity === 1 ? TrashIcon : RemoveIcon}
+                      as={item.Quantity === 1 ? TrashIcon : RemoveIcon}
                       color="#5773a2"
                       size={"md"}
                       style={styles.trashIcon}
@@ -138,7 +140,7 @@ export default function MyCartScreen(props) {
                 </UI.Box>
               </UI.Box>
             </UI.Box>
-            {item.comments && (
+            {item.Comments && (
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
@@ -148,7 +150,7 @@ export default function MyCartScreen(props) {
                     source={require("@/assets/images/icons/messageIcon2x.png")}
                     style={styles.noteIcon}
                   />
-                  <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+                  <UI.Text style={styles.itemNotes}>{item.Comments}</UI.Text>
                 </UI.TouchableOpacity>
               </UI.Box>
             )}
@@ -234,7 +236,15 @@ export default function MyCartScreen(props) {
               style={styles.notesIcon}
               resizeMode="contain"
             />
-            <UI.Text style={styles.orderInstTxt}>Order Instructions</UI.Text>
+            <TextInput 
+              style={[styles.orderInstTxt,{ width:"92%",left:8,height:50}]} 
+              placeholder='Order Instructions' 
+              placeholderTextColor={"#4B5154"}
+              onChangeText={(text)=>orderInstructions(text)}
+              value={orderInstruction}
+              onFocus={() =>setTipKeyboardOpen(false)}
+              onBlur={() =>setTipKeyboardOpen(false)}
+            />
           </UI.TouchableOpacity>
           <UI.CbCommonButton
             id={"addMorebtn"}
@@ -293,7 +303,7 @@ export default function MyCartScreen(props) {
                   </>
                 }
 
-                {keyboardVisible && (
+                {keyboardVisible && tipKeyboardOpen && (
                   <UI.Box
                     style={styles.bottomBtn}
                   >
@@ -335,11 +345,14 @@ export default function MyCartScreen(props) {
                   </UI.Box>
                 }
 
-                <UI.TouchableOpacity style={styles.plcOrdBtn}>
-                  <UI.Box style={styles.plcMainContainer}>
-                    <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
-                    <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal}`}</UI.Text>
-                  </UI.Box>
+                <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={()=>handlePlaceOrder()}>
+                    {
+                      isPriceLoaded ? <ActivityIndicator color={"#00C6FF"} size={"small"}/>
+                        : <UI.Box style={styles.plcMainContainer}>
+                          <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
+                          <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal}`}</UI.Text>
+                        </UI.Box>
+                    }
                   <UI.Box style={styles.verticalLn} />
                   <UI.Box style={styles.plcOrderTxtContainer}>
                     <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>

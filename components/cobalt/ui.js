@@ -265,6 +265,7 @@ class CbAccordionlist extends React.Component {
                                 isToastMessageVisiable={this.state.isToastMessageVisiable}
                                 transparent={true}
                                 onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
+                                closePreviewModal ={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
                               />
                             }
                           </>
@@ -1187,6 +1188,7 @@ class CbToastMessage extends React.Component {
     this.message = props.message
     this.isToastMessageVisiable = this.isToastMessageVisiable
     this.transparent = props.transparent
+    this.closePreviewModal = props.closePreviewModal
   }
 
   render() {
@@ -1197,7 +1199,7 @@ class CbToastMessage extends React.Component {
         visible={this.isToastMessageVisiable}
       >
         <Box style={styles.centeredView}>
-          <Pressable style={[styles.blackShadow]} />
+          <Pressable style={[styles.blackShadow]} onPress={() => this?.closePreviewModal()}/>
           <Box style={styles.modalView}>
             <Text style={styles.modalText}>{this.message}</Text>
           </Box>
