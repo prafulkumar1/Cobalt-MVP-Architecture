@@ -34,6 +34,7 @@ export const UseFormContextProvider = ({children}) => {
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
 
+    const [isFavorite, setIsFavorite] = useState(0);
   
     const commentValue = useRef("")
     const modifiersData = useRef(null)
@@ -275,6 +276,15 @@ export const UseFormContextProvider = ({children}) => {
   };
   const updateWithoutModifierCartItem = (data) => {}
 
+const toggleFavorite = () => {
+  setSingleItemDetails(prevDetails => {
+    const updatedDetails = { ...prevDetails, isFavorite: prevDetails.isFavorite === 0 ? 1 : 0 };
+    console.log("Updated singleItemDetails:", updatedDetails);
+    return updatedDetails;
+  });
+};
+
+  
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
   }
@@ -297,6 +307,8 @@ export const UseFormContextProvider = ({children}) => {
       deleteCartItem,
       storeSingleItem,
       singleItemDetails,
+      setSingleItemDetails,
+      toggleFavorite,
       increaseQuantity,
       modifierCartItemData,
       updateModifierItemQuantity,
@@ -328,7 +340,8 @@ export const UseFormContextProvider = ({children}) => {
       updateOrAddTxt,
       updateModifierCartItem,
       isExitProfitCenter,setIsExitProfitCenter,
-      updateWithoutModifierCartItem
+      setIsFavorite,
+      isFavorite
     }
     return (
       <FormContext.Provider

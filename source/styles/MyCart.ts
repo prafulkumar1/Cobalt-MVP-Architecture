@@ -99,7 +99,7 @@ export const styles = StyleSheet.create({
         alignSelf:"center"
       },
       tipCount:{fontSize:14,fontFamily: "SourceSansPro_SemiBold"},
-      cartItemContainer:{ width: responsiveWidth(55) },
+      cartItemContainer:{ width: responsiveWidth(50) },
       addToCartBtn:{ padding: responsiveWidth(2) },
       cartEmptyContainer:{ alignSelf: "center" },
       priceContainer:{

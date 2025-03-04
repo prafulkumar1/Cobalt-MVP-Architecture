@@ -43,7 +43,7 @@ export default function MenuOrderScreen(props) {
       storeSingleItem,
       itemDataVisible,
       addItemToModifierForCart,
-      setIsVisible, updateModifierItemQuantity, selectedModifiers, singleItemDetails,
+      setIsVisible, updateModifierItemQuantity, selectedModifiers, singleItemDetails,setSingleItemDetails,
       modifierCartItemData,
       increaseQuantity,
       setSelectedModifiers,
@@ -55,7 +55,8 @@ export default function MenuOrderScreen(props) {
       isExitProfitCenter,
       setIsExitProfitCenter,
       setModifierCartItemData,
-      updateWithoutModifierCartItem
+      updateWithoutModifierCartItem,
+      menuOrderData,
     } = useFormContext();
 
   const {
@@ -78,7 +79,6 @@ export default function MenuOrderScreen(props) {
       categoryPositions,
     } = useMenuOrderLogic(props)
 
-
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100  : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -87,7 +87,7 @@ export default function MenuOrderScreen(props) {
 
   const openItemDetails = async (box) => {
     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    storeSingleItem({...box,response:quantityInfo.response})
+    storeSingleItem({...box,response:quantityInfo.response,isFavorite:0})
     increaseQuantity(box)
     closePreviewModal()
     setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
@@ -119,7 +119,9 @@ export default function MenuOrderScreen(props) {
         updateWithoutModifierCartItem(existingCartItem)
       }
     }else{
-      addItemToModifierForCart(singleItemDetails);
+      let updatedItem = { ...singleItemDetails, isFavorite: singleItemDetails.isFavorite === 0 ? 1 : 0 };
+      console.log("addedfav", updatedItem.isFavorite);
+  addItemToModifierForCart(updatedItem);
       closePreviewModal();
     }
   }
@@ -501,31 +503,109 @@ export default function MenuOrderScreen(props) {
     );
   };
 
+  // const OnRecentOrderPress = () => {
+  //   const RenderingRecentOrders = ({ item }) => {
+  //     const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_Id )
+  //     return (
+  //       <UI.Box style={{ marginRight: 30, }}>
+  //         {/* <UI.TouchableOpacity> */}
+  //         <UI.Box
+  //         style={{
+  //           backgroundColor:
+  //             "rgba(255, 255, 255, 0.2)",
+  //         }}
+          
+  //         >
+  //           <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.Image ? recentOrderImage?.Image : item.Image }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
+  //           ]} />} />
+  //           </UI.Box>
+  //         {/* </UI.TouchableOpacity> */}
+
+  //         {/* <UI.Box pointerEvents="box-none"> */}
+  //           {/* <UI.Box
+  //             activeOpacity={0.5}
+  //             onPress={() =>
+  //               openItemDetails(item)
+  //             }
+  //             style={{
+  //               zIndex: 999, position: 'absolute',
+  //               right: -15,
+  //               top: -45
+  //             }}
+  //           > */}
+  //           <UI.CbAddToCartButton mealItemDetails={itemDetails} 
+  //           // style={styles.recentBtn} 
+  //           />
+  //           {/* </UI.Box> */}
+  //         {/* </UI.Box> */}
+
+
+  //           <UI.Box style={styles.recentMainList}>
+  //             <UI.Text id="recentOrderName"
+  //               style={[
+  //                 recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
+  //               ]}
+  //               numberOfLines={1}
+  //               ellipsizeMode="tail"
+  //             >{item.Item_Name}
+  //             </UI.Text>
+
+
+  //           </UI.Box>
+  //         </UI.Box>
+  //     );
+  //   };
+
+  //   return (
+  //     <UI.Box style={styles.recentContainer}>
+  //       <UI.CbFlatList
+  //         flatlistData={RecentOrderData}
+  //         horizontal
+  //         children={({ item }) => <RenderingRecentOrders item={item} />}
+  //       />
+  //       <UI.TouchableOpacity onPress={() => navigateToScreen(props, "Recentorders", true)}>
+  //         <UI.Text
+  //           style={[
+  //             seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
+  //           ]}
+  //         >Show All</UI.Text>
+  //       </UI.TouchableOpacity>
+  //     </UI.Box>
+  //   );
+  // };
+  
   const OnRecentOrderPress = () => {
     const RenderingRecentOrders = ({ item }) => {
+ 
+      const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_Id )
+     
       return (
-        <UI.Box style={{ marginRight: 18, }}>
-          <UI.TouchableOpacity>
+        <UI.Box style={{ marginRight: 30, }}>
+        
             <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.Image ? recentOrderImage?.Image : item.Image }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
             ]} />} />
-          </UI.TouchableOpacity>
-          <UI.Box style={styles.recentMainList}>
-            <UI.Text id="recentOrderName"
-              style={[
-                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >{item.Item_Name}
-            </UI.Text>
 
-            <UI.TouchableOpacity
-              activeOpacity={0.5}
-            >
-              <UI.CbAddToCartButton mealItemDetails={{}} style={styles.recentBtn} />
-            </UI.TouchableOpacity>
+
+        
+            <UI.CbAddToCartButton mealItemDetails={itemDetails} 
+            // style={styles.recentBtn} 
+            />
+          
+
+
+            <UI.Box style={styles.recentMainList}>
+              <UI.Text id="recentOrderName"
+                style={[
+                  recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
+                ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >{item.Item_Name}
+              </UI.Text>
+
+
+            </UI.Box>
           </UI.Box>
-        </UI.Box>
       );
     };
 
@@ -546,7 +626,6 @@ export default function MenuOrderScreen(props) {
       </UI.Box>
     );
   };
-
   const renderMenuOrderItems = () => {
     if(errorMessage ===""){
       if(loading){

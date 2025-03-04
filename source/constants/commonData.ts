@@ -826,7 +826,7 @@ export const FavoritesList = {
 
     "Item_Name": "Coconut Shrimp",
 
-    "Item_Id": "I302",
+    "Item_Id": "AAEF4389-43BF-4016-A8AE-D590896007BC",
 
     "Description": "These coconut shrimp are dippedabnsmnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakdddddddddddddddddckidufhnvioefvoieurvoerncvuinuio",
 
@@ -842,7 +842,7 @@ export const FavoritesList = {
 
     "Item_Name": "Coconut Shrimp",
 
-    "Item_Id": "I302",
+    "Item_Id": "A10C49A8-239C-4932-94C7-77A73FFC0FC4",
 
     "Description": "These coconut shrimp are dipped...",
 
@@ -900,6 +900,51 @@ export const FavoritesList = {
     "IsAvailable": 1,
     "IsFavorite":1
 
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "A10C49A8-239C-4932-94C7-77A73FFC0FC4",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "A10C49A8-239C-4932-94C7-77A73FFC0FC4",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
+  },
+  {
+
+    "Item_Name": "Coconut Shrimp",
+
+    "Item_Id": "A10C49A8-239C-4932-94C7-77A73FFC0FC4",
+
+    "Description": "These coconut shrimp are dipped...",
+
+    "Price": 45.00,
+
+    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
+
+    "IsAvailable": 1,
+    "IsFavorite":1
   },
 ]
 }
@@ -985,7 +1030,7 @@ export const RecentOrderData = [
 
     "Item_Name": "Coconut Shrimp",
 
-    "Item_Id": "I302",
+    "Item_Id": "AAEF4389-43BF-4016-A8AE-D590896007BC",
 
     "Description": "These coconut shrimp are dipped...",
 
@@ -1000,7 +1045,7 @@ export const RecentOrderData = [
 
     "Item_Name": "Coconut Shrimp",
 
-    "Item_Id": "I302",
+    "Item_Id": "A10C49A8-239C-4932-94C7-77A73FFC0FC4",
 
     "Description": "These coconut shrimp are dipped...",
 

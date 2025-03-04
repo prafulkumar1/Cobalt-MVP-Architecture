@@ -43,6 +43,8 @@ export const styles = StyleSheet.create({
     padding: responsiveWidth(2),
     position: 'absolute',
     right: -22,
+    top:15,
+    
   },
   operationBtn: {
     position: 'absolute',

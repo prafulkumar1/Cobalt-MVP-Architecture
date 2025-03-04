@@ -129,7 +129,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 10,
   },
-  recentOrderImage: { width: 120, height: 60, borderRadius: 10 },
+  recentOrderImage: { width: responsiveWidth(30),height: responsiveHeight(9.5), borderRadius: 10 },
   recentOrderName: {
     fontSize: 12,
     color: "#4B5154",
@@ -148,6 +148,9 @@ export const styles = StyleSheet.create({
     paddingLeft: 8,
     backgroundColor: "#FFFFFF",
     paddingTop: 10,
+    marginHorizontal:4,
+    marginBottom:6,
+    marginTop:2
   },
   recentMainList: {
     flexDirection: "row",
@@ -320,6 +323,10 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
+    width:30,
+    position:'absolute',
+    top:-45,
+    right:-15,
   },
   addCartTxt: {
     color: "#fff",

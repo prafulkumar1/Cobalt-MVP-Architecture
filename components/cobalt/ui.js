@@ -27,6 +27,7 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
 export const postQuantityApiCall = async(quantity,itemId) => {
   try {
@@ -52,7 +53,7 @@ class CbAccordionlist extends React.Component {
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData || [];
     this.getAllSelectedModifiers = props.getAllSelectedModifiers
-     
+    this.props.route?.name
     this.state = {
       selectedModifiers: [],
       isItemSelected:false,
@@ -483,7 +484,7 @@ class CbFloatingButton extends React.Component {
 class CbAddToCartButton extends React.Component {
   constructor(props) {
     super(props);
-    this.mealItemDetails = props.mealItemDetails
+    this.mealItemDetails = props.mealItemDetails || {}; 
     this.style = props.style
     this.cartStyle = props.cartStyle
     this.state ={
@@ -582,7 +583,8 @@ class CbAddToCartButton extends React.Component {
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
-    
+    const isRecentOrderScreen = this.props.routeName === "Recentorders";
+
     if ( quantity === 0 && modifierQuantity === 0) {
       return (
         <TouchableOpacity
@@ -596,12 +598,16 @@ class CbAddToCartButton extends React.Component {
           onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25,}}/>
         </TouchableOpacity>
       );
     } else {
       return (
-        <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
+        <Box style={[
+          this.cartStyle ? styles.operationBtn2 : styles.operationBtn, 
+          { right: isRecentOrderScreen ? 10 : -18 }
+        ]}>
+        
           <TouchableOpacity
             style={styles.iconBtn}
             onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
@@ -646,6 +652,184 @@ class CbAddToCartButton extends React.Component {
     );
   }
 }
+
+
+// class CbAddToCartButton extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     console.log("Meal Item Details:", props.mealItemDetails);
+//     this.mealItemDetails = props.mealItemDetails || {}; 
+//     this.style = props.style;
+//     this.cartStyle = props.cartStyle;
+//     this.props.route?.name
+
+//     this.state = {
+//       isAvailable: 0,
+//       IsModifierAvailable: 0,
+//     };
+//   }
+  
+  
+//   commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
+//     if(isAvailable ===1 && IsDisable ===0){
+//       return primaryColor
+//     }else{
+//       return secondaryColor
+//     }
+//   }
+
+
+//    handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity,itemDataVisible) => {
+//     let quantityInfo = await postQuantityApiCall(quantity,this.mealItemDetails?.Item_ID)
+//     if (quantityInfo.statusCode === 200) {
+//       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
+//         if (this.state.IsModifierAvailable === 1) {
+//           storeSingleItem(this.mealItemDetails);
+//           if(itemDataVisible){
+//             increaseQuantity(this.mealItemDetails, false)
+//           }else{
+//             closePreviewModal()
+//             increaseQuantity(this.mealItemDetails, false)
+//           }
+//         } else {
+//           addItemToCartBtn(this.mealItemDetails)
+//         }
+//       })
+//     }
+//   }
+
+//   modifierIncDecBtn = async (cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+//        let isItemAvailableInCart = false
+//         cartData?.forEach((items) => {
+//             if(items.Item_ID === this.mealItemDetails.Item_ID ){
+//               isItemAvailableInCart = true
+//             }
+//         })
+//     let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
+//     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
+//     if(quantityInfo.statusCode ==200){
+//       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
+//         if (this.state.IsModifierAvailable === 1) {
+//           if(operation === "decrement"){
+//             if(isItemAvailableInCart){
+//               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+//               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+//             }else{
+//               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+//             }      
+//         }else{
+//           if(this.state.isAvailable ===1){
+//             if(isItemAvailableInCart){
+//               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+//               updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+//             }else{
+//               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+//             }   
+//           }else{
+//               Alert.alert(quantityInfo?.response?.ResponseMessage)
+//             }
+//           }
+//         } else {
+//           if (operation === "decrement") {
+//             updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+//           } else {
+//             if (this.state.isAvailable === 1) {
+//               updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+//             } else {
+//               Alert.alert(quantityInfo?.response?.ResponseMessage);
+//             }
+//           }
+//         }
+//       })
+//     }
+//   }
+
+//   renderAddToCartBtn = (contextProps) => {
+//      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+//     const {itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+//     const IsAvailable = this.mealItemDetails?.IsAvailable ?? 0; // Default to 0 if undefined
+// const IsDisable = this.mealItemDetails?.IsDisable ?? 0;
+
+//     const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+//     const quantity = cartItem ? cartItem.quantity : 0;
+//     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+//     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
+
+
+//   const isRecentOrderScreen = this.props.routeName === "Recentorders";
+
+//     if ( quantity === 0 && modifierQuantity === 0) {
+//       return (
+//         <TouchableOpacity
+//           style={[this.style ? this.style : styles.addItemToCartBtn, 
+//             { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
+//             {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
+//             {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
+//             {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+//           ]}
+//           activeOpacity={0.5}
+//           onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
+//           disabled={IsAvailable === 1 && IsDisable === 0?false:true}
+//         >
+//           <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
+//         </TouchableOpacity>
+//       );
+//     } else {
+//       return (
+//         <Box style={ 
+//           isRecentOrderScreen ? { borderColor: '#5773a2',
+//             borderWidth: 1,
+//             backgroundColor: '#fff',
+//             borderRadius: 5,
+//             justifyContent: "space-between",
+//             flexDirection: "row",
+//             alignItems: "center",
+//             rigth:5,
+//             height:30 }: [this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
+//           <TouchableOpacity
+//             style={isRecentOrderScreen ?{ width: responsiveWidth(5.9),height:responsiveHeight(4),justifyContent:"center",alignItems:'center'}:styles.iconBtn}
+//             onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+//           >
+//             {
+//               this.state.IsModifierAvailable === 1 ? 
+//               <Icon as={modifierQuantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={isRecentOrderScreen?{width:18,height:18}:{width:23,height:23}}/>
+//               : 
+//               <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} sstyle={isRecentOrderScreen?{width:18,height:18}:{width:23,height:23}}/>
+//             }
+//           </TouchableOpacity>
+
+//           <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
+
+//           <TouchableOpacity
+//              style={isRecentOrderScreen ?{ width: responsiveWidth(4.9),height:responsiveHeight(3),justifyContent:"center",alignItems:'center'}:styles.iconBtn}
+//             onPress={() => this.modifierIncDecBtn(cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+//           >
+//             <Icon as={AddIcon} color="#5773a2" size={"xl"} style={isRecentOrderScreen?{width:20,height:20}:{width:25,height:25}}/>
+//           </TouchableOpacity>
+//         </Box>
+//       );
+//     }
+//   };
+//   render() {
+//     return (
+//       <FormContext.Consumer>
+//       {(contextProps) => {
+//         const buttonArray = global.controlsConfigJson.find(
+//           (item) => item.id === this.id
+//         );
+//         const variant = buttonArray?.variant || this.variant;
+//         const buttonText = buttonArray?.text || this.buttonText;
+
+//         return (
+//           <>
+//           {this.renderAddToCartBtn(contextProps)}
+//           </>
+//         );
+//       }}
+//     </FormContext.Consumer>
+//     );
+//   }
+// }
 
 
 class cbSearchbox extends React.Component {

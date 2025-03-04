@@ -7,9 +7,14 @@ import { Box } from 'lucide-react-native';
 import { height } from '@/source/constants/Matrices';
 import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
+import {
+  useFormContext,
+} from "@/components/cobalt/event";
+import { useRoute } from "@react-navigation/native";
+
+
 function RenderingPendingOrders() {
   const OrdersList=RecentordersData.RecentOrders
-  
   
   return (
     <Accordion style={{ paddingHorizontal: 3,left:5, width: 400, maxHeight:"100%",borderRadius: 8, backgroundColor: '#fffff', shadowColor: "#00000029", shadowOffset: { width: 4, height: 4 },
@@ -143,7 +148,46 @@ function RenderingPendingOrders() {
 
 
 
-function RenderingFavoritesList() {
+// function RenderingFavoritesList() {
+//   const [expandedItems, setExpandedItems] = useState({});
+
+//   const toggleReadMore = (index) => {
+//     setExpandedItems((prevState) => ({
+//       ...prevState,
+//       [index]: !prevState[index],
+//     }));
+//   };
+//   return (
+//     <UI.Box style={{ paddingHorizontal: 8, height: '100%' }}>
+//     {FavoritesList.FavoriteItems.map((item, index) => (
+//       <UI.TouchableOpacity key={index} style={{ marginVertical: 15 }}>
+//         <UI.Box style={{ display: 'flex', flexDirection: 'row', alignContent: 'space-between' }}>
+//           <UI.CbImage source={item.Image} style={styles.Item_Image} />
+//           <UI.Box style={{ paddingHorizontal: 18, width: "50%" }}>
+//             <UI.Text style={{ fontSize: 18, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>{item.Item_Name}</UI.Text>
+//             <UI.Text style={{ fontSize: 16, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>${item.Price.toFixed(2)}</UI.Text>
+//             <UI.Text style={{ fontSize: 11, color: '#3B87C1', fontFamily: 'Source Sans Pro',fontWeight:"bold", lineHeight: 14,}}>
+//               {expandedItems[index] ? item.Description : `${item.Description.substring(0, 30)}... `}
+//               <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
+//                 <UI.Text style={{ color: '#26BAE2',fontSize: 11,  }}>
+//                   {expandedItems[index] ? 'Read Less' : 'Read More'}
+//                 </UI.Text>
+//               </UI.TouchableOpacity>
+//             </UI.Text>
+//           </UI.Box>
+//           <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/Fav.png')} style={{ width: "10", height: 16, marginVertical: 24, }} />} />
+//           <UI.CbAddToCartButton mealItemDetails={item} style={styles.AddButton} />
+//         </UI.Box>
+      
+//       </UI.TouchableOpacity>
+      
+//     ))}
+//   </UI.Box>  
+//   );
+// };
+
+function RenderingFavoritesList({ props }) {
+  const route = useRoute();
   const [expandedItems, setExpandedItems] = useState({});
 
   const toggleReadMore = (index) => {
@@ -152,33 +196,48 @@ function RenderingFavoritesList() {
       [index]: !prevState[index],
     }));
   };
+
   return (
+    <>
     <UI.Box style={{ paddingHorizontal: 8, height: '100%' }}>
-    {FavoritesList.FavoriteItems.map((item, index) => (
-      <UI.TouchableOpacity key={index} style={{ marginVertical: 15 }}>
-        <UI.Box style={{ display: 'flex', flexDirection: 'row', alignContent: 'space-between' }}>
-          <UI.CbImage source={item.Image} style={styles.Item_Image} />
-          <UI.Box style={{ paddingHorizontal: 18, width: 220 }}>
-            <UI.Text style={{ fontSize: 18, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>{item.Item_Name}</UI.Text>
-            <UI.Text style={{ fontSize: 16, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>${item.Price.toFixed(2)}</UI.Text>
-            <UI.Text style={{ fontSize: 11, color: '#3B87C1', fontFamily: 'Source Sans Pro',fontWeight:"bold", lineHeight: 14,}}>
-              {expandedItems[index] ? item.Description : `${item.Description.substring(0, 30)}... `}
-              <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
-                <UI.Text style={{ color: '#26BAE2',fontSize: 11,  }}>
-                  {expandedItems[index] ? 'Read Less' : 'Read More'}
+      {FavoritesList.FavoriteItems.map((item, index) => {
+       const { menuOrderData,} = useFormContext();
+        const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_Id )
+       
+        return (
+          // <UI.TouchableOpacity key={index} style={{ marginVertical: 15 }}>
+            <UI.Box style={{  flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',gap:5 }}>
+              <UI.CbImage source={item.Image} style={styles.Item_Image} />
+              <UI.Box style={{ paddingHorizontal: 3, width: "40%"}}>
+                <UI.Text style={{ fontSize: 16, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>
+                  {item.Item_Name}
                 </UI.Text>
-              </UI.TouchableOpacity>
-            </UI.Text>
-          </UI.Box>
-          <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/Fav.png')} style={{ width: 14, height: 16, left: 25, marginVertical: 24 }} />} />
-           <UI.CbAddToCartButton mealItemDetails={{}} style={styles.AddButton} />
-        </UI.Box>
-      </UI.TouchableOpacity>
-    ))}
-  </UI.Box>  
+                <UI.Text style={{ fontSize: 16, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>
+                  ${item.Price.toFixed(2)}
+                </UI.Text>
+                <UI.Text style={{ fontSize: 11, color: '#3B87C1', fontFamily: 'Source Sans Pro', fontWeight: "bold", lineHeight: 14 }}>
+                  {expandedItems[index] ? item.Description : `${item.Description.substring(0, 30)}... `}
+                  <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
+                    <UI.Text style={{ color: '#26BAE2', fontSize: 11 }}>
+                      {expandedItems[index] ? 'Read Less' : 'Read More'}
+                    </UI.Text>
+                  </UI.TouchableOpacity>
+                </UI.Text>
+              </UI.Box>
+              <UI.Box style={{width:"35%",flexDirection: 'row',alignItems: 'center', justifyContent: "space-between", gap: 5}}>
+              <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/Fav.png')} style={{ width:15, height: 20, }} />} />
+              <UI.CbAddToCartButton mealItemDetails={itemDetails} style={styles.AddButton} routeName={route.name} />
+              </UI.Box>
+            </UI.Box>
+          // {/* </UI.TouchableOpacity> */}
+        );
+      })}
+    
+    </UI.Box>
+   
+    </>
   );
 };
-
 
 export default function RecentordersScreen(props) { 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
@@ -197,15 +256,17 @@ export default function RecentordersScreen(props) {
       </UI.Box>
       <UI.ScrollView>
         
-        {isRecentOrder ? 
+        {!isRecentOrder ? 
             <>
               <RenderingPendingOrders />
-              <UI.CbAccordionlist componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
+              {/* <UI.CbAccordionlist componentData={RecentordersData.RecentOrders} screenName="RecentOrders" /> */}
           </>
           : 
-          <RenderingFavoritesList />  
+          <RenderingFavoritesList props={props} />
+
         }
       </UI.ScrollView>
+      <UI.CbFloatingButton props={props} />
     </UI.Box>    
       
   );

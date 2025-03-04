@@ -41,6 +41,7 @@ export default function MyCartScreen(props) {
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation ,closePreviewModal,storeSingleItem}= useFormContext();
 
+console.log("new Cart data ", cartData);
 
   const renderModifierList = ({ item }) => {
     return (
@@ -80,6 +81,19 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
+          <UI.TouchableOpacity
+            onPress={() => {
+              navigateToScreen(props, "MenuOrder", true, { buttonLabel: "Update Item" });
+
+              storeSingleItem(item);
+              // setSelectedModifiers(item.selectedModifiers)
+
+              setTimeout(() => {
+                closePreviewModal();
+              }, 100);
+            }}>
+
+         
           <UI.Box
             style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
           >
@@ -146,6 +160,7 @@ export default function MyCartScreen(props) {
               </UI.Box>
             )}
           </UI.Box>
+          </UI.TouchableOpacity>
         </Swipeable>
       </UI.Pressable>
     );
