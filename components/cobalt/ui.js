@@ -512,18 +512,32 @@ class CbBackButton extends React.Component {
   constructor(props) {
     super(props);
     this.source = props.source;
+    this.state = {
+      profitCenterTitle : ""
+    }
+  }
+  async componentDidMount(){
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenter = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    this.setState({profitCenterTitle:getProfitCenter?.LocationName})
   }
   render() {
     const state = this.props.navigation.getState();
     const currentRoute = state.routes[state.index]?.name;
     return (
       <FormContext.Consumer>
-      {({setIsExitProfitCenter,menuOrderData,cartData}) => {
+      {({setIsExitProfitCenter,menuOrderData,cartData,isPrevCartScreen}) => {
           return (
             <TouchableOpacity onPress={()=>{
               if(currentRoute === "MenuOrder"){
                 if(menuOrderData !==null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
+                }else{
+                  this.props.navigation?.goBack()
+                }
+              }else if(currentRoute === "Recentorders"){
+                if(isPrevCartScreen){
+                  navigateToScreen(this.props,"MenuOrder",true,{profileCenterTile:this.state.profitCenterTitle})
                 }else{
                   this.props.navigation?.goBack()
                 }

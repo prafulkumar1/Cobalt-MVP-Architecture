@@ -13,8 +13,8 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
 
-    const {removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity2 ,updateModifierItemQuantity2,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
-    const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
+    const {selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity2 ,updateModifierItemQuantity2,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+    const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
     const [openItemId, setOpenItemId] = useState(null);
@@ -26,8 +26,8 @@ export const useMyCartLogic = () => {
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
-    const [showPickupTime,setShowPickupTime] = useState(departments)
-    const [showPickupLocation,setShowPickupLocation] = useState(pickupLocations)
+    const [showPickupTime,setShowPickupTime] = useState([])
+    const [showPickupLocation,setShowPickupLocation] = useState([])
     const [myCartData,setMyCartData] =  useState([])
     const [priceBreakDownData,setPriceBreakDownData] = useState([])
     const [grandTotal,setGrandTotal] = useState(0)
@@ -41,7 +41,6 @@ export const useMyCartLogic = () => {
   useEffect(() => {
     getCartPrice()
     getCartConfigData()
-    getTipDetails()
     const keyboardDidShowListener = Keyboard?.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
@@ -49,47 +48,37 @@ export const useMyCartLogic = () => {
       setKeyboardVisible(false);
     });
 
-    setTimeout(() => {
-      const updatedShowTime = showPickupTime?.map((items) => {
-        return {
-          label: items.Time,
-          value: items.Time
-        }
-      })
-      setShowPickupTime(updatedShowTime)
-    }, 100);
-
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
 
-  const getTipDetails = () => {
-    let tipDetails = tipData.map((items) => {
-      return{
-        id:uuid.v4(),
-        tip: items.tip,
-        isSelected:0
-      }
-    })
-    setTipData(tipDetails)
-  }
   const getCartConfigData = async () => {
     try {
       setLoading(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const params = {   
-        "LocationId":`${getProfitCenterId?.LocationId}`,
+        "Location_Id":`${getProfitCenterId?.LocationId}`,
         "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id
       }
       let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
-      const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.Time,value:item.Time}))
+      const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.PickupTime,value:item.PickupTime}))
       const showPickLocationData = cartInfo?.response?.Pickup_Locations?.map((item) => ({label:item.Time,value:item.Time}))
       setCartCofigData(cartInfo?.response)
       setLoading(false)
-      showPickupTime(showTimeData)
+      let tipDetails = cartInfo?.response?.Tip?.map((items) => {
+        return{
+          id:uuid.v4(),
+          tip: items.SETTINGVALUE,
+          isSelected:0
+        }
+      })
+      setTipData(tipDetails)
+      setSelectedTime(showTimeData[0]?.value)
+      setSelectedLocation(showPickLocationData[0]?.value)
+      setShowPickupTime(showTimeData)
       setShowPickupLocation(showPickLocationData)
     } catch (err) { }
   }
@@ -100,7 +89,6 @@ export const useMyCartLogic = () => {
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
-      console.log(JSON.stringify(cartItemIds),"-->jsjsjs")
 
       const params = {   
         "Location_Id":`${getProfitCenterId?.LocationId}`,
@@ -264,8 +252,8 @@ export const useMyCartLogic = () => {
       const params = {
         "OrderDetails": {
           "LocationId": `${getProfitCenterId?.LocationId}`,
-          "PickupTime": "",
-          "PickupLocationId": "",
+          "PickupTime": selectedTime ? selectedTime :"",
+          "PickupLocationId": selectedLocation?selectedLocation:"",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
           "tip": tipSelection?.tip ? tipSelection?.tip : "",
@@ -277,7 +265,7 @@ export const useMyCartLogic = () => {
 
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
         setSuccessResponse(placeOrderDetails?.response)
-        removeCartItems(placeOrderDetails?.response)
+        removeCartItems()
         setOrderSuccessModal(true)
       }
       setIsOrderPlaced(false)

@@ -104,7 +104,10 @@ export const useItemModifierLogic = () => {
     const getAllSelectedModifiers = (modifiers) => {
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
-        updatedModifiers.push(modifiers);
+        updatedModifiers.push({
+          ...modifiers,
+          Price : modifiers.Price == null ? "0" : modifiers.Price
+        });
         return updatedModifiers;
       });
     };

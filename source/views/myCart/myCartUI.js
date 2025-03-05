@@ -291,21 +291,18 @@ export default function MyCartScreen(props) {
             {
               cartData && cartData.length > 0 &&
               <UI.Box>
-                {
-                  cartConfigData?.ShowTip === 1 &&
-                  <>
+                <>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
-                    <UI.ScrollView scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <UI.ScrollView style={{alignSelf:"center"}} scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
-                        cartConfigData?.tip && cartConfigData?.tip?.map((item, index) => {
+                        tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)
                         })
                       }
                     </UI.ScrollView>
                   </>
-                }
 
                 {keyboardVisible && tipKeyboardOpen && (
                   <UI.Box
@@ -326,7 +323,6 @@ export default function MyCartScreen(props) {
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupTime}
-                          Label={selectedTime}
                           style={styles.timeBtn}
                           selectItemLabel={"Select Time"}
                         />
@@ -334,13 +330,12 @@ export default function MyCartScreen(props) {
                     }
 
                     {
-                      cartConfigData?.ShowPickupLocation &&
+                      cartConfigData?.ShowPickupLocation ===1 &&
                       <UI.Box>
                         <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupLocation}
-                          Label={selectedLocation}
                           style={styles.timeBtn}
                           selectItemLabel={"Select Place"}
                         />
@@ -399,16 +394,23 @@ export default function MyCartScreen(props) {
               <UI.Text style={styles.innerModalAlertTxt}>
                 {successResponse?.ResponseMessage}
               </UI.Text>
-              <UI.Text style={styles.pickDetails}>
-                Please note the pickup details:
-              </UI.Text>
-              <UI.Text style={styles.timeAlertMsg}>
-                  Time: 7:00 PM
-              </UI.Text>
-              <UI.Text style={styles.timeAlertMsg}>
-                Location: Clubhouse Grill.
-              </UI.Text>
-
+              {
+                successResponse?.PickupMesaage?.map((msg) => {
+                  return (
+                    <>
+                      <UI.Text style={styles.pickDetails}>
+                        {msg?.Message}
+                      </UI.Text>
+                      <UI.Text style={styles.timeAlertMsg}>
+                        {msg?.Time}
+                      </UI.Text>
+                      <UI.Text style={styles.timeAlertMsg}>
+                        {msg?.Location}
+                      </UI.Text>
+                    </>
+                  )
+                })
+              }
               <UI.Text style={styles.thankMsg}>
                 THANK YOU
               </UI.Text>

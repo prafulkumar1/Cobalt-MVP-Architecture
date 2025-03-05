@@ -25,14 +25,15 @@ export const UseFormContextProvider = ({children}) => {
 
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
-    const [selectedTime,setSelectedTime] = useState("7:30 AM")
-    const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
+    const [selectedTime,setSelectedTime] = useState("")
+    const [selectedLocation,setSelectedLocation] = useState("")
     const [isVisible, setIsVisible] = useState(false);
     const [priceLoader, setPriceLoader] = useState(false);
     const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
+    const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
 
   
     const commentValue = useRef("")
@@ -420,7 +421,9 @@ export const UseFormContextProvider = ({children}) => {
       updateWithoutModifierCartItem,
       updateModifierItemQuantity2,
       updateCartItemQuantity2,
-      removeCartItems
+      removeCartItems,
+      setIsPrevCartScreen,
+      isPrevCartScreen
     }
     return (
       <FormContext.Provider

@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center"
   },
   customTipItem: {
-    width: 83,
+    width: 90,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
