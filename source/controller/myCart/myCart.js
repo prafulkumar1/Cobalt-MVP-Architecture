@@ -273,9 +273,7 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
-      console.log(JSON.stringify(params),"---prasjjsjsjsj")
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
-      console.log(placeOrderDetails,"---292922929929")
 
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
         setSuccessResponse(placeOrderDetails?.response)
@@ -288,7 +286,7 @@ export const useMyCartLogic = () => {
   const orderInstructions = (text) => {
     setOrderInstruction(text)
   }
-  const closeSuccessModal = () => {
+  const closeSuccessModal = (props) => {
     setOrderSuccessModal(false);
     navigateToScreen(props,"Recentorders",true,{cartScreen:true});
   }

@@ -299,7 +299,7 @@ export default function MyCartScreen(props) {
                     </UI.Box>
                     <UI.ScrollView scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
-                        tipData && tipData?.map((item, index) => {
+                        cartConfigData?.tip && cartConfigData?.tip?.map((item, index) => {
                           return renderAddTip(item, index)
                         })
                       }
@@ -383,7 +383,7 @@ export default function MyCartScreen(props) {
 
         <UI.Box style={styles.confirmMdl}>
           <UI.Box style={styles.innerModal}>
-            <UI.TouchableOpacity onPress={() => closeSuccessModal()} style={styles.closeMainContainer}>
+            <UI.TouchableOpacity onPress={() => closeSuccessModal(props)} style={styles.closeMainContainer}>
               <Icon
                 as={CloseIcon}
                 color="#5773a2"
