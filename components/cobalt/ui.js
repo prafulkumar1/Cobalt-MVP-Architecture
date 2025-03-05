@@ -708,11 +708,15 @@ class CbAddToCartButton extends React.Component {
   }
   renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
     if(itemDataVisible){
+      if(quantity > 1){
+        return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      }else{
         if(modifierQuantity === 1){
           return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
         }else{
           return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
         }
+      }
     }else{
       if(quantity === 1){
         return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
@@ -760,8 +764,8 @@ class CbAddToCartButton extends React.Component {
             }
           </TouchableOpacity>
 
-          {/* <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text> */}
-          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity >= 1 ? quantity : modifierQuantity}</Text>
+          {/* <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text> */}
 
           <TouchableOpacity
             style={styles.iconBtn}

@@ -373,4 +373,6 @@ modalNoYesBtn: {
   borderRadius: 32,
   width: responsiveWidth(37)
 },
+closeIcon:{ width: 20, height: 20 },
+mainContainerList:{paddingBottom:responsiveHeight(80)}
 });
