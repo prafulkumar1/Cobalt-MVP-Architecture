@@ -34,7 +34,6 @@ export default function MenuOrderScreen(props) {
   const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
 
   const {
-      setMealType, 
       isCategoryEmpty, 
       isSearchActive, 
       handleChangeState,
@@ -55,7 +54,8 @@ export default function MenuOrderScreen(props) {
       isExitProfitCenter,
       setIsExitProfitCenter,
       setModifierCartItemData,
-      updateWithoutModifierCartItem
+      updateWithoutModifierCartItem,
+      setFormFieldData
     } = useFormContext();
 
   const {
@@ -76,11 +76,12 @@ export default function MenuOrderScreen(props) {
       scrollViewRef,
       categoryScrollRef,
       categoryPositions,
+      setMealType
     } = useMenuOrderLogic(props)
 
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100  : 0;
+  const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
@@ -90,7 +91,6 @@ export default function MenuOrderScreen(props) {
     storeSingleItem({...box,response:quantityInfo.response})
     increaseQuantity(box)
     closePreviewModal()
-    setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
   }
   
 
@@ -150,7 +150,7 @@ export default function MenuOrderScreen(props) {
               ]
               : styles.inactiveMenuType,
           ]}
-          onPress={() => setMealType(mealTypeItem.MealPeriod_Id,mealTypeItem.IsEnabled)}
+          onPress={() => setMealType(mealTypeItem,mealTypeItem.IsEnabled)}
       >
           <UI.Text
             style={[
@@ -179,6 +179,13 @@ export default function MenuOrderScreen(props) {
     const yPosition = itemPositions[categoryId];
     if (yPosition !== undefined && scrollViewRef.current) {
       scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
+      const updateData = selectedCategory.map((items) => {
+        return{
+          ...items,
+          CategoryIsSelect : items.Category_ID === categoryId ? 1 : 0
+        }
+      })
+      setSelectedCategory(updateData);
     }
   };
   const handleCategoryLayout = (event, categoryId) => {
@@ -230,6 +237,7 @@ export default function MenuOrderScreen(props) {
     };
 
   const handleCloseItemDetails = () => {
+    setFormFieldData("ItemModifier","","Comments","",false)
     if (selectedModifiers.length === 0) {
         setIsVisible(false)
         updateModifierItemQuantity(singleItemDetails, 0)
@@ -244,7 +252,7 @@ export default function MenuOrderScreen(props) {
 
 
     const showActiveAvailableColor = (isAvailable,IsDisable) => {
-      return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
+      return { color: (isAvailable === 1 &&IsDisable===0)  ? "#4B5154" : "#4B515469" };
     };
   
     const handleScroll = (event) => {
@@ -344,15 +352,15 @@ export default function MenuOrderScreen(props) {
                           return (
                             <UI.TouchableOpacity
                               activeOpacity={0.5}
-                              disabled={box.IsAvailable === 0}
+                              disabled={(box.IsAvailable === 0 && box.IsDisable === 1)}
                               onPress={() => openItemDetails(box)}
                               key={box?.Item_ID}
                               style={[
                                 styles.subContainer,
                                 {
                                   opacity:
-                                    box?.IsAvailable === 1 &&
-                                    box?.IsDisable === 0
+                                    (box?.IsAvailable === 1 &&
+                                    box?.IsDisable === 0)
                                       ? 1
                                       : 0.8,
                                 },
@@ -419,7 +427,7 @@ export default function MenuOrderScreen(props) {
                                       backgroundColor:
                                         "rgba(255, 255, 255, 0.2)",
                                     }}
-                                    disabled={box.IsAvailable === 0 && box.IsDisable === 1 ? true : false}
+                                    disabled={(box.IsAvailable === 0 && box.IsDisable === 1) ? true : false}
                                   >
                                     <Image
                                       source={{ uri: item.ImageUrl }}
@@ -489,7 +497,7 @@ export default function MenuOrderScreen(props) {
                 <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ?totalCartPrice:singleItemPrice}`}</UI.Text>
               </UI.Box>
               <UI.CbCommonButton
-                showBtnName={updateOrAddTxt}
+                showBtnName={""}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
                 onPress={() => handleModifierAddCart()}
@@ -557,7 +565,7 @@ export default function MenuOrderScreen(props) {
         return(
           <>
           <UI.Box style={styles.topContainer}>
-            {mealPeriods.map((item) => {
+            {mealPeriods?.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
           </UI.Box>

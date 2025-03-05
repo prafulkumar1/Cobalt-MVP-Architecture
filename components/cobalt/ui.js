@@ -48,9 +48,6 @@ class CbAccordionlist extends React.Component {
     super(props);
     this.id = props.id;
     this.screenName = props.screenName;
-    this.favsource = props.favsource || "";
-    this.Notfavsource = props.Notfavsource || "";
-    this.componentData = props.componentData || [];
     this.getAllSelectedModifiers = props.getAllSelectedModifiers
      
     this.state = {
@@ -113,21 +110,14 @@ class CbAccordionlist extends React.Component {
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
-    const IsFavorite = 1;
-    const componentData =
-      this.screenName === "RecentOrders"
-        ? this.componentData.CompletedOrders
-        : this.componentData.Modifiers;
-
     return (
       <FormContext.Consumer>
-        {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
+        {({ modifiersResponseData, setModifiersResponseData, cartData, singleItemDetails }) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
-          const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
-          const existingCartData = cartData && cartData?.find((item) =>item.Item_ID ===  singleItemDetails.Item_ID)
+          let categoryData = typeof modifiersResponseData?.Categories == "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories
+          const defaultOpenItems = categoryData?.map((_, index) => `item-${index}`);
           return (
             <>
               <CbFlatList
@@ -140,58 +130,44 @@ class CbAccordionlist extends React.Component {
                       variant="filled"
                       type="single"
                       size="md"
-                      style={
-                        this.screenName === "RecentOrders"
-                          ? styles.roAccordion
-                          : styles.itemDetailsContainer
-                      }
+                      style={styles.itemDetailsContainer}
                     >
                       <AccordionItem
                         value={`item-${index}`}
                         style={styles.itemDetailsSubContainer}
                       >
                         <AccordionHeader
-                          style={
-                            this.screenName === "RecentOrders"
-                              ? styles.roAccordionHeader
-                              : styles.subHeader
-                          }
+                          style={styles.subHeader}
                         >
                           <AccordionTrigger>
                             {({ isExpanded }) => {
                               return (
                                 <>
-                                  {this.screenName === "RecentOrders" ? (
-                                    <Box
-                                      key={index}
-                                      style={styles.roAccordionHeading}
+                                  <Box style={styles.recentOrderContainer}>
+                                    <AccordionTitleText
+                                      style={styles.modifierContainer}
                                     >
-                                      <Image
-                                        alt="image"
-                                        source={require("@/assets/images/icons/ROdate.png")}
-                                      />
-                                      <AccordionTitleText
-                                        style={styles.roAccordionTitleText}
-                                      >
-                                        Ordered Date: {order.OrderDate}
-                                      </AccordionTitleText>
-                                    </Box>
-                                  ) : (
-                                    <Box style={styles.recentOrderContainer}>
-                                      <AccordionTitleText
-                                        style={styles.modifierContainer}
-                                      >
-                                        {order.Category_Name}
-                                        <AccordionTitleText
+                                      {order.Category_Name}
+                                      <Box style={styles.quantityMessage}>
+                                        {
+                                          order.DisplayOption && 
+                                          <Text
+                                          style={styles.requiredTxt}
+                                        >
+                                          {` (${(order.DisplayOption)}) `}
+                                        </Text>
+                                        }
+                                        <Text
                                           style={styles.maxAllowedTxt}
                                         >
                                           {order.Message
-                                            ? `  (${order.Message})`
+                                            ? `(${order.Message})`
                                             : ""}
-                                        </AccordionTitleText>
-                                      </AccordionTitleText>
-                                    </Box>
-                                  )}
+                                        </Text>
+                                      </Box>
+                                    </AccordionTitleText>
+                                    
+                                  </Box>
                                   {isExpanded ? (
                                     <AccordionIcon
                                       as={ChevronDownIcon}
@@ -213,147 +189,86 @@ class CbAccordionlist extends React.Component {
                           </AccordionTrigger>
                         </AccordionHeader>
                         <AccordionContent>
-                          {this.screenName == "RecentOrders"
-                            ? order.Items?.map((item) => (
-                                <Box>
+                          <>
+                            <FlatList
+                              data={order?.Modifiers}
+                              keyExtractor={(item) => `${item.Modifier_Id}`}
+                              removeClippedSubviews={true}
+                              updateCellsBatchingPeriod={100}
+                              windowSize={21}
+                              onEndReachedThreshold={0.1}
+                              renderItem={({ item, index }) => {
+                                const itemIndex = index
+                                return (
                                   <Box
-                                    style={styles.roAccordionContentouterbox}
+                                    key={itemIndex}
+                                    style={styles.orderSubContainer}
                                   >
-                                    <Box
-                                      style={styles.roAccordionContentItembox}
+                                    <Checkbox
+                                      isChecked={item.isChecked}
+                                      onChange={(value) => {
+                                        this.setState((prevState) => {
+                                          const filteredModifiers = prevState.selectedModifiers.filter(
+                                            (modifier) => modifier.Modifier_Id !== item.Modifier_Id
+                                          );
+                                          return {
+                                            selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
+                                            isItemSelected: value,
+                                            selectedModifierId: item.Modifier_Id
+                                          };
+                                        }, () => {
+                                          this.handleCheckboxToggle(
+                                            item,
+                                            value,
+                                            modifiersResponseData,
+                                            setModifiersResponseData,
+                                            singleItemDetails.Item_ID,
+                                            order.Category_Id,
+                                            order
+                                          )
+                                        })
+                                      }}
                                     >
-                                      <Text
-                                        style={styles.roItemName}
-                                        strikeThrough={!item.IsAvailable}
+                                      <CheckboxIndicator
+                                        style={styles.CheckboxIndicator}
                                       >
-                                        {" "}
-                                        {item.ItemName}{" "}
-                                      </Text>
-                                      <Text
-                                        style={styles.roItemprice}
-                                      >{`$${item.Price}`}</Text>
-                                    </Box>
-                                    <Box style={styles.roImagescetion}>
-                                      <Image
-                                        alt="image"
-                                        source={
-                                          item.IsFavorite
-                                            ? favsource
-                                              ? { uri: favsource }
-                                              : require("@/assets/images/icons/Fav.png")
-                                            : Notfavsource
-                                            ? { uri: Notfavsource }
-                                            : require("@/assets/images/icons/Notfav.png")
-                                        }
-                                        style={styles.roItemImage}
-                                      />
-                                      <CbAddToCartButton
-                                        mealItemDetails={{}}
-                                        style={styles.roItemButton}
-                                      />
-                                    </Box>
-                                  </Box>
-                                  <Divider />
-                                </Box>
-                              ))
-                            : 
-                            <>
-                              <FlatList
-                                data={order?.Modifiers}
-                                keyExtractor={(item) => `${item.Modifier_Id}`}
-                                removeClippedSubviews={true}
-                                updateCellsBatchingPeriod={100}
-                                windowSize={21}
-                                onEndReachedThreshold={0.1}
-                                renderItem={({ item, index }) => {
-                                  const itemIndex = index
-                                  return (
-                                    <Box
-                                      key={itemIndex}
-                                      style={styles.orderSubContainer}
+                                        <CheckboxIcon
+                                          as={CheckIcon}
+                                          style={{
+                                            color: "#707070",
+                                            width: 17,
+                                            height: 17,
+                                          }}
+                                        />
+                                      </CheckboxIndicator>
+                                      <CheckboxLabel style={styles.itemNameTxt}>
+                                        <Text>{item.Modifier_Name}</Text>
+                                      </CheckboxLabel>
+                                    </Checkbox>
+                                    <AccordionContentText
+                                      style={styles.priceMainTxt}
                                     >
-                                      <Checkbox
-                                        isChecked={item.isChecked}
-                                        onChange={(value) => {
-                                          this.setState((prevState) => {
-                                            const filteredModifiers = prevState.selectedModifiers.filter(
-                                              (modifier) => modifier.Modifier_Id !== item.Modifier_Id
-                                            );
-                                            return {
-                                              selectedModifiers: [...filteredModifiers, { ...item, isChecked: value }],
-                                              isItemSelected: value,
-                                              selectedModifierId: item.Modifier_Id
-                                            };
-                                          }, () => {
-                                            this.handleCheckboxToggle(
-                                              item,
-                                              value,
-                                              modifiersResponseData,
-                                              setModifiersResponseData,
-                                              singleItemDetails.Item_ID,
-                                              order.Category_Id,
-                                              order
-                                            )
-                                          })
-                                        }}
-                                      >
-                                        <CheckboxIndicator
-                                          style={styles.CheckboxIndicator}
-                                        >
-                                          <CheckboxIcon
-                                            as={CheckIcon}
-                                            style={{
-                                              color: "#707070",
-                                              width: 17,
-                                              height: 17,
-                                            }}
-                                          />
-                                        </CheckboxIndicator>
-                                        <CheckboxLabel style={styles.itemNameTxt}>
-                                          <Text>{item.Modifier_Name}</Text>
-                                        </CheckboxLabel>
-                                      </Checkbox>
-                                      <AccordionContentText
-                                        style={styles.priceMainTxt}
-                                      >
-                                        {
-                                          (item.Price !== null && item.Price !== 0) &&
-                                          <Text>{`$${item.Price}`}</Text>
-                                        }
+                                      {
+                                        (item.Price !== null && parseFloat(item.Price) !== 0) &&
+                                        <Text>{`$${parseFloat(item.Price).toFixed(2)}`}</Text>
+                                      }
 
-                                      </AccordionContentText>
-                                    </Box>
-                                  )
-                                }}
+                                    </AccordionContentText>
+                                  </Box>
+                                )
+                              }}
+                            />
+                            {
+                              this.state.isToastMessageVisiable &&
+                              <CbToastMessage
+                                message={this.state.toastMessage}
+                                isToastMessageVisiable={this.state.isToastMessageVisiable}
+                                transparent={true}
+                                onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
+                                closePreviewModal ={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
                               />
-                              {
-                                this.state.isToastMessageVisiable &&
-                                <CbToastMessage
-                                  message={this.state.toastMessage}
-                                  isToastMessageVisiable={this.state.isToastMessageVisiable}
-                                  transparent={true}
-                                  onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
-                                />
-                              }
-                            </>
                             }
-                          {this.screenName == "RecentOrders" &&
-                          order.IsReorder ? (
-                            <Button
-                              variant="outline"
-                              style={styles.roReoderButton}
-                            >
-                              <ButtonText
-                                style={styles.roReordertext}
-                                numberOfLines={1}
-                                ellipsizeMode="tail"
-                              >
-                                Re Order
-                              </ButtonText>
-                            </Button>
-                          ) : (
-                            ""
-                          )}
+                          </>
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
@@ -556,6 +471,7 @@ class CbAddToCartButton extends React.Component {
               updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
             }else{
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              updateModifierItemQuantity(this.mealItemDetails, cartQuantity-1);
             }
           } else {
             if (this.state.isAvailable === 1) {
@@ -563,6 +479,7 @@ class CbAddToCartButton extends React.Component {
                 updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
               }else{
                 updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+                updateModifierItemQuantity(this.mealItemDetails, cartQuantity+1)
               }
             } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage);
@@ -572,6 +489,21 @@ class CbAddToCartButton extends React.Component {
       })
     }
   }
+  renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
+    if(itemDataVisible){
+        if(modifierQuantity === 1){
+          return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }else{
+          return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }
+    }else{
+      if(quantity === 1){
+        return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      } else{
+        return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      }
+    }
+  };
 
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
@@ -607,14 +539,12 @@ class CbAddToCartButton extends React.Component {
             onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
           >
             {
-              this.state.IsModifierAvailable === 1 ? 
-              <Icon as={modifierQuantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
-              : 
-              <Icon as={quantity === 1 ? TrashIcon : RemoveIcon} color="#5773a2" size={'md'} style={{width:23,height:23}}/>
+              this.renderIcons(quantity,modifierQuantity,itemDataVisible)
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text>
+          {/* <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text> */}
+          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
 
           <TouchableOpacity
             style={styles.iconBtn}
@@ -980,10 +910,11 @@ class cbInput extends React.Component {
                   multiline={this.multiline}
                   numberOfLines={this.numberOfLines}
                   style={[{ textAlignVertical: "top" }, this.style]}
-                  value={this.value?this.value : value?.value}
+                  value={ value?.value? value?.value : this.value}
                   onChangeText={(value) => {
                     this.setFormFieldData(this.formId,'input',this.id,value);
                   }}
+                  onFocus={() => this.setFormFieldData(this.formId,'input',this.id,value?.value )}
                 />
               </Input>
               {isRequiredprop && errorMessageprop && (
@@ -1088,15 +1019,12 @@ class cbSelectTime extends React.Component {
                   <SelectContent style={styles.selectedContainer}>
                     <Text style={styles.selectedLabel}>{this.selectItemLabel}</Text>
                     <View style={styles.pickerWrapper}>{this.renderPicker()}</View>
-                    <CbCommonButton
-                      showBtnName={"Done"}
-                      style={styles.doneBtn}
-                      btnTextStyle={styles.doneTxtBtn}
-                      onPress={() => {
-                        this.updateSelectedTimeAndLocation(setSelectedTime, setSelectedLocation);
-                        this.setState({ isSelected: false });
-                      }}
-                    />
+                    <TouchableOpacity style={styles.doneBtn} onPress={() => {
+                      this.updateSelectedTimeAndLocation(setSelectedTime, setSelectedLocation);
+                      this.setState({ isSelected: false });
+                    }}>
+                      <Text style={styles.doneTxtBtn}>Done</Text>
+                    </TouchableOpacity>
                   </SelectContent>
                 </SelectPortal>
               </Select>
@@ -1227,19 +1155,25 @@ class CbCommonButton extends React.Component {
   }
   render() {
     return (
-      <Box>
-        <TouchableOpacity
-          style={[this.style ? this.style : styles.mediumBtn]}
-          onPress={() => this?.onPress()}
-        >
-          {
-            this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
-          }
-          <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
-            {this.showBtnName}
-          </Text>
-        </TouchableOpacity>
-      </Box>
+      <FormContext.Consumer>
+        {({updateOrAddTxt}) => {
+          return (
+            <Box>
+              <TouchableOpacity
+                style={[this.style ? this.style : styles.mediumBtn]}
+                onPress={() => this?.onPress()}
+              >
+                {
+                  this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
+                }
+                <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
+                  {this.showBtnName?this.showBtnName:updateOrAddTxt}
+                </Text>
+              </TouchableOpacity>
+            </Box>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -1254,6 +1188,7 @@ class CbToastMessage extends React.Component {
     this.message = props.message
     this.isToastMessageVisiable = this.isToastMessageVisiable
     this.transparent = props.transparent
+    this.closePreviewModal = props.closePreviewModal
   }
 
   render() {
@@ -1264,7 +1199,7 @@ class CbToastMessage extends React.Component {
         visible={this.isToastMessageVisiable}
       >
         <Box style={styles.centeredView}>
-          <Pressable style={[styles.blackShadow]} />
+          <Pressable style={[styles.blackShadow]} onPress={() => this?.closePreviewModal()}/>
           <Box style={styles.modalView}>
             <Text style={styles.modalText}>{this.message}</Text>
           </Box>
