@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
 
-    const {cartData,menuOrderData,deleteCartItem,updateCartItemQuantity2 ,updateModifierItemQuantity2,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+    const {removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity2 ,updateModifierItemQuantity2,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
     const [tipData,setTipData] = useState(cartConfigResponseData.Tip)
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -23,6 +23,7 @@ export const useMyCartLogic = () => {
     const [loading , setLoading] = useState(false)
     const [isCustomTipAdded,setIsCustomTipAdded] = useState(true)
     const [tipKeyboardOpen,setTipKeyboardOpen] = useState(false)
+    const [isOrderPlaced, setIsOrderPlaced] = useState(false);
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState(departments)
@@ -33,6 +34,8 @@ export const useMyCartLogic = () => {
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
     const [tipSelection,setTipSelection]= useState(null)
+    const [orderSuccessModal,setOrderSuccessModal] = useState(false)
+    const [successResponse,setSuccessResponse] =useState(null)
 
 
   useEffect(() => {
@@ -254,34 +257,40 @@ export const useMyCartLogic = () => {
   }
   const handlePlaceOrder = async() => {
     try {
-      // setIsPriceLoaded(true)
+      setIsOrderPlaced(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
       const params = {
         "OrderDetails": {
           "LocationId": `${getProfitCenterId?.LocationId}`,
-          "PickupTime": "09:00 AM",
-          "PickupLocationId": "sjcjdc1bjdbcj2324nn",
+          "PickupTime": "",
+          "PickupLocationId": "",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
-          "Items": cartItemIds,
           "tip": tipSelection?.tip ? tipSelection?.tip : "",
           "tip_value": tipSelection?.tip_value ? tipSelection?.tip_value : "",
-        }
+        },
+        "Items": cartItemIds,
       }
       console.log(JSON.stringify(params),"---prasjjsjsjsj")
-      // let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
-      // console.log(placeOrderDetails,"---292922929929")
+      let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
+      console.log(placeOrderDetails,"---292922929929")
 
-      // if(placeOrderDetails.response?.ResponseCode === "Success"){
-      //   Alert.alert(placeOrderDetails.response?.ResponseMessage)
-      // }
-      // setIsPriceLoaded(false)
+      if(placeOrderDetails?.response?.ResponseCode === "Success"){
+        setSuccessResponse(placeOrderDetails?.response)
+        removeCartItems(placeOrderDetails?.response)
+        setOrderSuccessModal(true)
+      }
+      setIsOrderPlaced(false)
     } catch (err) { }
   }
   const orderInstructions = (text) => {
     setOrderInstruction(text)
+  }
+  const closeSuccessModal = () => {
+    setOrderSuccessModal(false);
+    navigateToScreen(props,"Recentorders",true,{cartScreen:true});
   }
   return {
     tipData,
@@ -319,6 +328,11 @@ export const useMyCartLogic = () => {
     tipKeyboardOpen,
     orderInstruction,
     orderInstructions,
-    setTipKeyboardOpen
+    setTipKeyboardOpen,
+    isOrderPlaced,
+    orderSuccessModal,
+    setOrderSuccessModal,
+    successResponse,
+    closeSuccessModal
   };
 };

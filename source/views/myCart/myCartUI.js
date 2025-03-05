@@ -1,12 +1,12 @@
 
 import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
-import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
+import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, TextInput } from 'react-native';
 import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 import { Swipeable } from 'react-native-gesture-handler';
 import {  priceItems } from '@/source/constants/commonData';
 import { navigateToScreen } from '@/source/constants/Navigations';
-import { AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import { AddIcon,TrashIcon,RemoveIcon,CloseIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
 import CbLoader from '@/components/cobalt/cobaltLoader';
@@ -51,7 +51,11 @@ export default function MyCartScreen(props) {
      tipKeyboardOpen,
      orderInstruction,
      orderInstructions,
-     setTipKeyboardOpen
+     setTipKeyboardOpen,
+     isOrderPlaced,
+     orderSuccessModal,
+     successResponse,
+     closeSuccessModal
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
    
@@ -345,25 +349,73 @@ export default function MyCartScreen(props) {
                   </UI.Box>
                 }
 
-                <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={()=>handlePlaceOrder()}>
+                  <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={() => handlePlaceOrder()}>
                     {
-                      isPriceLoaded ? <ActivityIndicator color={"#00C6FF"} size={"small"}/>
-                        : <UI.Box style={styles.plcMainContainer}>
-                          <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
-                          <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal}`}</UI.Text>
-                        </UI.Box>
+                      isOrderPlaced ? <UI.Box style={styles.loadingContainer}><ActivityIndicator color={"#00C6FF"} size={"small"} /></UI.Box>
+                        : <>
+                          {
+                            isPriceLoaded ? <ActivityIndicator color={"#00C6FF"} size={"small"} />
+                              : <UI.Box style={styles.plcMainContainer}>
+                                <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
+                                <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal?grandTotal:0}`}</UI.Text>
+                              </UI.Box>
+                          }
+                          <UI.Box style={styles.verticalLn} />
+                          <UI.Box style={styles.plcOrderTxtContainer}>
+                            <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>
+                          </UI.Box>
+                        </>
                     }
-                  <UI.Box style={styles.verticalLn} />
-                  <UI.Box style={styles.plcOrderTxtContainer}>
-                    <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>
-                  </UI.Box>
-                </UI.TouchableOpacity>
+                  </UI.TouchableOpacity>
 
               </UI.Box>
             }
           </UI.TouchableOpacity>
       }
+      <Modal
+        visible={orderSuccessModal}
+        transparent
+        animationType="fade"
+      >
+        <UI.Box
+          style={styles.modalContainer}
+        />
 
+        <UI.Box style={styles.confirmMdl}>
+          <UI.Box style={styles.innerModal}>
+            <UI.TouchableOpacity onPress={() => closeSuccessModal()} style={styles.closeMainContainer}>
+              <Icon
+                as={CloseIcon}
+                color="#5773a2"
+                size={"md"}
+                style={styles.closeIcon}
+              />
+            </UI.TouchableOpacity>
+            <UI.Box style={styles.innerModalMsgContainer}>
+              <Image
+                source={require("@/assets/images/icons/dining3x.png")}
+                style={styles.diningIcon}
+              />
+              <UI.Text style={styles.innerModalAlertTxt}>
+                {successResponse?.ResponseMessage}
+              </UI.Text>
+              <UI.Text style={styles.pickDetails}>
+                Please note the pickup details:
+              </UI.Text>
+              <UI.Text style={styles.timeAlertMsg}>
+                  Time: 7:00 PM
+              </UI.Text>
+              <UI.Text style={styles.timeAlertMsg}>
+                Location: Clubhouse Grill.
+              </UI.Text>
+
+              <UI.Text style={styles.thankMsg}>
+                THANK YOU
+              </UI.Text>
+            </UI.Box>
+          </UI.Box>
+        </UI.Box>
+      </Modal>
     </KeyboardAvoidingView>
 
   );

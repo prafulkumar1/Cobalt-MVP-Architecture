@@ -365,6 +365,11 @@ export const UseFormContextProvider = ({children}) => {
   const closePreviewModal = () => {
     setItemDataVisible(!itemDataVisible)
   }
+  const removeCartItems = async() => {
+    await AsyncStorage.removeItem("cart_data");
+    setCartData([])
+    setModifierCartItemData([])
+  }
     
     const initialValues = {
       getFormFieldData,
@@ -414,7 +419,8 @@ export const UseFormContextProvider = ({children}) => {
       isExitProfitCenter,setIsExitProfitCenter,
       updateWithoutModifierCartItem,
       updateModifierItemQuantity2,
-      updateCartItemQuantity2
+      updateCartItemQuantity2,
+      removeCartItems
     }
     return (
       <FormContext.Provider

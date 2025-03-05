@@ -37,6 +37,6 @@ export const endpoints = {
     CART:{
         GET_CART_CONFIG:"MobileOrdering/MO_GetCartConfig",
         GET_CART_PRICE:"MobileOrdering/MO_GetCartPrice",
-        PLACE_ORDER:"MobileOrdering/MO_SaveOrderdetails "
+        PLACE_ORDER:"MobileOrdering/MO_SaveOrder"
     }
 }
