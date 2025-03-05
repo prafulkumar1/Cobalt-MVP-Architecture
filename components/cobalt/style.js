@@ -420,10 +420,16 @@ CheckIcon:{color:"#ffff"},
   modifierContainer:{
     color: "#4B5154",
     fontSize: 14,
-    fontFamily:"SourceSansPro_SemiBold"
+    fontFamily:"SourceSansPro_SemiBold",
+    alignSelf:"center"
   },
   requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
   maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  requiredTxt:{     
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold",
+  },
   orderSubContainer:{
     display: "flex",
     flexDirection: "row",
@@ -515,5 +521,6 @@ CheckIcon:{color:"#ffff"},
     lineHeight:15
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
-  collapseIcon:{right:18}
+  collapseIcon:{right:18},
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:2}
 })

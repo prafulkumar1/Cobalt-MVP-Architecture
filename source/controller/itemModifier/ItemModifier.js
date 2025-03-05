@@ -22,7 +22,8 @@ export const useItemModifierLogic = () => {
         setModifierCartItemData,
         modifiersData,
         singleModifierData,
-        setUpdateOrAddTxt
+        setUpdateOrAddTxt,
+        setFormFieldData
     } = useFormContext()
 
 
@@ -52,16 +53,26 @@ export const useItemModifierLogic = () => {
                   ...category,
                   Modifiers: category.Modifiers.map(modifier => ({
                         ...modifier,
-                        isChecked: cartData?.some(cartItem =>
-                          cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        isChecked: cartData?.some(cartItem =>{
+                          const uniqueModifiers = cartItem?.selectedModifiers?.filter((modifier, index, self) => {
+                            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+                            return modifier.isChecked && index === lastIndex;
+                          });
+                         return uniqueModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        }
                         )
                       }))
                 }))
               };
                setModifiersResponseData(updatedData)
+              const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
+              setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
+              if(cartItem !==undefined){
+                setUpdateOrAddTxt("Update Cart")
+              }else{
+                setUpdateOrAddTxt("Add to Cart")
+              }
                setLoading(false)
-                 // const isItemAvailableInCart = cartData.some(item => item.Item_ID === singleItemDetails?.Item_ID);
-                // setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
             }
         }
       } catch (err) {
@@ -100,14 +111,14 @@ export const useItemModifierLogic = () => {
 
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
-        return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+        return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
       }, 0);
     
       let finalValue = Math.ceil(modifiersTotal);
     
       let updatedModifierData = modifierCartItemData?.map((items) => {
         const basePrice = items.basePrice ?? items.quantityIncPrice;
-        const totalItemPrice = items.quantity * (items.Price || 0);
+        const totalItemPrice = items.quantity * (parseFloat(items.Price) || 0);
     
         return {
           ...items,

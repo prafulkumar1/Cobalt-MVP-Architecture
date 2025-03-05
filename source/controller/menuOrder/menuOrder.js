@@ -25,55 +25,55 @@ export const useMenuOrderLogic = (props) => {
   const [expandedIds,setExpandedIds] = useState([])
 
 
-  const { setMenuOrderData,menuLoading,setCartData }= useFormContext();  
+  const { setMenuOrderData,setCartData,menuOrderData }= useFormContext();  
 
 
     const openRecentOrder = () => {
       setIsRecentOrderOpen(!isRecentOrderOpen)
     }
 
-  const requiredDataFormat = (responseData) => {
-    const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item) => {
-      let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
-
-      if (!category) {
-        category = {
-          Category_ID: item.Category_ID,
-          Category_Name: item.Category_Name,
-          CategoryIsSelect: item.CategoryIsSelect,
-          submenus: [],
-        };
-        acc.push(category);
-      }
-
-      let submenu = category.submenus.find(
-        sub => sub.SubMenu_ID === item.SubMenu_ID
-      );
-
-      if (!submenu) {
-        submenu = {
-          SubMenu_ID: item.SubMenu_ID,
-          SubMenu_Name: item.SubMenu_Name,
-          items: [],
-        };
-        category.submenus.push(submenu);
-      }
-
-      submenu.items.push({
-        Item_ID: item.Item_ID,
-        Item_Name: item.Item_Name,
-        Description: item.Description,
-        Price: item.Price,
-        ImageUrl: item.ImageUrl,
-        IsAvailable: item.IsAvailable,
-        IsDisable: item.IsDisable,
-      });
-
-      return acc;
-    }, []);
-
-    setSelectedCategory(groupedCategories)
-  }
+    const requiredDataFormat = (responseData) => {
+      const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item, index) => {
+        let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
+    
+        if (!category) {
+          category = {
+            Category_ID: item.Category_ID,
+            Category_Name: item.Category_Name,
+            CategoryIsSelect: index === 0 ? 1 : 0,
+            submenus: [],
+          };
+          acc.push(category);
+        }
+    
+        let submenu = category.submenus.find(
+          sub => sub.SubMenu_ID === item.SubMenu_ID
+        );
+    
+        if (!submenu) {
+          submenu = {
+            SubMenu_ID: item.SubMenu_ID,
+            SubMenu_Name: item.SubMenu_Name,
+            items: [],
+          };
+          category.submenus.push(submenu);
+        }
+    
+        submenu.items.push({
+          Item_ID: item.Item_ID,
+          Item_Name: item.Item_Name,
+          Description: item.Description,
+          Price: item.Price,
+          ImageUrl: item.ImageUrl,
+          IsAvailable: item.IsAvailable,
+          IsDisable: item.IsDisable,
+        });
+    
+        return acc;
+      }, []);
+    
+      setSelectedCategory(groupedCategories)
+    }
   const getCartData = async () => {
       try {
         const value = await AsyncStorage.getItem('cart_data');
@@ -123,6 +123,7 @@ export const useMenuOrderLogic = (props) => {
                 IsSelect: current.MealPeriodIsSelect,
                 Time: current.Time,
                 MealPeriod_Id: current.MealPeriod_Id,
+                IsEnabled:current.IsEnabled
               });
             }
             return acc;
@@ -158,6 +159,17 @@ export const useMenuOrderLogic = (props) => {
           [categoryId]: !prevState[categoryId],
         }));
       };
+      const setMealType = (mealTypeItem,IsEnabled) => {
+        if(IsEnabled===1){
+          const uniqueMealPeriods = mealPeriods.map((item) => ({
+            ...item,
+            IsSelect: item.MealPeriod_Id === mealTypeItem.MealPeriod_Id ? 1 : 0,
+          }));
+          const responseData = menuOrderData.filter((val) => val.MealPeriod_Name === mealTypeItem.MealPeriod_Name)?.map((items) => ({...items,MealPeriodIsSelect:1}));
+          requiredDataFormat(responseData)  
+          setMealPeriods(uniqueMealPeriods)
+        }
+      };
   return {
     isRecentOrderOpen,
     openRecentOrder,
@@ -177,6 +189,7 @@ export const useMenuOrderLogic = (props) => {
     categoryRefs,
     scrollViewRef,
     categoryScrollRef,
-    categoryPositions
+    categoryPositions,
+    setMealType
   };
 };
