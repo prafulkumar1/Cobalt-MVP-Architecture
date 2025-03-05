@@ -332,7 +332,7 @@ CheckIcon:{color:"#ffff"},
   roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", },
   roItemImage:{  marginRight: 10 },
   roItemButton:{ width: 30 ,height:30},
-  roReoderButton:{ top:10, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
+  roReoderButton:{ bottom : 5, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
   roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   selectedContainer:{
     minHeight:responsiveHeight(30),

@@ -7,9 +7,9 @@ import { Box } from 'lucide-react-native';
 import { height } from '@/source/constants/Matrices';
 import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
-function RenderingPendingOrders() {
-  const OrdersList=RecentordersData.RecentOrders
-  
+import { useRecentOrderLogic } from '@/source/controller/recentOrder/RecentOrder';
+function RenderingPendingOrders(props) {
+  const OrdersList=RecentordersData.RecentOrders  
   
   return (
     <Accordion style={{ paddingHorizontal: 3,left:5, width: 400, maxHeight:"100%",borderRadius: 8, backgroundColor: '#fffff', shadowColor: "#00000029", shadowOffset: { width: 4, height: 4 },
@@ -181,7 +181,9 @@ function RenderingFavoritesList() {
 
 
 export default function RecentordersScreen(props) { 
+
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
+  const {} = useRecentOrderLogic(props)
   
       
   return (
@@ -200,12 +202,14 @@ export default function RecentordersScreen(props) {
         {isRecentOrder ? 
             <>
               <RenderingPendingOrders />
-              <UI.CbAccordionlist componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
+              <UI.CbRecentAccordion componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
           </>
           : 
           <RenderingFavoritesList />  
         }
       </UI.ScrollView>
+      <UI.CbFloatingButton props={props} ></UI.CbFloatingButton>
+
     </UI.Box>    
       
   );
