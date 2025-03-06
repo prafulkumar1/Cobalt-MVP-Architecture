@@ -1,4 +1,3 @@
-
 import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
 import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, TextInput } from 'react-native';
@@ -10,15 +9,15 @@ import { AddIcon,TrashIcon,RemoveIcon,CloseIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
 import CbLoader from '@/components/cobalt/cobaltLoader';
-
-
+ 
+ 
 const pageId='MyCart';
 export default function MyCartScreen(props) {
-
- let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
-
- global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-
+ 
+let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
+ 
+global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
+ 
    const {
      cartConfigData,
      tipData,
@@ -59,8 +58,8 @@ export default function MyCartScreen(props) {
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
    
-
-
+ 
+ 
   const renderModifierList = ({ item }) => {
     return (
       <UI.TouchableOpacity>
@@ -72,7 +71,7 @@ export default function MyCartScreen(props) {
   }
   const renderCartItems = (item) => {
     const renderRightActions = (progress, dragX) => {
-      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
+      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0;
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
       setValue(roundedAbsolute);
       return (
@@ -94,8 +93,9 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
-          <UI.Box
+          <UI.TouchableOpacity
             style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
+            onPress={() => editCommentBtn(props,item)}
           >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
@@ -109,12 +109,12 @@ export default function MyCartScreen(props) {
                   />
                 }
               </UI.Box>
-
+ 
               <UI.Box style={styles.rightContainer}>
                 <UI.Text
                   style={styles.itemPrice}
                 >{`$${item.TotalPrice}`}</UI.Text>
-
+ 
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
@@ -127,9 +127,9 @@ export default function MyCartScreen(props) {
                       style={styles.trashIcon}
                     />
                   </UI.TouchableOpacity>
-
+ 
                   <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
-
+ 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
                     onPress={() => handleIncrement(item)}
@@ -148,7 +148,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
-                  onPress={() => editCommentBtn(props,item)} 
+                  onPress={() => editCommentBtn(props,item)}
                 >
                   <Image
                     source={require("@/assets/images/icons/messageIcon2x.png")}
@@ -158,12 +158,12 @@ export default function MyCartScreen(props) {
                 </UI.TouchableOpacity>
               </UI.Box>
             )}
-          </UI.Box>
+          </UI.TouchableOpacity>
         </Swipeable>
       </UI.Pressable>
     );
   };
-
+ 
   const renderAddTip = (tipDetails,index) => {
     let lastIndex = tipData.length - 1;
     let item = tipDetails
@@ -186,7 +186,7 @@ export default function MyCartScreen(props) {
           <UI.Text style={textStyle}>{item.tip}</UI.Text>
         </UI.TouchableOpacity>
        {
-        (lastIndex === index && isCustomTipAdded) && 
+        (lastIndex === index && isCustomTipAdded) &&
         <UI.Box style={[styles.tipMainContainer,{ backgroundColor:"#fff",}]} >
             <TextInput
               ref={textInputRef}
@@ -206,7 +206,7 @@ export default function MyCartScreen(props) {
      </>
     )
   }
-
+ 
   const PriceRow = ({ label, value }) => (
     <UI.Box style={styles.splitPriceContainer}>
       <UI.Box style={styles.priceLabelContainer}>
@@ -227,8 +227,8 @@ export default function MyCartScreen(props) {
       </UI.Box>
     </UI.Box>
   );
-
-
+ 
+ 
   const renderCartPriceCalculations = () => {
     return (
       <>
@@ -240,9 +240,9 @@ export default function MyCartScreen(props) {
               style={styles.notesIcon}
               resizeMode="contain"
             />
-            <TextInput 
-              style={[styles.orderInstTxt,{ width:"92%",left:8,height:50}]} 
-              placeholder='Order Instructions' 
+            <TextInput
+              style={[styles.orderInstTxt,{ width:"92%",left:8,height:50}]}
+              placeholder='Order Instructions'
               placeholderTextColor={"#4B5154"}
               onChangeText={(text)=>orderInstructions(text)}
               value={orderInstruction}
@@ -257,7 +257,7 @@ export default function MyCartScreen(props) {
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
-
+ 
         <UI.Box
           style={styles.priceContainer}
         >
@@ -266,7 +266,7 @@ export default function MyCartScreen(props) {
       </>
     )
   }
-
+ 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -287,12 +287,12 @@ export default function MyCartScreen(props) {
               )}
               {myCartData && myCartData.length > 0 && renderCartPriceCalculations()}
             </UI.ScrollView>
-
+ 
             {
               cartData && cartData.length > 0 &&
               <UI.Box>
                 {
-                  cartConfigData?.ShowTip ===1 && 
+                  cartConfigData?.ShowTip ===1 &&
                   <>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
@@ -306,7 +306,7 @@ export default function MyCartScreen(props) {
                     </UI.ScrollView>
                   </>
                 }
-
+ 
                 {keyboardVisible && tipKeyboardOpen && (
                   <UI.Box
                     style={styles.bottomBtn}
@@ -315,7 +315,7 @@ export default function MyCartScreen(props) {
                     <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
                   </UI.Box>
                 )}
-
+ 
                 {
                   (cartConfigData?.ShowPickupLocation === 1 || cartConfigData?.ShowPickupTime === 1)
                   && <UI.Box style={styles.pickUpContainer}>
@@ -331,7 +331,7 @@ export default function MyCartScreen(props) {
                         />
                       </UI.Box>
                     }
-
+ 
                     {
                       cartConfigData?.ShowPickupLocation ===1 &&
                       <UI.Box>
@@ -346,7 +346,7 @@ export default function MyCartScreen(props) {
                     }
                   </UI.Box>
                 }
-
+ 
                   <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={() => handlePlaceOrder()}>
                     {
                       isOrderPlaced ? <UI.Box style={styles.loadingContainer}><ActivityIndicator color={"#00C6FF"} size={"small"} /></UI.Box>
@@ -365,7 +365,7 @@ export default function MyCartScreen(props) {
                         </>
                     }
                   </UI.TouchableOpacity>
-
+ 
               </UI.Box>
             }
           </UI.TouchableOpacity>
@@ -378,7 +378,7 @@ export default function MyCartScreen(props) {
         <UI.Box
           style={styles.modalContainer}
         />
-
+ 
         <UI.Box style={styles.confirmMdl}>
           <UI.Box style={styles.innerModal}>
             <UI.TouchableOpacity onPress={() => closeSuccessModal(props)} style={styles.closeMainContainer}>
@@ -422,7 +422,6 @@ export default function MyCartScreen(props) {
         </UI.Box>
       </Modal>
     </KeyboardAvoidingView>
-
+ 
   );
 }
-

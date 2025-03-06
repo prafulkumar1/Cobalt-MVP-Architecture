@@ -12,8 +12,8 @@ export const useMyCartLogic = () => {
     const customTip = useRef(null)
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
-
-    const {selectedLocationId,selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+ 
+    const {selectedLocationId,selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -24,7 +24,7 @@ export const useMyCartLogic = () => {
     const [isCustomTipAdded,setIsCustomTipAdded] = useState(true)
     const [tipKeyboardOpen,setTipKeyboardOpen] = useState(false)
     const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-
+ 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
     const [showPickupTime,setShowPickupTime] = useState([])
     const [showPickupLocation,setShowPickupLocation] = useState([])
@@ -37,8 +37,8 @@ export const useMyCartLogic = () => {
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
-
-
+ 
+ 
   useEffect(() => {
     getCartPrice()
     getCartConfigData()
@@ -48,13 +48,13 @@ export const useMyCartLogic = () => {
     const keyboardDidHideListener = Keyboard?.addListener('keyboardDidHide', () => {
       setKeyboardVisible(false);
     });
-
+ 
     return () => {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
   }, []);
-
+ 
   const getCartConfigData = async () => {
     try {
       setLoading(true)
@@ -86,7 +86,7 @@ export const useMyCartLogic = () => {
       setLoading(false)
     }
   }
-
+ 
   const getCartPrice = async () => {
     try {
       setIsPriceLoaded(true)
@@ -99,7 +99,7 @@ export const useMyCartLogic = () => {
           Quantity:item.quantity,
           Modifiers:item?.selectedModifiers ? item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
         }))
-
+ 
       const params = {   
          "Location_Id":`${getProfitCenterId?.LocationId}`,
          "Items":cartItemIds,
@@ -113,8 +113,8 @@ export const useMyCartLogic = () => {
       setIsPriceLoaded(false)
     } catch (err) { }
   }
-
-
+ 
+ 
   const closeAllSwipeables = () => {
     Object.keys(swipeableRefs?.current).forEach((key) => {
       const swipeable = swipeableRefs.current[key];
@@ -124,7 +124,7 @@ export const useMyCartLogic = () => {
     });
     setOpenItemId(null);
   };
-
+ 
   const handleDelete = async(item) => {
     if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
       swipeableRefs.current[openItemId].close();
@@ -146,7 +146,7 @@ export const useMyCartLogic = () => {
       setOpenItemId(null);
     }
   };
-
+ 
   const addTip = (tipDetails) => {
     if(tipDetails.isCustomAdded && tipDetails.isCustomAdded ===1){
       textInputRef?.current?.focus();
@@ -167,11 +167,11 @@ export const useMyCartLogic = () => {
       getCartPrice()
     }
   }
-
+ 
   const changeTime = () => {
     setIsTimeModalSelected(true)
   }
-
+ 
   const handleResetTip = () => {
     const updatedTipDetails = tipData.map((item) => {
       return{
@@ -182,7 +182,7 @@ export const useMyCartLogic = () => {
     setTipData(updatedTipDetails)
     setTipKeyboardOpen(true)
   }
-
+ 
   const getCustomTip = (value) =>{
      const numericValue = value.replace(/[^0-9]/g, '');
      setCustomTipValue(numericValue ? `$${numericValue}` : '');
@@ -190,7 +190,7 @@ export const useMyCartLogic = () => {
      handleResetTip()
      setTipSelection({"TipPercentage":"","TipCustom": value})
   }
-
+ 
   const handleSaveTip = () => {
     if (customTip.current.length === 0) {
       Alert.alert('Please select a custom tip');
@@ -201,7 +201,7 @@ export const useMyCartLogic = () => {
         isSelected: 0,
         isCustomAdded:1
       };
-
+ 
       setTipData((prevData) => {
         const updatedData = [...prevData, newTip];
         setCustomTipValue("")
@@ -230,10 +230,10 @@ export const useMyCartLogic = () => {
   useEffect(() => {
     getCartPrice()
   },[cartData])
-
+ 
   const handleIncrement = async(item) => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity + 1)
-
+ 
     if (quantityInfo.statusCode === 200) {
       if (quantityInfo?.response.IsAvailable === 1) {
         updateCartItemQuantity(item, item.quantity + 1);
@@ -245,15 +245,19 @@ export const useMyCartLogic = () => {
   }
   const handleDecrement = async(item) => {
     let quantityInfo = await postQuantityApiCall(item,item.quantity - 1)
-
+ 
     if (quantityInfo.statusCode === 200) {
       updateCartItemQuantity(item, item.quantity - 1);
       updateModifierItemQuantity(item, item.quantity - 1);
     }
   }
   const editCommentBtn = (props,item) => {
+    console.log(item,"--->single item")
     navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
-    storeSingleItem(item)
+    storeSingleItem({
+      ...item,
+      quantityIncPrice:item?.TotalPrice
+    })
     setTimeout(() => {
       closePreviewModal()
     }, 500);
@@ -277,7 +281,7 @@ export const useMyCartLogic = () => {
         "Items": cartItemIds,
       }
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
-
+ 
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
         setSuccessResponse(placeOrderDetails?.response)
         removeCartItems()

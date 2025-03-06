@@ -658,7 +658,7 @@ export const RecentordersData={
             "GrandTotal":207.00,
             "Items":[
                       { 
-                        "ItemName": "Fish and Chips",
+                        "ItemName": "Onion Rings",
                         "Item_ID": "I301",
                         "Quantity": 1,
                         "Price": 25.00,
@@ -669,7 +669,7 @@ export const RecentordersData={
                         
                     },
                     { 
-                      "ItemName": "Chicken Satay Skewers",
+                      "ItemName": "Coconut Shrimp",
                       "Item_ID": "I302",
                       "Quantity": 1,
                       "Price": 25.00,
@@ -685,48 +685,10 @@ export const RecentordersData={
                             "Item_ID": "I301",
                           "ItemName": "Peanut sauce or sweet soy glaze",
                         },
-                        {
-                              "Item_ID": "I301",
-                          "ItemName": "Peanut sauce or sweet soy glaze",
-                        },
+
                       ]
                     },
-                    { 
-                        "ItemName": "Chicken patties",
-                        "Item_ID": "I303",
-                        "Quantity": 1,
-                        "Price": 25.00,
-                        "IsAvailable": 1,
-                        "IsFavorite":0,
-                        "Modifiers":[
-                          {
-                            "Item_ID": "I301",
-                            "ItemName": "Peanut sauce or sweet soy glaze",             
-                          },
-                        ]
-                    },
-                    { 
-                          "ItemName": "Coconut Shrimp",
-                          "Item_ID": "I304",
-                          "Quantity": 1,
-                          "Price": 25.00,
-                        "IsAvailable": 1,
-                        "IsFavorite":0,
-                        "Modifiers":[
-                          {
-                            "Item_ID": "I301",
-                            "ItemName": "Peanut sauce or sweet soy glaze",             
-                          },
-                          {
-                              "Item_ID": "I301",
-                            "ItemName": "Peanut sauce or sweet soy glaze",
-                          },
-                          {
-                                "Item_ID": "I301",
-                            "ItemName": "Peanut sauce or sweet soy glaze",
-                          },
-                        ]               
-                    },
+
                   ]
                  
       }
@@ -759,16 +721,16 @@ export const RecentordersData={
             "Time": "06:30 AM -10:30 PM",
             "Modifiers":[
               {
-                "ModifierID": "I301",
-                "ModifierName": "Peanut sauce or sweet soy glaze",             
+                "Modifier_Id": "I301",
+                "Modifier_Name": "Peanut sauce or sweet soy glaze",             
               },
               {
-                  "ModifierID": "I302",
-                "ModifierName": "Peanut sauce or sweet soy glaze",
+                  "Modifier_Id": "I302",
+                "Modifier_Name": "Peanut sauce or sweet soy glaze",
               },
               {
-                  "ModifierID": "I303",
-                "ModifierName": "Peanut sauce or sweet soy glaze",
+                  "Modifier_Id": "I303",
+                "Modifier_Name": "Peanut sauce or sweet soy glaze",
               },
             ]
           },
@@ -811,140 +773,7 @@ export const RecentordersData={
           },
         ]
       },
-      {
-        "HeadingLabel":"Ordered Date",
-        "OrderDate":"01/27/2025",
-        "OrderId": "I304",
-        "IsReorder":1,
-        "Items":[
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "Crispy beer-battered onion rings served with ranch.",
-            "ImageUrl": null,
-            "IsAvailable": 1,
-            "IsFavorite":1,
-            "IsDisable": 0,
-            "IsEnabled": 1,
-            "Item_ID": "11CDDE06-42C4-4CCA-B316-0F2947D1FEA5",
-            "Item_Name": "Onion Rings",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 4.95,
-            "SubMenu_ID": "9DBD30E2-2DF0-4553-BC34-530B2061E60D",
-            "SubMenu_Name": "Finger Foods",
-            "Time": "06:30 AM -10:30 PM"
-          },
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "A soft tortilla wrap filled with roasted turkey, creamy avocado, crisp lettuce, juicy tomatoes, and a hint of ranch dressing. Served with a side of kettle chips.",
-            "ImageUrl": "https://cobaltportal.mycobaltsoftware.com/MO_Images\\chicken_majestic_MO.png",
-            "IsAvailable": 1,
-            "IsDisable": 0,
-            "IsFavorite":1,
-            "IsEnabled": 1,
-            "Item_ID": "AA5F8ACC-84A9-4490-96C1-C0C0E79E9DD6",
-            "Item_Name": "Turkey Avocado",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 16.99,
-            "SubMenu_ID": "9DBD30E2-2DF0-4553-BC34-530B2061E60D",
-            "SubMenu_Name": "Finger Foods",
-            "Time": "06:30 AM -10:30 PM"
-          },
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "Crispy shrimp coated with coconut flakes, served with sweet chili.",
-            "ImageUrl": null,
-            "IsAvailable": 1,
-            "IsDisable": 0,
-            "IsEnabled": 1,
-            "Item_ID": "2159FB2D-FE9C-4F27-BA04-D371F2697278",
-            "Item_Name": "Coconut Shrimp",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 11.87,
-            "SubMenu_ID": "143470EF-EE2A-42D2-A9AE-66063C068B8A",
-            "SubMenu_Name": "Seafood Starters",
-            "Time": "06:30 AM -10:30 PM"
-          },
-        ]
-      },
-      {
-        "HeadingLabel":"Ordered Date",
-        "OrderDate":"01/27/2025",
-        "OrderId": "I304",
-        "IsReorder":1,
-        "Items":[
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "Crispy beer-battered onion rings served with ranch.",
-            "ImageUrl": null,
-            "IsAvailable": 1,
-            "IsFavorite":1,
-            "IsDisable": 0,
-            "IsEnabled": 1,
-            "Item_ID": "11CDDE06-42C4-4CCA-B316-0F2947D1FEA33",
-            "Item_Name": "Onion Rings",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 4.95,
-            "SubMenu_ID": "9DBD30E2-2DF0-4553-BC34-530B2061E60D",
-            "SubMenu_Name": "Finger Foods",
-            "Time": "06:30 AM -10:30 PM"
-          },
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "A soft tortilla wrap filled with roasted turkey, creamy avocado, crisp lettuce, juicy tomatoes, and a hint of ranch dressing. Served with a side of kettle chips.",
-            "ImageUrl": "https://cobaltportal.mycobaltsoftware.com/MO_Images\\chicken_majestic_MO.png",
-            "IsAvailable": 1,
-            "IsDisable": 0,
-            "IsFavorite":1,
-            "IsEnabled": 1,
-            "Item_ID": "AA5F8ACC-84A9-4490-96C1-C0C0E79E9DD22",
-            "Item_Name": "Turkey Avocado",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 16.99,
-            "SubMenu_ID": "9DBD30E2-2DF0-4553-BC34-530B2061E60D",
-            "SubMenu_Name": "Finger Foods",
-            "Time": "06:30 AM -10:30 PM"
-          },
-          {
-            "CategoryIsSelect": 1,
-            "Category_ID": "6B2463D5-F63A-4ACF-B525-A0ECFE433AE3",
-            "Category_Name": "Appetizers",
-            "Description": "Crispy shrimp coated with coconut flakes, served with sweet chili.",
-            "ImageUrl": null,
-            "IsAvailable": 1,
-            "IsDisable": 0,
-            "IsEnabled": 1,
-            "Item_ID": "2159FB2D-FE9C-4F27-BA04-D371F26972711",
-            "Item_Name": "Coconut Shrimp",
-            "MealPeriodIsSelect": 1,
-            "MealPeriod_Id": "742E383D-EAD7-40DC-8996-9416975385DA",
-            "MealPeriod_Name": "Lunch",
-            "Price": 11.87,
-            "SubMenu_ID": "143470EF-EE2A-42D2-A9AE-66063C068B8A",
-            "SubMenu_Name": "Seafood Starters",
-            "Time": "06:30 AM -10:30 PM"
-          },
-        ]
-      },
+
     ]
   }
 }
@@ -954,7 +783,7 @@ export const FavoritesList = {
   "FavoriteItems":[
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Onion Rings",
 
     "Item_Id": "I302",
 
@@ -970,7 +799,7 @@ export const FavoritesList = {
   },
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Loaded Potato Skins",
 
     "Item_Id": "I302",
 
@@ -985,7 +814,7 @@ export const FavoritesList = {
   },
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Crispy Loaded Tater Tots",
 
     "Item_Id": "I302",
 
@@ -999,38 +828,7 @@ export const FavoritesList = {
     "IsFavorite":1
 
   },
-  {
 
-    "Item_Name": "Coconut Shrimp",
-
-    "Item_Id": "I302",
-
-    "Description": "These coconut shrimp are dipped...",
-
-    "Price": 45.00,
-
-    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
-
-    "IsAvailable": 1,
-    "IsFavorite":1
-
-  },
-  {
-
-    "Item_Name": "Coconut Shrimp",
-
-    "Item_Id": "I302",
-
-    "Description": "These coconut shrimp are dipped...",
-
-    "Price": 45.00,
-
-    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
-
-    "IsAvailable": 1,
-    "IsFavorite":1
-
-  },
 ]
 }
   export const ModifiersData={
@@ -1113,7 +911,7 @@ export const RecentOrderData = [
 
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Onion Rings",
 
     "Item_Id": "I302",
 
@@ -1128,7 +926,7 @@ export const RecentOrderData = [
   },
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Loaded Potato Skins",
 
     "Item_Id": "I302",
 
@@ -1143,7 +941,7 @@ export const RecentOrderData = [
   },
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Crispy Loaded Tater Tots",
 
     "Item_Id": "I302",
 
@@ -1158,7 +956,7 @@ export const RecentOrderData = [
   },
   {
 
-    "Item_Name": "Coconut Shrimp",
+    "Item_Name": "Mozzarella Sticks",
 
     "Item_Id": "I302",
 
@@ -1171,21 +969,7 @@ export const RecentOrderData = [
     "IsAvailable": 1
 
   },
-  {
 
-    "Item_Name": "Coconut Shrimp",
-
-    "Item_Id": "I302",
-
-    "Description": "These coconut shrimp are dipped...",
-
-    "Price": 45.00,
-
-    "Image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRexBia36ixX_U4FoPlg0iqv2hZIvfRyeH8LQ&s",
-
-    "IsAvailable": 1
-
-  },
 ]
 
 export const additionalTipData = [

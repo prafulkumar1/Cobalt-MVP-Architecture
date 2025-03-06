@@ -11,7 +11,7 @@ api.interceptors.request.use((request) => {
 });
  
 api.interceptors.response.use((response) => {
-  console.log("Response:", response.data);
+  console.log("Response:", JSON.stringify(response.data));
   return response;
 });
 export default api;

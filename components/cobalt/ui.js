@@ -295,7 +295,7 @@ class CbRecentAccordion extends React.Component {
     this.state = {
       isToastMessageVisiable: false,
       toastMessage: "",
-      cartData: props.cartData || [],  // Store cart data in state
+      cartData: props.cartData || [], 
 
     };
   }
@@ -304,9 +304,6 @@ class CbRecentAccordion extends React.Component {
   
 
   handleReorder = (order, cartData, addItemToCartBtn, updateCartItemQuantity) => {
-    console.log("Reordering items from Order ID:", order.OrderId);
-    console.log("Orders", this.componentData)
-  
     if (!order.Items || order.Items.length === 0) {
       console.log("No items found for reorder.");
       return;
@@ -353,10 +350,6 @@ class CbRecentAccordion extends React.Component {
       this.setState({ cartData }); 
     }
 
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
-          console.log('cart data', cartData);
           const categoryData =
             typeof this.componentData?.CompletedOrders === "string"
               ? JSON.parse(this.componentData?.CompletedOrders)
@@ -394,7 +387,7 @@ class CbRecentAccordion extends React.Component {
                                     source={require("@/assets/images/icons/ROdate.png")}
                                   />
                                   <AccordionTitleText style={styles.roAccordionTitleText}>
-                                    Ordered Date: {order.OrderDate}
+                                    {`Ordered Date: ${order.OrderDate}`}
                                   </AccordionTitleText>
                                 </Box>
                                 {isExpanded ? (
@@ -417,68 +410,69 @@ class CbRecentAccordion extends React.Component {
                           </AccordionTrigger>
                         </AccordionHeader>
                         <AccordionContent>
-{order.Items?.map((item, itemIndex) =>{
-  return(
-  <Box key={item.Item_ID}>
-    <Box style={styles.roAccordionContentouterbox}>
-      <Box style={styles.roAccordionContentItembox}>
-        <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}>
-          {item.Item_Name}
-        </Text>
-        <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
-      </Box>
-      <Box
-  style={[
-    styles.roImagescetion,
-    this.state.cartData.some(cartItem => cartItem.Item_ID === item.Item_ID && cartItem.quantity > 0)
-      ? { width: 90 }
-      : {}
-  ]}
->      <TouchableOpacity
-          onPress={() => {
-            item.IsFavorite = !item.IsFavorite; // Toggle favorite
-            this.setState({}); // Force re-render
-          }}
-        >
-          <Image
-            alt="favorite"
-            source={
-              item.IsFavorite
-                ? require("@/assets/images/icons/Fav.png")
-                : require("@/assets/images/icons/Notfav.png")
-            }
-            style={styles.roItemImage}
-          />
-        </TouchableOpacity>
-        <CbRecentAddToCart
-          mealItemDetails={item}
-          style={styles.roItemButton}
-          onPress={() => addToCart(item)}
-        />
-      </Box>
-    </Box>
+                          {order?.Items?.map((item, itemIndex) => {
+                            return (
+                              <Box key={item.Item_ID}>
+                                <Box style={styles.roAccordionContentouterbox}>
+                                  <Box style={styles.roAccordionContentItembox}>
+                                    <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}>
+                                      {item.Item_Name}
+                                    </Text>
+                                    <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
+                                  </Box>
+                                  <Box
+                                    style={[
+                                      styles.roImagescetion,
+                                      this.state.cartData.some(cartItem => cartItem.Item_ID === item.Item_ID && cartItem.quantity > 0)
+                                        ? { width: 90 }
+                                        : {}
+                                    ]}
+                                  >
+                                    <TouchableOpacity
+                                      onPress={() => {
+                                        item.IsFavorite = !item.IsFavorite; // Toggle favorite
+                                        this.setState({}); // Force re-render
+                                      }}
+                                    >
+                                      <Image
+                                        alt="favorite"
+                                        source={
+                                          item.IsFavorite
+                                            ? require("@/assets/images/icons/Fav.png")
+                                            : require("@/assets/images/icons/Notfav.png")
+                                        }
+                                        style={styles.roItemImage}
+                                      />
+                                    </TouchableOpacity>
+                                    <CbRecentAddToCart
+                                      mealItemDetails={item}
+                                      style={styles.roItemButton}
+                                      onPress={() => addToCart(item)}
+                                    />
+                                  </Box>
+                                </Box>
 
-    {/* Remove Divider after the last item */}
-    {itemIndex !== order.Items.length - 1 && <Divider />}
-  </Box>
-  )
-} 
-)}
+                                {/* Remove Divider after the last item */}
+                                {itemIndex !== order.Items.length - 1 && <Divider />}
+                              </Box>
+                            )
+                          }
+                          )}
                           {order.IsReorder && (
                             <FormContext.Consumer>
-    {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
-      <Button
-        variant="outline"
-        style={styles.roReoderButton}
-        onPress={() => this.handleReorder(order, cartData, addItemToCartBtn, updateCartItemQuantity)}
-      >
-        <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
-          Re-Order
-        </ButtonText>
-      </Button>
-    )}
-  </FormContext.Consumer>
-)}
+                              {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
+                                <Button
+                                  variant="outline"
+                                  style={styles.roReoderButton}
+                                  onPress={() => this.handleReorder(order, cartData, addItemToCartBtn, updateCartItemQuantity)}
+                                >
+                                  <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
+                                    Re-Order
+                                  </ButtonText>
+                                </Button>
+                              )}
+                            </FormContext.Consumer>
+                          )}
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
@@ -935,9 +929,9 @@ class CbAddToCartButton extends React.Component {
   renderAddToCartBtn = (contextProps) => {
      const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
     const {modifiersResponseData,itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
-    const IsAvailable = this.mealItemDetails.IsAvailable;
-    const IsDisable = this.mealItemDetails.IsDisable
-    const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const IsAvailable = this.mealItemDetails?.IsAvailable;
+    const IsDisable = this.mealItemDetails?.IsDisable
+    const cartItem = cartData && cartData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;

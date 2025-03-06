@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
-
-export const FormContext = createContext(); 
-
+import { Alert } from 'react-native';
+ 
+export const FormContext = createContext();
+ 
 export const useFormContext = () => {
     return useContext(FormContext);
   };
  
 export const UseFormContextProvider = ({children}) => {
   const [AppConfigJson , setAppConfigJsonData] = useState(null);
-
+ 
     
     const [menuOrderData,setMenuOrderData] = useState(null)
     const [modifiersResponseData,setModifiersResponseData] = useState(null)
@@ -34,7 +35,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
     const [selectedLocationId, setSelectedLocationId] = useState("");
-
+ 
   
     const commentValue = useRef("")
     const modifiersData = useRef(null)
@@ -48,7 +49,7 @@ export const UseFormContextProvider = ({children}) => {
     useEffect(() => {
       getConfigurations();
     }, []);
-
+ 
        
     const getConfigurations = async () => {
       let AppConfigJsonData = await postApiCall("UI_CONFIGURATIONS", "GET_UI_CONFIGURATIONS", {});
@@ -56,7 +57,7 @@ export const UseFormContextProvider = ({children}) => {
         setAppConfigJsonData(AppConfigJsonData?.response?.Data);
       }    
     };
-
+ 
     const getParticularControls = (PageId) =>{
     }
   
@@ -129,8 +130,8 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
@@ -152,8 +153,8 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
@@ -199,8 +200,8 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
@@ -224,12 +225,12 @@ export const UseFormContextProvider = ({children}) => {
       try {
         setModifierCartItemData((prevCartData) => {
           let updatedCartData;
-
+ 
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
@@ -259,31 +260,20 @@ export const UseFormContextProvider = ({children}) => {
       const existingCartData = await AsyncStorage.getItem("cart_data");
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
       let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
-      let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
   
       let prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
   
       const updatedModifierData = [...prevCartItems];
- 
-      if(categoryData?.length > 0){
-        updatedModifierData.push({
-          ...modifierItem,
-          quantity: singleModifierData.current.quantity,
-          quantityIncPrice: singleModifierData.current.quantityIncPrice,
-          comments: commentValue.current || "",
-          selectedModifiers: modifiersData.current,
-          profitCenterId: getProfitCenterId?.LocationId,
-        });
-      }else{
-        updatedModifierData.push({
-          ...modifierItem,
-          quantity: singleModifierData.current.quantity,
-          quantityIncPrice: singleModifierData.current.quantityIncPrice,
-          comments: commentValue.current || "",
-          profitCenterId: getProfitCenterId?.LocationId,
-        });
-      }
   
+      updatedModifierData.push({
+        ...modifierItem,
+        quantity: singleModifierData.current.quantity,
+        quantityIncPrice: singleModifierData.current.quantityIncPrice,
+        comments: commentValue.current || "",
+        selectedModifiers: modifiersData.current,
+        profitCenterId: getProfitCenterId?.LocationId,
+      });
+    
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setFormFieldData("ItemModifier","","Comments","",false)
       setCartData(updatedModifierData);
@@ -310,9 +300,9 @@ export const UseFormContextProvider = ({children}) => {
         const updatedCartItems = prevCartItems.map((item) =>{
           if(item.Item_ID === updatedItem.Item_ID){
             return{
-              ...item, 
+              ...item,
               comments: commentValue.current || "",
-              selectedModifiers:[...item.selectedModifiers,...modifiersData.current], 
+              selectedModifiers:[...item.selectedModifiers,...modifiersData.current],
               profitCenterId: getProfitCenterId?.LocationId
             }
           }else{
@@ -344,10 +334,11 @@ export const UseFormContextProvider = ({children}) => {
     const getProfitCenterId = getProfitCenterItem
       ? JSON.parse(getProfitCenterItem)
       : null;
-
+ 
     const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
     const updatedCartItems = prevCartItems.map((item) => {
       if (item.Item_ID === updatedItem.Item_ID) {
+        console.log(item,"-->item----->>>>>>>>>")
         return {
           ...item,
           comments: commentValue.current || "",
@@ -360,17 +351,19 @@ export const UseFormContextProvider = ({children}) => {
       }
     });
 
+    console.log(JSON.stringify(updatedCartItems),"--->>>sjsusuusus")
+ 
     await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
     setCartData(updatedCartItems);
     setFormFieldData("ItemModifier", "", "Comments", "", false);
-
+ 
     setTimeout(() => {
       formData.ItemModifier_Comments = "";
       closePreviewModal();
       singleModifierData.current = null
-    }, 1000);
+    }, 500);
   };
-
+ 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
   }
@@ -435,7 +428,7 @@ export const UseFormContextProvider = ({children}) => {
       removeCartItems,
       setIsPrevCartScreen,
       isPrevCartScreen,
-      selectedLocationId, 
+      selectedLocationId,
       setSelectedLocationId
     }
     return (
@@ -450,39 +443,39 @@ export const UseFormContextProvider = ({children}) => {
   
   UseFormContextProvider.displayName='UseFormContextProvider';
  
-export const handleSearchClick = (setState, onSearchActivate) => {
-  setState({ showSearchInput: true });
-  if (onSearchActivate) {
-    onSearchActivate(true);
-  }
-};
- 
-export const handleClearClick = (setState, onSearch) => {
-  setState({ searchValue: "" });
-
-  // Reset the list to default items
-  if (onSearch) {
-    onSearch(""); // Trigger parent function to reset the list
-  }
-};
- 
-export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
-  setState({ showSearchInput: false, searchValue: "" }, () => {
-    // Blur input to stop typing
-    if (setState.inputRef?.current) {
-      setState.inputRef.current.blur();
+  export const handleSearchClick = (setState, onSearchActivate) => {
+    setState({ showSearchInput: true });
+    if (onSearchActivate) {
+      onSearchActivate(true);
     }
-    
-    // Reset the list by calling handleClear or directly setting empty search
-    if (handleClear) {
-      handleClear();
-    } else if (onSearchActivate) {
-      onSearchActivate(false);
+  };
+   
+  export const handleClearClick = (setState, onSearch) => {
+    setState({ searchValue: "" });
+  
+    // Reset the list to default items
+    if (onSearch) {
+      onSearch(""); // Trigger parent function to reset the list
     }
-
-    // Call onBackPress to restore the default item list
-    if (onBackPress) {
-      onBackPress();
-    }
-  });
-};
+  };
+   
+  export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
+    setState({ showSearchInput: false, searchValue: "" }, () => {
+      // Blur input to stop typing
+      if (setState.inputRef?.current) {
+        setState.inputRef.current.blur();
+      }
+      
+      // Reset the list by calling handleClear or directly setting empty search
+      if (handleClear) {
+        handleClear();
+      } else if (onSearchActivate) {
+        onSearchActivate(false);
+      }
+  
+      // Call onBackPress to restore the default item list
+      if (onBackPress) {
+        onBackPress();
+      }
+    });
+  };
