@@ -46,9 +46,10 @@ export const useItemModifierLogic = () => {
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
               const item = modifiersResponse.response
+
               let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
               let updatedData = {
-                ...item,
+                ...modifiersResponse.response,
                 Categories: categoryData?.map(category => ({
                   ...category,
                   Modifiers: category.Modifiers.map(modifier => ({

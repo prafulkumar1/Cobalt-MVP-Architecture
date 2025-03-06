@@ -2,14 +2,13 @@ import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
-import { Alert } from 'react-native';
 
 export const FormContext = createContext(); 
 
 export const useFormContext = () => {
     return useContext(FormContext);
   };
-
+ 
 export const UseFormContextProvider = ({children}) => {
   const [AppConfigJson , setAppConfigJsonData] = useState(null);
 
@@ -22,7 +21,7 @@ export const UseFormContextProvider = ({children}) => {
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
-
+ 
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("")
@@ -30,7 +29,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isVisible, setIsVisible] = useState(false);
     const [priceLoader, setPriceLoader] = useState(false);
     const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
-
+ 
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
@@ -39,7 +38,7 @@ export const UseFormContextProvider = ({children}) => {
     const commentValue = useRef("")
     const modifiersData = useRef(null)
     const singleModifierData = useRef(null)
-
+ 
     useEffect(() => {
       if(formData.ItemModifier_Comments){
         commentValue.current = formData.ItemModifier_Comments?.value
@@ -65,7 +64,7 @@ export const UseFormContextProvider = ({children}) => {
         ...prevFormData,
         [formId + '_' + controlId]: {
           value: controlValue,
-          isInvalid: isInvalid ?? false, 
+          isInvalid: isInvalid ?? false,
         },
       }));
     };
@@ -73,7 +72,7 @@ export const UseFormContextProvider = ({children}) => {
     const getFormFieldData = (formId, controlId) => {
       return formData[formId + '_' + controlId] || { value: '', isInvalid: false };
     };
-
+ 
     const setMealType = (id,IsEnabled) => {
       if(IsEnabled===1){
         const updatedMealType = menuOrderData.MenuItems.map((items) => {
@@ -96,18 +95,18 @@ export const UseFormContextProvider = ({children}) => {
         let isCategoryEmptyFlag = false;
         updatedMealType.forEach((items) => {
           if (items.IsSelect === 1 && items.Categories.length === 0) {
-            isCategoryEmptyFlag = true; 
+            isCategoryEmptyFlag = true;
           }
         });
         setIsCategoryEmpty(isCategoryEmptyFlag);
         setMenuOrderData(foodMenuList);
       }
     };
-
+ 
     const handleChangeState = () => {
       setIsSearchActive(!isSearchActive)
     }
-
+ 
   const addItemToCartBtn = async (data) => {
     try {
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
@@ -120,7 +119,7 @@ export const UseFormContextProvider = ({children}) => {
       });
     } catch (error) { }
   };
-
+ 
     const updateCartItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
         setCartData((prevCartData) => {
@@ -143,7 +142,7 @@ export const UseFormContextProvider = ({children}) => {
         });
       } catch (error) {}
     };
-
+ 
     const updateCartItemQuantity2 = async (mealItemDetails, newQuantity) => {
       try {
         setCartData((prevCartData) => {
@@ -171,7 +170,7 @@ export const UseFormContextProvider = ({children}) => {
      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
       setCartData(updatedCartData);
     };
-
+ 
     const increaseQuantity = (item) => {
       try {
         setModifierCartItemData((prevModifierCartItemData) => {
@@ -190,12 +189,12 @@ export const UseFormContextProvider = ({children}) => {
       }
     };
     
-
+ 
     const updateModifierItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
         setModifierCartItemData((prevCartData) => {
           let updatedCartData;
-
+ 
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
@@ -253,26 +252,37 @@ export const UseFormContextProvider = ({children}) => {
       let updatedCartData = addedModifierCartData?.filter((item) => item.Item_ID !== modifierItem.Item_ID);
       setAddedModifierCartData(updatedCartData);
     };
-
+ 
   const addItemToModifierForCart = async (modifierItem) => {
     try {
       const existingCartData = await AsyncStorage.getItem("cart_data");
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
       let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+      let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
   
       let prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
   
       const updatedModifierData = [...prevCartItems];
+ 
+      if(categoryData?.length > 0){
+        updatedModifierData.push({
+          ...modifierItem,
+          quantity: singleModifierData.current.quantity,
+          quantityIncPrice: singleModifierData.current.quantityIncPrice,
+          comments: commentValue.current || "",
+          selectedModifiers: modifiersData.current,
+          profitCenterId: getProfitCenterId?.LocationId,
+        });
+      }else{
+        updatedModifierData.push({
+          ...modifierItem,
+          quantity: singleModifierData.current.quantity,
+          quantityIncPrice: singleModifierData.current.quantityIncPrice,
+          comments: commentValue.current || "",
+          profitCenterId: getProfitCenterId?.LocationId,
+        });
+      }
   
-      updatedModifierData.push({
-        ...modifierItem,
-        quantity: singleModifierData.current.quantity,
-        quantityIncPrice: singleModifierData.current.quantityIncPrice,
-        comments: commentValue.current || "",
-        selectedModifiers: modifiersData.current,
-        profitCenterId: getProfitCenterId?.LocationId,
-      });
-    
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setFormFieldData("ItemModifier","","Comments","",false)
       setCartData(updatedModifierData);
@@ -436,28 +446,40 @@ export const UseFormContextProvider = ({children}) => {
   };
   
   UseFormContextProvider.displayName='UseFormContextProvider';
-
+ 
 export const handleSearchClick = (setState, onSearchActivate) => {
   setState({ showSearchInput: true });
   if (onSearchActivate) {
     onSearchActivate(true);
   }
 };
+ 
+export const handleClearClick = (setState, onSearch) => {
+  setState({ searchValue: "" });
 
-export const handleClearClick = (setState, searchValue, onSearchActivate) => {
-  if (searchValue.trim()) {
-    setState({ searchValue: "" });
-  } else {
-    setState({ showSearchInput: false });
-    if (onSearchActivate) {
-      onSearchActivate(false);
-    }
+  // Reset the list to default items
+  if (onSearch) {
+    onSearch(""); // Trigger parent function to reset the list
   }
 };
+ 
+export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
+  setState({ showSearchInput: false, searchValue: "" }, () => {
+    // Blur input to stop typing
+    if (setState.inputRef?.current) {
+      setState.inputRef.current.blur();
+    }
+    
+    // Reset the list by calling handleClear or directly setting empty search
+    if (handleClear) {
+      handleClear();
+    } else if (onSearchActivate) {
+      onSearchActivate(false);
+    }
 
-export const handleCloseClick = (setState, onSearchActivate) => {
-  setState({ showSearchInput: false, searchValue: "" });
-  if (onSearchActivate) {
-    onSearchActivate(false);
-  }
+    // Call onBackPress to restore the default item list
+    if (onBackPress) {
+      onBackPress();
+    }
+  });
 };
