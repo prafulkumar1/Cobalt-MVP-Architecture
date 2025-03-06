@@ -34,6 +34,7 @@ export const UseFormContextProvider = ({children}) => {
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
+    const [selectedLocationId, setSelectedLocationId] = useState("");
 
   
     const commentValue = useRef("")
@@ -423,7 +424,9 @@ export const UseFormContextProvider = ({children}) => {
       updateCartItemQuantity2,
       removeCartItems,
       setIsPrevCartScreen,
-      isPrevCartScreen
+      isPrevCartScreen,
+      selectedLocationId, 
+      setSelectedLocationId
     }
     return (
       <FormContext.Provider
