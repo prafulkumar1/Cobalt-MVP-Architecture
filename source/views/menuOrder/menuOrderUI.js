@@ -269,6 +269,13 @@ export default function MenuOrderScreen(props) {
     const yPosition = itemPositions[categoryId];
     if (yPosition !== undefined && scrollViewRef.current) {
       scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
+      const updateData = selectedCategory.map((items) => {
+        return{
+          ...items,
+          CategoryIsSelect : items.Category_ID === categoryId ? 1 : 0
+        }
+      })
+      setSelectedCategory(updateData);
     }
   };
   const handleCategoryLayout = (event, categoryId) => {

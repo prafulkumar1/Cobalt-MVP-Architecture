@@ -24,14 +24,15 @@ export const UseFormContextProvider = ({children}) => {
  
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
-    const [selectedTime,setSelectedTime] = useState("7:30 AM")
-    const [selectedLocation,setSelectedLocation] = useState("IT DepartMent")
+    const [selectedTime,setSelectedTime] = useState("")
+    const [selectedLocation,setSelectedLocation] = useState("")
     const [isVisible, setIsVisible] = useState(false);
     const [priceLoader, setPriceLoader] = useState(false);
     const [updateOrAddTxt,setUpdateOrAddTxt] = useState("Add to Cart")
  
     const [addedModifierCartData , setAddedModifierCartData] = useState(null)
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
+    const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
 
   
     const commentValue = useRef("")
@@ -142,8 +143,30 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
  
+    const updateCartItemQuantity2 = async (mealItemDetails, newQuantity) => {
+      try {
+        setCartData((prevCartData) => {
+          let updatedCartData;
+    
+          if (newQuantity === 0) {
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
+          } else {
+            const modifiePrice = selectedModifiers.length === 1 
+            ? parseFloat(selectedModifiers[0].Price) 
+            : selectedModifiers?.reduce((total, modifier) => {
+              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
+            }, 0);
+            updatedCartData = prevCartData.map((item) =>
+              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
+            );
+          }
+          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+          return updatedCartData;
+        });
+      } catch (error) {}
+    };
     const deleteCartItem = async (mealItemDetails) => {
-      let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
+      let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
       setCartData(updatedCartData);
     };
@@ -182,6 +205,35 @@ export const UseFormContextProvider = ({children}) => {
             }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
+            );
+           
+          }
+          const getCurrentItemDetails = updatedCartData?.find(
+            (item) => item.Item_ID === singleItemDetails.Item_ID
+          );
+          singleModifierData.current = {
+            quantity: getCurrentItemDetails?.quantity,
+            quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+          };
+          return updatedCartData;
+        });
+      } catch (error) {}
+    };
+    const updateModifierItemQuantity2 = async (mealItemDetails, newQuantity) => {
+      try {
+        setModifierCartItemData((prevCartData) => {
+          let updatedCartData;
+
+          if (newQuantity === 0) {
+            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
+          } else {
+            const modifiePrice = selectedModifiers.length === 1 
+            ? parseFloat(selectedModifiers[0].Price) 
+            : selectedModifiers?.reduce((total, modifier) => {
+              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
+            }, 0);
+            updatedCartData = prevCartData.map((item) =>
+              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }
@@ -324,6 +376,11 @@ export const UseFormContextProvider = ({children}) => {
   const closePreviewModal = () => {
     setItemDataVisible(!itemDataVisible)
   }
+  const removeCartItems = async() => {
+    await AsyncStorage.removeItem("cart_data");
+    setCartData([])
+    setModifierCartItemData([])
+  }
     
     const initialValues = {
       getFormFieldData,
@@ -371,7 +428,12 @@ export const UseFormContextProvider = ({children}) => {
       updateOrAddTxt,
       updateModifierCartItem,
       isExitProfitCenter,setIsExitProfitCenter,
-      updateWithoutModifierCartItem
+      updateWithoutModifierCartItem,
+      updateModifierItemQuantity2,
+      updateCartItemQuantity2,
+      removeCartItems,
+      setIsPrevCartScreen,
+      isPrevCartScreen
     }
     return (
       <FormContext.Provider

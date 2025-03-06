@@ -332,7 +332,7 @@ CheckIcon:{color:"#ffff"},
   roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", },
   roItemImage:{  marginRight: 10 },
   roItemButton:{ width: 30 ,height:30},
-  roReoderButton:{ top:10, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
+  roReoderButton:{ bottom : 5, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
   roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   selectedContainer:{
     minHeight:responsiveHeight(30),
@@ -420,10 +420,16 @@ CheckIcon:{color:"#ffff"},
   modifierContainer:{
     color: "#4B5154",
     fontSize: 14,
-    fontFamily:"SourceSansPro_SemiBold"
+    fontFamily:"SourceSansPro_SemiBold",
+    alignSelf:"center"
   },
   requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
   maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  requiredTxt:{     
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold",
+  },
   orderSubContainer:{
     display: "flex",
     flexDirection: "row",
@@ -515,5 +521,6 @@ CheckIcon:{color:"#ffff"},
     lineHeight:15
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
-  collapseIcon:{right:18}
+  collapseIcon:{right:18},
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:2}
 })

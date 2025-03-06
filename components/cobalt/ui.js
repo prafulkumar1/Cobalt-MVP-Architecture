@@ -148,14 +148,25 @@ class CbAccordionlist extends React.Component {
                                       style={styles.modifierContainer}
                                     >
                                       {order.Category_Name}
-                                      <AccordionTitleText
-                                        style={styles.maxAllowedTxt}
-                                      >
-                                        {order.Message
-                                          ? `  (${order.Message})`
-                                          : ""}
-                                      </AccordionTitleText>
+                                      <Box style={styles.quantityMessage}>
+                                        {
+                                          order.DisplayOption && 
+                                          <Text
+                                          style={styles.requiredTxt}
+                                        >
+                                          {` (${(order.DisplayOption)}) `}
+                                        </Text>
+                                        }
+                                        <Text
+                                          style={styles.maxAllowedTxt}
+                                        >
+                                          {order.Message
+                                            ? `(${order.Message})`
+                                            : ""}
+                                        </Text>
+                                      </Box>
                                     </AccordionTitleText>
+                                    
                                   </Box>
                                   {isExpanded ? (
                                     <AccordionIcon
@@ -254,6 +265,7 @@ class CbAccordionlist extends React.Component {
                                 isToastMessageVisiable={this.state.isToastMessageVisiable}
                                 transparent={true}
                                 onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
+                                closePreviewModal ={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
                               />
                             }
                           </>
@@ -271,6 +283,200 @@ class CbAccordionlist extends React.Component {
   }
 }
 
+class CbRecentAccordion extends React.Component {
+  constructor(props) {
+    super(props);
+    this.id = props.id;
+    this.screenName = props.screenName;
+    this.favsource = props.favsource || "";
+    this.Notfavsource = props.Notfavsource || "";
+    this.componentData = props.componentData || [];
+
+    this.state = {
+      isToastMessageVisiable: false,
+      toastMessage: "",
+    };
+  }
+
+  
+  
+
+  handleReorder = (order, cartData, addItemToCartBtn, updateCartItemQuantity) => {
+    console.log("Reordering items from Order ID:", order.OrderId);
+    console.log("Orders", this.componentData)
+  
+    if (!order.Items || order.Items.length === 0) {
+      console.log("No items found for reorder.");
+      return;
+    }
+  
+    order.Items.forEach((item) => {
+      const existingItem = cartData.find(cartItem => cartItem.Item_ID === item.Item_ID);
+  
+      const itemWithModifiers = {
+        ...item,
+        quantity: 1,
+        selectedModifiers: item.Modifiers || [],  // Ensure modifiers are added
+      };
+      console.log('Modifiers', item.Modifiers);
+  
+      if (existingItem) {
+        console.log(`Increasing quantity for: ${item.Item_Name}`);
+        updateCartItemQuantity(existingItem, existingItem.quantity + 1);
+      } else {
+        console.log("Adding to cart:", item.Item_Name);
+        addItemToCartBtn(itemWithModifiers);
+      }
+    });
+  
+    this.setState({
+      isToastMessageVisiable: true,
+      toastMessage: `Added/Reordered ${order.Items.length} items!`,
+    });
+  
+    setTimeout(() => {
+      this.setState({ isToastMessageVisiable: false, toastMessage: "" });
+    }, 2000);
+  };
+  
+  
+  render() {
+    const Notfavsource = this.Notfavsource;
+    const favsource = this.favsource;
+
+    return (
+      <FormContext.Consumer>
+        {({ cartData, singleItemDetails, addToCart }) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+
+          const categoryData =
+            typeof this.componentData?.CompletedOrders === "string"
+              ? JSON.parse(this.componentData?.CompletedOrders)
+              : this.componentData?.CompletedOrders;
+
+          const defaultOpenItems = categoryData?.map(
+            (_, index) => `item-${index}`
+          );
+
+          return (
+            <>
+              <CbFlatList
+                flatlistData={categoryData}
+                children={({ item, index }) => {
+                  const order = item;
+                  return (
+                    <Accordion
+                      defaultValue={defaultOpenItems}
+                      variant="filled"
+                      type="single"
+                      size="md"
+                      style={styles.roAccordion}
+                    >
+                      <AccordionItem
+                        value={`item-${index}`}
+                        style={styles.itemDetailsSubContainer}
+                      >
+                        <AccordionHeader style={styles.roAccordionHeader}>
+                          <AccordionTrigger>
+                            {({ isExpanded }) => (
+                              <>
+                                <Box key={index} style={styles.roAccordionHeading}>
+                                  <Image
+                                    alt="image"
+                                    source={require("@/assets/images/icons/ROdate.png")}
+                                  />
+                                  <AccordionTitleText style={styles.roAccordionTitleText}>
+                                    Ordered Date: {order.OrderDate}
+                                  </AccordionTitleText>
+                                </Box>
+                                {isExpanded ? (
+                                  <AccordionIcon
+                                    as={ChevronDownIcon}
+                                    size={"md"}
+                                    color="#4B5154"
+                                    style={styles.collapseIcon}
+                                  />
+                                ) : (
+                                  <AccordionIcon
+                                    as={ChevronUpIcon}
+                                    size={"md"}
+                                    color="#4B5154"
+                                    style={styles.collapseIcon}
+                                  />
+                                )}
+                              </>
+                            )}
+                          </AccordionTrigger>
+                        </AccordionHeader>
+                        <AccordionContent>
+{order.Items?.map((item, itemIndex) => (
+  <Box key={item.Item_ID}>
+    <Box style={styles.roAccordionContentouterbox}>
+      <Box style={styles.roAccordionContentItembox}>
+        <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}>
+          {item.Item_Name}
+        </Text>
+        <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
+      </Box>
+      <Box style={styles.roImagescetion}>
+        <TouchableOpacity
+          onPress={() => {
+            item.IsFavorite = !item.IsFavorite; // Toggle favorite
+            this.setState({}); // Force re-render
+          }}
+        >
+          <Image
+            alt="favorite"
+            source={
+              item.IsFavorite
+                ? require("@/assets/images/icons/Fav.png")
+                : require("@/assets/images/icons/Notfav.png")
+            }
+            style={styles.roItemImage}
+          />
+        </TouchableOpacity>
+        <CbAddToCartButton
+          mealItemDetails={item}
+          style={styles.roItemButton}
+          onPress={() => addToCart(item)}
+        />
+      </Box>
+    </Box>
+
+    {/* Remove Divider after the last item */}
+    {itemIndex !== order.Items.length - 1 && <Divider />}
+  </Box>
+))}
+                          {order.IsReorder && (
+                            <FormContext.Consumer>
+    {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
+      <Button
+        variant="outline"
+        style={styles.roReoderButton}
+        onPress={() => this.handleReorder(order, cartData, addItemToCartBtn, updateCartItemQuantity)}
+      >
+        <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
+          Re-Order
+        </ButtonText>
+      </Button>
+    )}
+  </FormContext.Consumer>
+)}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  );
+                }}
+              />
+            </>
+          );
+        }}
+      </FormContext.Consumer>
+    );
+  }
+}
 
 class CbImage extends React.Component {
   constructor(props) {
@@ -306,18 +512,32 @@ class CbBackButton extends React.Component {
   constructor(props) {
     super(props);
     this.source = props.source;
+    this.state = {
+      profitCenterTitle : ""
+    }
+  }
+  async componentDidMount(){
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenter = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    this.setState({profitCenterTitle:getProfitCenter?.LocationName})
   }
   render() {
     const state = this.props.navigation.getState();
     const currentRoute = state.routes[state.index]?.name;
     return (
       <FormContext.Consumer>
-      {({setIsExitProfitCenter,menuOrderData,cartData}) => {
+      {({setIsExitProfitCenter,menuOrderData,cartData,isPrevCartScreen}) => {
           return (
             <TouchableOpacity onPress={()=>{
               if(currentRoute === "MenuOrder"){
                 if(menuOrderData !==null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
+                }else{
+                  this.props.navigation?.goBack()
+                }
+              }else if(currentRoute === "Recentorders"){
+                if(isPrevCartScreen){
+                  navigateToScreen(this.props,"MenuOrder",true,{profileCenterTile:this.state.profitCenterTitle})
                 }else{
                   this.props.navigation?.goBack()
                 }
@@ -403,24 +623,33 @@ class CbAddToCartButton extends React.Component {
   }
 
 
-   handleAddToCartBtn = async (quantity,  storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity,itemDataVisible) => {
-    let quantityInfo = await postQuantityApiCall(quantity,this.mealItemDetails?.Item_ID)
+  handleAddToCartBtn = async (quantity, storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible) => {
+    console.log("mealItemDetails:", this.mealItemDetails); // Debugging
+    
+    let quantityInfo = await postQuantityApiCall(quantity, this.mealItemDetails?.Item_ID);
+    
     if (quantityInfo.statusCode === 200) {
-      this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
+      this.setState({ 
+        isAvailable: quantityInfo?.response.IsAvailable, 
+        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable 
+      }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
-          if(itemDataVisible){
-            increaseQuantity(this.mealItemDetails, false)
-          }else{
-            closePreviewModal()
-            increaseQuantity(this.mealItemDetails, false)
+          if (itemDataVisible) {
+            increaseQuantity(this.mealItemDetails, false);
+          } else {
+            closePreviewModal();
+            increaseQuantity(this.mealItemDetails, false);
           }
         } else {
-          addItemToCartBtn(this.mealItemDetails)
+          console.log("Adding item to cart:", this.mealItemDetails); // Debugging
+          addItemToCartBtn(this.mealItemDetails);
         }
-      })
+      });
+    } else {
+      console.log("Quantity API call failed:", quantityInfo);
     }
-  }
+  };
 
   modifierIncDecBtn = async (itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
        let isItemAvailableInCart = false
@@ -1201,6 +1430,7 @@ class CbToastMessage extends React.Component {
     this.message = props.message
     this.isToastMessageVisiable = this.isToastMessageVisiable
     this.transparent = props.transparent
+    this.closePreviewModal = props.closePreviewModal
   }
 
   render() {
@@ -1211,7 +1441,7 @@ class CbToastMessage extends React.Component {
         visible={this.isToastMessageVisiable}
       >
         <Box style={styles.centeredView}>
-          <Pressable style={[styles.blackShadow]} />
+          <Pressable style={[styles.blackShadow]} onPress={() => this?.closePreviewModal()}/>
           <Box style={styles.modalView}>
             <Text style={styles.modalText}>{this.message}</Text>
           </Box>
@@ -1241,6 +1471,7 @@ CbCommonButton.displayName = "CbCommonButton";
 CbAccordionlist.displayName='CbAccordionlist';
 cbSelectTime.displayName='cbSelectTime';
 CbToastMessage.displayName = "CbToastMessage"
+CbRecentAccordion.displayName = "CbRecentAccordion"
 
 
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion };
