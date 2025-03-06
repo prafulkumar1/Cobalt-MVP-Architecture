@@ -1193,7 +1193,8 @@ class cbSelectTime extends React.Component {
     }
   };
 
-  scrollToIndex = (index) => {
+  scrollToIndex = (item,index,setSelectedLocationId) => {
+    setSelectedLocationId(item?.pickUpLocationId)
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollToOffset({
         offset: index * 50,
@@ -1203,7 +1204,7 @@ class cbSelectTime extends React.Component {
     }
   };
 
-  renderPicker = () => (
+  renderPicker = (setSelectedLocationId) => (
     <FlatList
       ref={this.scrollRef}
       data={this.selectItems}
@@ -1214,7 +1215,7 @@ class cbSelectTime extends React.Component {
       contentContainerStyle={{ paddingVertical: 100 }}
       onMomentumScrollEnd={this.handleScroll}
       renderItem={({ item, index }) => (
-        <TouchableOpacity onPress={() => this.scrollToIndex(index)} style={styles.item}>
+        <TouchableOpacity onPress={() => this.scrollToIndex(item,index,setSelectedLocationId)} style={styles.item}>
           <Text style={[styles.timeItem, this.state.selectedIndex === index && styles.selectedText]}>
             {item.label}
           </Text>
@@ -1226,7 +1227,7 @@ class cbSelectTime extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({ selectedTime, setSelectedTime, selectedLocation, setSelectedLocation }) => (
+        {({ selectedTime, setSelectedTime, selectedLocation, setSelectedLocation, setSelectedLocationId }) => (
           <TouchableOpacity onPress={() => this.setState({ isSelected: true })}>
             <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
               <FormControlLabel>
@@ -1239,7 +1240,7 @@ class cbSelectTime extends React.Component {
                   <SelectBackdrop onPress={() => this.setState({ isSelected: false })} />
                   <SelectContent style={styles.selectedContainer}>
                     <Text style={styles.selectedLabel}>{this.selectItemLabel}</Text>
-                    <View style={styles.pickerWrapper}>{this.renderPicker()}</View>
+                    <View style={styles.pickerWrapper}>{this.renderPicker(setSelectedLocationId)}</View>
                     <TouchableOpacity style={styles.doneBtn} onPress={() => {
                       this.updateSelectedTimeAndLocation(setSelectedTime, setSelectedLocation);
                       this.setState({ isSelected: false });

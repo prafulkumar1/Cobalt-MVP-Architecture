@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
 
-    const {selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
+    const {selectedLocationId,selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext(); 
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -36,6 +36,7 @@ export const useMyCartLogic = () => {
     const [tipSelection,setTipSelection]= useState(null)
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
+    const [pickUpLocations,setPickUpLocations] =useState(null)
 
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export const useMyCartLogic = () => {
       }
       let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
       const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.PickupTime,value:item.PickupTime}))
-      const showPickLocationData = cartInfo?.response?.Pickup_Locations?.map((item) => ({label:item.Time,value:item.Time}))
+      const showPickLocationData = cartInfo?.response?.Pickup_Locations?.map((item) => ({label:item.Pickup_LocationName,value:item.Pickup_LocationName,pickUpLocationId:item.Pickup_LocationID}))
       setCartCofigData(cartInfo?.response)
       setLoading(false)
       let tipDetails = cartInfo?.response?.Tip?.map((items) => {
@@ -78,9 +79,12 @@ export const useMyCartLogic = () => {
       setTipData(tipDetails)
       setSelectedTime(showTimeData[0]?.value)
       setSelectedLocation(showPickLocationData[0]?.value)
+      setPickUpLocations(cartInfo?.response?.Pickup_Locations)
       setShowPickupTime(showTimeData)
       setShowPickupLocation(showPickLocationData)
-    } catch (err) { }
+    } catch (err) {
+      setLoading(false)
+    }
   }
 
   const getCartPrice = async () => {
@@ -262,9 +266,9 @@ export const useMyCartLogic = () => {
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
       const params = {
         "OrderDetails": {
-          "LocationId": `${getProfitCenterId?.LocationId}`,
+          "Location_Id": `${getProfitCenterId?.LocationId}`,
           "PickupTime": selectedTime ? selectedTime :"",
-          "PickupLocationId": selectedLocation?selectedLocation:"",
+          "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
           "TipPercentage": tipSelection?.tip ? tipSelection?.tip : "",
