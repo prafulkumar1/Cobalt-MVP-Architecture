@@ -7,33 +7,37 @@ const createTable = async () => {
   db = await SQLite.openDatabaseAsync('Config.db');
 
   await db.execAsync(`
-    CREATE TABLE IF NOT EXISTS Config (
-      id INTEGER PRIMARY KEY AUTOINCREMENT, 
-      key TEXT UNIQUE, 
-      JsonValue TEXT
-    );
+    CREATE TABLE IF NOT EXISTS UIConfig (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        PageId TEXT,
+        Controls TEXT
+      );
   `);
 };
 
-const saveConfig = async (key, value) => {
-  const jsonString = JSON.stringify(value);
+const saveConfig = async (value) => {  
   try {
-    (await db).execAsync(
-      `INSERT INTO Config (key, JsonValue) VALUES ('${key}', '${jsonString}');`,
-    );
+    for (const page of value) {
+      const { PageId, Controls } = page;
+      const controlsString = JSON.stringify(Controls);
+      await (await db).execAsync(
+        `INSERT INTO UIConfig (PageId, Controls) VALUES ('${PageId}', '${controlsString}');`,
+      );
+    }
+    console.log("Config saved successfully!");
   } catch (error) {
     console.error('Error saving config:', error);
   }
 };
 
-const getConfig = async (key) => {
+const getConfig = async (pageId) => {
+  db = await SQLite.openDatabaseAsync('Config.db');
   try {
     const result = await (await db).getFirstAsync(
-      `SELECT JsonValue FROM Config WHERE key = '${key}';`,
+      `SELECT Controls FROM UIConfig WHERE PageId = '${pageId}';`,
     );
-    if (result?.JsonValue) {
-      const parsedValue = JSON.parse(result.JsonValue);
-      return parsedValue;
+    if (result?.Controls) {
+      return JSON.parse(result.Controls);
     }
     return null;
   } catch (error) {
@@ -47,8 +51,8 @@ const getConfig = async (key) => {
 
 const getTableStructure = async () => {
   try {
-    const result = await db.getAllAsync(
-      `SELECT sql FROM sqlite_master WHERE type='table' AND name='Config';`
+    const result = (await db).getAllAsync(
+      `SELECT sql FROM sqlite_master WHERE type='table' AND name='UIConfig';`
     );
     if (result.length > 0) {
       console.log('Table Structure:', result[0].sql);
@@ -59,9 +63,11 @@ const getTableStructure = async () => {
     console.error('Error getting table structure:', error);
   }
 };
+
+
 const clearTable = async () => {
   try {
-    await db.execAsync(`DELETE FROM Config;`);
+   await (await db).execAsync(`DELETE FROM UIConfig;`);
     console.log('All records from "Config" table deleted successfully.');
   } catch (error) {
     console.error('Error deleting data from table:', error);
@@ -69,13 +75,13 @@ const clearTable = async () => {
 };
 
 
-// const clearConfig = async () => {
-//   try {
-//     await db.execAsync(`DELETE FROM Config;`);
-//     console.log('All config entries cleared.');
-//   } catch (error) {
-//     console.error('Error clearing config:', error);
-//   }
-// };
+const clearConfig = async () => {
+  try {
+    await db.execAsync(`DELETE FROM UIConfig;`);
+    console.log('All config entries cleared.');
+  } catch (error) {
+    console.error('Error clearing config:', error);
+  }
+};
 
-export { createTable, saveConfig, getConfig,getTableStructure,clearTable };
+export { createTable, saveConfig, getConfig,getTableStructure,clearTable,clearConfig };

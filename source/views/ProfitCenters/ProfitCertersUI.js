@@ -7,47 +7,28 @@ import { ImageBackground } from "react-native";
 import  { useEffect, useState } from 'react';
 import { loadPageConfig } from '@/source/constants/ConfigLoad';
 const pageId = 'ProfitCenter';
-global.controlsConfigJson=[];
-
+  let controlsConfigJson=[];
 
 
 
 const ProfitCenters = (props) => {
     const {navigateToMenuOrder,profitCenterData,loading} = useProfitCenterLogic(props)
-    const [configLoaded, setConfigLoaded] = useState(false);
 
-    const fetchConfig = async () => {
-
-      global.controlsConfigJson = await loadPageConfig('ProfitCenter');
-      console.log("=====>", JSON.stringify(global.controlsConfigJson));
-      setConfigLoaded(true);
-    };
-    
-    useEffect(() => {
-      fetchConfig();
-    }, []);
-    
-    if ( !configLoaded) {
-        return (
-          <CbLoader />
-        );
-      }
     
     const RenderingProfitCenter = ({item},props) => {
-        // console.log(global.controlsConfigJson,"123")
         const isAvailable = item.STATUS === "Available";
         return (
-            <UI.cbImageBackground id="ProfitCenterBGImage" source={{ uri:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
-                <UI.CbBox id='BoxContainer' style={styles.blackShadow} />
+            <UI.cbImageBackground id="ProfitCenterBGImage" pageId={pageId}  source={{ uri:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
+                <UI.CbBox id='BoxContainer' pageId={pageId} style={styles.blackShadow} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
-                    <UI.CbBox id='BoxTextContainer' style={styles.profitCenterOverlay}>
-                        <UI.CbText id='ProfitCenterName' numberOfLines={1} style={[ styles.profitCenterName]}>{item.LocationName}</UI.CbText>
-                        <UI.CbText id="TimingsText" style={[ styles.profitCenterTimings]}>
+                    <UI.CbBox id='BoxTextContainer' pageId={pageId} style={styles.profitCenterOverlay}>
+                        <UI.CbText id='ProfitCenterName' pageId={pageId} numberOfLines={1} style={[ styles.profitCenterName]}>{item.LocationName}</UI.CbText>
+                        <UI.CbText id="TimingsText" pageId={pageId}  style={[ styles.profitCenterTimings]}>
                             {item.STATUSTEXT}
                         </UI.CbText>
                     </UI.CbBox>
-                    <UI.CbBox id="AvailabilityStatus" style={styles.statusBox} Conditionalstyle={isAvailable ? styles.available : styles.closed}>
-                        <UI.CbText id="AvailabilityStatusText" style={styles.statusText}>{item.STATUS}</UI.CbText>
+                    <UI.CbBox id="AvailabilityStatus" pageId={pageId} style={styles.statusBox} Conditionalstyle={isAvailable ? styles.available : styles.closed}>
+                        <UI.CbText id="AvailabilityStatusText" pageId={pageId} style={styles.statusText}>{item.STATUS}</UI.CbText>
                     </UI.CbBox>
                 </UI.TouchableOpacity>
             </UI.cbImageBackground>

@@ -1,23 +1,19 @@
 // src/config/configLoader.js
 import { postApiCall } from '@/source/utlis/api';
-import { createTable, getConfig, saveConfig,getTableStructure,clearTable } from './LocalDatabase';
+import { createTable, getConfig, saveConfig,getTableStructure,clearTable,clearConfig } from './LocalDatabase';
 
 
 let appConfigJsonArray;
 export const loadAppConfigurations = async () => {
   try {
-    await clearTable();
-    // Create the table
+    
     await createTable();
-
+     await clearTable();
     // Call the API and save to the local database
     const AppConfigJsonData = await postApiCall("UI_CONFIGURATIONS", "GET_UI_CONFIGURATIONS", {});
     if (AppConfigJsonData?.statusCode === 200) {
       const configData = AppConfigJsonData?.response?.Data;
-           //console.log(JSON.stringify(configData));
-     await saveConfig('AppConfigJson', configData);    
-     appConfigJsonArray = await getConfig('AppConfigJson');
-      console.log("App Config Loaded and Stored Locally:", appConfigJsonArray);      
+     await saveConfig(configData);     
     }
   } catch (error) {
     console.error("Error fetching configurations:", error);
@@ -25,18 +21,20 @@ export const loadAppConfigurations = async () => {
 };
 
 
-export const loadPageConfig = async (pageId) => {
-  try {   
-    let pagejson = appConfigJsonArray?.find(item => item.PageId === pageId);
-    const pageConfigJson = pagejson.Controls.map((control) => {
-      try {
-        return JSON.parse(control.ControlJson);
-      } catch (error) {
-        console.error("Error parsing ControlJson:", error);
-        return null; // Return null if parsing fails
-      }
-    });
-    return pageConfigJson;
+export const loadPageConfig = async (pageId,controlId) => {
+  try {      
+    const pageConfig = await getConfig(pageId); 
+  const pageConfigJson = pageConfig.map((control) => {
+    try {
+      return JSON.parse(control.ControlJson);
+    } catch (error) {
+      console.error("Error parsing ControlJson:", error);
+      return null; 
+    }
+  });
+ 
+ const controlConfig= pageConfigJson.find((item) => item.id === controlId);
+    return controlConfig;
   } catch (error) {
     console.error("Error fetching configurations:", error);
   }

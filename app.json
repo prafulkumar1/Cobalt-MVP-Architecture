@@ -78,6 +78,9 @@
         "name": "SourceSansPro_SemiBoldItalic",
         "file": "./assets/fonts/SourceSansPro-SemiboldIt.otf"
       }
+    ],
+    "plugins": [
+      "expo-sqlite"
     ]
   }
 }

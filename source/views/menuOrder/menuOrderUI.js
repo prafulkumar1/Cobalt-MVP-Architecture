@@ -7,31 +7,21 @@ import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
 import {  Image, Modal } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
-import {ChevronRightIcon,ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/components/ui/icon';
+import {ChevronDownIcon ,ChevronUpIcon,CloseIcon} from '@/components/ui/icon';
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
-import {  useRef, useState } from "react";
+import {  useRef, useState,useEffect } from "react";
 import { Image as ExpoImage } from 'expo-image';
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { responsiveHeight } from "react-native-responsive-dimensions";
+import { loadPageConfig } from '@/source/constants/ConfigLoad';
+  
+ let controlsConfigJson=[]; 
 
-const pageId = "MenuOrder";
-export default function MenuOrderScreen(props) {
-  let pageConfigJson = global.appConfigJsonArray?.find(
-    (item) => item?.PageId === pageId
-  );
-
-  global.controlsConfigJson =
-    pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-  const configItems = global.controlsConfigJson?.reduce((acc, item) => {
-    if (["mealTypeLabel", "timeLabel", "mealTypeBtn", "tapBarBtn", "recentOrderName", "seeAllRecentOrders", "recentOrderImage"].includes(item.id)) {
-      acc[item.id] = item;
-    }
-    return acc;
-  }, {});
-
-  const { mealTypeLabel, timeLabel, mealTypeBtn, tapBarBtn, recentOrderName, seeAllRecentOrders, recentOrderImage } = configItems;
+export default function MenuOrderScreen(props) { 
+ 
+  
 
   const {
       setMealType, 
@@ -52,8 +42,7 @@ export default function MenuOrderScreen(props) {
       setUpdateOrAddTxt,
       modifiersResponseData
     } = useFormContext();
-
-  const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory,getCartData} = useMenuOrderLogic(props)
+    const {toggleSubmenu, expandedSubmenus,isRecentOrderOpen,openRecentOrder,errorMessage,loading,mealPeriods,categoryData,selectedCategory,flatListRef ,handleViewableItemsChanged,setSelectedCategory,getCartData} = useMenuOrderLogic(props)
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
   const categoryScrollRef = useRef(null);
@@ -70,30 +59,6 @@ export default function MenuOrderScreen(props) {
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
 
-  // const openItemDetails = async (box) => {    
-  //   console.log(modifiersResponseData,"---->cart dataa")
-  //   const isItemAvailableInCart = cartData.some(item => item.Item_ID === box.Item_ID);
-  //   const getCartDetails = cartData?.find((item) => item.Item_ID === box.Item_ID)
-  //   try {
-  //     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID);
-  
-  //     if (quantityInfo?.response?.IsAvailable === 1) {
-  //       if(isItemAvailableInCart){
-  //         setUpdateOrAddTxt(isItemAvailableInCart ? "Update Cart" : "Add to Cart");
-  //         setIsItemEditable(!isItemEditable)
-  //         storeSingleItem({...getCartDetails,response: quantityInfo.response});
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }else{
-  //         storeSingleItem({ ...box, response: quantityInfo.response });
-  //         increaseQuantity(box);
-  //         closePreviewModal();
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching quantity info:", error);
-  //   }
-  // };
   const openItemDetails = async (box) => {
     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
     if(quantityInfo.response.IsAvailable ===1){
@@ -131,30 +96,11 @@ export default function MenuOrderScreen(props) {
   const renderMealTypeList = (mealTypeItem) => {
     return (
       <UI.Box style={styles.mealTypeContainer}>
-        <UI.TouchableOpacity
-          activeOpacity={0.6}
-          style={[  
-            mealTypeItem.IsSelect === 1
-              ? [
-                styles.activeMenuType,
-                {
-                  backgroundColor: mealTypeBtn?.activeBackgroundColor
-                    ? mealTypeBtn.activeBackgroundColor
-                    : "#00C6FF",
-                  borderRadius: mealTypeBtn?.borderRadius
-                    ? mealTypeBtn?.borderRadius
-                    : 5,
-                },
-              ]
-              : styles.inactiveMenuType,
-          ]}
-          onPress={() => setMealType(mealTypeItem.MealPeriod_Id,mealTypeItem.IsEnabled)}
-      >
+        <UI.TouchableOpacity activeOpacity={0.6}   onPress={() => setMealType(mealTypeItem.MealPeriod_Id,mealTypeItem.IsEnabled)}>
+         <UI.Box style={[mealTypeItem.IsSelect === 1 ? [styles.activeMenuType,{backgroundColor: "#00C6FF", borderRadius: 5,},] : styles.inactiveMenuType,]} >
           <UI.Text
             style={[
-              mealTypeLabel?.styles
-                ? mealTypeLabel?.styles
-                : styles.mealTypeLabel,
+              styles.mealTypeLabel,
               { color: mealTypeItem.IsSelect === 1 ? "#ffffff" : "#717171" },
             ]}
           >
@@ -162,12 +108,13 @@ export default function MenuOrderScreen(props) {
           </UI.Text>
           <UI.Text
             style={[
-              timeLabel?.styles ? timeLabel?.styles : styles.timeDurationTxt,
+             styles.timeDurationTxt,
               { color: mealTypeItem.IsSelect === 1 ? "#fff" : "#717171" },
             ]}
           >
             {mealTypeItem.Time}
           </UI.Text>
+          </UI.Box>
         </UI.TouchableOpacity>
       </UI.Box>
     );
@@ -197,7 +144,7 @@ export default function MenuOrderScreen(props) {
           {item.CategoryIsSelect === 1 && (
             <UI.Box
               style={[
-                tapBarBtn?.styles ? tapBarBtn?.styles : styles.bottomStyle,
+               styles.bottomStyle,
               ]}
             />
           )}
@@ -510,13 +457,13 @@ export default function MenuOrderScreen(props) {
       return (
         <UI.Box style={{ marginRight: 18, }}>
           <UI.TouchableOpacity>
-            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.Image ? recentOrderImage?.Image : item.Image }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
+            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: item.Image }} style={[styles.recentOrderImage
             ]} />} />
           </UI.TouchableOpacity>
           <UI.Box style={styles.recentMainList}>
             <UI.Text id="recentOrderName"
               style={[
-                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
+                styles.recentOrderName,
               ]}
               numberOfLines={1}
               ellipsizeMode="tail"
@@ -543,7 +490,7 @@ export default function MenuOrderScreen(props) {
         <UI.TouchableOpacity onPress={() => navigateToScreen(props, "Recentorders", true)}>
           <UI.Text
             style={[
-              seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
+              styles.seeAllRecentOrders,
             ]}
           >Show All</UI.Text>
         </UI.TouchableOpacity>
@@ -578,38 +525,30 @@ export default function MenuOrderScreen(props) {
       )
     }
   }
-
   return (
-    <UI.Box style={styles.mainContainer}>
-      <UI.Box style={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
+    
+    <UI.CbBox id="MenuorderContainer" pageId={'MenuOrder'} style={styles.mainContainer}>
+      <UI.CbBox id="MainHeaderContainer" pageId={'MenuOrder'} Conditionalstyle={isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}} styles={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
         {
-          !isRecentOrderOpen && <UI.cbSearchbox onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
+          !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch" pageId={'MenuOrder'} controlsConfigJson={controlsConfigJson} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
         }
         {!isSearchActive && (
           <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
-
-            <UI.Box style={styles.recentOrderBox}>
-              <UI.TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
-              </UI.TouchableOpacity>
-              <UI.Text style={styles.recentOrderTxt}>
-                Recent Orders
-              </UI.Text>
-            </UI.Box>
-
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
-            </UI.TouchableOpacity>
+            <UI.CbBox id="RecentOrderBox" pageId={'MenuOrder'} style={styles.recentOrderBox}>
+               <UI.CbImage id="RecentOrderIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
+               <UI.CbText id="ROText" pageId={'MenuOrder'}  style={styles.recentOrderTxt}/>
+            </UI.CbBox> 
+            <UI.CbImage id="RoNavIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/RONav.png')} style={styles.dropdownIcon}/>}/>          
           </UI.TouchableOpacity>
         )}
-      </UI.Box>
+      </UI.CbBox>
       {
         isRecentOrderOpen && <OnRecentOrderPress /> 
       }
 
       {renderMenuOrderItems()}
 
-    </UI.Box>
+    </UI.CbBox>
   );
 }
 

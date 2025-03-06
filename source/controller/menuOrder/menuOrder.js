@@ -83,12 +83,17 @@ export const useMenuOrderLogic = (props) => {
       } catch (error) {}
     };
 
+
+    
+
   useEffect(() => {
     getMenuOrderList()
     getCartData()
     }, [])
   
     
+    
+
       const getMenuOrderList = async () => {
         setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")

@@ -41,7 +41,8 @@ export const useProfitCenterLogic = (props) => {
   const navigateToMenuOrder = async (props, item) => {
     if (item.Isnavigate == 1) {
       await AsyncStorage.setItem("profit_center",JSON.stringify(item))
-      navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
+     
+       navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
     }
   }
 

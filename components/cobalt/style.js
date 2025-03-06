@@ -447,11 +447,11 @@ CheckIcon:{color:"#ffff"},
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "95%",
-    height: "100%",
+    width: responsiveWidth(95),
+    height: responsiveHeight(100),
     marginRight: 25
   },
-  inputBox:{
+  SearchinputBox:{
     flex: 1,
     borderColor: "transparent",
     borderWidth: 0,
@@ -486,5 +486,25 @@ CheckIcon:{color:"#ffff"},
   checkboxContainer: {
     flexDirection: 'row',
     marginBottom: 20,
+  },
+  SearchIcon:{
+    width: responsiveWidth(10),
+    height:responsiveHeight(4.5),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: responsiveWidth(2),
+    borderRadius: 4,
+    backgroundColor: "white"
+  },
+  SearchExpand:{
+    width: responsiveWidth(10),
+    height:responsiveHeight(4.5),
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: responsiveWidth(2),
+    borderRadius: 4,
+    backgroundColor: "#f0f0f0"
   },
 })

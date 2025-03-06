@@ -27,7 +27,7 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick,transformStyles } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import { remapProps } from 'react-native-css-interop';
-
+import { loadPageConfig } from '@/source/constants/ConfigLoad';
 export const postQuantityApiCall = async(quantity,itemId) => {
   try {
     const params = {
@@ -43,12 +43,28 @@ class CbBackButton extends React.Component {
   constructor(props) {
     super(props);
     this.id=props.id;
+    this.pageID=props.pageID;
+    this.pageConfigLoad=props.controlsConfigJson;
     this.source = props.source;
+    this.state = {
+      ControlConfig: [], 
+    };
   }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
   render() {
-    const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
-     const ImageSource = buttonArray?.ImageSource || this.source;
-     const Styles=buttonArray?.Styles;
+    const { ControlConfig } = this.state;  
+     const ImageSource = ControlConfig?.ImageSource || this.source;    
+     const Styles=ControlConfig?.Styles;
     return (
 
       <FormContext.Consumer>
@@ -71,16 +87,32 @@ class CbBox extends React.Component {
   constructor(props) {
     super(props);
     this.id=props.id;
+    this.pageID=props.pageId;
     this.Conditionalstyle=props.Conditionalstyle || {};
     this.styles= props.styles || {};
-  
+    this.state = {
+      ControlConfig: [], 
+    };
   }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
+
   render() {
-    const ControlConfig = global.controlsConfigJson.find((item) => item.id === this.id);
+    const { ControlConfig } = this.state;  
      const Styles=ControlConfig?.Styles || this.styles;
      const StyleProps = transformStyles(Styles);
+     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
     return (
-      <Box style={[StyleProps[Object.keys(Styles)[0]],this.Conditionalstyle]} >
+      <Box style={[dynamicStyle,this.Conditionalstyle]} >
          {this.props.children}
        </Box>
     );
@@ -93,16 +125,35 @@ class CbText extends React.Component {
   constructor(props) {
     super(props);
     this.id=props.id;
+    this.pageID=props.pageId;
     this.strikeThrough=props.strikeThrough || "false";
+    this.state = {
+      ControlConfig: [], 
+    };
   }
-  render() {
-    const ControlConfig = global.controlsConfigJson.find((item) => item.id === this.id);
-    const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
-     const Styles=ControlConfig?.Styles;
-     const StyleProps = transformStyles(Styles);    
-    return (
-      <Text strikeThrough={StrikeThrough} style={StyleProps[Object.keys(Styles)[0]]} >
-         {this.props.children}
+  async componentDidMount() {
+    await this.loadPageConfig2();
+  }
+  loadPageConfig2 = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID,this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
+  render() {    
+   
+     const { ControlConfig } = this.state;  
+     const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
+      const Styles=ControlConfig?.Styles;
+      const StyleProps = transformStyles(Styles);  
+      const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
+      const LabelText=ControlConfig?.LabelText || this.props.children;
+     return (
+      
+       <Text strikeThrough={StrikeThrough} style={dynamicStyle} >
+         {LabelText}
         </Text>
     );
   }
@@ -111,24 +162,39 @@ class CbHomeButton extends React.Component {
   constructor(props) {
     super(props);
     this.id=props.id;
+    this.pageID=props.pageID;
     this.source = props.source;
+    this.state = {
+      ControlConfig: [], 
+    };
   }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);      
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
   render() {
-    const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
-     const ImageSource = buttonArray?.ImageSource || this.source;
-     const Styles=buttonArray?.Styles;
+    const {ControlConfig}= this.state;
+     const ImageSource = ControlConfig?.ImageSource || this.source;
+     const Styles=ControlConfig?.Styles;
     return (
       <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
         {
-          this.source ? <Image source={{ uri: this.source}} style={Styles? Styles?.HomeIcon : styles.HomeIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={Styles? Styles?.HomeIcon : styles.HomeIcon} />
+          ImageSource ? <Image source={{ uri: ImageSource}} style={Styles? Styles?.HomeIcon : styles.HomeIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={Styles? Styles?.HomeIcon : styles.HomeIcon} />
         }
       </TouchableOpacity>
 
     );
   }
 }
- const CbHeaderBackground = (ControlId) => {
-  const ControlConfig = global.controlsConfigJson.find((item) => item.id === ControlId);
+ const CbHeaderBackground = async (ControlId,PageId) => { 
+  const ControlConfig = await loadPageConfig(PageId,ControlId);
    const BgColor=ControlConfig?.BGColor;
     return {
       headerStyle: {
@@ -136,8 +202,8 @@ class CbHomeButton extends React.Component {
       },
     };
   };
-  const CbHeaderTitle = (ControlId,Title) => {
-    const ControlConfig = global.controlsConfigJson.find((item) => item.id === ControlId);
+  const CbHeaderTitle = async (ControlId,Title,PageId) => {
+    const ControlConfig  = await loadPageConfig(PageId,ControlId);        
     const Styles=ControlConfig?.Styles?.menuTitle || {};
       return {
          headerTitle:Title,
@@ -191,9 +257,6 @@ class CbAccordionlist extends React.Component {
     return (
       <FormContext.Consumer>
         {({itemDataVisible ,modifiersResponseData,setModifiersResponseData,cartData,singleItemDetails}) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
           let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
           const defaultOpenItems =  categoryData?.map((_, index) => `item-${index}`);
           const existingCartData = cartData && cartData?.find((item) =>item.Item_ID ===  singleItemDetails.Item_ID)
@@ -424,18 +487,34 @@ class CbAccordionlist extends React.Component {
 class CbImage extends React.Component {
   constructor(props) {
     super(props);
-    // this.id=props.id;
+     this.id=props.id;
+     this.pageID=props.pageId;
     this.source = props.source || "";
     this.imageJsx=props.imageJsx;
     this.style = props.style || "";
+    this.state = {
+      ControlConfig: [], 
+    };
   }
+  async componentDidMount() {
+    await this.loadPageConfig2();
+  }
+  loadPageConfig2 = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID,this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
 
   render() {
-    //const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    //const source = inputArray?.source  || this.source;'
+    const {ControlConfig} = this.state;
+    const source = ControlConfig?.ImageSource  || this.source;
+    const Styles=ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles);  
+    const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
     const jsx = this.imageJsx;
-    const source=this.source;
-     
     if (source) {
 
       if (source.endsWith('.svg')) {
@@ -443,7 +522,7 @@ class CbImage extends React.Component {
         return <SvgUri source={{ uri: source }}  />;
       } else {
 
-        return <Image alt='image' source={{ uri: source }}  style={this.style}/>;
+        return <Image alt='image' source={{ uri: source }}  style={dynamicStyle}/>;
       }
     } else {
       return jsx;
@@ -451,38 +530,7 @@ class CbImage extends React.Component {
   }
 }
 
-class CbBackButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.source = props.source;
-  }
-  render() {
-    return (
-      <TouchableOpacity onPress={()=>this.props.navigation?.goBack()} style={styles.backArrowHeader}>
-        {
-          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
-        }
-      </TouchableOpacity>
-    );
-  }
-}
 
-class CbHomeButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.source = props.source;
-  }
-  render() {
-    return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
-        {
-          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} />
-        }
-      </TouchableOpacity>
-
-    );
-  }
-}
 
 class CbFloatingButton extends React.Component {
   constructor(props) {
@@ -494,11 +542,6 @@ class CbFloatingButton extends React.Component {
     return (
       <FormContext.Consumer>
       {({cartData,modifierCartItemData}) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
-          const variant = buttonArray?.variant || this.variant;
-          const buttonText = buttonArray?.text || this.buttonText;
           const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
           return (
             <View style={styles.floatingContainer}>
@@ -601,7 +644,6 @@ class CbAddToCartButton extends React.Component {
   }
 
   renderAddToCartBtn = (contextProps) => {
-     const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
     const {itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
@@ -614,10 +656,10 @@ class CbAddToCartButton extends React.Component {
       return (
         <TouchableOpacity
           style={[this.style ? this.style : styles.addItemToCartBtn, 
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
-            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
-            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
-            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+            { borderColor: this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
+            {backgroundColor: "#fff"},
+            {borderRadius:5},
+            {borderWidth: 1}
           ]}
           activeOpacity={0.5}
           onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
@@ -657,11 +699,6 @@ class CbAddToCartButton extends React.Component {
     return (
       <FormContext.Consumer>
       {(contextProps) => {
-        const buttonArray = global.controlsConfigJson.find(
-          (item) => item.id === this.id
-        );
-        const variant = buttonArray?.variant || this.variant;
-        const buttonText = buttonArray?.text || this.buttonText;
 
         return (
           <>
@@ -678,6 +715,9 @@ class CbAddToCartButton extends React.Component {
 class cbSearchbox extends React.Component {
   constructor(props) {
     super(props);
+    this.id=props.id;
+    this.pageID=props.pageId
+    this.controlsConfigJson=props.controlsConfigJson;
     this.search=props.Searchsource || "";
     this.backarrow=props.Backarrowsource || "";
     this.close=props.closesource || "";
@@ -685,6 +725,7 @@ class cbSearchbox extends React.Component {
     this.state = {
       showSearchInput: false,
       searchValue: "",
+      ControlConfig: [],
     };
     this.inputRef = React.createRef();
   }
@@ -706,49 +747,42 @@ class cbSearchbox extends React.Component {
       });
     }
   }
-
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);      
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
   
   render() {
-    const { showSearchInput, searchValue } = this.state;
-    const Searchsource=this.search;
-    const Backarrowsource=this.backarrow;
-    const Closesource=this.close;
+    const { showSearchInput, searchValue,ControlConfig } = this.state;
+    const Searchsource=ControlConfig?.SearchIconSource || this.search;    
+    const Closesource=ControlConfig?.CloseIconSource || this.close;
+      const Backarrowsource = ControlConfig?.BackarrowIconSource || this.backarrow;
+      const placeholderprop= ControlConfig?.PlaceHolder;
+    const Styles=ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles); 
     return (
-      <Box
-        style={{
-          width: showSearchInput ? "100%" : 40,
-          height: 40,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginLeft:9,
-          borderRadius:4,
-          backgroundColor: showSearchInput ? "#f0f0f0" : "white",
-        }}
-      >
+      <Box style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}>
         {showSearchInput ? (
-          <Box
-            style={styles.searchBarMainContainer}
-          >
+          <Box style={StyleProps? StyleProps?.searchBarMainContainer : styles.searchBarMainContainer}>
             <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 10 }} >
               {
-                Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
+                Backarrowsource ? <Image source={{ uri: Backarrowsource}} style={StyleProps? StyleProps?.BackArrowIcon : styles.BackArrowIcon}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
             </TouchableOpacity>
-            <Input
-              style={styles.inputBox}
-            >
-              <InputField
-                ref={this.inputRef}
-                value={searchValue}
-                placeholder="Items"
-                onChangeText={(value) => this.setState({ searchValue: value })}
-              />
+            <Input  style={StyleProps? StyleProps?.SearchinputBox : styles.SearchinputBox}>
+              <InputField ref={this.inputRef}   value={searchValue} placeholder={placeholderprop} onChangeText={(value) => this.setState({ searchValue: value })}/>
             </Input>
             {searchValue && (
             <TouchableOpacity  onPress={() =>handleClearClick(this.setState.bind(this),this.state.searchValue,this.props.onSearchActivate )}  style={{ marginLeft: 5 }} > 
                 {
-                Closesource? <Image source={{ uri: Closesource}}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
+                Closesource? <Image source={{ uri: Closesource}} style={StyleProps? StyleProps?.CloseIcon : styles.CloseIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
                 }
               </TouchableOpacity>
             )}
@@ -760,7 +794,7 @@ class cbSearchbox extends React.Component {
             }
           >
             {
-          Searchsource ? <Image source={{ uri: Searchsource}}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
+          Searchsource ? <Image source={{ uri: Searchsource}} style={StyleProps? StyleProps?.SearchIconImage : styles.SearchIconImage}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
             }
           </TouchableOpacity>
         )}
@@ -783,15 +817,12 @@ class cbButton extends React.Component {
 
   render() {
 
-    const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
-    const variant = buttonArray?.variant || this.variant;
-    const buttonText = buttonArray?.text || this.buttonText ;
     const buttonStyle=this.customStyles.buttonStyle;
     const buttonTextStyle=this.customStyles.buttontextStyle;
     
     return (
-      <Button variant={variant} onPress={()=> this.onPress()} style={buttonStyle}  >
-          <ButtonText style={buttonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
+      <Button variant={this.variant} onPress={()=> this.onPress()} style={buttonStyle}  >
+          <ButtonText style={buttonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{this.buttonText}</ButtonText>
       </Button>
     );
   }
@@ -809,8 +840,6 @@ class cbCheckBox extends React.Component {
   }
 
   render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const checkBoxLabelprop = inputArray?.labeltext  || this.checkBoxLabel;
     const styles=this.customStyles;
 
     return (
@@ -818,7 +847,7 @@ class cbCheckBox extends React.Component {
       <CheckboxIndicator >
         <CheckboxIcon as={CheckIcon} />
       </CheckboxIndicator>
-      <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
+      <CheckboxLabel>{this.checkBoxLabel}</CheckboxLabel>
     </Checkbox>    
     );
   }
@@ -830,13 +859,29 @@ class cbImageBackground extends React.Component {
   constructor(props) {
     super();
     this.id=props.id;
+    this.pageID=props.pageId;
     this.source = props.source || null;
     this.styles= props.styles || null;
+    this.state = {
+      ControlConfig: [], 
+    };
   }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+    
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
 
   render() {
+    const { ControlConfig }=this.state;
     const { children } = this.props;
-    const ControlConfig = global.controlsConfigJson.find(item => item.id === this.id);
     const sourceprop = ControlConfig?.source  || this.source;
     const Styles = ControlConfig?.Styles ||  this.styles;
     const StyleProps = transformStyles(Styles);
@@ -860,21 +905,17 @@ class cbRadioButton extends React.Component {
 
 
   render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const radiolabelprop = inputArray?.labelText  || this.selectLabel;
-    const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.options;
-    const alignmentprop= inputArray?.alignment || this.alignment;
-    const Stack = alignmentprop === 'vertical' ? VStack : HStack;
+    const Stack = this.alignment === 'vertical' ? VStack : HStack;
     return (
 
       <FormControl>
       <VStack  space="md">
           <FormControlLabel>
-            <FormControlLabelText>{radiolabelprop}</FormControlLabelText>
+            <FormControlLabelText>{this.selectLabel}</FormControlLabelText>
           </FormControlLabel>
           <RadioGroup>
             <Stack space="sm">
-              {selectItems.map((item, index) => (
+              {this.options.map((item, index) => (
                 <Radio key={index} value={item.value} size="md" >
                   <RadioIndicator>
                     <RadioIcon as={CircleIcon} />
@@ -910,10 +951,9 @@ class cbSelect extends React.Component {
   }
 
   render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const selectLabelprop = inputArray?.labelText  || this.selectLabel;
-    const placeholderprop = inputArray?.placeholder || this.placeholder;
-    const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
+    const selectLabelprop =  this.selectLabel;
+    const placeholderprop =  this.placeholder;
+    const selectItems =  this.selectItems;
     return (
 <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
         <FormControlLabel>
@@ -968,15 +1008,14 @@ class cbInput extends React.Component {
   
 
   render() {
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const variantprop = inputArray?.variant  || this.valueariant;
-    const typeprop = inputArray?.type ||  this.input;
-    const labelTextprop = inputArray?.labelText || this.labelText;
-    const placeholderprop = inputArray?.placeholder || this.placeholder;
-    const errorMessageprop = inputArray?.errorMessage || this.errorMessage;
-    const isDisabledprop = inputArray?.isDisabled === 1 || this.isDisabled;
-    const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
-    const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
+    const variantprop =  this.valueariant;
+    const typeprop =  this.input;
+    const labelTextprop = this.labelText;
+    const placeholderprop =  this.placeholder;
+    const errorMessageprop =  this.errorMessage;
+    const isDisabledprop =  this.isDisabled;
+    const isReadOnlyprop =   this.isReadOnly;
+    const isRequiredprop =   this.isRequired;
     //const {getFormFieldData}= useFormContext();
 
     //const fieldData =this.getFormFieldData(this.formId,this.id); 
@@ -984,9 +1023,6 @@ class cbInput extends React.Component {
     return (
       <FormContext.Consumer>
       {({getFormFieldData}) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
           const value  = getFormFieldData(this.formId,this.id)
           return (
             <FormControl
@@ -1161,8 +1197,7 @@ class cbVStack extends React.Component {
   render() {
 
     const { children } = this.props;
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const spaceprop = inputArray?.space  || this.space;
+    const spaceprop = this.space;
 
     return (
       <VStack space={spaceprop}>
@@ -1203,8 +1238,6 @@ class CbFlatList extends React.Component{
   }
   render(){
     const { children } = this.props;
-    const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const spaceprop = inputArray?.space  || this.space;
     const ITEM_HEIGHT = 100
     return (
       <FlatList

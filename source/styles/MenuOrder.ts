@@ -327,7 +327,7 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold",
     textAlign: "center",
   },
-  dropdownIcon:{width:25,height:25},
+  dropdownIcon:{width: 15, height: 15, resizeMode: "contain",right: 20},
   modalBackground:{
     flex: 1,
     justifyContent: 'center',

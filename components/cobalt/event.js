@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { postApiCall } from '@/source/utlis/api';
 import { Alert } from 'react-native';
 import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions";
 
