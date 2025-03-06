@@ -190,10 +190,13 @@ export const useMenuOrderLogic = (props) => {
   };
 
   const openItemDetails = async (box) => {
-    let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    storeSingleItem({ ...box, response: quantityInfo.response })
-    increaseQuantity(box)
-    closePreviewModal()
+    console.log(box,"-->box")
+    if (box.IsAvailable === 1 && box.IsDisable === 0) {
+      let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+      storeSingleItem({ ...box, response: quantityInfo.response })
+      increaseQuantity(box)
+      closePreviewModal()
+    }
   }
 
   const handleReadMoreToggle = (id) => {

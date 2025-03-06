@@ -73,7 +73,7 @@ export default function MenuOrderScreen(props) {
   const singleItemPrice = modifierCartItem ? modifierCartItem?.quantityIncPrice : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
-  const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
 
   const renderMealTypeList = (mealTypeItem) => {
     return (

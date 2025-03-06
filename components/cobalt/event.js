@@ -167,7 +167,7 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
     const deleteCartItem = async (mealItemDetails) => {
-      let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
+      let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
       setCartData(updatedCartData);
     };

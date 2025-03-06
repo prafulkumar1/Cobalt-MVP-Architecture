@@ -99,12 +99,12 @@ export default function MyCartScreen(props) {
           >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
-                <UI.Text style={styles.itemTitle}>{item.ItemName}</UI.Text>
+                <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
                 {
-                  item?.Modifiers && item.Modifiers.length > 0 &&
+                  item?.selectedModifiers && item.selectedModifiers.length > 0 &&
                   <UI.CbFlatList
                     scrollEnabled = {false}
-                    flatlistData={item.Modifiers}
+                    flatlistData={item.selectedModifiers}
                     children={renderModifierList}
                   />
                 }
@@ -121,14 +121,14 @@ export default function MyCartScreen(props) {
                     onPress={() => handleDecrement(item)}
                   >
                     <Icon
-                      as={item.Quantity === 1 ? TrashIcon : RemoveIcon}
+                      as={item.quantity === 1 ? TrashIcon : RemoveIcon}
                       color="#5773a2"
                       size={"md"}
                       style={styles.trashIcon}
                     />
                   </UI.TouchableOpacity>
 
-                  <UI.Text style={styles.quantityTxt}>{item.Quantity}</UI.Text>
+                  <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
@@ -144,7 +144,7 @@ export default function MyCartScreen(props) {
                 </UI.Box>
               </UI.Box>
             </UI.Box>
-            {item.Comments && (
+            {item.comments && (
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
@@ -154,7 +154,7 @@ export default function MyCartScreen(props) {
                     source={require("@/assets/images/icons/messageIcon2x.png")}
                     style={styles.noteIcon}
                   />
-                  <UI.Text style={styles.itemNotes}>{item.Comments}</UI.Text>
+                  <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
                 </UI.TouchableOpacity>
               </UI.Box>
             )}
@@ -291,7 +291,9 @@ export default function MyCartScreen(props) {
             {
               cartData && cartData.length > 0 &&
               <UI.Box>
-                <>
+                {
+                  cartConfigData?.ShowTip ===1 && 
+                  <>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
@@ -303,6 +305,7 @@ export default function MyCartScreen(props) {
                       }
                     </UI.ScrollView>
                   </>
+                }
 
                 {keyboardVisible && tipKeyboardOpen && (
                   <UI.Box
