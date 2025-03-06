@@ -172,14 +172,6 @@ export default function MenuOrderScreen(props) {
       handleItemLayout
     } = useMenuOrderLogic(props)
 
-  const categoryRefs = useRef({});
-  const scrollViewRef = useRef(null);
-  const categoryScrollRef = useRef(null);
-  const categoryPositions = useRef({});
-  const [itemPositions, setItemPositions] = useState({});
-
-  const [expandedIds,setExpandedIds] = useState([])
-
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const singleItemPrice = modifierCartItem ?  Math.floor(Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 * 100) / 100 : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
