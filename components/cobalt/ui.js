@@ -1018,10 +1018,21 @@ class cbSearchbox extends React.Component {
     };
     this.inputRef = React.createRef();
   }
+
   handleFocus = () => {
     if (this.inputRef?.current) {
       this.inputRef.current.focus();
     }
+  };
+
+  handleSearch = (value) => {
+    this.setState({ searchValue: value });
+    this.props.onSearch(value); // Notify parent
+  };
+
+  handleClear = () => {
+    this.setState({ searchValue: "" });
+    this.props.onSearch(""); // Reset search results
   };
 
   componentDidUpdate(prevProps) {
@@ -1060,7 +1071,13 @@ class cbSearchbox extends React.Component {
           <Box
             style={styles.searchBarMainContainer}
           >
-            <TouchableOpacity   onPress={() => handleCloseClick(this.setState.bind(this), this.props.onSearchActivate) } style={{ marginLeft: 10 }} >
+            <TouchableOpacity   onPress={() => handleCloseClick(
+  this.setState.bind(this), 
+  this.props.onSearchActivate, 
+  this.props.onSearch, // handleClear function
+  this.props.onBackPress // New function to reset the list
+)}
+ style={{ marginLeft: 10 }} >
               {
                 Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
@@ -1069,14 +1086,20 @@ class cbSearchbox extends React.Component {
               style={styles.inputBox}
             >
               <InputField
-                ref={this.inputRef}
-                value={searchValue}
-                placeholder="Items"
-                onChangeText={(value) => this.setState({ searchValue: value })}
+  ref={this.inputRef}
+  value={searchValue}
+  placeholder="Items"
+  onChangeText={(value) => this.handleSearch(value)}
+  autoFocus={true} // Ensure autoFocus is enabled
               />
             </Input>
             {searchValue && (
-            <TouchableOpacity  onPress={() =>handleClearClick(this.setState.bind(this),this.state.searchValue,this.props.onSearchActivate )}  style={{ marginLeft: 5 }} > 
+              <TouchableOpacity  
+  onPress={() => handleClearClick(
+    this.setState.bind(this), 
+    this.props.onSearch // Reset search results & show default list
+  )} 
+> 
                 {
                 Closesource? <Image source={{ uri: Closesource}}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
                 }
@@ -1085,10 +1108,12 @@ class cbSearchbox extends React.Component {
           </Box>
         ) : (
           <TouchableOpacity
-            onPress={() =>
-              handleSearchClick(this.setState.bind(this), this.props.onSearchActivate)
-            }
-          >
+  onPress={() => {
+    this.setState({ showSearchInput: true });
+    if (this.props.onSearchPress) {
+      this.props.onSearchPress(); // Notify MenuOrderUI.js
+    }
+  }}          >
             {
           Searchsource ? <Image source={{ uri: Searchsource}}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
             }
