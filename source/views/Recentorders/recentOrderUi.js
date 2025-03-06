@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import { Image } from 'react-native';
 import { styles } from '@/source/styles/Recentorders/ROStyle';
 import { Box } from 'lucide-react-native';
-import { height } from '@/source/constants/Matrices';
+import { useFormContext } from '@/components/cobalt/event';
+import { height, horizontalScale, moderateScale, verticalScale } from '@/source/constants/Matrices';
 import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { useRecentOrderLogic } from '@/source/controller/recentOrder/RecentOrder';
@@ -12,8 +13,22 @@ function RenderingPendingOrders(props) {
   const OrdersList=RecentordersData.RecentOrders  
   
   return (
-    <Accordion style={{ paddingHorizontal: 3,left:5, width: 400, maxHeight:"100%",borderRadius: 8, backgroundColor: '#fffff', shadowColor: "#00000029", shadowOffset: { width: 4, height: 4 },
-      shadowOpacity: 0.3, shadowRadius: 10,    elevation: 8, padding:10   }}>
+<Accordion
+  style={{
+    paddingHorizontal: horizontalScale(10),
+    width: "100%", 
+    maxHeight: "100%",
+    borderRadius: moderateScale(8),
+    backgroundColor: "#ffffff",
+    shadowColor: "#00000029",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 8,
+    padding: moderateScale(10),
+    alignSelf: "center"
+  }}
+>
          {OrdersList?.PendingOrders?.length > 0 && OrdersList.PendingOrders.map((Order, index) => (
     <AccordionItem key={index} value={`item-${index}`}>
       <AccordionHeader >
@@ -22,7 +37,7 @@ function RenderingPendingOrders(props) {
             <UI.Text   style={{ fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_Bold",fontWeight: "700",  marginLeft: 10,   left:10  }}>
                Ordered Status
             </UI.Text>
-            <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:10 }}>   
+            <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:20 }}>   
               {Order.OrderStatus}
             </UI.Text>
         </UI.Box>
@@ -107,15 +122,26 @@ function RenderingPendingOrders(props) {
                 ))}
             </UI.Box>
             {Item.comment && 
-            <UI.Box style={{flexDirection:"row",justifyContent: "space-between",right:18}}>
-              <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: 12, height: 12,top:5  }} />}/>
-              <UI.Text style={{ fontSize: 12,fontFamily: "SourceSansPro_Bold", fontStyle: "italic",right:50 }}>{Item.comment}</UI.Text>
-            </UI.Box>}
+              <UI.Box style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
+  <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top:1 }} />} />
+  <UI.Text 
+    style={{ 
+      fontSize: 12, 
+      fontFamily: "SourceSansPro_Bold", 
+      fontStyle: "italic", 
+      flexShrink: 1, 
+      flexWrap: "wrap", 
+      maxWidth: "90%" 
+    }}
+  >
+    {Item.comment}
+  </UI.Text>
+</UI.Box>}
             </React.Fragment>
             ))}
           </UI.Box>
             <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
-               {Order.SubTotal && <UI.Text style={{ fontWeight: "700" }}>
+               {Order.SubTotal && <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
                   Sub Total:${Order.SubTotal.toFixed(2)}
                 </UI.Text>}
                 {Order.ServiceCharge && <UI.Text>10% Service Charge: ${Order.ServiceCharge.toFixed(2)}</UI.Text>}
@@ -184,7 +210,10 @@ export default function RecentordersScreen(props) {
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   const {} = useRecentOrderLogic(props)
-  
+  const { cartData } =  useFormContext();
+
+  const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
       
   return (
     <UI.Box style={{ backgroundColor: "white", height: "100%" }}>
@@ -197,7 +226,7 @@ export default function RecentordersScreen(props) {
           <UI.Text style={isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Recent Orders     </UI.Text>
         </UI.TouchableOpacity>
       </UI.Box>
-      <UI.ScrollView>
+      <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>  
         
         {isRecentOrder ? 
             <>
@@ -208,7 +237,7 @@ export default function RecentordersScreen(props) {
           <RenderingFavoritesList />  
         }
       </UI.ScrollView>
-      <UI.CbFloatingButton props={props} ></UI.CbFloatingButton>
+      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
 
     </UI.Box>    
       

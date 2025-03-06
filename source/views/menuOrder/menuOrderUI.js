@@ -13,8 +13,6 @@ import CbLoader from "@/components/cobalt/cobaltLoader";
 import { useRef, useState, useEffect } from "react";
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
-import { responsiveHeight } from "react-native-responsive-dimensions";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -150,75 +148,35 @@ export default function MenuOrderScreen(props) {
     } = useFormContext();
 
   const {
-    toggleSubmenu,
-    expandedSubmenus,
-    isRecentOrderOpen,
-    openRecentOrder,
-    errorMessage,
-    loading,
-    mealPeriods,
-    selectedCategory,
-    setSelectedCategory,
-      setMealType
+      toggleSubmenu,
+      expandedSubmenus,
+      isRecentOrderOpen,
+      openRecentOrder,
+      errorMessage,
+      loading,
+      mealPeriods,
+      selectedCategory,
+      expandedIds,
+      scrollViewRef,
+      categoryScrollRef,
+      setMealType,
+      openItemDetails,
+      handleReadMoreToggle,
+      handleModifierAddCart,
+      removeCartItems,
+      handleCategoryClick,
+      handleCategoryLayout,
+      handleLayout,
+      handleCloseItemDetails,
+      handleScroll,
+      handleItemLayout
     } = useMenuOrderLogic(props)
 
-  const categoryRefs = useRef({});
-  const scrollViewRef = useRef(null);
-  const categoryScrollRef = useRef(null);
-  const categoryPositions = useRef({});
-  const [itemPositions, setItemPositions] = useState({});
-
-  const [expandedIds,setExpandedIds] = useState([])
-
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const singleItemPrice = modifierCartItem ? Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?  Math.floor(Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 * 100) / 100 : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
-  const totalCartPrice = cartItemDetails ? cartItemDetails?.quantityIncPrice : 0;
-
-  const openItemDetails = async (box) => {
-    let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    storeSingleItem({ ...box, response: quantityInfo.response })
-    increaseQuantity(box)
-    closePreviewModal()
-  }
-
-
-  const handleReadMoreToggle = (id) => {
-    setExpandedIds((prevExpandedIds) => {
-      const isExpanded = prevExpandedIds.includes(id);
-      return isExpanded
-        ? prevExpandedIds.filter((expandedId) => expandedId !== id)
-        : [...prevExpandedIds, id];
-    });
-  };
-
-  const handleModifierAddCart = () => {
-    let isItemAvailableInCart = false
-    cartData?.forEach((items) => {
-      if (items.Item_ID === singleItemDetails.Item_ID) {
-        isItemAvailableInCart = true
-      }
-    })
-    const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
-    let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
-    if(isItemAvailableInCart){
-      if(categoryData?.length > 0){
-        updateModifierCartItem(existingCartItem)
-      }else{
-        updateWithoutModifierCartItem(existingCartItem)
-      }
-    }else{
-      addItemToModifierForCart(singleItemDetails);
-      closePreviewModal();
-    }
-  }
-  const removeCartItems = async() => {
-    props.navigation?.goBack()
-    setIsExitProfitCenter(false)
-    setModifierCartItemData([])
-    await AsyncStorage.removeItem('cart_data')
-  }
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -265,23 +223,6 @@ export default function MenuOrderScreen(props) {
     );
   }
 
-  const handleCategoryClick = (categoryId) => {
-    const yPosition = itemPositions[categoryId];
-    if (yPosition !== undefined && scrollViewRef.current) {
-      scrollViewRef?.current.scrollTo({ y: yPosition, animated: true });
-      const updateData = selectedCategory.map((items) => {
-        return{
-          ...items,
-          CategoryIsSelect : items.Category_ID === categoryId ? 1 : 0
-        }
-      })
-      setSelectedCategory(updateData);
-    }
-  };
-  const handleCategoryLayout = (event, categoryId) => {
-    const { x } = event.nativeEvent.layout;
-    categoryPositions.current[categoryId] = x;
-  };
   const renderMenuCategoryList = (item) => {
     return (
       <UI.Box onLayout={(e) => handleCategoryLayout(e, item.Category_ID)}>
@@ -317,66 +258,9 @@ export default function MenuOrderScreen(props) {
   };
 
   const renderCategoryMainList = () => {
-    const updateCategorySelection = (visibleCategoryId) => {
-      const updatedCategories = selectedCategory.map(category => {
-        return {
-          ...category,
-          CategoryIsSelect: category.Category_ID === visibleCategoryId ? 1 : 0,
-        }
-      });
-      setSelectedCategory(updatedCategories);
-
-      const xPosition = categoryPositions.current[visibleCategoryId];
-      if (xPosition !== undefined) {
-        categoryScrollRef.current?.scrollTo({ x: xPosition - 200, animated: true });
-      }
-    };
-
-    const handleLayout = (categoryId, event) => {
-      const layout = event.nativeEvent.layout;
-      categoryRefs.current[categoryId] = layout.y;
-    };
-
-  const handleCloseItemDetails = () => {
-    if (selectedModifiers.length === 0) {
-        setIsVisible(false)
-        updateModifierItemQuantity(singleItemDetails, 0)
-        setModifiersResponseData([])
-        setTimeout(() => {
-          closePreviewModal()
-        }, 100)
-      } else {
-        setIsVisible(true)
-      }
-    }
-
 
     const showActiveAvailableColor = (isAvailable,IsDisable) => {
       return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
-    };
-
-    const handleScroll = (event) => {
-      const scrollY = event?.nativeEvent?.contentOffset.y;
-      let visibleCategory = null;
-
-      for (const [categoryId, y] of Object.entries(categoryRefs.current)) {
-        if (scrollY >= y - 50 && scrollY < y + 100) {
-          visibleCategory = categoryId;
-          break;
-        }
-      }
-
-      if (visibleCategory) {
-        updateCategorySelection(visibleCategory);
-      }
-    };
-
-    const handleItemLayout = (categoryId, event) => {
-      const layout = event?.nativeEvent?.layout;
-      setItemPositions((prevPositions) => ({
-        ...prevPositions,
-        [categoryId]: layout.y,
-      }));
     };
 
     if (isCategoryEmpty) {
@@ -405,7 +289,7 @@ export default function MenuOrderScreen(props) {
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
-          contentContainerStyle={{ paddingBottom: responsiveHeight(80) }}
+          contentContainerStyle={styles.mainContainerList}
         >
    {
             searchQuery.trim() !== "" && filteredItems.length === 0 ? (
@@ -703,7 +587,7 @@ export default function MenuOrderScreen(props) {
                 as={CloseIcon}
                 color="#fff"
                 size={"md"}
-                style={{ width: 20, height: 20 }}
+                style={styles.closeIcon}
               />
             </UI.TouchableOpacity>
             <UI.Box style={styles.modiferItems}>
