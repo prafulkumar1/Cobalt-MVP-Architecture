@@ -295,6 +295,8 @@ class CbRecentAccordion extends React.Component {
     this.state = {
       isToastMessageVisiable: false,
       toastMessage: "",
+      cartData: props.cartData || [],  // Store cart data in state
+
     };
   }
 
@@ -347,10 +349,14 @@ class CbRecentAccordion extends React.Component {
     return (
       <FormContext.Consumer>
         {({ cartData, singleItemDetails, addToCart }) => {
+          if (JSON.stringify(cartData) !== JSON.stringify(this.state.cartData)) {
+      this.setState({ cartData }); 
+    }
+
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-
+          console.log('cart data', cartData);
           const categoryData =
             typeof this.componentData?.CompletedOrders === "string"
               ? JSON.parse(this.componentData?.CompletedOrders)
@@ -411,7 +417,8 @@ class CbRecentAccordion extends React.Component {
                           </AccordionTrigger>
                         </AccordionHeader>
                         <AccordionContent>
-{order.Items?.map((item, itemIndex) => (
+{order.Items?.map((item, itemIndex) =>{
+  return(
   <Box key={item.Item_ID}>
     <Box style={styles.roAccordionContentouterbox}>
       <Box style={styles.roAccordionContentItembox}>
@@ -420,8 +427,14 @@ class CbRecentAccordion extends React.Component {
         </Text>
         <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
       </Box>
-      <Box style={styles.roImagescetion}>
-        <TouchableOpacity
+      <Box
+  style={[
+    styles.roImagescetion,
+    this.state.cartData.some(cartItem => cartItem.Item_ID === item.Item_ID && cartItem.quantity > 0)
+      ? { width: 90 }
+      : {}
+  ]}
+>      <TouchableOpacity
           onPress={() => {
             item.IsFavorite = !item.IsFavorite; // Toggle favorite
             this.setState({}); // Force re-render
@@ -437,7 +450,7 @@ class CbRecentAccordion extends React.Component {
             style={styles.roItemImage}
           />
         </TouchableOpacity>
-        <CbAddToCartButton
+        <CbRecentAddToCart
           mealItemDetails={item}
           style={styles.roItemButton}
           onPress={() => addToCart(item)}
@@ -448,7 +461,9 @@ class CbRecentAccordion extends React.Component {
     {/* Remove Divider after the last item */}
     {itemIndex !== order.Items.length - 1 && <Divider />}
   </Box>
-))}
+  )
+} 
+)}
                           {order.IsReorder && (
                             <FormContext.Consumer>
     {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
@@ -602,6 +617,197 @@ class CbFloatingButton extends React.Component {
   }
 }
 
+
+class CbRecentAddToCart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.mealItemDetails = props.mealItemDetails
+    this.style = props.style
+    this.cartStyle = props.cartStyle
+    this.state ={
+      isAvailable : 0 ,
+      IsModifierAvailable:0
+    }
+  }
+  commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
+    if(isAvailable ===1 && IsDisable ===0){
+      return primaryColor
+    }else{
+      return secondaryColor
+    }
+  }
+
+
+  handleAddToCartBtn = async (quantity, storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible) => {
+    console.log("mealItemDetails:", this.mealItemDetails); // Debugging
+    
+    let quantityInfo = await postQuantityApiCall(quantity, this.mealItemDetails?.Item_ID);
+    
+    if (quantityInfo.statusCode === 200) {
+      this.setState({ 
+        isAvailable: quantityInfo?.response.IsAvailable, 
+        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable 
+      }, () => {
+        if (this.state.IsModifierAvailable === 1) {
+          storeSingleItem(this.mealItemDetails);
+          if (itemDataVisible) {
+            increaseQuantity(this.mealItemDetails, false);
+          } else {
+            closePreviewModal();
+            increaseQuantity(this.mealItemDetails, false);
+          }
+        } else {
+          console.log("Adding item to cart:", this.mealItemDetails); // Debugging
+          addItemToCartBtn(this.mealItemDetails);
+        }
+      });
+    } else {
+      console.log("Quantity API call failed:", quantityInfo);
+    }
+  };
+
+  modifierIncDecBtn = async (itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
+       let isItemAvailableInCart = false
+        cartData?.forEach((items) => {
+            if(items.Item_ID === this.mealItemDetails.Item_ID ){
+              isItemAvailableInCart = true
+            }
+        })
+    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
+    let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
+    if(quantityInfo.statusCode ==200){
+      this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
+        if (this.state.IsModifierAvailable ===1) {
+          if(operation === "decrement"){
+            if(isItemAvailableInCart){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }      
+        }else{
+          if(this.state.isAvailable ===1){
+            if(isItemAvailableInCart){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+            }else{
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+            }   
+          }else{
+              Alert.alert(quantityInfo?.response?.ResponseMessage)
+            }
+          }
+        } else {
+          if (operation === "decrement") {
+            if(itemDataVisible){
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+            }else{
+              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              updateModifierItemQuantity(this.mealItemDetails, cartQuantity-1);
+            }
+          } else {
+            if (this.state.isAvailable === 1) {
+              if(itemDataVisible){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
+              }else{
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+                updateModifierItemQuantity(this.mealItemDetails, cartQuantity+1)
+              }
+            } else {
+              Alert.alert(quantityInfo?.response?.ResponseMessage);
+            }
+          }
+        }
+      })
+    }
+  }
+  renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
+    if(itemDataVisible){
+        if(modifierQuantity === 1){
+          return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }else{
+          return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+        }
+    }else{
+      if(quantity === 1){
+        return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      } else{
+        return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      }
+    }
+  };
+
+  renderAddToCartBtn = (contextProps) => {
+     const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+    const {modifiersResponseData,itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const IsAvailable = this.mealItemDetails.IsAvailable;
+    const IsDisable = this.mealItemDetails.IsDisable
+    const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const quantity = cartItem ? cartItem.quantity : 0;
+    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
+    
+    if ( quantity === 0 && modifierQuantity === 0) {
+      return (
+        <TouchableOpacity
+          style={[this.style ? this.style : styles.addItemToCartBtn, 
+            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
+            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
+            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
+            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          ]}
+          activeOpacity={0.5}
+          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
+          disabled={IsAvailable === 1 && IsDisable === 0?false:true}
+        >
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+          >
+            {
+              this.renderIcons(quantity,modifierQuantity,itemDataVisible)
+            }
+          </TouchableOpacity>
+
+          {/* <Text style={styles.quantityTxt}>{quantity ? quantity : modifierQuantity}</Text> */}
+          <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text>
+
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+          >
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
+          </TouchableOpacity>
+        </Box>
+      );
+    }
+  };
+  render() {
+    return (
+      <FormContext.Consumer>
+      {(contextProps) => {
+        const buttonArray = global.controlsConfigJson.find(
+          (item) => item.id === this.id
+        );
+        const variant = buttonArray?.variant || this.variant;
+        const buttonText = buttonArray?.text || this.buttonText;
+
+        return (
+          <>
+          {this.renderAddToCartBtn(contextProps)}
+          </>
+        );
+      }}
+    </FormContext.Consumer>
+    );
+  }
+}
 
 class CbAddToCartButton extends React.Component {
   constructor(props) {
@@ -1451,6 +1657,7 @@ CbAccordionlist.displayName='CbAccordionlist';
 cbSelectTime.displayName='cbSelectTime';
 CbToastMessage.displayName = "CbToastMessage"
 CbRecentAccordion.displayName = "CbRecentAccordion"
+CbRecentAddToCart.displayName = "cbRecentAddToCart"
 
 
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion };
+ export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion,CbRecentAddToCart };

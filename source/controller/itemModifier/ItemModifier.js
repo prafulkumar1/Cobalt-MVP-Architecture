@@ -3,6 +3,7 @@ import { useFormContext } from '@/components/cobalt/event';
 import { foodOrderData } from '@/source/constants/commonData';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ConstructionIcon } from 'lucide-react-native';
 const pageId='ItemModifier';
 export const useItemModifierLogic = () => {
     const [itemNames, setItemNames] = useState([]);
@@ -65,6 +66,7 @@ export const useItemModifierLogic = () => {
                 }))
               };
                setModifiersResponseData(updatedData)
+               console.log
               const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
               setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
               if(cartItem !==undefined){
