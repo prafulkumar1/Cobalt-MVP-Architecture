@@ -72,7 +72,7 @@ export const useMyCartLogic = () => {
       let tipDetails = cartInfo?.response?.Tip?.map((items) => {
         return{
           id:uuid.v4(),
-          tip: items.SETTINGVALUE,
+          tip: items?.tipvalue,
           isSelected:0
         }
       })
@@ -148,23 +148,31 @@ export const useMyCartLogic = () => {
   };
  
   const addTip = (tipDetails) => {
-    if(tipDetails.isCustomAdded && tipDetails.isCustomAdded ===1){
-      textInputRef?.current?.focus();
-      const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
-      const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id)
-      setTipData(removeLastItem)
-      setIsCustomTipAdded(true)
-      setCustomTipValue(tipDetails.tip);
-     customTip.current = tipDetails.tip
-     getCartPrice()
-    }else{
-      const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
-      const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:1}:{...item,isSelected:0})
-      setTipData(removeLastItem)
-      setIsCustomTipAdded(true)
-      setCustomTipValue("")
-      setTipSelection({"TipPercentage": tipDetails.tip,"TipCustom":"" })
+    console.log(tipDetails,"---<<<")
+    let isItemThere = tipData.some((items) =>items.id === tipDetails.id)
+    if(isItemThere){
+      const updatedTipDetails = tipData.map((item) => ({...item,isSelected:!item.isSelected}))
+      setTipData(updatedTipDetails)
       getCartPrice()
+    }else{
+      if(tipDetails.isCustomAdded && tipDetails.isCustomAdded ===1){
+        textInputRef?.current?.focus();
+        const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
+        const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id)
+        setTipData(removeLastItem)
+        setIsCustomTipAdded(true)
+        setCustomTipValue(tipDetails.tip);
+       customTip.current = tipDetails.tip
+       getCartPrice()
+      }else{
+        const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
+        const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:1}:{...item,isSelected:0})
+        setTipData(removeLastItem)
+        setIsCustomTipAdded(true)
+        setCustomTipValue("")
+        setTipSelection({"TipPercentage": tipDetails.tip,"TipCustom":"" })
+        getCartPrice()
+      }
     }
   }
  

@@ -309,8 +309,8 @@ export const styles = StyleSheet.create({
   },
   addToCartBtn: {
     backgroundColor: "#5773a2",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    width:responsiveWidth(40),
+    height:responsiveHeight(5),
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",

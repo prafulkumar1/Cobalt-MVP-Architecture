@@ -183,7 +183,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
     return(
      <>
         <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>
-          <UI.Text style={textStyle}>{item.tip}</UI.Text>
+          <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
         </UI.TouchableOpacity>
        {
         (lastIndex === index && isCustomTipAdded) &&

@@ -599,12 +599,15 @@ export default function MenuOrderScreen(props) {
                 {/* <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text> */}
                 <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
               </UI.Box>
-              <UI.CbCommonButton
+              {/* <UI.CbCommonButton
                 showBtnName={""}
                 style={styles.addToCartBtn}
                 btnTextStyle={styles.addCartTxt}
                 onPress={() => handleModifierAddCart()}
-              />
+              /> */}
+              <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
+                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              </UI.TouchableOpacity>
             </UI.Box>
           </UI.Box>
         </Modal>
