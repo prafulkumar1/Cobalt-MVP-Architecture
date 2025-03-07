@@ -173,10 +173,10 @@ export default function MenuOrderScreen(props) {
     } = useMenuOrderLogic(props)
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const singleItemPrice = modifierCartItem ?  Math.floor(Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 * 100) / 100 : 0;
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
@@ -597,14 +597,8 @@ export default function MenuOrderScreen(props) {
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 {/* <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text> */}
-                <UI.Text style={styles.orderAmount}>{`$${quantity > 1 ? totalCartPrice : singleItemPrice}`}</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
               </UI.Box>
-              {/* <UI.CbCommonButton
-                showBtnName={""}
-                style={styles.addToCartBtn}
-                btnTextStyle={styles.addCartTxt}
-                onPress={() => handleModifierAddCart()}
-              /> */}
               <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
                 <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
               </UI.TouchableOpacity>

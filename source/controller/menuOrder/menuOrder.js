@@ -190,7 +190,6 @@ export const useMenuOrderLogic = (props) => {
   };
 
   const openItemDetails = async (box) => {
-    console.log(box,"-->box")
     if (box.IsAvailable === 1 && box.IsDisable === 0) {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
       storeSingleItem({ ...box, response: quantityInfo.response })

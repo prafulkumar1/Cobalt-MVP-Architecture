@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
-import { Alert } from 'react-native';
  
 export const FormContext = createContext();
  
@@ -338,7 +337,6 @@ export const UseFormContextProvider = ({children}) => {
     const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
     const updatedCartItems = prevCartItems.map((item) => {
       if (item.Item_ID === updatedItem.Item_ID) {
-        console.log(item,"-->item----->>>>>>>>>")
         return {
           ...item,
           comments: commentValue.current || "",
@@ -350,8 +348,6 @@ export const UseFormContextProvider = ({children}) => {
         return item;
       }
     });
-
-    console.log(JSON.stringify(updatedCartItems),"--->>>sjsusuusus")
  
     await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
     setCartData(updatedCartItems);

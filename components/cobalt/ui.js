@@ -933,7 +933,7 @@ class CbAddToCartButton extends React.Component {
     const IsDisable = this.mealItemDetails?.IsDisable
     const cartItem = cartData && cartData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
-    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     
     if ( quantity === 0 && modifierQuantity === 0) {
@@ -964,7 +964,7 @@ class CbAddToCartButton extends React.Component {
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{quantity >= 1 ? quantity : modifierQuantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity >= 1 ? itemDataVisible? modifierQuantity:quantity : modifierQuantity}</Text>
           {/* <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text> */}
 
           <TouchableOpacity

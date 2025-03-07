@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
  
-    const {selectedLocationId,selectedTime,selectedLocation,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
+    const {setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -79,6 +79,7 @@ export const useMyCartLogic = () => {
       setTipData(tipDetails)
       setSelectedTime(showTimeData[0]?.value)
       setSelectedLocation(showPickLocationData[0]?.value)
+      setSelectedLocationId(showPickLocationData?.length === 1 && showPickLocationData[0]?.pickUpLocationId)
       setPickUpLocations(cartInfo?.response?.Pickup_Locations)
       setShowPickupTime(showTimeData)
       setShowPickupLocation(showPickLocationData)
@@ -88,8 +89,8 @@ export const useMyCartLogic = () => {
   }
  
   const getCartPrice = async () => {
-    console.log(tipSelection,"---<<<tipppppppppppp>>>>>>>>>")
     try {
+      let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
       setIsPriceLoaded(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
@@ -104,8 +105,8 @@ export const useMyCartLogic = () => {
       const params = {   
          "Location_Id":`${getProfitCenterId?.LocationId}`,
          "Items":cartItemIds,
-         "TipPercentage": tipSelection?.TipPercentage ? tipSelection?.TipPercentage : "",
-         "TipCustom": tipSelection?.TipCustom ? tipSelection?.TipCustom : "",
+         "TipPercentage": tipSelection.current?.TipPercentage,
+         "TipCustom": customTipVal,
       }
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE", params)
       setMyCartData(cartInfo.response?.Items)
@@ -159,14 +160,13 @@ export const useMyCartLogic = () => {
      customTip.current = tipDetails.tip
      getCartPrice()
     }else{
-      console.log(tipDetails,"--->>shshhshss")
       let tipWithoutPercent = tipDetails.tip.replace("%", "");
       const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
       const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:!item.isSelected}:{...item,isSelected:false})
       setTipData(removeLastItem)
       setIsCustomTipAdded(true)
       setCustomTipValue("")
-      tipSelection.current = ({"TipPercentage": tipWithoutPercent,"TipCustom":"" })
+      tipSelection.current = ({"TipPercentage": !tipDetails.isSelected ? tipWithoutPercent : "","TipCustom":"" })
       getCartPrice()
     }
   }
@@ -255,15 +255,16 @@ export const useMyCartLogic = () => {
     }
   }
   const editCommentBtn = (props,item) => {
-    console.log(item,"--->single item")
     navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
       quantityIncPrice:item?.TotalPrice
     })
-    setTimeout(() => {
-      closePreviewModal()
-    }, 500);
+    increaseQuantity({
+      ...item,
+      quantityIncPrice:item?.TotalPrice
+    })
+    closePreviewModal()
   }
   const handlePlaceOrder = async() => {
     try {
@@ -271,15 +272,16 @@ export const useMyCartLogic = () => {
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
+      let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
           "PickupTime": selectedTime ? selectedTime :"",
-          "PickupLocationId": selectedLocationId?selectedLocationId:"",
+          "PickupLocationId": selectedLocationId,
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
-          "TipPercentage": tipSelection?.tip ? tipSelection?.tip : "",
-          "TipCustom": tipSelection?.tip_value ? tipSelection?.tip_value : "",
+          "TipPercentage": tipSelection.current?.TipPercentage, 
+          "TipCustom": customTipVal 
         },
         "Items": cartItemIds,
       }

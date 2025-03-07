@@ -296,7 +296,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
-                    <UI.ScrollView style={{alignSelf:"center"}} scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <UI.ScrollView style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)

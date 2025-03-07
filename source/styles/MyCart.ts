@@ -201,7 +201,7 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)'
+    backgroundColor: 'rgba(0, 0, 0, 0.9)'
   },
   confirmMdl: {
     flex: 1,
@@ -210,14 +210,14 @@ export const styles = StyleSheet.create({
     margin: 10
   },
   modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21, fontFamily: "SourceSansPro_SemiBold" },
-  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: responsiveWidth(50), paddingVertical: 5, marginTop: responsiveHeight(5), lineHeight: 30 },
+  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: isPlatformIos()?responsiveWidth(100):responsiveWidth(50), paddingVertical: 5, marginTop: responsiveHeight(5), lineHeight: 30 },
   timeAlertMsg: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', paddingVertical: 5 },
   pickDetails: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', marginTop: responsiveHeight(5), paddingVertical: 5 },
   innerModalMsgContainer: { width: "100%", justifyContent: 'space-between', alignItems: 'center', },
   innerModal: {
     width: '100%',
     backgroundColor: "#fff",
-    height: responsiveHeight(65),
+    height: isPlatformIos()?responsiveHeight(75):responsiveHeight(65),
     padding: 20,
     justifyContent: 'space-between',
     borderRadius: 10,

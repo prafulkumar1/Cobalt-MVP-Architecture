@@ -323,9 +323,10 @@ export const styles = StyleSheet.create({
   },
   addCartTxt: {
     color: "#fff",
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.8),
     fontFamily: "SourceSansPro_SemiBold",
     textAlign: "center",
+    paddingTop:isPlatformAndroid()?8:4
   },
   dropdownIcon:{width:25,height:25},
   modalBackground:{
