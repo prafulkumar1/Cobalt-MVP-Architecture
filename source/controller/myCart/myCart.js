@@ -94,14 +94,18 @@ export const useMyCartLogic = () => {
       setIsPriceLoaded(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
-      const cartItemIds = cartData?.map((item) => (
-        {
+      const cartItemIds = cartData?.map((item) => {
+        const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+        return{
           Comments:item.comments,
           ItemId:item.Item_ID,
           Quantity:item.quantity,
-          Modifiers:item?.selectedModifiers ? item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
-        }))
- 
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
+        }
+      })
       const params = {   
          "Location_Id":`${getProfitCenterId?.LocationId}`,
          "Items":cartItemIds,
@@ -299,8 +303,10 @@ export const useMyCartLogic = () => {
     setOrderInstruction(text)
   }
   const closeSuccessModal = (props) => {
-    setOrderSuccessModal(false);
     navigateToScreen(props,"Recentorders",true,{cartScreen:true});
+    setTimeout(() => {
+      setOrderSuccessModal(false);
+    }, 100);
   }
   return {
     tipData,

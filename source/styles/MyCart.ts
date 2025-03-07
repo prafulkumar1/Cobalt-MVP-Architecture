@@ -217,7 +217,7 @@ export const styles = StyleSheet.create({
   innerModal: {
     width: '100%',
     backgroundColor: "#fff",
-    height: isPlatformIos()?responsiveHeight(75):responsiveHeight(65),
+    height: isPlatformIos()?responsiveHeight(68):responsiveHeight(65),
     padding: 20,
     justifyContent: 'space-between',
     borderRadius: 10,

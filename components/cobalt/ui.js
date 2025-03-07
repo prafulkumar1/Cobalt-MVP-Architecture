@@ -104,7 +104,7 @@ class CbAccordionlist extends React.Component {
 
     setModifiersResponseData(updatedModifiersResponseData);
 
-    this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID });
+    this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID ,Category_Id});
 };
 
   render() {

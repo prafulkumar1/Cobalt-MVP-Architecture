@@ -4,6 +4,7 @@ import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
+import { Alert } from 'react-native';
 
 
 const pageId = 'MenuOrder';
@@ -42,7 +43,7 @@ export const useMenuOrderLogic = (props) => {
     setIsExitProfitCenter,
     setModifierCartItemData,
     updateWithoutModifierCartItem,
-    setFormFieldData
+    setFormFieldData,
   } = useFormContext();
 
 
@@ -206,27 +207,78 @@ export const useMenuOrderLogic = (props) => {
         : [...prevExpandedIds, id];
     });
   };
+  // const handleModifierAddCart = () => {
+  //   let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
+  //   let isRequiredModifier = false
+  //   categoryData.forEach((items) => {
+  //     console.log(items?.DisplayOption,"--->what")
+  //     if(items?.DisplayOption == "Mandatory"){
+  //       isRequiredModifier= true
+  //     }else{
+  //       isRequiredModifier = false
+  //     }
+  //   })
+  //   console.log(isRequiredModifier,"--->sadjsajdga-------")
+  //   if(isRequiredModifier){
+  //     Alert.alert("Please select one modifier")
+  //   }else{
+  //     let isItemAvailableInCart = false
+  //     cartData?.forEach((items) => {
+  //       if (items.Item_ID === singleItemDetails.Item_ID) {
+  //         isItemAvailableInCart = true
+  //       }
+  //     })
+  //     const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
+  //     if (isItemAvailableInCart) {
+  //       if (categoryData?.length > 0) {
+  //         updateModifierCartItem(existingCartItem)
+  //       } else {
+  //         updateWithoutModifierCartItem(existingCartItem)
+  //       }
+  //     } else {
+  //       addItemToModifierForCart(singleItemDetails);
+  //       closePreviewModal();
+  //     }
+  //   }
 
+  // }
+  
   const handleModifierAddCart = () => {
-    let isItemAvailableInCart = false
-    cartData?.forEach((items) => {
-      if (items.Item_ID === singleItemDetails.Item_ID) {
-        isItemAvailableInCart = true
-      }
-    })
-    const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
-    let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
-    if (isItemAvailableInCart) {
-      if (categoryData?.length > 0) {
-        updateModifierCartItem(existingCartItem)
-      } else {
-        updateWithoutModifierCartItem(existingCartItem)
-      }
+    let categoryData = typeof modifiersResponseData?.Categories === "string" 
+        ? JSON.parse(modifiersResponseData?.Categories) 
+        : modifiersResponseData?.Categories;
+    
+    let isRequiredModifier = false;
+    categoryData.forEach((items) => {
+        if (items?.DisplayOption === "Mandatory") {
+            isRequiredModifier = true;
+        }
+    });
+     if(selectedModifiers.length > 0){
+      isRequiredModifier = false
+     }
+    if (isRequiredModifier) {
+        Alert.alert("Please select one modifier");
     } else {
-      addItemToModifierForCart(singleItemDetails);
-      closePreviewModal();
+        let isItemAvailableInCart = false;
+        cartData?.forEach((items) => {
+            if (items.Item_ID === singleItemDetails.Item_ID) {
+                isItemAvailableInCart = true;
+            }
+        });
+        const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+        if (isItemAvailableInCart) {
+            if (categoryData?.length > 0) {
+                updateModifierCartItem(existingCartItem);
+            } else {
+                updateWithoutModifierCartItem(existingCartItem);
+            }
+        } else {
+            addItemToModifierForCart(singleItemDetails);
+            closePreviewModal();
+        }
     }
-  }
+}
   const removeCartItems = async () => {
     props.navigation?.goBack()
     setIsExitProfitCenter(false)
