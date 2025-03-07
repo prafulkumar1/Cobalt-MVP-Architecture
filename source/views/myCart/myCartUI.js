@@ -168,18 +168,17 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
     let lastIndex = tipData.length - 1;
     let item = tipDetails
     const isCustomAdded = item.isCustomAdded === 1;
-    const isSelected = item.isSelected === 1;
   
     const containerStyle = isCustomAdded
       ? styles.customTipItem
       : [
           styles.tipMainContainer,
-          { backgroundColor: isSelected ? '#00BFF6' : '#fff' },
+          { backgroundColor: item.isSelected ? '#00BFF6' : '#fff' },
         ];
   
     const textStyle = isCustomAdded
       ? [styles.tipCount, { color: '#000' }]
-      : [styles.tipCount, { color: isSelected ? '#fff' : '#00BFF6' }];
+      : [styles.tipCount, { color: item.isSelected ? '#fff' : '#00BFF6' }];
     return(
      <>
         <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>

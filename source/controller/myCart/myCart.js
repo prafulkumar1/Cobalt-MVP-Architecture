@@ -33,10 +33,10 @@ export const useMyCartLogic = () => {
     const [grandTotal,setGrandTotal] = useState(0)
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
-    const [tipSelection,setTipSelection]= useState(null)
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
+    const tipSelection = useRef()
  
  
   useEffect(() => {
@@ -73,7 +73,7 @@ export const useMyCartLogic = () => {
         return{
           id:uuid.v4(),
           tip: items?.tipvalue,
-          isSelected:0
+          isSelected:false
         }
       })
       setTipData(tipDetails)
@@ -88,6 +88,7 @@ export const useMyCartLogic = () => {
   }
  
   const getCartPrice = async () => {
+    console.log(tipSelection,"---<<<tipppppppppppp>>>>>>>>>")
     try {
       setIsPriceLoaded(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
@@ -148,31 +149,25 @@ export const useMyCartLogic = () => {
   };
  
   const addTip = (tipDetails) => {
-    console.log(tipDetails,"---<<<")
-    let isItemThere = tipData.some((items) =>items.id === tipDetails.id)
-    if(isItemThere){
-      const updatedTipDetails = tipData.map((item) => ({...item,isSelected:!item.isSelected}))
-      setTipData(updatedTipDetails)
-      getCartPrice()
+    if(tipDetails.isCustomAdded && tipDetails.isCustomAdded ===1){
+      textInputRef?.current?.focus();
+      const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
+      const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id)
+      setTipData(removeLastItem)
+      setIsCustomTipAdded(true)
+      setCustomTipValue(tipDetails.tip);
+     customTip.current = tipDetails.tip
+     getCartPrice()
     }else{
-      if(tipDetails.isCustomAdded && tipDetails.isCustomAdded ===1){
-        textInputRef?.current?.focus();
-        const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
-        const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id)
-        setTipData(removeLastItem)
-        setIsCustomTipAdded(true)
-        setCustomTipValue(tipDetails.tip);
-       customTip.current = tipDetails.tip
-       getCartPrice()
-      }else{
-        const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
-        const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:1}:{...item,isSelected:0})
-        setTipData(removeLastItem)
-        setIsCustomTipAdded(true)
-        setCustomTipValue("")
-        setTipSelection({"TipPercentage": tipDetails.tip,"TipCustom":"" })
-        getCartPrice()
-      }
+      console.log(tipDetails,"--->>shshhshss")
+      let tipWithoutPercent = tipDetails.tip.replace("%", "");
+      const updatedTipDetails = tipData.filter((item) => item.isCustomAdded ===1)
+      const removeLastItem = tipData.filter((itemId) => updatedTipDetails[0]?.id !== itemId.id).map((item) => item.id == tipDetails.id?{...item,isSelected:!item.isSelected}:{...item,isSelected:false})
+      setTipData(removeLastItem)
+      setIsCustomTipAdded(true)
+      setCustomTipValue("")
+      tipSelection.current = ({"TipPercentage": tipWithoutPercent,"TipCustom":"" })
+      getCartPrice()
     }
   }
  
@@ -184,7 +179,7 @@ export const useMyCartLogic = () => {
     const updatedTipDetails = tipData.map((item) => {
       return{
         ...item,
-        isSelected:0
+        isSelected:false
       }
     })
     setTipData(updatedTipDetails)
@@ -196,7 +191,7 @@ export const useMyCartLogic = () => {
      setCustomTipValue(numericValue ? `$${numericValue}` : '');
      customTip.current = numericValue ? `$${numericValue}` : ''
      handleResetTip()
-     setTipSelection({"TipPercentage":"","TipCustom": value})
+     tipSelection.current = {"TipPercentage":"","TipCustom": value}
   }
  
   const handleSaveTip = () => {
@@ -206,7 +201,7 @@ export const useMyCartLogic = () => {
       const newTip = {
         id: uuid.v4(),
         tip: `${customTip.current}`,
-        isSelected: 0,
+        isSelected: false,
         isCustomAdded:1
       };
  
