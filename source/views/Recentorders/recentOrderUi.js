@@ -1,6 +1,6 @@
 import * as UI from '@/components/cobalt/importUI';
 import { RecentordersData,FavoritesList } from '@/source/constants/commonData';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image } from 'react-native';
 import { styles } from '@/source/styles/Recentorders/ROStyle';
 import { Box } from 'lucide-react-native';
@@ -294,10 +294,13 @@ export default function RecentordersScreen(props) {
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   const {} = useRecentOrderLogic(props)
   const { cartData } =  useFormContext();
-
+  const { loading, orders, fetchRecentOrders } = useRecentOrderLogic(props); // Fetch orders from API
+  console.log('Orders', orders);
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
-      
+  useEffect(() => {
+    fetchRecentOrders(); // Ensure data is up-to-date
+  }, []); // 
   return (
     <UI.Box style={{ backgroundColor: "white", height: "100%" }}>
       <UI.Box style={{ display: "flex", flexDirection: "row", marginVertical: 11, marginLeft: 8, gap: 5 }}>
@@ -311,10 +314,10 @@ export default function RecentordersScreen(props) {
       </UI.Box>
       <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>  
         
-        {isRecentOrder ? 
+      {isRecentOrder ? 
             <>
               <RenderingPendingOrders />
-              <UI.CbRecentAccordion componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
+              <UI.CbRecentAccordion componentData={orders} screenName="RecentOrders" />
           </>
           : 
           <RenderingFavoritesList />  

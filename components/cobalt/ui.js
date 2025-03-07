@@ -290,7 +290,7 @@ class CbRecentAccordion extends React.Component {
     this.screenName = props.screenName;
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
-    this.componentData = props.componentData || [];
+    this.componentData = props.componentData ;
 
     this.state = {
       isToastMessageVisiable: false,
@@ -303,13 +303,13 @@ class CbRecentAccordion extends React.Component {
   
   
 
-  handleReorder = (order, cartData, addItemToCartBtn, updateCartItemQuantity) => {
-    if (!order.Items || order.Items.length === 0) {
+  handleReorder = (orders, cartData, addItemToCartBtn, updateCartItemQuantity) => {
+    if (!orders || orders.length === 0) {
       console.log("No items found for reorder.");
       return;
     }
   
-    order.Items.forEach((item) => {
+    orders.forEach((item) => {
       const existingItem = cartData.find(cartItem => cartItem.Item_ID === item.Item_ID);
   
       const itemWithModifiers = {
@@ -330,7 +330,7 @@ class CbRecentAccordion extends React.Component {
   
     this.setState({
       isToastMessageVisiable: true,
-      toastMessage: `Added/Reordered ${order.Items.length} items!`,
+      toastMessage: `Added/Reordered ${orders.length} items!`,
     });
   
     setTimeout(() => {
@@ -339,26 +339,38 @@ class CbRecentAccordion extends React.Component {
   };
   
   
+  
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
 
     return (
       <FormContext.Consumer>
-        {({ cartData, singleItemDetails, addToCart }) => {
+        {({ cartData, singleItemDetails, addToCart, orders }) => {
           if (JSON.stringify(cartData) !== JSON.stringify(this.state.cartData)) {
       this.setState({ cartData }); 
     }
+    console.log('Recent Orders', orders);
+    const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
 
-          const categoryData =
-            typeof this.componentData?.CompletedOrders === "string"
-              ? JSON.parse(this.componentData?.CompletedOrders)
-              : this.componentData?.CompletedOrders;
+// Group orders by Ordereddate
+const groupedOrders = ordersData.reduce((acc, order) => {
+  if (!acc[order.Ordereddate]) {
+    acc[order.Ordereddate] = [];
+  }
+  acc[order.Ordereddate].push(order);
+  return acc;
+}, {});
 
-          const defaultOpenItems = categoryData?.map(
-            (_, index) => `item-${index}`
-          );
+// Convert object into an array for rendering
+const categoryData = Object.keys(groupedOrders)
+  .map(date => ({
+    date,
+    items: groupedOrders[date]
+  }))
+  .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
 
+console.log("Grouped and Sorted Orders", categoryData);
           return (
             <>
               <CbFlatList
@@ -367,7 +379,7 @@ class CbRecentAccordion extends React.Component {
                   const order = item;
                   return (
                     <Accordion
-                      defaultValue={defaultOpenItems}
+                    defaultValue={[`item-${index}`]}
                       variant="filled"
                       type="single"
                       size="md"
@@ -387,7 +399,7 @@ class CbRecentAccordion extends React.Component {
                                     source={require("@/assets/images/icons/ROdate.png")}
                                   />
                                   <AccordionTitleText style={styles.roAccordionTitleText}>
-                                    {`Ordered Date: ${order.OrderDate}`}
+                                    {`Ordered Date: ${item.date}`}
                                   </AccordionTitleText>
                                 </Box>
                                 {isExpanded ? (
@@ -410,34 +422,34 @@ class CbRecentAccordion extends React.Component {
                           </AccordionTrigger>
                         </AccordionHeader>
                         <AccordionContent>
-                          {order?.Items?.map((item, itemIndex) => {
-                            return (
-                              <Box key={item.Item_ID}>
+                        {item.items.map(order => (
+
+                              <Box key={order.Item_ID}>
                                 <Box style={styles.roAccordionContentouterbox}>
                                   <Box style={styles.roAccordionContentItembox}>
-                                    <Text style={styles.roItemName} strikeThrough={!item.IsAvailable}>
-                                      {item.Item_Name}
+                                    <Text style={styles.roItemName} strikeThrough={!order.IsAvailable}>
+                                      {order.Item_Name}
                                     </Text>
-                                    <Text style={styles.roItemprice}>{`$${item.Price}`}</Text>
+                                    <Text style={styles.roItemprice}>{`$${order.Price}`}</Text>
                                   </Box>
                                   <Box
                                     style={[
                                       styles.roImagescetion,
-                                      this.state.cartData.some(cartItem => cartItem.Item_ID === item.Item_ID && cartItem.quantity > 0)
+                                      this.state.cartData.some(cartItem => cartItem.Item_ID === order.Item_ID && cartItem.quantity > 0)
                                         ? { width: 90 }
                                         : {}
                                     ]}
                                   >
                                     <TouchableOpacity
                                       onPress={() => {
-                                        item.IsFavorite = !item.IsFavorite; // Toggle favorite
+                                        order.IsFavorite = !order.IsFavorite; // Toggle favorite
                                         this.setState({}); // Force re-render
                                       }}
                                     >
                                       <Image
                                         alt="favorite"
                                         source={
-                                          item.IsFavorite
+                                          order.IsFavorite
                                             ? require("@/assets/images/icons/Fav.png")
                                             : require("@/assets/images/icons/Notfav.png")
                                         }
@@ -445,26 +457,25 @@ class CbRecentAccordion extends React.Component {
                                       />
                                     </TouchableOpacity>
                                     <CbRecentAddToCart
-                                      mealItemDetails={item}
+                                      mealItemDetails={order}
                                       style={styles.roItemButton}
-                                      onPress={() => addToCart(item)}
+                                      onPress={() => addToCart(order)}
                                     />
                                   </Box>
                                 </Box>
 
                                 {/* Remove Divider after the last item */}
-                                {itemIndex !== order.Items.length - 1 && <Divider />}
+                                {index !== item.items.length - 1 && <Divider />}
                               </Box>
                             )
-                          }
-                          )}
-                          {order.IsReorder && (
+                        )}
+                          {item.items.some(order => order.IsReOrder) && (
                             <FormContext.Consumer>
                               {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
                                 <Button
                                   variant="outline"
                                   style={styles.roReoderButton}
-                                  onPress={() => this.handleReorder(order, cartData, addItemToCartBtn, updateCartItemQuantity)}
+                                  onPress={() => this.handleReorder(item.items, cartData, addItemToCartBtn, updateCartItemQuantity)}
                                 >
                                   <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
                                     Re-Order

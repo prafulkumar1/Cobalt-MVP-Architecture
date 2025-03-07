@@ -1,29 +1,41 @@
-import { useState, useEffect } from 'react';
-import { useFormContext } from '@/components/cobalt/event';
+import { useEffect, useState } from 'react';
 import { postApiCall } from '@/source/utlis/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFormContext } from '@/components/cobalt/event';
 
-const pageId='RecentOrder';
-export const useRecentOrderLogic = (props) => {
+let recentOrderData = []; // Global variable to store fetched data
+
+export const useRecentOrderLogic = () => {
   const [loading, setLoading] = useState(false);
-  const {setIsPrevCartScreen} = useFormContext();
-  
+  const {orders, setOrders} = useFormContext()
   useEffect(() => {
-    const isCartScreen = props?.route?.params?.cartScreen
-    setIsPrevCartScreen(isCartScreen)
-    getRecentOrderList()
-  }, [])
+    fetchRecentOrders();
+  }, []);
 
-  const getRecentOrderList = async () => {
-    setLoading(true)
-    const params = {
-      "FilterDate": "",
-      "FilterTime": ""
+  const fetchRecentOrders = async () => {
+    setLoading(true);
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem ? JSON.parse(getProfitCenterItem) : null;
+
+      const params = {
+        "Location_Id": getProfitCenterId?.LocationId || "",
+      };
+      console.log('location ID', params);
+
+      let response = await postApiCall("RECENT_ORDERS", "GET_RECENT_ORDERS", params);
+
+      if (response.statusCode === 200 && response.response.ResponseCode === "Success") {
+        recentOrderData = response.response.CompletedOrders || [];
+        setOrders(recentOrderData); // Update local state
+      }
+    } catch (error) {
+      console.error("Error fetching recent orders:", error);
     }
-    let recentOrderResponseData = await postApiCall("","", params)
-    if(recentOrderResponseData.statusCode == 200){
-      
-    }
-  }
-  return {
+    setLoading(false);
   };
+
+  return { loading, orders, fetchRecentOrders };
 };
+
+export { recentOrderData }; // Export the data

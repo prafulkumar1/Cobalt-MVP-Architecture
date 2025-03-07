@@ -21,7 +21,8 @@ export const UseFormContextProvider = ({children}) => {
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
- 
+    const [orders, setOrders] = useState([]); // Local state for reactivity
+
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("")
@@ -425,7 +426,9 @@ export const UseFormContextProvider = ({children}) => {
       setIsPrevCartScreen,
       isPrevCartScreen,
       selectedLocationId,
-      setSelectedLocationId
+      setSelectedLocationId,
+      orders, 
+      setOrders
     }
     return (
       <FormContext.Provider
