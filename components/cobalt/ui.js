@@ -126,6 +126,7 @@ class CbText extends React.Component {
     super(props);
     this.id=props.id;
     this.pageID=props.pageId;
+    this.Conditionalstyle=props.Conditionalstyle || {};
     this.strikeThrough=props.strikeThrough || "false";
     this.state = {
       ControlConfig: [], 
@@ -144,7 +145,7 @@ class CbText extends React.Component {
   };
   render() {    
    
-     const { ControlConfig } = this.state;  
+     const { ControlConfig } = this.state; 
      const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
       const Styles=ControlConfig?.Styles;
       const StyleProps = transformStyles(Styles);  
@@ -152,7 +153,7 @@ class CbText extends React.Component {
       const LabelText=ControlConfig?.LabelText || this.props.children;
      return (
       
-       <Text strikeThrough={StrikeThrough} style={dynamicStyle} >
+       <Text strikeThrough={StrikeThrough} style={[dynamicStyle,this.Conditionalstyle]} >
          {LabelText}
         </Text>
     );

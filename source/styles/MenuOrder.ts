@@ -47,11 +47,12 @@ export const styles = StyleSheet.create({
     marginRight: responsiveWidth(6),
     zIndex:-1
   },
-  activeMenuType: {
+  MenuMealType: {
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
     width: responsiveWidth(30),
+    borderRadius: 5,
     marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
   },

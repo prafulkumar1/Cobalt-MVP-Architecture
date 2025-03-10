@@ -95,28 +95,30 @@ export default function MenuOrderScreen(props) {
 
   const renderMealTypeList = (mealTypeItem) => {
     return (
-      <UI.Box style={styles.mealTypeContainer}>
+      <UI.CbBox id="MealTypeContainer" pageId={'MenuOrder'} style={styles.mealTypeContainer}>
         <UI.TouchableOpacity activeOpacity={0.6}   onPress={() => setMealType(mealTypeItem.MealPeriod_Id,mealTypeItem.IsEnabled)}>
-         <UI.Box style={[mealTypeItem.IsSelect === 1 ? [styles.activeMenuType,{backgroundColor: "#00C6FF", borderRadius: 5,},] : styles.inactiveMenuType,]} >
-          <UI.Text
+         <UI.CbBox id="MenuMealType" pageId={'MenuOrder'} style={[styles.MenuMealType,mealTypeItem.IsSelect === 1 ? { backgroundColor: "#00C6FF"}:{ backgroundColor: "#ECECEC",opacity: 0.8}]} Conditionalstyle={mealTypeItem.IsSelect === 1 ? { backgroundColor: "#00C6FF"}:{ backgroundColor: "#ECECEC",opacity: 0.8}}  >
+          <UI.CbText id="MealTypeLabel" pageId={'MenuOrder'}
             style={[
               styles.mealTypeLabel,
               { color: mealTypeItem.IsSelect === 1 ? "#ffffff" : "#717171" },
             ]}
+            Conditionalstyle={mealTypeItem.IsSelect === 1 ? { color: "#ffffff"}:{ color: "#717171"}}
           >
             {mealTypeItem.MealPeriod_Name?.toUpperCase()}
-          </UI.Text>
-          <UI.Text
+          </UI.CbText>
+          <UI.CbText id="MealTimeDuration" pageId={'MenuOrder'}
             style={[
              styles.timeDurationTxt,
               { color: mealTypeItem.IsSelect === 1 ? "#fff" : "#717171" },
             ]}
+            Conditionalstyle={mealTypeItem.IsSelect === 1 ? { color: "#ffffff"}:{ color: "#717171"}}
           >
             {mealTypeItem.Time}
-          </UI.Text>
-          </UI.Box>
+          </UI.CbText>
+          </UI.CbBox>
         </UI.TouchableOpacity>
-      </UI.Box>
+      </UI.CbBox>
     );
   }
 
@@ -138,11 +140,11 @@ export default function MenuOrderScreen(props) {
           activeOpacity={0.6}
           onPress={() => handleCategoryClick(item.Category_ID)}
         >
-          <UI.Text style={styles.categoryText}>
+          <UI.CbText id="CategoryText" pageId="MenuOrder" style={styles.categoryText}>
             {item.Category_Name?.toUpperCase()}
-          </UI.Text>
+          </UI.CbText>
           {item.CategoryIsSelect === 1 && (
-            <UI.Box
+            <UI.CbBox id="BottomStyle" pageId="MenuOrder"
               style={[
                styles.bottomStyle,
               ]}
@@ -260,9 +262,9 @@ export default function MenuOrderScreen(props) {
                           style={styles.cardMainContainer}
                           onPress={() => toggleSubmenu(category.Category_ID)}
                         >
-                          <UI.Text style={styles.itemCategoryLabel}>
+                          <UI.CbText id="ItemCategoryLabel" pageId="MenuOrder" style={styles.itemCategoryLabel}>
                             {item.SubMenu_Name}
-                          </UI.Text>
+                          </UI.CbText>
                           {expandedSubmenus[category.Category_ID] ? (
                             <ChevronUpIcon
                               style={styles.icon}
@@ -305,8 +307,8 @@ export default function MenuOrderScreen(props) {
                                   },
                                 ]}
                               >
-                                <UI.Box style={styles.rowContainer}>
-                                  <UI.Box style={[styles.textContainer]}>
+                                <UI.CbBox id="MenulistrowContainer" pageId="MenuOrder" style={styles.rowContainer}>
+                                  <UI.CbBox id="MenuTextContainer" pageId="MenuOrder" style={[styles.textContainer]}>
                                     <UI.Text
                                       numberOfLines={1}
                                       style={[
@@ -358,7 +360,7 @@ export default function MenuOrderScreen(props) {
                                         {isExpanded? "Show Less": "Read More"}
                                       </UI.Text>
                                     )}
-                                  </UI.Box>
+                                  </UI.CbBox>
 
                                   <UI.Box style={styles.imageContainer}>
                                     <UI.Box
@@ -383,7 +385,7 @@ export default function MenuOrderScreen(props) {
                                     </UI.Box>
                                     <UI.CbAddToCartButton mealItemDetails={box} />
                                   </UI.Box>
-                                </UI.Box>
+                                </UI.CbBox>
                                 {!lastItem && (
                                   <UI.Box style={styles.horizontalLine} />
                                 )}
@@ -530,7 +532,7 @@ export default function MenuOrderScreen(props) {
     <UI.CbBox id="MenuorderContainer" pageId={'MenuOrder'} style={styles.mainContainer}>
       <UI.CbBox id="MainHeaderContainer" pageId={'MenuOrder'} Conditionalstyle={isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}} styles={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
         {
-          !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch" pageId={'MenuOrder'} controlsConfigJson={controlsConfigJson} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
+          !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch" pageId={'MenuOrder'} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
         }
         {!isSearchActive && (
           <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
