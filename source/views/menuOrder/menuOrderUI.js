@@ -135,7 +135,8 @@ export default function MenuOrderScreen(props) {
     updateOrAddTxt,
     isExitProfitCenter,
     setIsExitProfitCenter,
-    menuOrderData
+    menuOrderData,
+    isKeyboardVisible
     } = useFormContext();
 
   const {
@@ -563,7 +564,10 @@ export default function MenuOrderScreen(props) {
           onRequestClose={closePreviewModal}
         >
           <UI.Box style={styles.modalBackground}>
-            <UI.TouchableOpacity
+            {
+              !isKeyboardVisible
+              && 
+              <UI.TouchableOpacity
               onPress={() =>
                 handleCloseItemDetails(
                   setIsVisible,
@@ -583,6 +587,7 @@ export default function MenuOrderScreen(props) {
                 style={styles.closeIcon}
               />
             </UI.TouchableOpacity>
+            }
             <UI.Box style={styles.modiferItems}>
               <ItemModifier />
             </UI.Box>
