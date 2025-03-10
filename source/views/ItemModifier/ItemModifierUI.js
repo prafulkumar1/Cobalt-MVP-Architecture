@@ -13,9 +13,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const ItemModifier = (props) => {
-   
-    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
-
+    const {toastDetails,setToastDetails,  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
@@ -253,6 +251,16 @@ const ItemModifier = (props) => {
             </UI.Box>
           </Modal>
         </Animated.ScrollView>
+        {
+          toastDetails?.isToastVisiable && 
+          <UI.CbToastMessage
+          message={toastDetails?.toastMessage}
+          isToastMessageVisiable={toastDetails?.isToastVisiable}
+          transparent={true}
+          onRequestClose={() => setToastDetails({isToastVisiable:false,toastMessage:""})}
+          closePreviewModal={() => setToastDetails({isToastVisiable:false,toastMessage:""})}
+        />
+        }
       </>
     );
     

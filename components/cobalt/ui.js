@@ -144,11 +144,12 @@ class CbAccordionlist extends React.Component {
                               return (
                                 <>
                                   <Box style={styles.recentOrderContainer}>
-                                    <AccordionTitleText
+                                    <Text
                                       style={styles.modifierContainer}
                                     >
                                       {order.Category_Name}
-                                      <Box style={styles.quantityMessage}>
+                                    </Text>
+                                    <Box style={styles.quantityMessage}>
                                         {
                                           order.DisplayOption && 
                                           <Text
@@ -165,7 +166,6 @@ class CbAccordionlist extends React.Component {
                                             : ""}
                                         </Text>
                                       </Box>
-                                    </AccordionTitleText>
                                     
                                   </Box>
                                   {isExpanded ? (
@@ -636,7 +636,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,{profileCenterTile:this.screenProps?.route?.params?.profileCenterTile})}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?4:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?3:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );

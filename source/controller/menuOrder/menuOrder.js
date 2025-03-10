@@ -44,6 +44,7 @@ export const useMenuOrderLogic = (props) => {
     setModifierCartItemData,
     updateWithoutModifierCartItem,
     setFormFieldData,
+    setToastDetails
   } = useFormContext();
 
 
@@ -207,41 +208,6 @@ export const useMenuOrderLogic = (props) => {
         : [...prevExpandedIds, id];
     });
   };
-  // const handleModifierAddCart = () => {
-  //   let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
-  //   let isRequiredModifier = false
-  //   categoryData.forEach((items) => {
-  //     console.log(items?.DisplayOption,"--->what")
-  //     if(items?.DisplayOption == "Mandatory"){
-  //       isRequiredModifier= true
-  //     }else{
-  //       isRequiredModifier = false
-  //     }
-  //   })
-  //   console.log(isRequiredModifier,"--->sadjsajdga-------")
-  //   if(isRequiredModifier){
-  //     Alert.alert("Please select one modifier")
-  //   }else{
-  //     let isItemAvailableInCart = false
-  //     cartData?.forEach((items) => {
-  //       if (items.Item_ID === singleItemDetails.Item_ID) {
-  //         isItemAvailableInCart = true
-  //       }
-  //     })
-  //     const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
-  //     if (isItemAvailableInCart) {
-  //       if (categoryData?.length > 0) {
-  //         updateModifierCartItem(existingCartItem)
-  //       } else {
-  //         updateWithoutModifierCartItem(existingCartItem)
-  //       }
-  //     } else {
-  //       addItemToModifierForCart(singleItemDetails);
-  //       closePreviewModal();
-  //     }
-  //   }
-
-  // }
   
   const handleModifierAddCart = () => {
     let categoryData = typeof modifiersResponseData?.Categories === "string" 
@@ -249,16 +215,19 @@ export const useMenuOrderLogic = (props) => {
         : modifiersResponseData?.Categories;
     
     let isRequiredModifier = false;
-    categoryData.forEach((items) => {
-        if (items?.DisplayOption === "Mandatory") {
-            isRequiredModifier = true;
-        }
-    });
-     if(selectedModifiers.length > 0){
-      isRequiredModifier = false
-     }
+    const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+    if(getRequiredItem.length>0){
+      isRequiredModifier = true
+      getRequiredItem?.map((item) => {
+        return selectedModifiers?.forEach((modifierId) => {
+          if (item.Category_Id == modifierId.Category_Id) {
+            isRequiredModifier = false
+          }
+        })
+      })
+    }
     if (isRequiredModifier) {
-        Alert.alert("Please select one modifier");
+        setToastDetails({isToastVisiable:true,toastMessage:"Please select one modifier"})
     } else {
         let isItemAvailableInCart = false;
         cartData?.forEach((items) => {

@@ -215,14 +215,9 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   horizontalLine: {
-    height: 1,
-    width: "100%",
-    borderRadius: 1,
-    borderWidth: 1,
-    borderColor: "#9F9F9F",
-    borderStyle: "dotted",
-    opacity: 0.4,
+    width: responsiveWidth(95),
     marginTop: responsiveHeight(2),
+    opacity:0.6
   },
   itemCategoryLabel: {
     color: "#5773a2",
