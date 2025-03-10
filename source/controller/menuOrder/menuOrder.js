@@ -215,10 +215,12 @@ export const useMenuOrderLogic = (props) => {
         : modifiersResponseData?.Categories;
     
     let isRequiredModifier = false;
+    let requiredModifier = ""
     const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
     if(getRequiredItem.length>0){
       isRequiredModifier = true
       getRequiredItem?.map((item) => {
+        requiredModifier = item?.Category_Name
         return selectedModifiers?.forEach((modifierId) => {
           if (item.Category_Id == modifierId.Category_Id) {
             isRequiredModifier = false
@@ -227,7 +229,10 @@ export const useMenuOrderLogic = (props) => {
       })
     }
     if (isRequiredModifier) {
-        setToastDetails({isToastVisiable:true,toastMessage:"Please select one modifier"})
+        setToastDetails({isToastVisiable:true,toastMessage:`Please select the required ${requiredModifier} to proceed with your order`})
+        setTimeout(() => {
+          setToastDetails({isToastVisiable:false,toastMessage:""})
+        }, 6000);
     } else {
         let isItemAvailableInCart = false;
         cartData?.forEach((items) => {

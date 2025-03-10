@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { postApiCall } from '@/source/utlis/api';
+import { Keyboard } from 'react-native';
  
 export const FormContext = createContext();
  
@@ -35,7 +36,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
     const [selectedLocationId, setSelectedLocationId] = useState("");
     const [toastDetails,setToastDetails] = useState({isToastVisiable:false,toastMessage:""})
- 
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   
     const commentValue = useRef("")
     const modifiersData = useRef(null)
@@ -48,6 +49,26 @@ export const UseFormContextProvider = ({children}) => {
     },[formData])
     useEffect(() => {
       getConfigurations();
+    }, []);
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        () => {
+          setIsKeyboardVisible(true);
+        }
+      );
+      const keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        () => {
+          setIsKeyboardVisible(false);
+        }
+      );
+  
+      return () => {
+        keyboardDidHideListener.remove();
+        keyboardDidShowListener.remove();
+      };
     }, []);
  
        
@@ -428,7 +449,8 @@ export const UseFormContextProvider = ({children}) => {
       selectedLocationId,
       setSelectedLocationId,
       toastDetails,
-      setToastDetails
+      setToastDetails,
+      isKeyboardVisible
     }
     return (
       <FormContext.Provider

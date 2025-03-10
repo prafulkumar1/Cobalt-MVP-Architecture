@@ -129,7 +129,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 10,
   },
-  recentOrderImage: { width: 120, height: 60, borderRadius: 10 },
+  recentOrderImage: {
+    width: responsiveWidth(30),
+    height: responsiveHeight(9),
+    borderRadius: 5,
+    resizeMode: "cover",
+  },
   recentOrderName: {
     fontSize: 12,
     color: "#4B5154",
