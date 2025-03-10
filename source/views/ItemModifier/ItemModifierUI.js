@@ -14,25 +14,17 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const ItemModifier = (props) => {
-    const { setSingleItemDetails ,toggleFavorite,singleItemDetails,modifierData,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,selectedModifiers,modifierCartItemData,setIsFavorite } = useFormContext()
+    const { setSingleItemDetails,toggleFavorite,singleItemDetails,modifierData,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,selectedModifiers,modifierCartItemData,setIsFavorite } = useFormContext()
 
-    const {ImageUrl,Item_Name,Price,Description,response,isFavorite} = singleItemDetails
+    const {ImageUrl,Item_Name,Price,Description,response,isFavorite} = singleItemDetails;
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
-    const scrollY = useRef(new Animated.Value(0)).current;
-
-   console.log('====================================');
-   console.log("uhius",singleItemDetails);
-   console.log('====================================');
-    
-    
+    const scrollY = useRef(new Animated.Value(0)).current;  
    useEffect(() => {
-   
-  
     if (cartItem && cartItem.isFavorite === 1 && singleItemDetails.isFavorite !== 1) {
       setSingleItemDetails((prevDetails) => ({
         ...prevDetails,
@@ -76,21 +68,21 @@ const ItemModifier = (props) => {
               },
             ]}
           >
-            <UI.TouchableOpacity style={styles.favIconBtn} >
-              <UI.CbImage
-                imageJsx={
-                  <Image
-                    source={
-                      isFavorite === 1
-                        ? require("@/assets/images/icons/Fav3x.png")
-                        : require("@/assets/images/icons/Notfav3x.png")
+            <UI.TouchableOpacity style={styles.favIconBtn} onPress={()=> toggleFavorite()}>
+                    {
+                      isFavorite === 1 ?
+                      <Image
+                          source={require("@/assets/images/icons/Fav3x.png")}
+                          style={styles.favIcon}
+                          resizeMode="contain"
+                        />
+                        :<Image
+                        source={require("@/assets/images/icons/Notfav3x.png")}
+                        style={styles.favIcon}
+                        resizeMode="contain"
+                      />
                     }
-                    style={styles.favIcon}
-                    resizeMode="contain"
-                  />
-                }
-              />
-            </UI.TouchableOpacity>
+                  </UI.TouchableOpacity>
 
             <UI.CbAddToCartButton
               mealItemDetails={singleItemDetails}
@@ -148,11 +140,7 @@ const ItemModifier = (props) => {
                   ]}
                 >
                   <UI.TouchableOpacity style={styles.favIconBtn} onPress={()=> toggleFavorite()}>
-                    {/* <UI.CbImage
-                      imageJsx={
-                        
-                      }
-                    /> */}
+                
                     {
                       isFavorite === 1 ?
                       <Image

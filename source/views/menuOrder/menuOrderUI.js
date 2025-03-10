@@ -57,6 +57,7 @@ export default function MenuOrderScreen(props) {
       setModifierCartItemData,
       updateWithoutModifierCartItem,
       menuOrderData,
+      isFavorite
     } = useFormContext();
 
   const {
@@ -87,7 +88,7 @@ export default function MenuOrderScreen(props) {
 
   const openItemDetails = async (box) => {
     let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-    storeSingleItem({...box,response:quantityInfo.response,isFavorite:0})
+    storeSingleItem({...box,response:quantityInfo.response,isFavorite})
     increaseQuantity(box)
     closePreviewModal()
     setFormFieldData("ItemModifier","","Comments",cartItemDetails?.comments,false)
@@ -272,7 +273,6 @@ export default function MenuOrderScreen(props) {
         [categoryId]: layout.y,
       }));
     };
-  
     if (isCategoryEmpty) {
       return (
         <UI.Box style={styles.emptyListContainer}>
@@ -577,42 +577,37 @@ export default function MenuOrderScreen(props) {
   const OnRecentOrderPress = () => {
     const RenderingRecentOrders = ({ item }) => {
  
-      const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_Id )
-     
+      const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_ID )
       return (
         <UI.Box style={{ marginRight: 30, }}>
-        
-            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.Image ? recentOrderImage?.Image : item.Image }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
+          <UI.Box style={{ alignItems: "center", justifyContent: "center" }}>
+            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.ImageUrl ? recentOrderImage?.ImageUrl : item.ImageUrl }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
             ]} />} />
-
-
-        
-            <UI.CbAddToCartButton mealItemDetails={itemDetails} 
-            // style={styles.recentBtn} 
+            <UI.CbAddToCartButton mealItemDetails={itemDetails}
             />
-          
-
-
-            <UI.Box style={styles.recentMainList}>
-              <UI.Text id="recentOrderName"
-                style={[
-                  recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
-                ]}
-                numberOfLines={1}
-                ellipsizeMode="tail"
-              >{item.Item_Name}
-              </UI.Text>
-
-
-            </UI.Box>
           </UI.Box>
+
+
+          <UI.Box style={styles.recentMainList}>
+            <UI.Text id="recentOrderName"
+              style={[
+                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
+              ]}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >{item.Item_Name}
+            </UI.Text>
+
+
+          </UI.Box>
+        </UI.Box>
       );
     };
 
     return (
       <UI.Box style={styles.recentContainer}>
         <UI.CbFlatList
-          flatlistData={RecentOrderData}
+          flatlistData={menuOrderData}
           horizontal
           children={({ item }) => <RenderingRecentOrders item={item} />}
         />

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4, 
     elevation: 5,},
     ActiveButtonTextStyle:{ color: "white" ,fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1},
-    Item_Image:{height:70,width:"25%",borderRadius:10},
+    Item_Image:{height:responsiveHeight(9),width:"25%",borderRadius:6},
     Favorite_Image:{height:22,width:20},
     AddButton:{    width: responsiveWidth(10),height:responsiveHeight(5),right:10,},
 })

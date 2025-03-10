@@ -276,13 +276,18 @@ export const UseFormContextProvider = ({children}) => {
   };
   const updateWithoutModifierCartItem = (data) => {}
 
-const toggleFavorite = () => {
-  setSingleItemDetails(prevDetails => {
-    const updatedDetails = { ...prevDetails, isFavorite: prevDetails.isFavorite === 0 ? 1 : 0 };
-    console.log("Updated singleItemDetails:", updatedDetails);
-    return updatedDetails;
-  });
-};
+  const toggleFavorite = (value) => {
+    console.log(value)
+    setSingleItemDetails(prevState => {
+      console.log("Previous isFavorite:", prevState.isFavorite);
+      const updatedState = {
+        ...prevState,
+        isFavorite: prevState.isFavorite === 0 ? 1 : 0
+      };
+      console.log("Updated isFavorite:", updatedState.isFavorite);
+      return updatedState;
+    });
+  };
 
   
   const storeSingleItem = (item) => {
@@ -308,7 +313,6 @@ const toggleFavorite = () => {
       storeSingleItem,
       singleItemDetails,
       setSingleItemDetails,
-      toggleFavorite,
       increaseQuantity,
       modifierCartItemData,
       updateModifierItemQuantity,
@@ -341,7 +345,8 @@ const toggleFavorite = () => {
       updateModifierCartItem,
       isExitProfitCenter,setIsExitProfitCenter,
       setIsFavorite,
-      isFavorite
+      isFavorite,
+      toggleFavorite
     }
     return (
       <FormContext.Provider
