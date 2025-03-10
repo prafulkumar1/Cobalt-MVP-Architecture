@@ -174,11 +174,11 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    padding:5
+    padding:8
   },
   cartCountTxt:{
     position: "absolute",
-    bottom: 28,
+    bottom: 32,
     color: "#FFFFFF",
     fontSize: responsiveFontSize(2.6),
     padding: 4,
@@ -268,7 +268,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F3F3F3",
     borderRadius: 5,
     padding: 0,
-    height: 30,
     justifyContent: "center",
   },
   topItem:{
@@ -421,10 +420,10 @@ CheckIcon:{color:"#ffff"},
     color: "#4B5154",
     fontSize: 14,
     fontFamily:"SourceSansPro_SemiBold",
-    alignSelf:"center"
+    alignSelf:"center",
   },
   requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
-  maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  maxAllowedTxt:{ color: "#3B87C1", fontSize: 13 ,fontFamily:"SourceSansPro_SemiBold"},
   requiredTxt:{     
     color: "#4B5154",
     fontSize: 14,
@@ -521,6 +520,6 @@ CheckIcon:{color:"#ffff"},
     lineHeight:15
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
-  collapseIcon:{right:18},
-  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:2}
+  collapseIcon:{},
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center"}
 })

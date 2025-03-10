@@ -34,6 +34,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
     const [selectedLocationId, setSelectedLocationId] = useState("");
+    const [toastDetails,setToastDetails] = useState({isToastVisiable:false,toastMessage:""})
  
   
     const commentValue = useRef("")
@@ -425,7 +426,9 @@ export const UseFormContextProvider = ({children}) => {
       setIsPrevCartScreen,
       isPrevCartScreen,
       selectedLocationId,
-      setSelectedLocationId
+      setSelectedLocationId,
+      toastDetails,
+      setToastDetails
     }
     return (
       <FormContext.Provider
