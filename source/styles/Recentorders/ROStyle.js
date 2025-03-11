@@ -51,7 +51,7 @@ export const styles = StyleSheet.create({
   favMainContainer:{ paddingHorizontal: 8, height: '100%', paddingBottom: responsiveHeight(20) },
   favItem:{ flexDirection: 'row', justifyContent: 'space-between', gap: 3, paddingVertical: 15, borderBottomWidth: 0.2, borderBlockColor: "#00000026" },
   itemImg:{ width:responsiveWidth(25)},
-  labelContainer:{ paddingHorizontal: 5},
+  labelContainer:{ paddingHorizontal: 5,width:responsiveWidth(44)},
   itemLables:{ 
     fontSize: 18, 
     color: "#4B5154", 
@@ -66,20 +66,17 @@ export const styles = StyleSheet.create({
   readLessTxt:{ color: '#26BAE2', fontSize: 11 },
   rightContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "space-between",
+    alignItems: 'flex-start',
   },
   rightSubContainer: {
     width: responsiveWidth(5),
     height: responsiveHeight(2.5),
     justifyContent: "center",
     alignItems: "center",
-    right:15
+    right:15,
   },
-  favIcon:{ width: "100%", height: "100%" },
+  favIcon:{ width: 25, height:25,top:10 },
   addToCartBtn: {
     padding: responsiveWidth(1.8),
-    justifyContent: "center",
-    alignItems: "center",
   }
 })

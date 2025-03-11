@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
 import { Alert } from 'react-native';
+import { navigateToScreen } from '@/source/constants/Navigations';
 
 
 const pageId = 'MenuOrder';
@@ -254,7 +255,7 @@ export const useMenuOrderLogic = (props) => {
     }
 }
   const removeCartItems = async () => {
-    props.navigation?.goBack()
+    navigateToScreen(props,"ProfitCenters",false,{isCartItemsRemove:true})
     setIsExitProfitCenter(false)
     setModifierCartItemData([])
     await AsyncStorage.removeItem('cart_data')
