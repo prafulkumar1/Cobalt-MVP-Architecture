@@ -8,8 +8,13 @@ let recentOrderData = []; // Global variable to store fetched data
 export const useRecentOrderLogic = () => {
   const [loading, setLoading] = useState(false);
   const {orders, setOrders} = useFormContext()
+  const [favItems, setFavItems] = useState();
+  const [loaded, setLoaded] = useState(false);
+  
   useEffect(() => {
     fetchRecentOrders();
+    getFavorites();
+
   }, []);
 
   const fetchRecentOrders = async () => {
@@ -35,7 +40,30 @@ export const useRecentOrderLogic = () => {
     setLoading(false);
   };
 
-  return { loading, orders, fetchRecentOrders };
-};
+  const getFavorites = async () => {
+    try {
+      setLoaded(true);
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+     
+      if (!getProfitCenterId?.LocationId) {
+        setLoaded(false);
+        return;
+      }
+  
+      const params = {  
+        "Location_Id": `${getProfitCenterId.LocationId}`,
+      };
+     
+      let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
+      setFavItems(favItemInfo.response?.CompletedOrders);
+   
+    } catch (err) {
+      console.error("Error fetching favorites:", err);
+    } finally {
+      setLoaded(false);
+    }
+  };
 
-export { recentOrderData }; // Export the data
+  return { loading, orders, fetchRecentOrders ,favItems,loaded};
+};

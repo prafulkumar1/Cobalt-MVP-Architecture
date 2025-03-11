@@ -41,5 +41,8 @@ export const endpoints = {
     },
     RECENT_ORDERS:{
         GET_RECENT_ORDERS: "MobileOrdering/MO_getrecentorders"
+    },
+    FAVORITES:{
+        GET_FAVORITES :"MobileOrdering/MO_getfavouriteitems"
     }
 }

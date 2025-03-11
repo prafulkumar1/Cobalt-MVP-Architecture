@@ -291,6 +291,8 @@ class CbRecentAccordion extends React.Component {
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
     this.componentData = props.componentData ;
+    this.navigation = props.navigation; // Assign navigation from props
+
 
     this.state = {
       isToastMessageVisiable: false,
@@ -301,8 +303,6 @@ class CbRecentAccordion extends React.Component {
   }
 
   
-  
-
   handleReorder = (orders, cartData, addItemToCartBtn, updateCartItemQuantity) => {
     if (!orders || orders.length === 0) {
       console.log("No items found for reorder.");
@@ -338,7 +338,7 @@ class CbRecentAccordion extends React.Component {
     }, 2000);
   };
   
-  
+
   
   render() {
     const Notfavsource = this.Notfavsource;
@@ -423,7 +423,28 @@ console.log("Grouped and Sorted Orders", categoryData);
                         </AccordionHeader>
                         <AccordionContent>
                         {item.items.map(order => (
+                          <FormContext.Consumer>
+                          {({ storeSingleItem, increaseQuantity, closePreviewModal }) => (
 
+                            <TouchableOpacity 
+onPress={() => {
+  storeSingleItem({
+    ...order,
+    quantityIncPrice: order?.TotalPrice
+  });
+
+  increaseQuantity({
+    ...order,
+    quantityIncPrice: order?.TotalPrice
+  });
+
+  closePreviewModal();
+
+  setTimeout(() => {
+    navigateToScreen(this.props, "MenuOrder", true, { itemId: order.Item_ID });
+  }, 100);  // Small delay to ensure state updates before navigation
+}}
+    >
                               <Box key={order.Item_ID}>
                                 <Box style={styles.roAccordionContentouterbox}>
                                   <Box style={styles.roAccordionContentItembox}>
@@ -467,6 +488,9 @@ console.log("Grouped and Sorted Orders", categoryData);
                                 {/* Remove Divider after the last item */}
                                 {index !== item.items.length - 1 && <Divider />}
                               </Box>
+                              </TouchableOpacity>
+                              )}
+</FormContext.Consumer>
                             )
                         )}
                           {item.items.some(order => order.IsReOrder) && (
