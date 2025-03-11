@@ -17,7 +17,12 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 
 
 function RenderingPendingOrders(props) {
-  const OrdersList=RecentordersData.RecentOrders  
+  const { loading, orders, fetchRecentOrders,pendingOrders } = useRecentOrderLogic(props); // Fetch orders from API
+
+  console.log('Pending Orders: ', pendingOrders);
+
+  const OrdersList = pendingOrders
+  
   
   return (
 <Accordion
@@ -36,7 +41,7 @@ function RenderingPendingOrders(props) {
     alignSelf: "center"
   }}
 >
-         {OrdersList?.PendingOrders?.length > 0 && OrdersList.PendingOrders.map((Order, index) => (
+  {pendingOrders?.map((Order, index) => (
     <AccordionItem key={index} value={`item-${index}`}>
       <AccordionHeader >
         <UI.Box style={{ flexDirection: "row", alignItems: "center", paddingVertical:20,justifyContent:"space-between" }}>
@@ -45,7 +50,7 @@ function RenderingPendingOrders(props) {
                Ordered Status
             </UI.Text>
             <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:20 }}>   
-              {Order.OrderStatus}
+              {Order.orderstatus}
             </UI.Text>
         </UI.Box>
         <AccordionTrigger className="focus:web:rounded-lg">
@@ -55,7 +60,7 @@ function RenderingPendingOrders(props) {
                   Pickup Time
                 </UI.Text>
                 <UI.Text  style={{  fontSize: 16, fontFamily: "SourceSansPro_Bold", color:"#2A4E7D"  }} >
-                  {Order.Pickup_Time}
+                  {Order.pickuptime}
                 </UI.Text>
             </UI.Box>
             <UI.Box style={{ paddingHorizontal:8,   }}>
@@ -63,15 +68,15 @@ function RenderingPendingOrders(props) {
                     Pickup Place
                   </UI.Text>
                 <UI.Text style={{ fontSize: 16, fontFamily: "SourceSansPro_Bold",color:"#2A4E7D" }}>
-                {Order.Pickup_Location}
+                {Order.pickuplocation}
                 </UI.Text>
               </UI.Box>
             <UI.Box style={{ paddingHorizontal:60 }}>
                 <UI.Text   style={{fontSize: 14, color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Order Id #: {Order.OrderId}
+                  Order Id #: {Order.OrderID}
                 </UI.Text>
                 <UI.Text style={{ fontSize: 14,  color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Date: {Order.OrderDate}
+                  Date: {Order.Ordereddate}
                 </UI.Text>
             </UI.Box> 
             <>
@@ -112,44 +117,55 @@ function RenderingPendingOrders(props) {
         </UI.Box>
 
           <UI.Box style={{ marginBottom: 12 }}>
-          {Order?.Items?.length > 0 && Order.Items.map((Item, index) => (
-            <React.Fragment key={index}>
-            <UI.Box style={{ flexDirection: "row",justifyContent: "space-between",alignItems: "center", }}>
-                <UI.Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: "700",right:18 }}>{index + 1}.{Item.ItemName}</UI.Text>
-                <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
-                  <UI.Text style={{  fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic",  marginRight: 16 }}> {Item.Quantity.toFixed(2)} </UI.Text>
-                  <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>${Item.Price.toFixed(2)}</UI.Text>
-                </UI.Box>             
-            </UI.Box>
-            <UI.Box>
-                {Item?.Modifiers?.length > 0 &&  Item.Modifiers.map((Modifier, index) => (
-                <React.Fragment key={index}>
-                  <UI.Text style={{ fontSize: 11, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>{Modifier.ItemName}</UI.Text>
-                  </React.Fragment>
-                ))}
-            </UI.Box>
-            {Item.comment && 
-              <UI.Box style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-  <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top:1 }} />} />
-  <UI.Text 
-    style={{ 
-      fontSize: 12, 
-      fontFamily: "SourceSansPro_Bold", 
-      fontStyle: "italic", 
-      flexShrink: 1, 
-      flexWrap: "wrap", 
-      maxWidth: "90%" 
-    }}
-  >
-    {Item.comment}
-  </UI.Text>
-</UI.Box>}
-            </React.Fragment>
-            ))}
+          {pendingOrders
+    .filter((order) => order.OrderID === Order.OrderID) // Ensure we are grouping items by order
+    .map((order, index) => (  <React.Fragment key={index}>
+    <UI.Box style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+      <UI.Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: "700", right: 18 }}>
+        {index + 1}. {Order.Item_Name}
+      </UI.Text>
+      <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
+        <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic", marginRight: 16 }}>
+          1 {/* Since there is no Quantity field in response, default to 1 */}
+        </UI.Text>
+        <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic" }}>
+          ${Order.Price.toFixed(2)}
+        </UI.Text>
+      </UI.Box>
+    </UI.Box>
+    <UI.Box>
+      {Order?.Modifiers?.length > 0 && Order.Modifiers.map((Modifier, modIndex) => (
+        <React.Fragment key={modIndex}>
+          <UI.Text style={{ fontSize: 11, color: "#5773A2", fontFamily: "SourceSansPro_Bold", fontStyle: "italic" }}>
+            {Modifier.Item_Name}
+          </UI.Text>
+        </React.Fragment>
+      ))}
+    </UI.Box>
+    {Order.Comments && Order.Comments !== "No Comments added" && (
+      <UI.Box style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
+        <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top: 1 }} />} />
+        <UI.Text
+          style={{
+            fontSize: 12,
+            fontFamily: "SourceSansPro_Bold",
+            fontStyle: "italic",
+            flexShrink: 1,
+            flexWrap: "wrap",
+            maxWidth: "90%"
+          }}
+        >
+          {Order.Comments}
+        </UI.Text>
+      </UI.Box>
+    )}
+  </React.Fragment>
+))}
+
           </UI.Box>
             <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
                {Order.SubTotal && <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
-                  Sub Total:${Order.SubTotal.toFixed(2)}
+                  Sub Total: ${Order.SubTotal.toFixed(2)}
                 </UI.Text>}
                 {Order.ServiceCharge && <UI.Text>10% Service Charge: ${Order.ServiceCharge.toFixed(2)}</UI.Text>}
                {Order.FoodTax && <UI.Text>Food Tax: ${Order.FoodTax.toFixed(2)}</UI.Text> }
@@ -158,7 +174,7 @@ function RenderingPendingOrders(props) {
             <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
             {Order.Total &&  <UI.Text style={{ fontWeight: "700", marginTop: 8 }}>Total: ${Order.Total.toFixed(2)}</UI.Text> }
                 {Order.Tip &&   <UI.Text>Tip: ${Order.Tip.toFixed(2)}</UI.Text> }
-                {Order.GrandTotal &&    <UI.Text>Garnd Total: ${Order.GrandTotal.toFixed(2)}</UI.Text> }
+                {Order.GrandTotal &&    <UI.Text>Grand Total: ${Order.GrandTotal.toFixed(2)}</UI.Text> }
             </UI.Box>
         
         </UI.Box>
@@ -317,6 +333,7 @@ export default function RecentordersScreen(props) {
         {isRecentOrder ?
           <>
             <RenderingPendingOrders />
+
             <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
           </>
           :

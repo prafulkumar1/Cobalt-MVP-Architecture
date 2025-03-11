@@ -108,6 +108,17 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                     children={renderModifierList}
                   />
                 }
+                {item?.Modifiers && item.Modifiers.length > 0 && (
+                <UI.CbFlatList
+                  scrollEnabled={false}
+                  flatlistData={item.Modifiers}
+                  children={({ item }) => (
+                    <UI.Text style={styles.modifierItem}>
+                      {item.Modifier_Name}
+                    </UI.Text>
+                  )}
+                />
+              )}
               </UI.Box>
  
               <UI.Box style={styles.rightContainer}>

@@ -4,10 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormContext } from '@/components/cobalt/event';
 
 let recentOrderData = []; // Global variable to store fetched data
+let pendingOrderData = [];
 
 export const useRecentOrderLogic = () => {
   const [loading, setLoading] = useState(false);
   const {orders, setOrders} = useFormContext()
+  const {pendingOrders, setPendingOrders} = useFormContext();
   const [favItems, setFavItems] = useState();
   const [loaded, setLoaded] = useState(false);
   
@@ -32,7 +34,9 @@ export const useRecentOrderLogic = () => {
 
       if (response.statusCode === 200 && response.response.ResponseCode === "Success") {
         recentOrderData = response.response.CompletedOrders || [];
+        pendingOrderData = response.response.PendingOrders || [];
         setOrders(recentOrderData); // Update local state
+        setPendingOrders(pendingOrderData);
       }
     } catch (error) {
       console.error("Error fetching recent orders:", error);
@@ -60,5 +64,5 @@ export const useRecentOrderLogic = () => {
     }
   };
 
-  return { loading, orders, fetchRecentOrders ,favItems,loaded};
+  return { loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders};
 };

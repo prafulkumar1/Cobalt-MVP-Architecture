@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity,View, Alert, Animated, Modal, Pressable,} from 'react-native';
+import { FlatList, ImageBackground, Image, TouchableOpacity, View, Alert, Animated, Modal, Pressable, } from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import {  CheckIcon, ChevronDownIcon,ChevronUpIcon, CircleIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
-import { Checkbox,CheckboxIcon,CheckboxIndicator,CheckboxLabel } from '@/components/ui/checkbox';
-import { Select,SelectIcon,SelectInput,SelectTrigger,SelectPortal,SelectBackdrop,SelectContent,SelectItem } from '../ui/select';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, AddIcon, TrashIcon, RemoveIcon } from '@/components/ui/icon';
+import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '@/components/ui/checkbox';
+import { Select, SelectIcon, SelectInput, SelectTrigger, SelectPortal, SelectBackdrop, SelectContent, SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
 import { VStack } from '@/components/ui/vstack';
 import { HStack } from '@/components/ui/hstack';
@@ -19,8 +19,8 @@ import { Icon } from '@/components/ui/icon';
 import { Text } from '@/components/ui/text';
 import { Divider } from '@/components/ui/divider';
 import { Radio, RadioGroup, RadioIndicator, RadioLabel, RadioIcon } from '@/components/ui/radio';
-import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
-import {  styles } from './style';
+import { Accordion, AccordionItem, AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
+import { styles } from './style';
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
@@ -28,18 +28,18 @@ import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const postQuantityApiCall = async(quantity,itemId) => {
+export const postQuantityApiCall = async (quantity, itemId) => {
   try {
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
-    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    let getProfitCenterId = getProfitCenterItem !== null && JSON.parse(getProfitCenterItem)
     const params = {
-      "Item_ID":itemId,
+      "Item_ID": itemId,
       "Item_Quantity": quantity,
-      "Location_Id":`${getProfitCenterId.LocationId}`
-    }          
-    let quantityInfo = await postApiCall("MENU_ORDER","GET_MENU_ORDER_STATUS", params)
+      "Location_Id": `${getProfitCenterId.LocationId}`
+    }
+    let quantityInfo = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_STATUS", params)
     return quantityInfo
-  } catch (err) {}
+  } catch (err) { }
 }
 
 
@@ -49,14 +49,14 @@ class CbAccordionlist extends React.Component {
     this.id = props.id;
     this.screenName = props.screenName;
     this.getAllSelectedModifiers = props.getAllSelectedModifiers
-     
+
     this.state = {
       selectedModifiers: [],
-      isItemSelected:false,
-      selectedModifierId:"",
-      requireModifiers:{},
-      isToastMessageVisiable:false,
-      toastMessage:""
+      isItemSelected: false,
+      selectedModifierId: "",
+      requireModifiers: {},
+      isToastMessageVisiable: false,
+      toastMessage: ""
     };
   }
 
@@ -68,44 +68,44 @@ class CbAccordionlist extends React.Component {
     Item_ID,
     Category_Id,
     order
-) => {
+  ) => {
     const numberMatch = order.Message.match(/\d+/);
-    let maxVal = numberMatch ? parseInt(numberMatch[0]) : 0; 
+    let maxVal = numberMatch ? parseInt(numberMatch[0]) : 0;
 
     const updatedModifiersResponseData = { ...modifiersResponseData };
 
     const categoryIndex = updatedModifiersResponseData?.Categories.findIndex(
-        (category) => category.Category_Id === Category_Id
+      (category) => category.Category_Id === Category_Id
     );
 
     if (categoryIndex !== -1) {
-        const category = updatedModifiersResponseData.Categories[categoryIndex];
+      const category = updatedModifiersResponseData.Categories[categoryIndex];
 
-        const selectedModifiers = category.Modifiers.filter(modifier => modifier.isChecked).length;
-        if(maxVal !== 0){
-          if (value && selectedModifiers >= maxVal) {
-            this.setState({isToastMessageVisiable:true,toastMessage:`Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.`},() => {
-              setTimeout(() => {
-                  this.setState({isToastMessageVisiable:false,toastMessage:""})
-              }, 6000);
-            })
-            return;
+      const selectedModifiers = category.Modifiers.filter(modifier => modifier.isChecked).length;
+      if (maxVal !== 0) {
+        if (value && selectedModifiers >= maxVal) {
+          this.setState({ isToastMessageVisiable: true, toastMessage: `Max limit of ${maxVal} reached for ${order.Category_Name} modifier. Please unselect one to add another.` }, () => {
+            setTimeout(() => {
+              this.setState({ isToastMessageVisiable: false, toastMessage: "" })
+            }, 6000);
+          })
+          return;
         }
-        }
-       
-        const modifierIndex = category.Modifiers.findIndex(
-            (modifier) => modifier.Modifier_Id === item.Modifier_Id
-        );
+      }
 
-        if (modifierIndex !== -1) {
-            category.Modifiers[modifierIndex].isChecked = value;
-        }
+      const modifierIndex = category.Modifiers.findIndex(
+        (modifier) => modifier.Modifier_Id === item.Modifier_Id
+      );
+
+      if (modifierIndex !== -1) {
+        category.Modifiers[modifierIndex].isChecked = value;
+      }
     }
 
     setModifiersResponseData(updatedModifiersResponseData);
 
-    this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID ,Category_Id});
-};
+    this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID, Category_Id });
+  };
 
   render() {
     const Notfavsource = this.Notfavsource;
@@ -151,12 +151,12 @@ class CbAccordionlist extends React.Component {
                                     </Text>
                                     <Box style={styles.quantityMessage}>
                                         {
-                                          order.DisplayOption && 
+                                          order.DisplayOption &&
                                           <Text
-                                          style={styles.requiredTxt}
-                                        >
-                                          {` (${(order.DisplayOption)}) `}
-                                        </Text>
+                                            style={styles.requiredTxt}
+                                          >
+                                            {` (${(order.DisplayOption)}) `}
+                                          </Text>
                                         }
                                         <Text
                                           style={styles.maxAllowedTxt}
@@ -166,7 +166,7 @@ class CbAccordionlist extends React.Component {
                                             : ""}
                                         </Text>
                                       </Box>
-                                    
+
                                   </Box>
                                   {isExpanded ? (
                                     <AccordionIcon
@@ -265,7 +265,7 @@ class CbAccordionlist extends React.Component {
                                 isToastMessageVisiable={this.state.isToastMessageVisiable}
                                 transparent={true}
                                 onRequestClose={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
-                                closePreviewModal ={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
+                                closePreviewModal={() => this.setState({ isToastMessageVisiable: !this.state.isToastMessageVisiable })}
                               />
                             }
                           </>
@@ -290,35 +290,35 @@ class CbRecentAccordion extends React.Component {
     this.screenName = props.screenName;
     this.favsource = props.favsource || "";
     this.Notfavsource = props.Notfavsource || "";
-    this.componentData = props.componentData ;
+    this.componentData = props.componentData;
     this.navigation = props.navigation; // Assign navigation from props
 
 
     this.state = {
       isToastMessageVisiable: false,
       toastMessage: "",
-      cartData: props.cartData || [], 
+      cartData: props.cartData || [],
 
     };
   }
 
-  
+
   handleReorder = (orders, cartData, addItemToCartBtn, updateCartItemQuantity) => {
     if (!orders || orders.length === 0) {
       console.log("No items found for reorder.");
       return;
     }
-  
+
     orders.forEach((item) => {
       const existingItem = cartData.find(cartItem => cartItem.Item_ID === item.Item_ID);
-  
+
       const itemWithModifiers = {
         ...item,
         quantity: 1,
         selectedModifiers: item.Modifiers || [],  // Ensure modifiers are added
       };
       console.log('Modifiers', item.Modifiers);
-  
+
       if (existingItem) {
         console.log(`Increasing quantity for: ${item.Item_Name}`);
         updateCartItemQuantity(existingItem, existingItem.quantity + 1);
@@ -327,19 +327,19 @@ class CbRecentAccordion extends React.Component {
         addItemToCartBtn(itemWithModifiers);
       }
     });
-  
+
     this.setState({
       isToastMessageVisiable: true,
       toastMessage: `Added/Reordered ${orders.length} items!`,
     });
-  
+
     setTimeout(() => {
       this.setState({ isToastMessageVisiable: false, toastMessage: "" });
     }, 2000);
   };
-  
 
-  
+
+
   render() {
     const Notfavsource = this.Notfavsource;
     const favsource = this.favsource;
@@ -348,29 +348,29 @@ class CbRecentAccordion extends React.Component {
       <FormContext.Consumer>
         {({ cartData, singleItemDetails, addToCart, orders }) => {
           if (JSON.stringify(cartData) !== JSON.stringify(this.state.cartData)) {
-      this.setState({ cartData }); 
-    }
-    console.log('Recent Orders', orders);
-    const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
+            this.setState({ cartData });
+          }
+          console.log('Recent Orders', orders);
+          const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
 
-// Group orders by Ordereddate
-const groupedOrders = ordersData.reduce((acc, order) => {
-  if (!acc[order.Ordereddate]) {
-    acc[order.Ordereddate] = [];
-  }
-  acc[order.Ordereddate].push(order);
-  return acc;
-}, {});
+          // Group orders by Ordereddate
+          const groupedOrders = ordersData.reduce((acc, order) => {
+            if (!acc[order.Ordereddate]) {
+              acc[order.Ordereddate] = [];
+            }
+            acc[order.Ordereddate].push(order);
+            return acc;
+          }, {});
 
-// Convert object into an array for rendering
-const categoryData = Object.keys(groupedOrders)
-  .map(date => ({
-    date,
-    items: groupedOrders[date]
-  }))
-  .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
+          // Convert object into an array for rendering
+          const categoryData = Object.keys(groupedOrders)
+            .map(date => ({
+              date,
+              items: groupedOrders[date]
+            }))
+            .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
 
-console.log("Grouped and Sorted Orders", categoryData);
+          console.log("Grouped and Sorted Orders", categoryData);
           return (
             <>
               <CbFlatList
@@ -379,7 +379,7 @@ console.log("Grouped and Sorted Orders", categoryData);
                   const order = item;
                   return (
                     <Accordion
-                    defaultValue={[`item-${index}`]}
+                      defaultValue={[`item-${index}`]}
                       variant="filled"
                       type="single"
                       size="md"
@@ -422,90 +422,107 @@ console.log("Grouped and Sorted Orders", categoryData);
                           </AccordionTrigger>
                         </AccordionHeader>
                         <AccordionContent>
-                        {item.items.map(order => (
-                          <FormContext.Consumer>
-                          {({ storeSingleItem, increaseQuantity, closePreviewModal }) => (
+                          {item.items.map(order => (
+                            <FormContext.Consumer>
+                              {({ storeSingleItem, increaseQuantity, closePreviewModal }) => (
 
-                            <TouchableOpacity 
-onPress={() => {
-  storeSingleItem({
-    ...order,
-    quantityIncPrice: order?.TotalPrice
-  });
+                                <TouchableOpacity
+                                  onPress={() => {
+                                    if (order.IsDisable !== 1) { // Prevent action if disabled
+                                      storeSingleItem({
+                                        ...order,
+                                        quantityIncPrice: order?.TotalPrice
+                                      });
 
-  increaseQuantity({
-    ...order,
-    quantityIncPrice: order?.TotalPrice
-  });
+                                      increaseQuantity({
+                                        ...order,
+                                        quantityIncPrice: order?.TotalPrice
+                                      });
 
-  closePreviewModal();
+                                      closePreviewModal();
 
-  setTimeout(() => {
-    navigateToScreen(this.props, "MenuOrder", true, { itemId: order.Item_ID });
-  }, 100);  // Small delay to ensure state updates before navigation
-}}
-    >
-                              <Box key={order.Item_ID}>
-                                <Box style={styles.roAccordionContentouterbox}>
-                                  <Box style={styles.roAccordionContentItembox}>
-                                    <Text style={styles.roItemName} strikeThrough={!order.IsAvailable}>
-                                      {order.Item_Name}
-                                    </Text>
-                                    <Text style={styles.roItemprice}>{`$${order.Price}`}</Text>
+                                      setTimeout(() => {
+                                        navigateToScreen(this.props, "MenuOrder", true, { itemId: order.Item_ID });
+                                      }, 100);
+                                    }
+                                  }}
+                                  disabled={order.IsDisable === 1} // Disable tap interaction
+                                  style={[
+                                    order.IsDisable === 1 ? { opacity: 0.5 } : {}, // Reduce opacity if disabled
+                                  ]}
+                                >
+                                  <Box key={order.Item_ID}>
+                                    <Box style={styles.roAccordionContentouterbox}>
+                                      <Box style={styles.roAccordionContentItembox}>
+                                        <Text style={styles.roItemName} strikeThrough={!order.IsAvailable}>
+                                          {order.Item_Name}
+                                        </Text>
+                                        <Text style={styles.roItemprice}>{`$${order.Price}`}</Text>
+                                      </Box>
+                                      <Box
+                                        style={[
+                                          styles.roImagescetion,
+                                          this.state.cartData.some(cartItem => cartItem.Item_ID === order.Item_ID && cartItem.quantity > 0)
+                                            ? { width: 90 }
+                                            : {}
+                                        ]}
+                                      >
+                                        <TouchableOpacity
+                                          onPress={() => {
+                                            order.IsFavorite = !order.IsFavorite; // Toggle favorite
+                                            this.setState({}); // Force re-render
+                                          }}
+                                        >
+                                          <Image
+                                            alt="favorite"
+                                            source={
+                                              order.IsFavorite
+                                                ? require("@/assets/images/icons/Fav.png")
+                                                : require("@/assets/images/icons/Notfav.png")
+                                            }
+                                            style={styles.roItemImage}
+                                          />
+                                        </TouchableOpacity>
+                                        <CbRecentAddToCart
+                                          mealItemDetails={order}
+                                          style={styles.roItemButton}
+                                          onPress={() => addToCart(order)}
+                                          disabled={order.IsDisable === 1} // Disable when IsDisable is 1
+                                        />
+                                      </Box>
+                                    </Box>
+
+                                    {/* Remove Divider after the last item */}
+                                    {index !== item.items.length - 1 && <Divider />}
                                   </Box>
-                                  <Box
-                                    style={[
-                                      styles.roImagescetion,
-                                      this.state.cartData.some(cartItem => cartItem.Item_ID === order.Item_ID && cartItem.quantity > 0)
-                                        ? { width: 90 }
-                                        : {}
-                                    ]}
-                                  >
-                                    <TouchableOpacity
-                                      onPress={() => {
-                                        order.IsFavorite = !order.IsFavorite; // Toggle favorite
-                                        this.setState({}); // Force re-render
-                                      }}
-                                    >
-                                      <Image
-                                        alt="favorite"
-                                        source={
-                                          order.IsFavorite
-                                            ? require("@/assets/images/icons/Fav.png")
-                                            : require("@/assets/images/icons/Notfav.png")
-                                        }
-                                        style={styles.roItemImage}
-                                      />
-                                    </TouchableOpacity>
-                                    <CbRecentAddToCart
-                                      mealItemDetails={order}
-                                      style={styles.roItemButton}
-                                      onPress={() => addToCart(order)}
-                                    />
-                                  </Box>
-                                </Box>
-
-                                {/* Remove Divider after the last item */}
-                                {index !== item.items.length - 1 && <Divider />}
-                              </Box>
-                              </TouchableOpacity>
+                                </TouchableOpacity>
                               )}
-</FormContext.Consumer>
-                            )
-                        )}
+                            </FormContext.Consumer>
+                          )
+                          )}
                           {item.items.some(order => order.IsReOrder) && (
                             <FormContext.Consumer>
-                              {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => (
-                                <Button
-                                  variant="outline"
-                                  style={styles.roReoderButton}
-                                  onPress={() => this.handleReorder(item.items, cartData, addItemToCartBtn, updateCartItemQuantity)}
-                                >
-                                  <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
-                                    Re-Order
-                                  </ButtonText>
-                                </Button>
-                              )}
+                              {({ cartData, addItemToCartBtn, updateCartItemQuantity }) => {
+                                const isDisabled = item.items.some(order => order.IsDisable === 1); // Check if any item is disabled
+
+                                return (
+                                  <Button
+                                    variant="outline"
+                                    style={[
+                                      styles.roReoderButton,
+                                      isDisabled ? { backgroundColor: "#D3D3D3", borderColor: "#A9A9A9" } : {} // Gray out if disabled
+                                    ]}
+                                    onPress={() =>
+                                      !isDisabled && this.handleReorder(item.items, cartData, addItemToCartBtn, updateCartItemQuantity)
+                                    }
+                                    disabled={isDisabled} // Disable button
+                                  >
+                                    <ButtonText style={styles.roReordertext} numberOfLines={1} ellipsizeMode="tail">
+                                      Re-Order
+                                    </ButtonText>
+                                  </Button>
+                                );
+                              }}
                             </FormContext.Consumer>
                           )}
                         </AccordionContent>
@@ -527,7 +544,7 @@ class CbImage extends React.Component {
     super(props);
     // this.id=props.id;
     this.source = props.source || "";
-    this.imageJsx=props.imageJsx;
+    this.imageJsx = props.imageJsx;
     this.style = props.style || "";
   }
 
@@ -535,16 +552,16 @@ class CbImage extends React.Component {
     //const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
     //const source = inputArray?.source  || this.source;'
     const jsx = this.imageJsx;
-    const source=this.source;
-     
+    const source = this.source;
+
     if (source) {
 
       if (source.endsWith('.svg')) {
-        
-        return <SvgUri source={{ uri: source }}  />;
+
+        return <SvgUri source={{ uri: source }} />;
       } else {
 
-        return <Image alt='image' source={{ uri: source }}  style={this.style}/>;
+        return <Image alt='image' source={{ uri: source }} style={this.style} />;
       }
     } else {
       return jsx;
@@ -557,42 +574,42 @@ class CbBackButton extends React.Component {
     super(props);
     this.source = props.source;
     this.state = {
-      profitCenterTitle : ""
+      profitCenterTitle: ""
     }
   }
-  async componentDidMount(){
+  async componentDidMount() {
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
-    let getProfitCenter = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
-    this.setState({profitCenterTitle:getProfitCenter?.LocationName})
+    let getProfitCenter = getProfitCenterItem !== null && JSON.parse(getProfitCenterItem)
+    this.setState({ profitCenterTitle: getProfitCenter?.LocationName })
   }
   render() {
     const state = this.props.navigation.getState();
     const currentRoute = state.routes[state.index]?.name;
     return (
       <FormContext.Consumer>
-      {({setIsExitProfitCenter,menuOrderData,cartData,isPrevCartScreen}) => {
+        {({ setIsExitProfitCenter, menuOrderData, cartData, isPrevCartScreen }) => {
           return (
-            <TouchableOpacity onPress={()=>{
-              if(currentRoute === "MenuOrder"){
-                if(menuOrderData !==null && cartData.length > 0) {
+            <TouchableOpacity onPress={() => {
+              if (currentRoute === "MenuOrder") {
+                if (menuOrderData !== null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
-                }else{
+                } else {
                   this.props.navigation?.goBack()
                 }
-              }else if(currentRoute === "Recentorders"){
-                if(isPrevCartScreen){
-                  navigateToScreen(this.props,"MenuOrder",true,{profileCenterTile:this.state.profitCenterTitle})
-                }else{
+              } else if (currentRoute === "Recentorders") {
+                if (isPrevCartScreen) {
+                  navigateToScreen(this.props, "MenuOrder", true, { profileCenterTile: this.state.profitCenterTitle })
+                } else {
                   this.props.navigation?.goBack()
                 }
-              }else{
+              } else {
                 this.props.navigation?.goBack()
               }
             }} style={styles.backArrowHeader}>
-        {
-          this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
-        }
-      </TouchableOpacity>
+              {
+                this.source ? <Image source={{ uri: this.source }} /> : <Image alt='image' source={require("@/assets/images/icons/Back.png")} />
+              }
+            </TouchableOpacity>
           );
         }}
       </FormContext.Consumer>
@@ -607,11 +624,11 @@ class CbHomeButton extends React.Component {
   }
   render() {
     return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
-      {
-        this.source ? <Image source={{ uri: this.source}} style={{width:24,height:24}}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={{width:24,height:24}} />
-      }
-    </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigateToScreen(this.props, 'ProfitCenters')}>
+        {
+          this.source ? <Image source={{ uri: this.source }} style={{ width: 24, height: 24 }} /> : <Image alt='image' source={require("@/assets/images/icons/Home.png")} style={{ width: 24, height: 24 }} />
+        }
+      </TouchableOpacity>
     );
   }
 }
@@ -625,16 +642,16 @@ class CbFloatingButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {({cartData,modifierCartItemData}) => {
+        {({ cartData, modifierCartItemData }) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
           const variant = buttonArray?.variant || this.variant;
           const buttonText = buttonArray?.text || this.buttonText;
-          const getFinalQuantity = cartData &&  cartData.reduce((total,prev) => total+prev.quantity,0)
+          const getFinalQuantity = cartData && cartData.reduce((total, prev) => total + prev.quantity, 0)
           return (
             <View style={styles.floatingContainer}>
-              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true,{profileCenterTile:this.screenProps?.route?.params?.profileCenterTile})}>
+              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
                 <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?3:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
@@ -653,15 +670,15 @@ class CbRecentAddToCart extends React.Component {
     this.mealItemDetails = props.mealItemDetails
     this.style = props.style
     this.cartStyle = props.cartStyle
-    this.state ={
-      isAvailable : 0 ,
-      IsModifierAvailable:0
+    this.state = {
+      isAvailable: 0,
+      IsModifierAvailable: 0
     }
   }
-  commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1 && IsDisable ===0){
+  commonStyles = (isAvailable, IsDisable, primaryColor, secondaryColor) => {
+    if (isAvailable === 1 && IsDisable === 0) {
       return primaryColor
-    }else{
+    } else {
       return secondaryColor
     }
   }
@@ -669,13 +686,13 @@ class CbRecentAddToCart extends React.Component {
 
   handleAddToCartBtn = async (quantity, storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible) => {
     console.log("mealItemDetails:", this.mealItemDetails); // Debugging
-    
+
     let quantityInfo = await postQuantityApiCall(quantity, this.mealItemDetails?.Item_ID);
-    
+
     if (quantityInfo.statusCode === 200) {
-      this.setState({ 
-        isAvailable: quantityInfo?.response.IsAvailable, 
-        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable 
+      this.setState({
+        isAvailable: quantityInfo?.response.IsAvailable,
+        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable
       }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
@@ -695,52 +712,52 @@ class CbRecentAddToCart extends React.Component {
     }
   };
 
-  modifierIncDecBtn = async (itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
-       let isItemAvailableInCart = false
-        cartData?.forEach((items) => {
-            if(items.Item_ID === this.mealItemDetails.Item_ID ){
-              isItemAvailableInCart = true
-            }
-        })
-    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
+  modifierIncDecBtn = async (itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, cartQuantity, operation) => {
+    let isItemAvailableInCart = false
+    cartData?.forEach((items) => {
+      if (items.Item_ID === this.mealItemDetails.Item_ID) {
+        isItemAvailableInCart = true
+      }
+    })
+    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity : cartQuantity
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
-    if(quantityInfo.statusCode ==200){
+    if (quantityInfo.statusCode == 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
-        if (this.state.IsModifierAvailable ===1) {
-          if(operation === "decrement"){
-            if(isItemAvailableInCart){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+        if (this.state.IsModifierAvailable === 1) {
+          if (operation === "decrement") {
+            if (isItemAvailableInCart) {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
-            }else{
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-            }      
-        }else{
-          if(this.state.isAvailable ===1){
-            if(isItemAvailableInCart){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
-            }else{
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-            }   
-          }else{
+            } else {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+            }
+          } else {
+            if (this.state.isAvailable === 1) {
+              if (isItemAvailableInCart) {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+              } else {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+              }
+            } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         } else {
           if (operation === "decrement") {
-            if(itemDataVisible){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-            }else{
+            if (itemDataVisible) {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+            } else {
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
-              updateModifierItemQuantity(this.mealItemDetails, cartQuantity-1);
+              updateModifierItemQuantity(this.mealItemDetails, cartQuantity - 1);
             }
           } else {
             if (this.state.isAvailable === 1) {
-              if(itemDataVisible){
-                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-              }else{
+              if (itemDataVisible) {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+              } else {
                 updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
-                updateModifierItemQuantity(this.mealItemDetails, cartQuantity+1)
+                updateModifierItemQuantity(this.mealItemDetails, cartQuantity + 1)
               }
             } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage);
@@ -750,57 +767,57 @@ class CbRecentAddToCart extends React.Component {
       })
     }
   }
-  renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
-    if(itemDataVisible){
-        if(modifierQuantity === 1){
-          return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-        }else{
-          return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-        }
-    }else{
-      if(quantity === 1){
+  renderIcons = (quantity, modifierQuantity, itemDataVisible) => {
+    if (itemDataVisible) {
+      if (modifierQuantity === 1) {
         return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-      } else{
+      } else {
+        return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      }
+    } else {
+      if (quantity === 1) {
+        return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
+      } else {
         return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
       }
     }
   };
 
   renderAddToCartBtn = (contextProps) => {
-     const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const {modifiersResponseData,itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+    const { modifiersResponseData, itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity, closePreviewModal, storeSingleItem, increaseQuantity, updateModifierItemQuantity, modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails.IsAvailable;
     const IsDisable = this.mealItemDetails.IsDisable
     const cartItem = cartData && cartData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
-    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
+    const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item.Item_ID === this.mealItemDetails.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
-    
-    if ( quantity === 0 && modifierQuantity === 0) {
+
+    if (quantity === 0 && modifierQuantity === 0) {
       return (
         <TouchableOpacity
-          style={[this.style ? this.style : styles.addItemToCartBtn, 
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
-            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
-            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
-            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          style={[this.style ? this.style : styles.addItemToCartBtn,
+          { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
+          { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
+          { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
+          { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
           ]}
           activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
-          disabled={IsAvailable === 1 && IsDisable === 0?false:true}
+          onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
         </TouchableOpacity>
       );
     } else {
       return (
-        <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
+        <Box style={[this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "decrement")}
           >
             {
-              this.renderIcons(quantity,modifierQuantity,itemDataVisible)
+              this.renderIcons(quantity, modifierQuantity, itemDataVisible)
             }
           </TouchableOpacity>
 
@@ -809,9 +826,9 @@ class CbRecentAddToCart extends React.Component {
 
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "increment")}
           >
-            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{ width: 25, height: 25 }} />
           </TouchableOpacity>
         </Box>
       );
@@ -820,20 +837,20 @@ class CbRecentAddToCart extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {(contextProps) => {
-        const buttonArray = global.controlsConfigJson.find(
-          (item) => item.id === this.id
-        );
-        const variant = buttonArray?.variant || this.variant;
-        const buttonText = buttonArray?.text || this.buttonText;
+        {(contextProps) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
 
-        return (
-          <>
-          {this.renderAddToCartBtn(contextProps)}
-          </>
-        );
-      }}
-    </FormContext.Consumer>
+          return (
+            <>
+              {this.renderAddToCartBtn(contextProps)}
+            </>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -844,15 +861,15 @@ class CbAddToCartButton extends React.Component {
     this.mealItemDetails = props.mealItemDetails
     this.style = props.style
     this.cartStyle = props.cartStyle
-    this.state ={
-      isAvailable : 0 ,
-      IsModifierAvailable:0
+    this.state = {
+      isAvailable: 0,
+      IsModifierAvailable: 0
     }
   }
-  commonStyles = (isAvailable,IsDisable,primaryColor,secondaryColor) => {
-    if(isAvailable ===1 && IsDisable ===0){
+  commonStyles = (isAvailable, IsDisable, primaryColor, secondaryColor) => {
+    if (isAvailable === 1 && IsDisable === 0) {
       return primaryColor
-    }else{
+    } else {
       return secondaryColor
     }
   }
@@ -860,13 +877,13 @@ class CbAddToCartButton extends React.Component {
 
   handleAddToCartBtn = async (quantity, storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible) => {
     console.log("mealItemDetails:", this.mealItemDetails); // Debugging
-    
+
     let quantityInfo = await postQuantityApiCall(quantity, this.mealItemDetails?.Item_ID);
-    
+
     if (quantityInfo.statusCode === 200) {
-      this.setState({ 
-        isAvailable: quantityInfo?.response.IsAvailable, 
-        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable 
+      this.setState({
+        isAvailable: quantityInfo?.response.IsAvailable,
+        IsModifierAvailable: quantityInfo?.response.IsModifierAvailable
       }, () => {
         if (this.state.IsModifierAvailable === 1) {
           storeSingleItem(this.mealItemDetails);
@@ -886,52 +903,52 @@ class CbAddToCartButton extends React.Component {
     }
   };
 
-  modifierIncDecBtn = async (itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity, updateCartItemQuantity,cartQuantity,operation) => {
-       let isItemAvailableInCart = false
-        cartData?.forEach((items) => {
-            if(items.Item_ID === this.mealItemDetails.Item_ID ){
-              isItemAvailableInCart = true
-            }
-        })
-    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity:cartQuantity
+  modifierIncDecBtn = async (itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, cartQuantity, operation) => {
+    let isItemAvailableInCart = false
+    cartData?.forEach((items) => {
+      if (items.Item_ID === this.mealItemDetails.Item_ID) {
+        isItemAvailableInCart = true
+      }
+    })
+    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity : cartQuantity
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
-    if(quantityInfo.statusCode ==200){
+    if (quantityInfo.statusCode == 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
-        if (this.state.IsModifierAvailable ===1) {
-          if(operation === "decrement"){
-            if(isItemAvailableInCart){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+        if (this.state.IsModifierAvailable === 1) {
+          if (operation === "decrement") {
+            if (isItemAvailableInCart) {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
-            }else{
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-            }      
-        }else{
-          if(this.state.isAvailable ===1){
-            if(isItemAvailableInCart){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
-            }else{
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-            }   
-          }else{
+            } else {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+            }
+          } else {
+            if (this.state.isAvailable === 1) {
+              if (isItemAvailableInCart) {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
+              } else {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+              }
+            } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage)
             }
           }
         } else {
           if (operation === "decrement") {
-            if(itemDataVisible){
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
-            }else{
+            if (itemDataVisible) {
+              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+            } else {
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
-              updateModifierItemQuantity(this.mealItemDetails, cartQuantity-1);
+              updateModifierItemQuantity(this.mealItemDetails, cartQuantity - 1);
             }
           } else {
             if (this.state.isAvailable === 1) {
-              if(itemDataVisible){
-                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity+1)
-              }else{
+              if (itemDataVisible) {
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity + 1)
+              } else {
                 updateCartItemQuantity(this.mealItemDetails, cartQuantity + 1);
-                updateModifierItemQuantity(this.mealItemDetails, cartQuantity+1)
+                updateModifierItemQuantity(this.mealItemDetails, cartQuantity + 1)
               }
             } else {
               Alert.alert(quantityInfo?.response?.ResponseMessage);
@@ -941,72 +958,72 @@ class CbAddToCartButton extends React.Component {
       })
     }
   }
-  renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
-    if(itemDataVisible){
-      if(quantity > 1){
+  renderIcons = (quantity, modifierQuantity, itemDataVisible) => {
+    if (itemDataVisible) {
+      if (quantity > 1) {
         return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-      }else{
-        if(modifierQuantity === 1){
+      } else {
+        if (modifierQuantity === 1) {
           return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-        }else{
+        } else {
           return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
         }
       }
-    }else{
-      if(quantity === 1){
+    } else {
+      if (quantity === 1) {
         return <Icon as={TrashIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
-      } else{
+      } else {
         return <Icon as={RemoveIcon} color="#5773a2" size="md" style={{ width: 23, height: 23 }} />
       }
     }
   };
 
   renderAddToCartBtn = (contextProps) => {
-     const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
-    const {modifiersResponseData,itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity,closePreviewModal,storeSingleItem,increaseQuantity,updateModifierItemQuantity,modifierCartItemData } = contextProps;
+    const addButton = global.controlsConfigJson.find(item => item.id === "addButton");
+    const { modifiersResponseData, itemDataVisible, cartData, addItemToCartBtn, updateCartItemQuantity, closePreviewModal, storeSingleItem, increaseQuantity, updateModifierItemQuantity, modifierCartItemData } = contextProps;
     const IsAvailable = this.mealItemDetails?.IsAvailable;
     const IsDisable = this.mealItemDetails?.IsDisable
     const cartItem = cartData && cartData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
-    const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
+    const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
-    
-    if ( quantity === 0 && modifierQuantity === 0) {
+
+    if (quantity === 0 && modifierQuantity === 0) {
       return (
         <TouchableOpacity
-          style={[this.style ? this.style : styles.addItemToCartBtn, 
-            { borderColor: addButton?.borderColor?this.commonStyles(IsAvailable,IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#ABABAB") },
-            {backgroundColor:addButton?.backgroundColor?addButton.backgroundColor : "#fff"},
-            {borderRadius:addButton?.borderRadius?addButton?.borderRadius:5},
-            {borderWidth:addButton?.borderWidth?addButton?.borderWidth : 1}
+          style={[this.style ? this.style : styles.addItemToCartBtn,
+          { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
+          { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
+          { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
+          { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
           ]}
           activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn("1",storeSingleItem,closePreviewModal,addItemToCartBtn,increaseQuantity,itemDataVisible)}
-          disabled={IsAvailable === 1 && IsDisable === 0?false:true}
+          onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable,IsDisable, "#5773a2", "#4B515469")} style={{width:25,height:25}}/>
+          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
         </TouchableOpacity>
       );
     } else {
       return (
-        <Box style={[this.cartStyle? styles.operationBtn2:styles.operationBtn]}>
+        <Box style={[this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"decrement")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "decrement")}
           >
             {
-              this.renderIcons(quantity,modifierQuantity,itemDataVisible)
+              this.renderIcons(quantity, modifierQuantity, itemDataVisible)
             }
           </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{quantity >= 1 ? itemDataVisible? modifierQuantity:quantity : modifierQuantity}</Text>
+          <Text style={styles.quantityTxt}>{quantity >= 1 ? itemDataVisible ? modifierQuantity : quantity : modifierQuantity}</Text>
           {/* <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text> */}
 
           <TouchableOpacity
             style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible,cartData,updateModifierItemQuantity,modifierQuantity,updateCartItemQuantity,quantity,"increment")}
+            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "increment")}
           >
-            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{width:25,height:25}}/>
+            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{ width: 25, height: 25 }} />
           </TouchableOpacity>
         </Box>
       );
@@ -1015,20 +1032,20 @@ class CbAddToCartButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-      {(contextProps) => {
-        const buttonArray = global.controlsConfigJson.find(
-          (item) => item.id === this.id
-        );
-        const variant = buttonArray?.variant || this.variant;
-        const buttonText = buttonArray?.text || this.buttonText;
+        {(contextProps) => {
+          const buttonArray = global.controlsConfigJson.find(
+            (item) => item.id === this.id
+          );
+          const variant = buttonArray?.variant || this.variant;
+          const buttonText = buttonArray?.text || this.buttonText;
 
-        return (
-          <>
-          {this.renderAddToCartBtn(contextProps)}
-          </>
-        );
-      }}
-    </FormContext.Consumer>
+          return (
+            <>
+              {this.renderAddToCartBtn(contextProps)}
+            </>
+          );
+        }}
+      </FormContext.Consumer>
     );
   }
 }
@@ -1037,9 +1054,9 @@ class CbAddToCartButton extends React.Component {
 class cbSearchbox extends React.Component {
   constructor(props) {
     super(props);
-    this.search=props.Searchsource || "";
-    this.backarrow=props.Backarrowsource || "";
-    this.close=props.closesource || "";
+    this.search = props.Searchsource || "";
+    this.backarrow = props.Backarrowsource || "";
+    this.close = props.closesource || "";
     this.isRecentOrderOpen = props.isRecentOrderOpen || false
     this.state = {
       showSearchInput: false,
@@ -1077,12 +1094,12 @@ class cbSearchbox extends React.Component {
     }
   }
 
-  
+
   render() {
     const { showSearchInput, searchValue } = this.state;
-    const Searchsource=this.search;
-    const Backarrowsource=this.backarrow;
-    const Closesource=this.close;
+    const Searchsource = this.search;
+    const Backarrowsource = this.backarrow;
+    const Closesource = this.close;
     return (
       <Box
         style={{
@@ -1091,8 +1108,8 @@ class cbSearchbox extends React.Component {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginLeft:9,
-          borderRadius:4,
+          marginLeft: 9,
+          borderRadius: 4,
           backgroundColor: showSearchInput ? "#f0f0f0" : "white",
         }}
       >
@@ -1100,51 +1117,51 @@ class cbSearchbox extends React.Component {
           <Box
             style={styles.searchBarMainContainer}
           >
-            <TouchableOpacity   onPress={() => handleCloseClick(
-  this.setState.bind(this), 
-  this.props.onSearchActivate, 
-  this.props.onSearch, // handleClear function
-  this.props.onBackPress // New function to reset the list
-)}
- style={{ marginLeft: 10 }} >
+            <TouchableOpacity onPress={() => handleCloseClick(
+              this.setState.bind(this),
+              this.props.onSearchActivate,
+              this.props.onSearch, // handleClear function
+              this.props.onBackPress // New function to reset the list
+            )}
+              style={{ marginLeft: 10 }} >
               {
-                Backarrowsource ? <Image source={{ uri: Backarrowsource}}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
+                Backarrowsource ? <Image source={{ uri: Backarrowsource }} /> : <Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
             </TouchableOpacity>
             <Input
               style={styles.inputBox}
             >
               <InputField
-  ref={this.inputRef}
-  value={searchValue}
-  placeholder="Items"
-  onChangeText={(value) => this.handleSearch(value)}
-  autoFocus={true} // Ensure autoFocus is enabled
+                ref={this.inputRef}
+                value={searchValue}
+                placeholder="Items"
+                onChangeText={(value) => this.handleSearch(value)}
+                autoFocus={true} // Ensure autoFocus is enabled
               />
             </Input>
             {searchValue && (
-              <TouchableOpacity  
-  onPress={() => handleClearClick(
-    this.setState.bind(this), 
-    this.props.onSearch // Reset search results & show default list
-  )} 
-> 
+              <TouchableOpacity
+                onPress={() => handleClearClick(
+                  this.setState.bind(this),
+                  this.props.onSearch // Reset search results & show default list
+                )}
+              >
                 {
-                Closesource? <Image source={{ uri: Closesource}}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
+                  Closesource ? <Image source={{ uri: Closesource }} /> : <Image alt='image' source={require("@/assets/images/icons/Close.png")} />
                 }
               </TouchableOpacity>
             )}
           </Box>
         ) : (
           <TouchableOpacity
-  onPress={() => {
-    this.setState({ showSearchInput: true });
-    if (this.props.onSearchPress) {
-      this.props.onSearchPress(); // Notify MenuOrderUI.js
-    }
-  }}          >
+            onPress={() => {
+              this.setState({ showSearchInput: true });
+              if (this.props.onSearchPress) {
+                this.props.onSearchPress(); // Notify MenuOrderUI.js
+              }
+            }}          >
             {
-          Searchsource ? <Image source={{ uri: Searchsource}}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
+              Searchsource ? <Image source={{ uri: Searchsource }} /> : <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
             }
           </TouchableOpacity>
         )}
@@ -1162,20 +1179,20 @@ class cbButton extends React.Component {
     this.buttonText = props.text || "Button";
     this.variant = props.variant || "solid";
     this.onPress = props.onPress;
-    this.customStyles=props.customStyles || '';
+    this.customStyles = props.customStyles || '';
   }
 
   render() {
 
     const buttonArray = global.controlsConfigJson.find((item) => item.id === this.id);
     const variant = buttonArray?.variant || this.variant;
-    const buttonText = buttonArray?.text || this.buttonText ;
-    const buttonStyle=this.customStyles.buttonStyle;
-    const buttonTextStyle=this.customStyles.buttontextStyle;
-    
+    const buttonText = buttonArray?.text || this.buttonText;
+    const buttonStyle = this.customStyles.buttonStyle;
+    const buttonTextStyle = this.customStyles.buttontextStyle;
+
     return (
-      <Button variant={variant} onPress={()=> this.onPress()} style={buttonStyle}  >
-          <ButtonText style={buttonTextStyle} numberOfLines={1}  ellipsizeMode="tail">{buttonText}</ButtonText>
+      <Button variant={variant} onPress={() => this.onPress()} style={buttonStyle}  >
+        <ButtonText style={buttonTextStyle} numberOfLines={1} ellipsizeMode="tail">{buttonText}</ButtonText>
       </Button>
     );
   }
@@ -1184,26 +1201,26 @@ class cbButton extends React.Component {
 class cbCheckBox extends React.Component {
   constructor(props) {
     super();
-    this.id=props.id;
+    this.id = props.id;
     this.size = props.size || 'md';
-    this.isDisabled=props.isDisabled || false;
-    this.isInvalid=props.isInvalid || false;
-    this.checkBoxLabel=props.Label || '';
-    this.customStyles=props.customStyles || '';
+    this.isDisabled = props.isDisabled || false;
+    this.isInvalid = props.isInvalid || false;
+    this.checkBoxLabel = props.Label || '';
+    this.customStyles = props.customStyles || '';
   }
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const checkBoxLabelprop = inputArray?.labeltext  || this.checkBoxLabel;
-    const styles=this.customStyles;
+    const checkBoxLabelprop = inputArray?.labeltext || this.checkBoxLabel;
+    const styles = this.customStyles;
 
     return (
       <Checkbox size={this.size} isInvalid={this.isInvalid} isDisabled={this.isDisabled}>
-      <CheckboxIndicator >
-        <CheckboxIcon as={CheckIcon} />
-      </CheckboxIndicator>
-      <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
-    </Checkbox>    
+        <CheckboxIndicator >
+          <CheckboxIcon as={CheckIcon} />
+        </CheckboxIndicator>
+        <CheckboxLabel>{checkBoxLabelprop}</CheckboxLabel>
+      </Checkbox>
     );
   }
 }
@@ -1213,16 +1230,16 @@ class cbCheckBox extends React.Component {
 class cbImageBackground extends React.Component {
   constructor(props) {
     super();
-    this.id=props.id;
+    this.id = props.id;
     this.source = props.source || null;
-    this.styles= props.styles || null;
+    this.styles = props.styles || null;
   }
 
   render() {
     const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const sourceprop = inputArray?.source  || this.source;
-    const styleprop = inputArray?.styles ||  this.styles;
+    const sourceprop = inputArray?.source || this.source;
+    const styleprop = inputArray?.styles || this.styles;
 
     return (
       <ImageBackground source={sourceprop} alt='login' style={styleprop?.container} >
@@ -1236,23 +1253,23 @@ class cbRadioButton extends React.Component {
 
   constructor(props) {
     super(props);
-      this.id=props.id;
+    this.id = props.id;
     this.alignment = props.alignment || 'vertical';
-      this.Label= props.Label || '';
-      this.options= Array.isArray(props.options) ? props.options : [];
+    this.Label = props.Label || '';
+    this.options = Array.isArray(props.options) ? props.options : [];
   }
 
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const radiolabelprop = inputArray?.labelText  || this.selectLabel;
+    const radiolabelprop = inputArray?.labelText || this.selectLabel;
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.options;
-    const alignmentprop= inputArray?.alignment || this.alignment;
+    const alignmentprop = inputArray?.alignment || this.alignment;
     const Stack = alignmentprop === 'vertical' ? VStack : HStack;
     return (
 
       <FormControl>
-      <VStack  space="md">
+        <VStack space="md">
           <FormControlLabel>
             <FormControlLabelText>{radiolabelprop}</FormControlLabelText>
           </FormControlLabel>
@@ -1280,49 +1297,49 @@ class cbRadioButton extends React.Component {
 class cbSelect extends React.Component {
   constructor(props) {
     super();
-    this.id=props.id;
-    this.placeholder= props.placeholder || 'Select';
-    this.isRequired=props.isRequired || false;
-    this.isInvalid=props.isInvalid || false;
-    this.selectLabel=props.Label || '';
+    this.id = props.id;
+    this.placeholder = props.placeholder || 'Select';
+    this.isRequired = props.isRequired || false;
+    this.isInvalid = props.isInvalid || false;
+    this.selectLabel = props.Label || '';
     this.selectItems = Array.isArray(props.selectItems) ? props.selectItems : [];
     this.style = props.style
-    this.isTimeModalSelected = props.isTimeModalSelected 
+    this.isTimeModalSelected = props.isTimeModalSelected
     this.state = {
-      isSelected:false
+      isSelected: false
     }
   }
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const selectLabelprop = inputArray?.labelText  || this.selectLabel;
+    const selectLabelprop = inputArray?.labelText || this.selectLabel;
     const placeholderprop = inputArray?.placeholder || this.placeholder;
     const selectItems = Array.isArray(inputArray?.options) ? inputArray.options : this.selectItems;
     return (
-<FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
+      <FormControl isRequired={this.isRequired} isInvalid={this.isInvalid} style={this.style}>
         <FormControlLabel>
           <FormControlLabelText>{selectLabelprop}</FormControlLabelText>
         </FormControlLabel>
-       <TouchableOpacity>
-       <Select>
-          <SelectTrigger>
-            <SelectInput placeholder={placeholderprop} />
-          <SelectIcon  as={ChevronDownIcon} width={16} height={16} />
-          </SelectTrigger>
-          <SelectPortal isOpen={this.state.isSelected}>
-            <SelectBackdrop />
-            <SelectContent>
-              {selectItems.map((item, index) => (
-            <SelectItem key={index} label={item.label} value={item.value} onPress={()=>this.setState({isSelected:false},()=>console.log(item.value, "=== > selectedItem"))}/>
-              ))}
-            </SelectContent>
-          </SelectPortal>
-        </Select>
-       </TouchableOpacity>
+        <TouchableOpacity>
+          <Select>
+            <SelectTrigger>
+              <SelectInput placeholder={placeholderprop} />
+              <SelectIcon as={ChevronDownIcon} width={16} height={16} />
+            </SelectTrigger>
+            <SelectPortal isOpen={this.state.isSelected}>
+              <SelectBackdrop />
+              <SelectContent>
+                {selectItems.map((item, index) => (
+                  <SelectItem key={index} label={item.label} value={item.value} onPress={() => this.setState({ isSelected: false }, () => console.log(item.value, "=== > selectedItem"))} />
+                ))}
+              </SelectContent>
+            </SelectPortal>
+          </Select>
+        </TouchableOpacity>
         <FormControlError>
           <FormControlErrorText></FormControlErrorText>
         </FormControlError>
-      </FormControl>      
+      </FormControl>
     );
   }
 }
@@ -1343,35 +1360,35 @@ class cbInput extends React.Component {
     this.isDisabled = props.isDisabled || false;
     this.isRequired = props.isRequired || false;
     this.isInvalid = props.isInvalid || false;
-    this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => {};
+    this.setFormFieldData = typeof props.setFormFieldData === 'function' ? props.setFormFieldData : () => { };
     this.style = props.style;
     this.multiline = props.multiline
     this.numberOfLines = props.numberOfLines
     this.value = props.value
   }
-  
+
 
   render() {
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const variantprop = inputArray?.variant  || this.valueariant;
-    const typeprop = inputArray?.type ||  this.input;
+    const variantprop = inputArray?.variant || this.valueariant;
+    const typeprop = inputArray?.type || this.input;
     const labelTextprop = inputArray?.labelText || this.labelText;
     const placeholderprop = inputArray?.placeholder || this.placeholder;
     const errorMessageprop = inputArray?.errorMessage || this.errorMessage;
     const isDisabledprop = inputArray?.isDisabled === 1 || this.isDisabled;
-    const isReadOnlyprop = inputArray?.isReadOnly === 1 ||  this.isReadOnly;
-    const isRequiredprop = inputArray?.isRequired === 1 ||  this.isRequired;
+    const isReadOnlyprop = inputArray?.isReadOnly === 1 || this.isReadOnly;
+    const isRequiredprop = inputArray?.isRequired === 1 || this.isRequired;
     //const {getFormFieldData}= useFormContext();
 
     //const fieldData =this.getFormFieldData(this.formId,this.id); 
 
     return (
       <FormContext.Consumer>
-      {({getFormFieldData}) => {
+        {({ getFormFieldData }) => {
           const buttonArray = global.controlsConfigJson.find(
             (item) => item.id === this.id
           );
-          const value  = getFormFieldData(this.formId,this.id)
+          const value = getFormFieldData(this.formId, this.id)
           return (
             <FormControl
               isDisabled={isDisabledprop}
@@ -1391,11 +1408,11 @@ class cbInput extends React.Component {
                   multiline={this.multiline}
                   numberOfLines={this.numberOfLines}
                   style={[{ textAlignVertical: "top" }, this.style]}
-                  value={ value?.value? value?.value : this.value}
+                  value={value?.value ? value?.value : this.value}
                   onChangeText={(value) => {
-                    this.setFormFieldData(this.formId,'input',this.id,value);
+                    this.setFormFieldData(this.formId, 'input', this.id, value);
                   }}
-                  onFocus={() => this.setFormFieldData(this.formId,'input',this.id,value?.value )}
+                  onFocus={() => this.setFormFieldData(this.formId, 'input', this.id, value?.value)}
                 />
               </Input>
               {isRequiredprop && errorMessageprop && (
@@ -1453,7 +1470,7 @@ class cbSelectTime extends React.Component {
     }
   };
 
-  scrollToIndex = (item,index,setSelectedLocationId) => {
+  scrollToIndex = (item, index, setSelectedLocationId) => {
     setSelectedLocationId(item?.pickUpLocationId)
     if (this.scrollRef.current) {
       this.scrollRef.current.scrollToOffset({
@@ -1475,7 +1492,7 @@ class cbSelectTime extends React.Component {
       contentContainerStyle={{ paddingVertical: 100 }}
       onMomentumScrollEnd={this.handleScroll}
       renderItem={({ item, index }) => (
-        <TouchableOpacity onPress={() => this.scrollToIndex(item,index,setSelectedLocationId)} style={styles.item}>
+        <TouchableOpacity onPress={() => this.scrollToIndex(item, index, setSelectedLocationId)} style={styles.item}>
           <Text style={[styles.timeItem, this.state.selectedIndex === index && styles.selectedText]}>
             {item.label}
           </Text>
@@ -1536,8 +1553,8 @@ function cbForm({ formId, setFormFieldData, children }) {
 class cbVStack extends React.Component {
   constructor(props) {
     super();
-    this.id=props.id;
-    this.children=this.props;
+    this.id = props.id;
+    this.children = this.props;
     this.space = props.space || 'md';
   }
 
@@ -1545,7 +1562,7 @@ class cbVStack extends React.Component {
 
     const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const spaceprop = inputArray?.space  || this.space;
+    const spaceprop = inputArray?.space || this.space;
 
     return (
       <VStack space={spaceprop}>
@@ -1555,11 +1572,11 @@ class cbVStack extends React.Component {
   }
 }
 
-class CbFlatList extends React.Component{
+class CbFlatList extends React.Component {
   constructor(props) {
     super();
-    this.id=props.id;
-    this.children=props.children;
+    this.id = props.id;
+    this.children = props.children;
     this.space = props.space || 'md';
     this.flatlistData = props.flatlistData || []
     this.numColumns = props.numColumns || 0
@@ -1578,16 +1595,16 @@ class CbFlatList extends React.Component{
     this.nestedScrollEnabled = props.nestedScrollEnabled
   }
   renderEmptyList = () => {
-      return(
+    return (
       <VStack>
         <Text>{this.emptyListText}</Text>
       </VStack>
     )
   }
-  render(){
+  render() {
     const { children } = this.props;
     const inputArray = global.controlsConfigJson.find(item => item.id === this.id);
-    const spaceprop = inputArray?.space  || this.space;
+    const spaceprop = inputArray?.space || this.space;
     const ITEM_HEIGHT = 100
     return (
       <FlatList
@@ -1615,7 +1632,7 @@ class CbFlatList extends React.Component{
         updateCellsBatchingPeriod={100}
         windowSize={21}
         onEndReachedThreshold={0.1}
-        extraData = {this.extraData}
+        extraData={this.extraData}
         scrollEnabled={this.scrollEnabled}
         nestedScrollEnabled={this.nestedScrollEnabled}
       />
@@ -1638,7 +1655,7 @@ class CbCommonButton extends React.Component {
   render() {
     return (
       <FormContext.Consumer>
-        {({updateOrAddTxt}) => {
+        {({ updateOrAddTxt }) => {
           return (
             <Box>
               <TouchableOpacity
@@ -1649,7 +1666,7 @@ class CbCommonButton extends React.Component {
                   this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
                 }
                 <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
-                  {this.showBtnName?this.showBtnName:updateOrAddTxt}
+                  {this.showBtnName ? this.showBtnName : updateOrAddTxt}
                 </Text>
               </TouchableOpacity>
             </Box>
@@ -1681,7 +1698,7 @@ class CbToastMessage extends React.Component {
         visible={this.isToastMessageVisiable}
       >
         <Box style={styles.centeredView}>
-          <Pressable style={[styles.blackShadow]} onPress={() => this?.closePreviewModal()}/>
+          <Pressable style={[styles.blackShadow]} onPress={() => this?.closePreviewModal()} />
           <Box style={styles.modalView}>
             <Text style={styles.modalText}>{this.message}</Text>
           </Box>
@@ -1692,27 +1709,27 @@ class CbToastMessage extends React.Component {
 }
 
 
-CbHomeButton.display='CbHomeButton';
-CbBackButton.display='CbBackButton';
-CbImage.displayName='CbImage';
-cbButton.displayName='cbButton';
-cbInput.displayName='cbInput';
-cbCheckBox.displayName='cbCheckBox';
-cbSelect.displayName='cbSelect';
-cbImageBackground.displayName='cbImageBackground';
-cbRadioButton.displayName='cbRadioButton';
-cbVStack.displayName='cbVStack';
-cbForm.displayName='cbForm';
+CbHomeButton.display = 'CbHomeButton';
+CbBackButton.display = 'CbBackButton';
+CbImage.displayName = 'CbImage';
+cbButton.displayName = 'cbButton';
+cbInput.displayName = 'cbInput';
+cbCheckBox.displayName = 'cbCheckBox';
+cbSelect.displayName = 'cbSelect';
+cbImageBackground.displayName = 'cbImageBackground';
+cbRadioButton.displayName = 'cbRadioButton';
+cbVStack.displayName = 'cbVStack';
+cbForm.displayName = 'cbForm';
 CbFlatList.displayName = "CbFlatList"
-cbSearchbox.displayName='cbSearchbox';
-CbFloatingButton.displayName='CbFloatingButton';
+cbSearchbox.displayName = 'cbSearchbox';
+CbFloatingButton.displayName = 'CbFloatingButton';
 CbAddToCartButton.displayName = "CbAddToCartButton"
 CbCommonButton.displayName = "CbCommonButton";
-CbAccordionlist.displayName='CbAccordionlist';
-cbSelectTime.displayName='cbSelectTime';
+CbAccordionlist.displayName = 'CbAccordionlist';
+cbSelectTime.displayName = 'cbSelectTime';
 CbToastMessage.displayName = "CbToastMessage"
 CbRecentAccordion.displayName = "CbRecentAccordion"
 CbRecentAddToCart.displayName = "cbRecentAddToCart"
 
 
- export {cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion,CbRecentAddToCart };
+export { cbSelectTime, CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm, CbFlatList, cbSearchbox, CbFloatingButton, CbImage, CbAddToCartButton, CbAccordionlist, CbToastMessage, CbRecentAccordion, CbRecentAddToCart };

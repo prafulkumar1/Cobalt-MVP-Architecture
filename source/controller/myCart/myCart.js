@@ -289,6 +289,7 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
+      console.log('params', params);
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
  
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
