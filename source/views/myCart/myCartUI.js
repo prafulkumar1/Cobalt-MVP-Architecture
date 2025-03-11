@@ -224,7 +224,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
         <UI.Text style={styles.priceLabel}>{label}</UI.Text>
       </UI.Box>
       <UI.Box style={styles.valueMainContainer}>
-        <UI.Text style={styles.priceLabel}>{value}</UI.Text>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
       </UI.Box>
     </UI.Box>
   );

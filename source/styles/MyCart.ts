@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    paddingBottom: responsiveHeight(1.5),
   },
   itemTitle: {
     fontSize: 16,

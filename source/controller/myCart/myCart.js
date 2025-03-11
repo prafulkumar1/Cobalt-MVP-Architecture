@@ -112,7 +112,11 @@ export const useMyCartLogic = () => {
          "TipPercentage": tipSelection.current?.TipPercentage,
          "TipCustom": customTipVal,
       }
-      let cartInfo = await postApiCall("CART", "GET_CART_PRICE", params)
+      const parmas2 = {   
+        "Location_Id":`${getProfitCenterId?.LocationId}`,
+        "Items":cartItemIds,
+     }
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",tipSelection.current?.TipPercentage === "" ? parmas2: params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
