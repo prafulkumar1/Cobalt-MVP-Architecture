@@ -13,6 +13,7 @@ import { useRoute } from "@react-navigation/native";
 import { navigateToScreen } from '@/source/constants/Navigations';
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { useNavigation } from "@react-navigation/native";
+import CbLoader from '@/components/cobalt/cobaltLoader';
 
 
 function RenderingPendingOrders(props) {
@@ -170,30 +171,26 @@ function RenderingPendingOrders(props) {
 
 
 
-
-
-
-
-
 function RenderingFavoritesList({ props }) {
   const [expandedItems, setExpandedItems] = useState({});
-//  const {  favoriteItems} = useFormContext()
-const route = useRoute();
-const screenName = route.name;
- 
-const [favoriteItems, setFavoriteItems] = useState(FavoritesList.FavoriteItems);
-const {
-  menuOrderData,
-  storeSingleItem,
-  closePreviewModal,
-  isFavorite,cartData,singleItemDetails,modifierCartItemData,increaseQuantity
-} = useFormContext();
-const {
-  favItems,
-  loaded,
-  getFavorites,
-} = useRecentOrderLogic();
- 
+  const route = useRoute();
+  const screenName = route.name;
+
+  const {
+    menuOrderData,
+    storeSingleItem,
+    closePreviewModal,
+    cartData,
+    singleItemDetails,
+    modifierCartItemData,
+    increaseQuantity
+  } = useFormContext();
+  
+  const {
+    favItems,
+    loaded,
+  } = useRecentOrderLogic();
+
   const toggleReadMore = (index) => {
     setExpandedItems((prevState) => ({
       ...prevState,
@@ -201,15 +198,15 @@ const {
     }));
   };
 
-  const editCommentBtn = (props,item) => {
+  const editCommentBtn = (props, item) => {
     navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
-      quantityIncPrice:item?.TotalPrice
+      quantityIncPrice: item?.TotalPrice
     })
     increaseQuantity({
       ...item,
-      quantityIncPrice:item?.TotalPrice
+      quantityIncPrice: item?.TotalPrice
     })
     closePreviewModal()
   }
@@ -218,107 +215,78 @@ const {
   const quantity = cartItem ? cartItem.quantity : 0;
   const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
-
- 
   return (
     <>
-      <UI.Box style={{ paddingHorizontal: 8, height: '100%', paddingBottom: responsiveHeight(20) }}>
-      {favItems && favItems?.map((item, index) => {
- 
-          const itemDetails = menuOrderData?.find((value) => value.Item_ID == item?.Item_ID);
-          return (
-            <UI.TouchableOpacity
-              key={index}
-              style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 3, paddingVertical: 15, borderBottomWidth: 0.2, borderBlockColor: "#00000026" }}
-              /*onPress={() => {
-                navigateToScreen(props, "MenuOrder", true, { buttonLabel: "Update Item" });
-                storeSingleItem(item);
-                // setSelectedModifiers(item.selectedModifiers)
- 
-                setTimeout(() => {
-                  closePreviewModal();
-                }, 100);
-              }}*/
-              onPress = {() => editCommentBtn(props,item)}
-            >
-              <UI.Box style={{ justifyContent: "center", alignItems: "center", width: "25%" ,height: 80, }}>
-                <UI.CbImage source={item.ImageUrl} style={styles.Item_Image} />
-              </UI.Box>
-              <UI.Box style={{ paddingHorizontal: 5, width: "45%" }}>
-                <UI.Text style={{ fontSize: 18, color: "#4B5154", fontFamily: 'Source Sans Pro', fontWeight: '700', lineHeight: 23 }}>
-                  {item.Item_Name}
-                </UI.Text>
-                <UI.Text style={{ fontSize: 18, color: "#4B5154", fontFamily: 'Source Sans Pro', fontWeight: '700', lineHeight: 23 }}>
-                  ${item.Price.toFixed(2)}
-                </UI.Text>
-                <UI.Text style={{ fontSize: 11, color: '#3B87C1', fontFamily: 'Source Sans Pro', fontWeight: "bold", lineHeight: 13 }}>
-                  {expandedItems[index]
-                    ? item.Description || ""
-                    : item.Description
-                      ? `${item.Description.substring(0, 20)}...`
-                      : ""
-                  }
- 
-                </UI.Text>
-                <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
-                  <UI.Text style={{ color: '#26BAE2', fontSize: 11 }}>
-                    {expandedItems[index] ? 'Read Less' : 'Read More'}
-                  </UI.Text>
-                </UI.TouchableOpacity>
-              </UI.Box>
- 
-              <UI.Box
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: "space-between",
-                  height: 80,
-                  width: "30%",
-                }}
-              >
-                <UI.Box
-                  style={{
-                    width: responsiveWidth(5),
-                    height: responsiveHeight(2.5),
-                    justifyContent: "center",
-                    alignItems: "center",
-                    left: (quantity >= 1 || modifierQuantity >= 1) ? 0 : 30,
-                   
-                  }}
- 
+      {
+        loaded ?
+          <UI.Box style={styles.loadingContainer}>
+            <CbLoader />
+          </UI.Box>
+          :
+          <UI.Box style={styles.favMainContainer}>
+            {favItems && favItems?.map((item, index) => {
+
+              const itemDetails = menuOrderData?.find((value) => value.Item_ID == item?.Item_ID);
+              return (
+                <UI.TouchableOpacity
+                  key={index}
+                  style={styles.favItem}
+                  onPress={() => editCommentBtn(props, item)}
                 >
-                  {item.isFavorite === 1 ? (
-                    <Image
-                      source={require("@/assets/images/icons/Fav3x.png")}
-                      style={{ width: "100%", height: "100%" }}
-                      resizeMode="contain"
+                  <UI.Box style={{flexDirection:"row"}}>
+                    <UI.Box style={styles.itemImg}>
+                      <UI.CbImage source={item.ImageUrl} style={styles.Item_Image} />
+                    </UI.Box>
+                    <UI.Box style={styles.labelContainer}>
+                      <UI.Text style={styles.itemLables}>
+                        {item.Item_Name}
+                      </UI.Text>
+                      <UI.Text style={styles.itemLables}>
+                        ${item.Price.toFixed(2)}
+                      </UI.Text>
+                      <UI.Text style={styles.showLessTxt}>
+                        {expandedItems[index]
+                          ? item.Description || ""
+                          : item.Description
+                            ? `${item.Description.substring(0, 20)}...`
+                            : ""
+                        }
+
+                      </UI.Text>
+                      <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
+                        <UI.Text style={styles.readLessTxt}>
+                          {expandedItems[index] ? 'Read Less' : 'Read More'}
+                        </UI.Text>
+                      </UI.TouchableOpacity>
+                    </UI.Box>
+                  </UI.Box>
+
+                  <UI.Box
+                    style={styles.rightContainer}
+                  >
+                    <UI.Box
+                      style={[styles.rightSubContainer]}
+                    >
+                      <Image
+                        source={require("@/assets/images/icons/Fav3x.png")}
+                        style={{ width: "100%", height: "100%" }}
+                        resizeMode="contain"
+                      />
+                    </UI.Box>
+
+                    <UI.CbAddToCartButton
+                      mealItemDetails={itemDetails}
+                      routeName={screenName}
+                      style={styles.addToCartBtn}
                     />
-                  ) : (
-                    <Image
-                      source={require("@/assets/images/icons/Notfav3x.png")}
-                      style={{ width: "100%", height: "100%" }}
-                      resizeMode="contain"
-                    />
-                  )}
-                </UI.Box>
- 
-                <UI.CbAddToCartButton
-                  mealItemDetails={itemDetails}
-                  routeName={screenName}
-                  style={{
-                    padding: responsiveWidth(1.2),
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                />
-              </UI.Box>
-            </UI.TouchableOpacity>
-          );
-        })}
-      </UI.Box>
+                  </UI.Box>
+                </UI.TouchableOpacity>
+              );
+            })}
+          </UI.Box>
+      }
     </>
   );
-
 };
 
 
@@ -327,39 +295,35 @@ export default function RecentordersScreen(props) {
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   const {} = useRecentOrderLogic(props)
   const { cartData } =  useFormContext();
-  const { loading, orders, fetchRecentOrders } = useRecentOrderLogic(props); // Fetch orders from API
+  const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
   console.log('Orders', orders);
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchRecentOrders(); // Ensure data is up-to-date
-  }, []); // 
+    fetchRecentOrders();
+  }, []);
   return (
-    <UI.Box style={{ backgroundColor: "white", height: "100%" }}>
-      <UI.Box style={{ display: "flex", flexDirection: "row", marginVertical: 11, marginLeft: 8, gap: 5 }}>
-      
-      <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(false)} style={!isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
-          <UI.Text style={!isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Favorites     </UI.Text>
+    <UI.Box style={styles.mainContainer}>
+      <UI.Box style={styles.subContainer}>
+        <UI.TouchableOpacity activeOpacity={1} onPress={() => setIsRecentOrderOpen(false)} style={[!isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle]}>
+          <UI.Text style={[!isRecentOrder ? styles.ActiveButtonTextStyle : styles.ButtonTextStyle]}>Favorites</UI.Text>
         </UI.TouchableOpacity>
-        <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(true)} style={isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
-          <UI.Text style={isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Recent Orders     </UI.Text>
+        <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(true)} style={[isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle]}>
+          <UI.Text style={[isRecentOrder ? styles.ActiveButtonTextStyle : styles.ButtonTextStyle]}>Recent Orders</UI.Text>
         </UI.TouchableOpacity>
       </UI.Box>
-      <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>  
-        
-      {isRecentOrder ?
-            <>
+      <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
+        {isRecentOrder ?
+          <>
             <RenderingPendingOrders />
             <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
           </>
           :
-          <RenderingFavoritesList  props={props}/>  
+          <RenderingFavoritesList props={props} />
         }
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
-
     </UI.Box>    
-      
   );
 }

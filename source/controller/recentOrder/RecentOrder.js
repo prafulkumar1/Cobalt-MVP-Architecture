@@ -46,18 +46,13 @@ export const useRecentOrderLogic = () => {
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
       let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
      
-      if (!getProfitCenterId?.LocationId) {
-        setLoaded(false);
-        return;
-      }
-  
       const params = {  
         "Location_Id": `${getProfitCenterId.LocationId}`,
       };
      
       let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
       setFavItems(favItemInfo.response?.CompletedOrders);
-   
+      setLoaded(false);
     } catch (err) {
       console.error("Error fetching favorites:", err);
     } finally {

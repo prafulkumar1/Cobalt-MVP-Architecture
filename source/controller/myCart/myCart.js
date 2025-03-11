@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
  
-    const {setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
+    const {setIsPrevCartScreen,setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -304,6 +304,7 @@ export const useMyCartLogic = () => {
   }
   const closeSuccessModal = (props) => {
     navigateToScreen(props,"Recentorders",true,{cartScreen:true});
+    setIsPrevCartScreen(true)
     setTimeout(() => {
       setOrderSuccessModal(false);
     }, 100);
