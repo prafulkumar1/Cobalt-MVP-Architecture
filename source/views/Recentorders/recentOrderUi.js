@@ -348,11 +348,12 @@ export default function RecentordersScreen(props) {
       </UI.Box>
       <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>  
         
-      {isRecentOrder ? 
+      {isRecentOrder ?
             <>
-              <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
+            <RenderingPendingOrders />
+            <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
           </>
-          : 
+          :
           <RenderingFavoritesList  props={props}/>  
         }
       </UI.ScrollView>
