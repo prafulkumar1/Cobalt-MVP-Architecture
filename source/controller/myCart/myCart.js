@@ -351,6 +351,7 @@ export const useMyCartLogic = () => {
     orderSuccessModal,
     setOrderSuccessModal,
     successResponse,
-    closeSuccessModal
+    closeSuccessModal,
+    setIsCustomTipAdded
   };
 };

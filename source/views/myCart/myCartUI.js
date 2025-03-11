@@ -209,6 +209,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
               onBlur={() => handleResetTip()}
               onChangeText={(value) => getCustomTip(value)}
               value={customTipValue}
+              onSubmitEditing={() => handleSaveTip()}
             />
           </UI.Box>
        }

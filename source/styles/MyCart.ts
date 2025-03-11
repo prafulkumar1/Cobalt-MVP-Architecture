@@ -158,7 +158,7 @@ export const styles = StyleSheet.create({
   },
   bottomBtn: {
     position: 'absolute',
-    bottom: isPlatformIos() ? responsiveHeight(10) : responsiveHeight(0),
+    bottom: isPlatformIos() ? responsiveHeight(8.5) : responsiveHeight(0),
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -166,6 +166,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex: 1,
     backgroundColor: '#fff',
+    paddingVertical:10
   },
   btnTextStyle: { color: "#4B5154", fontSize: 16, textAlign: "center", fontFamily: "SourceSansPro_SemiBold" },
   operationBtn: {

@@ -26,10 +26,15 @@ export const useProfitCenterLogic = (props) => {
       if(profitCenterResponseData.response?.MealPeriodData.length === 1){
         const responseData = profitCenterResponseData.response?.MealPeriodData[0]
         if (responseData.Isnavigate == 1) {
-          await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
-          navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
-          setProfitCenterData(profitCenterResponseData.response)
-          setLoading(false)
+          if(props?.route?.params?.isCartItemsRemove){
+            setProfitCenterData(profitCenterResponseData.response)
+            setLoading(false)
+          }else{
+            await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
+            navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
+            setProfitCenterData(profitCenterResponseData.response)
+            setLoading(false)
+          }
         }else{
           setProfitCenterData(profitCenterResponseData.response)
           setLoading(false)

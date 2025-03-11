@@ -227,10 +227,6 @@ function RenderingFavoritesList({ props }) {
     closePreviewModal()
   }
  
-  const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const quantity = cartItem ? cartItem.quantity : 0;
-  const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-  const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
   return (
     <>
       {
@@ -264,7 +260,7 @@ function RenderingFavoritesList({ props }) {
                         {expandedItems[index]
                           ? item.Description || ""
                           : item.Description
-                            ? `${item.Description.substring(0, 20)}...`
+                            ? `${item.Description.substring(0, 35)}...`
                             : ""
                         }
 
@@ -280,21 +276,21 @@ function RenderingFavoritesList({ props }) {
                   <UI.Box
                     style={styles.rightContainer}
                   >
-                    <UI.Box
-                      style={[styles.rightSubContainer]}
-                    >
-                      <Image
+                  <UI.Box>
+                  <Image
                         source={require("@/assets/images/icons/Fav3x.png")}
-                        style={{ width: "100%", height: "100%" }}
+                        style={[styles.favIcon,{right:10}]}
                         resizeMode="contain"
                       />
-                    </UI.Box>
+                  </UI.Box>
 
+                    <UI.Box style={{marginRight:20}}>
                     <UI.CbAddToCartButton
                       mealItemDetails={itemDetails}
                       routeName={screenName}
                       style={styles.addToCartBtn}
                     />
+                    </UI.Box>
                   </UI.Box>
                 </UI.TouchableOpacity>
               );
