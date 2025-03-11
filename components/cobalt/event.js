@@ -23,7 +23,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
     const [orders, setOrders] = useState([]); // Local state for reactivity
-
+    const [pendingOrders, setPendingOrders] = useState([]);
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("")
@@ -453,7 +453,9 @@ export const UseFormContextProvider = ({children}) => {
       setToastDetails,
       isKeyboardVisible,
       orders, 
-      setOrders
+      setOrders,
+      pendingOrders,
+      setPendingOrders
     }
     return (
       <FormContext.Provider
