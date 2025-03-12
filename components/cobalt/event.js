@@ -167,28 +167,6 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
  
-    const updateCartItemQuantity2 = async (mealItemDetails, newQuantity) => {
-      try {
-        setCartData((prevCartData) => {
-          let updatedCartData;
-    
-          if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
-          } else {
-            const modifiePrice = selectedModifiers.length === 1
-            ? parseFloat(selectedModifiers[0].Price)
-            : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
-            }, 0);
-            updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
-            );
-          }
-          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
-          return updatedCartData;
-        });
-      } catch (error) {}
-    };
     const deleteCartItem = async (mealItemDetails) => {
       let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
@@ -229,35 +207,6 @@ export const UseFormContextProvider = ({children}) => {
             }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
-            );
-           
-          }
-          const getCurrentItemDetails = updatedCartData?.find(
-            (item) => item.Item_ID === singleItemDetails.Item_ID
-          );
-          singleModifierData.current = {
-            quantity: getCurrentItemDetails?.quantity,
-            quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
-          };
-          return updatedCartData;
-        });
-      } catch (error) {}
-    };
-    const updateModifierItemQuantity2 = async (mealItemDetails, newQuantity) => {
-      try {
-        setModifierCartItemData((prevCartData) => {
-          let updatedCartData;
- 
-          if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
-          } else {
-            const modifiePrice = selectedModifiers.length === 1
-            ? parseFloat(selectedModifiers[0].Price)
-            : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
-            }, 0);
-            updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }
@@ -442,8 +391,6 @@ export const UseFormContextProvider = ({children}) => {
       updateModifierCartItem,
       isExitProfitCenter,setIsExitProfitCenter,
       updateWithoutModifierCartItem,
-      updateModifierItemQuantity2,
-      updateCartItemQuantity2,
       removeCartItems,
       setIsPrevCartScreen,
       isPrevCartScreen,
