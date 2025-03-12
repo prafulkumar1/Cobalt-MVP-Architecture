@@ -132,6 +132,7 @@ export const useMyCartLogic = () => {
   };
  
   const handleDelete = async(item) => {
+    setIsPriceLoaded(true)
     if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
       swipeableRefs.current[openItemId].close();
     }
@@ -141,6 +142,7 @@ export const useMyCartLogic = () => {
     setSelectedModifiers([])
     updateModifierItemQuantity(item, 0)
     await postQuantityApiCall(item,0)
+    setIsPriceLoaded(false)
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {

@@ -3,7 +3,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-nat
 import { isPlatformIos } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
-  topContainer: { flex: 1, padding: 10, backgroundColor: "#fff" },
+  topContainer: { flex: 1, backgroundColor: "#fff" },
   scrollContent: {
     padding: 20,
   },
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
   orderInstTxt: { fontSize: 12, color: "#4B5154", paddingLeft: 10, fontFamily: "SourceSansPro_SemiBoldItalic" },
   mainSubContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
-  tipContainer: { borderTopWidth: 0.6, borderBottomWidth: 0.6, justifyContent: "center", alignItems: "center", borderColor: "#B9B9B9", padding: 10 },
+  tipContainer: { justifyContent: "center", alignItems: "center", padding: 10 },
   tipTxt: {
     color: "#4B5154",
     fontSize: 14,
@@ -127,7 +127,13 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: responsiveWidth(25),
   },
-  pickUpContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-around", backgroundColor: "#EFEFEF", padding: 10 },
+  pickUpContainer: { 
+    flexDirection: "row",
+    alignItems: "center", 
+    justifyContent: "space-around", 
+    backgroundColor: "#EFEFEF", 
+    padding: 10, 
+  },
   pickUpTimeTxt: { textAlign: "center", fontSize: 12, fontFamily: "SourceSansPro_BoldItalic" },
   timeBtn: { borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 32, marginTop: 5, },
   timeTxt: { color: "#4B5154", fontSize: 18, fontFamily: "SourceSansPro_BoldItalic" },
@@ -241,5 +247,6 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_Bold",
     marginTop:responsiveHeight(5),
     lineHeight:50
-  }
+  },
+  tipBox:{backgroundColor:"#F3F3F3",borderRadius:10,marginBottom:5,margin:10}
 }); 
