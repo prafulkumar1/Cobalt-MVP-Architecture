@@ -9,6 +9,7 @@ import { AddIcon,TrashIcon,RemoveIcon,CloseIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
 import CbLoader from '@/components/cobalt/cobaltLoader';
+import { CbDottedLine } from '@/source/constants/dottedLine';
  
  
 const pageId='MyCart';
@@ -62,11 +63,11 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
  
   const renderModifierList = ({ item }) => {
     return (
-      <UI.TouchableOpacity>
+      <UI.Box>
         <UI.Text style={styles.itemCategory}>
           {item?.Modifier_Name}
         </UI.Text>
-      </UI.TouchableOpacity>
+      </UI.Box>
     );
   }
   const renderCartItems = (item) => {
@@ -224,7 +225,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
         <UI.Text style={styles.priceLabel}>{label}</UI.Text>
       </UI.Box>
       <UI.Box style={styles.valueMainContainer}>
-        <UI.Text style={styles.priceLabel}>{value}</UI.Text>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
       </UI.Box>
     </UI.Box>
   );
@@ -286,7 +287,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
         loading ? <CbLoader />
           :
           <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
-            <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{padding:10}}>
               {myCartData && myCartData?.length > 0 ? (
                 myCartData?.map((items) => {
                   return renderCartItems(items);
@@ -304,10 +305,11 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
               <UI.Box>
                 {
                   cartConfigData?.ShowTip ===1 &&
-                  <>
+                  <UI.Box style={styles.tipBox}>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
+                    <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
                     <UI.ScrollView style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
@@ -315,7 +317,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                         })
                       }
                     </UI.ScrollView>
-                  </>
+                  </UI.Box>
                 }
  
                 {keyboardVisible && tipKeyboardOpen && (

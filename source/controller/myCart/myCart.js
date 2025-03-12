@@ -112,7 +112,7 @@ export const useMyCartLogic = () => {
          "TipPercentage": tipSelection.current?.TipPercentage,
          "TipCustom": customTipVal,
       }
-      let cartInfo = await postApiCall("CART", "GET_CART_PRICE", params)
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
@@ -132,6 +132,7 @@ export const useMyCartLogic = () => {
   };
  
   const handleDelete = async(item) => {
+    setIsPriceLoaded(true)
     if (openItemId === item.Item_ID && swipeableRefs.current[openItemId]) {
       swipeableRefs.current[openItemId].close();
     }
@@ -141,6 +142,7 @@ export const useMyCartLogic = () => {
     setSelectedModifiers([])
     updateModifierItemQuantity(item, 0)
     await postQuantityApiCall(item,0)
+    setIsPriceLoaded(false)
   };
   const handleSwipeOpen = (itemId) => {
     if (openItemId !== itemId) {
@@ -259,6 +261,7 @@ export const useMyCartLogic = () => {
     }
   }
   const editCommentBtn = (props,item) => {
+    closePreviewModal()
     navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
@@ -268,7 +271,6 @@ export const useMyCartLogic = () => {
       ...item,
       quantityIncPrice:item?.TotalPrice
     })
-    closePreviewModal()
   }
   const handlePlaceOrder = async() => {
     try {

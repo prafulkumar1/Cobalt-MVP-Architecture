@@ -19,8 +19,6 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 function RenderingPendingOrders(props) {
   const { loading, orders, fetchRecentOrders,pendingOrders } = useRecentOrderLogic(props); // Fetch orders from API
 
-  console.log('Pending Orders: ', pendingOrders);
-
   const OrdersList = pendingOrders
   
   
@@ -29,25 +27,26 @@ function RenderingPendingOrders(props) {
   style={{
     paddingHorizontal: horizontalScale(10),
     width: "100%", 
-    maxHeight: "100%",
     borderRadius: moderateScale(8),
     backgroundColor: "#ffffff",
-    shadowColor: "#00000029",
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 8,
+    marginVertical: moderateScale(5),
     padding: moderateScale(10),
     alignSelf: "center"
   }}
 >
   {pendingOrders?.map((Order, index) => (
-    <AccordionItem key={index} value={`item-${index}`}>
+    <AccordionItem key={index} value={`item-${index}`} style={{ backgroundColor: "#ffffff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginTop:10,
+    elevation: 5,}}>
       <AccordionHeader >
         <UI.Box style={{ flexDirection: "row", alignItems: "center", paddingVertical:20,justifyContent:"space-between" }}>
             <UI.CbImage  imageJsx={<Image source={require("@/assets/images/icons/Pendingorder.png")}    style={{ width: 28, height: 28, left:6}}  /> }/>
-            <UI.Text   style={{ fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_Bold",fontWeight: "700",  marginLeft: 10,   left:10  }}>
-               Ordered Status
+            <UI.Text   style={{ fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_BoldItalic",fontWeight: "700",  marginLeft: 10,   left:10  }}>
+              Order Status
             </UI.Text>
             <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:20 }}>   
               {Order.orderstatus}
@@ -63,12 +62,12 @@ function RenderingPendingOrders(props) {
                   {Order.pickuptime}
                 </UI.Text>
             </UI.Box>
-            <UI.Box style={{ paddingHorizontal:8,   }}>
+            <UI.Box style={{ paddingHorizontal:15,  }}>
                 <UI.Text style={{ fontSize: 11,  color: "#4F4F4F", fontFamily: "SourceSansPro_Bold" }}>
-                    Pickup Place
+                    Pickup Point
                   </UI.Text>
                 <UI.Text style={{ fontSize: 16, fontFamily: "SourceSansPro_Bold",color:"#2A4E7D" }}>
-                {Order.pickuplocation}
+                Cabana
                 </UI.Text>
               </UI.Box>
             <UI.Box style={{ paddingHorizontal:60 }}>
@@ -77,26 +76,25 @@ function RenderingPendingOrders(props) {
                 </UI.Text>
                 <UI.Text style={{ fontSize: 14,  color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
                   Date: {Order.Ordereddate}
+                  <AccordionIcon
+                                    as={ChevronRightIcon}
+                                    size={"md"}
+                                    color="#4B5154"
+                                    style={{left: 30}}
+                                  />          
                 </UI.Text>
             </UI.Box> 
-            <>
-            {({ isExpanded }) => {
-            return (
-              <>
-                {isExpanded ? (
-                  <AccordionIcon as={ChevronRightIcon} className="mr-3" style={{width:20,height:20,}} />
-                ) : (
-                  <AccordionIcon as={ChevronDownIcon} className="mr-3" style={{width:20,height:20,}}/>
-                )}
-              </>
-            )
-          }}
-            </>
-         </UI.Box>           
+         </UI.Box> 
+        
         </AccordionTrigger>
+                   
       </AccordionHeader>
       <AccordionContent >
-        <UI.Box style={{ padding: 12, backgroundColor: "#fff" }}>
+        <UI.Box style={{ padding: 12,
+    backgroundColor: "#ffffff",
+    marginVertical: moderateScale(5),
+    padding: moderateScale(10),
+    elevation: 8, }}>
          <UI.Box>
                 <UI.Text style={{ fontSize: 14, fontFamily: "SourceSansPro_Bold",right:18,bottom:10}}>
                   Order Summary
@@ -163,19 +161,43 @@ function RenderingPendingOrders(props) {
 ))}
 
           </UI.Box>
-            <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
-               {Order.SubTotal && <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
-                  Sub Total: ${Order.SubTotal.toFixed(2)}
-                </UI.Text>}
-                {Order.ServiceCharge && <UI.Text>10% Service Charge: ${Order.ServiceCharge.toFixed(2)}</UI.Text>}
-               {Order.FoodTax && <UI.Text>Food Tax: ${Order.FoodTax.toFixed(2)}</UI.Text> }
-                {Order.StateTax && <UI.Text>State Tax: ${Order.StateTax.toFixed(2)}</UI.Text> }
-            </UI.Box>
-            <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
-            {Order.Total &&  <UI.Text style={{ fontWeight: "700", marginTop: 8 }}>Total: ${Order.Total.toFixed(2)}</UI.Text> }
-                {Order.Tip &&   <UI.Text>Tip: ${Order.Tip.toFixed(2)}</UI.Text> }
-                {Order.GrandTotal &&    <UI.Text>Grand Total: ${Order.GrandTotal.toFixed(2)}</UI.Text> }
-            </UI.Box>
+          <UI.Box>
+  <UI.Box
+    style={{
+      borderTopWidth: 1,
+      borderTopColor: "#eee",
+      marginTop: 12,
+      paddingTop: 12,
+      alignSelf: "flex-end",
+      alignItems: "flex-end",
+    }}
+  >
+    {Order?.SubTotal !== undefined && (
+      <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
+        {`Sub Total: $${Order.SubTotal.toFixed(2)}`}
+      </UI.Text>
+    )}
+
+  </UI.Box>
+
+  <UI.Box
+    style={{
+      borderTopWidth: 1,
+      borderTopColor: "#eee",
+      marginTop: 12,
+      paddingTop: 12,
+      alignSelf: "flex-end",
+      alignItems: "flex-end",
+      fontFamily: "SourceSansPro_Regular"
+    }}
+  >
+
+    {Order?.Tip !== undefined && <UI.Text>{`Tip: $${Order.Tip.toFixed(2)}`}</UI.Text>}
+    {Order?.GrandTotal !== undefined && (
+      <UI.Text>{`Grand Total: $${Order.GrandTotal.toFixed(2)}`}</UI.Text>
+    )}
+  </UI.Box>
+</UI.Box>
         
         </UI.Box>
       </AccordionContent>
@@ -329,7 +351,6 @@ export default function RecentordersScreen(props) {
         {isRecentOrder ?
           <>
             <RenderingPendingOrders />
-
             <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
           </>
           :
