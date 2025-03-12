@@ -27,6 +27,7 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveWidth} from "react-native-responsive-dimensions";
 
 export const postQuantityApiCall = async (quantity, itemId) => {
   try {
@@ -861,6 +862,7 @@ class CbAddToCartButton extends React.Component {
     this.mealItemDetails = props.mealItemDetails
     this.style = props.style
     this.cartStyle = props.cartStyle
+    this.routeName = props.routeName;
     this.state = {
       isAvailable: 0,
       IsModifierAvailable: 0
@@ -987,45 +989,83 @@ class CbAddToCartButton extends React.Component {
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
+    const isRecentOrderScreen = this?.routeName === "Recentorders";
+ const addToCartBtnBefore = () =>{
+  return (
+    <TouchableOpacity
+    style={[this.style ? this.style : styles.addItemToCartBtn,
+    { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
+    { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
+    { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
+    { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
+    ]}
+    activeOpacity={0.5}
+    onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+    disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
+  >
+    <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={styles.addIconSize} />
+  </TouchableOpacity>
+  
+  )
+ }
 
-    if (quantity === 0 && modifierQuantity === 0) {
-      return (
+ const addToCartBtnAfter = () =>{
+  return (
+    <Box style={[
+      isRecentOrderScreen ? { marginRight: 18 } : {}, 
+      this.cartStyle ? styles.operationBtn2 : styles.operationBtn 
+    ]}>
         <TouchableOpacity
-          style={[this.style ? this.style : styles.addItemToCartBtn,
-          { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
-          { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
-          { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
-          { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
-          ]}
-          activeOpacity={0.5}
-          onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
-          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
+          style={styles.iconBtn}
+          onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "decrement")}
         >
-          <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
+          {this.renderIcons(quantity, modifierQuantity, itemDataVisible)}
         </TouchableOpacity>
-      );
-    } else {
-      return (
-        <Box style={[this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
-          <TouchableOpacity
-            style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "decrement")}
-          >
-            {
-              this.renderIcons(quantity, modifierQuantity, itemDataVisible)
-            }
-          </TouchableOpacity>
 
-          <Text style={styles.quantityTxt}>{quantity >= 1 ? itemDataVisible ? modifierQuantity : quantity : modifierQuantity}</Text>
-          {/* <Text style={styles.quantityTxt}>{modifierQuantity ? modifierQuantity : quantity}</Text> */}
+        <Text style={[styles.quantityTxt, {paddingHorizontal: isRecentOrderScreen && quantity >= 10 ? responsiveWidth(0):  responsiveWidth(1.2)  }]}>
+          {quantity >= 1 ? (itemDataVisible ? modifierQuantity : quantity) : modifierQuantity}
+        </Text>
 
-          <TouchableOpacity
-            style={styles.iconBtn}
-            onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "increment")}
-          >
-            <Icon as={AddIcon} color="#5773a2" size={"xl"} style={{ width: 25, height: 25 }} />
-          </TouchableOpacity>
-        </Box>
+        <TouchableOpacity
+          style={styles.iconBtn}
+          onPress={() => this.modifierIncDecBtn(itemDataVisible, cartData, updateModifierItemQuantity, modifierQuantity, updateCartItemQuantity, quantity, "increment")}
+        >
+          <Icon as={AddIcon} color="#5773a2" size={"xl"} style={styles.addIconSize} />
+        </TouchableOpacity>
+      </Box>
+  )
+ }
+ if (quantity === 0 && modifierQuantity === 0) {
+  return isRecentOrderScreen ? (
+    <Box style={styles.imageAdditionContainer}>
+      <Image
+        source={require("@/assets/images/icons/Fav3x.png")}
+        style={[styles.favIcon, { left:-10}]}
+        resizeMode="contain"
+      />
+      {addToCartBtnBefore()}
+    </Box>
+  ) : (
+    <>
+      {addToCartBtnBefore()}
+    </>
+  );
+}
+
+else {
+      return isRecentOrderScreen ? (
+        <Box style={[styles.imageAdditionContainer ,{top:10}]}>
+        <Image
+          source={require("@/assets/images/icons/Fav3x.png")}
+          style={[styles.favIcon, { left:-90,}]}
+          resizeMode="contain"
+        />
+        {addToCartBtnAfter()}
+      </Box>
+    ) : (
+      <>
+        {addToCartBtnAfter()}
+      </>
       );
     }
   };

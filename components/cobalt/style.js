@@ -44,6 +44,9 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: -22,
   },
+  addIconSize: {
+    width: 25, height: 25
+  },
   operationBtn: {
     position: 'absolute',
     right: -18,
@@ -80,10 +83,14 @@ export const styles = StyleSheet.create({
   quantityTxt: {
     fontSize: 22,
     fontFamily:"SourceSansPro_Regular",
-    paddingLeft: responsiveWidth(1.2),
-    paddingRight: responsiveWidth(0.8),
     paddingTop:4
   },
+  imageAdditionContainer:{
+  flexDirection: "row", justifyContent: "space-between", alignItems: "center" 
+},
+favIcon:{
+  width: 20, height: 20,
+},
   container: {
     flex: 1,
     padding: 20,

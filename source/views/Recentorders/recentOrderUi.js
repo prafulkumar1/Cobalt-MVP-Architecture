@@ -276,19 +276,11 @@ function RenderingFavoritesList({ props }) {
                   <UI.Box
                     style={styles.rightContainer}
                   >
-                  <UI.Box>
-                  <Image
-                        source={require("@/assets/images/icons/Fav3x.png")}
-                        style={[styles.favIcon,{right:10}]}
-                        resizeMode="contain"
-                      />
-                  </UI.Box>
-
                     <UI.Box style={{marginRight:20}}>
                     <UI.CbAddToCartButton
                       mealItemDetails={itemDetails}
                       routeName={screenName}
-                      style={styles.addToCartBtn}
+                      style={styles.addToCartBtn} 
                     />
                     </UI.Box>
                   </UI.Box>

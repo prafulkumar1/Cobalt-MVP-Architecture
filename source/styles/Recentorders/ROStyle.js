@@ -44,14 +44,14 @@ export const styles = StyleSheet.create({
     fontSize: 16, 
     textAlign:"center"
   },
-  Item_Image: { height: responsiveHeight(6.4),width:responsiveWidth(23), borderRadius: 6,resizeMode:"cover" },
+  Item_Image: { height: responsiveHeight(9),width:responsiveWidth(24), borderRadius: 6,resizeMode:"cover" },
   Favorite_Image: { height: 22, width: 20 },
   AddButton: {   width:30, height: 30,left:40,top:12},
   loadingContainer:{ height: responsiveHeight(70), justifyContent: "center", alignItems: "center" },
   favMainContainer:{ paddingHorizontal: 8, height: '100%', paddingBottom: responsiveHeight(20) },
   favItem:{ flexDirection: 'row', justifyContent: 'space-between', gap: 3, paddingVertical: 15, borderBottomWidth: 0.2, borderBlockColor: "#00000026" },
   itemImg:{ width:responsiveWidth(25)},
-  labelContainer:{ paddingHorizontal: 5,width:responsiveWidth(44)},
+  labelContainer:{ paddingHorizontal: 5,width:responsiveWidth(40)},
   itemLables:{ 
     fontSize: 18, 
     color: "#4B5154", 
@@ -65,8 +65,9 @@ export const styles = StyleSheet.create({
   },
   readLessTxt:{ color: '#26BAE2', fontSize: 11 },
   rightContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    // flexDirection: 'row',
+    alignItems:'flex-end',
+    width:responsiveWidth(35),
   },
   rightSubContainer: {
     width: responsiveWidth(5),
