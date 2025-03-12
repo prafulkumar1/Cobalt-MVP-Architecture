@@ -1,209 +1,202 @@
 import * as UI from '@/components/cobalt/importUI';
-import { RecentordersData,FavoritesList } from '@/source/constants/commonData';
 import React, { useState, useEffect } from 'react';
 import { Image } from 'react-native';
 import { styles } from '@/source/styles/Recentorders/ROStyle';
-import { Box } from 'lucide-react-native';
 import { useFormContext } from '@/components/cobalt/event';
-import { height, horizontalScale, moderateScale, verticalScale } from '@/source/constants/Matrices';
+import { height, horizontalScale, isPlatformAndroid, moderateScale, verticalScale } from '@/source/constants/Matrices';
 import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { useRecentOrderLogic } from '@/source/controller/recentOrder/RecentOrder';
 import { useRoute } from "@react-navigation/native";
 import { navigateToScreen } from '@/source/constants/Navigations';
-import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 import { useNavigation } from "@react-navigation/native";
 import CbLoader from '@/components/cobalt/cobaltLoader';
+import { CbDottedLine } from '@/source/constants/dottedLine';
 
 
 function RenderingPendingOrders(props) {
-  const { loading, orders, fetchRecentOrders,pendingOrders } = useRecentOrderLogic(props); // Fetch orders from API
-
+  const { pendingOrders } = useRecentOrderLogic(props);
   const OrdersList = pendingOrders
-  
-  
+  const [expandedIndex, setExpandedIndex] = useState(null);
+  const handleToggle = (index) => {
+    setExpandedIndex((prevIndex) => {
+      const newIndex = prevIndex === index ? null : index;
+      return newIndex;
+    });
+  };
+
   return (
-<Accordion
-  style={{
-    paddingHorizontal: horizontalScale(10),
-    width: "100%", 
-    borderRadius: moderateScale(8),
-    backgroundColor: "#ffffff",
-    marginVertical: moderateScale(5),
-    padding: moderateScale(10),
-    alignSelf: "center"
-  }}
->
-  {pendingOrders?.map((Order, index) => (
-    <AccordionItem key={index} value={`item-${index}`} style={{ backgroundColor: "#ffffff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    marginTop:10,
-    elevation: 5,}}>
-      <AccordionHeader >
-        <UI.Box style={{ flexDirection: "row", alignItems: "center", paddingVertical:20,justifyContent:"space-between" }}>
-            <UI.CbImage  imageJsx={<Image source={require("@/assets/images/icons/Pendingorder.png")}    style={{ width: 28, height: 28, left:6}}  /> }/>
-            <UI.Text   style={{ fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_BoldItalic",fontWeight: "700",  marginLeft: 10,   left:10  }}>
-              Order Status
-            </UI.Text>
-            <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:20 }}>   
-              {Order.orderstatus}
-            </UI.Text>
-        </UI.Box>
-        <AccordionTrigger className="focus:web:rounded-lg">
-        <UI.Box  style={{ flexDirection: "row", justifyContent: "space-between",  alignItems: "center",  }}>
-            <UI.Box>
-              <UI.Text   style={{ fontSize:11, color: "#4F4F4F", fontFamily: "SourceSansPro_Bold",  }} >
-                  Pickup Time
-                </UI.Text>
-                <UI.Text  style={{  fontSize: 16, fontFamily: "SourceSansPro_Bold", color:"#2A4E7D"  }} >
-                  {Order.pickuptime}
-                </UI.Text>
-            </UI.Box>
-            <UI.Box style={{ paddingHorizontal:15,  }}>
-                <UI.Text style={{ fontSize: 11,  color: "#4F4F4F", fontFamily: "SourceSansPro_Bold" }}>
-                    Pickup Point
+    <Accordion
+      style={styles.recentContainer}
+    >
+      <UI.FlatList
+        data={pendingOrders}
+        contentContainerStyle={{marginVertical:5,marginHorizontal:2}}
+        renderItem={({ item, index }) => {
+          const Order = item
+          return (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              style={styles.recentCardContainer}
+              expanded={expandedIndex === index}
+            >
+              <AccordionHeader >
+                <UI.Box style={styles.recentStatusContainer}>
+                  <UI.CbImage imageJsx={<Image source={require("@/assets/images/icons/Pendingorder3x.png")} style={styles.orderIcon} />} />
+                  <UI.Text style={styles.labelStatus}>
+                    Order Status
                   </UI.Text>
-                <UI.Text style={{ fontSize: 16, fontFamily: "SourceSansPro_Bold",color:"#2A4E7D" }}>
-                Cabana
-                </UI.Text>
-              </UI.Box>
-            <UI.Box style={{ paddingHorizontal:60 }}>
-                <UI.Text   style={{fontSize: 14, color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Order Id #: {Order.OrderID}
-                </UI.Text>
-                <UI.Text style={{ fontSize: 14,  color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Date: {Order.Ordereddate}
-                  <AccordionIcon
-                                    as={ChevronRightIcon}
-                                    size={"md"}
-                                    color="#4B5154"
-                                    style={{left: 30}}
-                                  />          
-                </UI.Text>
-            </UI.Box> 
-         </UI.Box> 
-        
-        </AccordionTrigger>
-                   
-      </AccordionHeader>
-      <AccordionContent >
-        <UI.Box style={{ padding: 12,
-    backgroundColor: "#ffffff",
-    marginVertical: moderateScale(5),
-    padding: moderateScale(10),
-    elevation: 8, }}>
-         <UI.Box>
-                <UI.Text style={{ fontSize: 14, fontFamily: "SourceSansPro_Bold",right:18,bottom:10}}>
-                  Order Summary
-                </UI.Text>
-                <UI.Box style={{ flexDirection: "row",justifyContent: "space-between",alignItems: "center",marginBottom: 8,}}>
-                    <UI.Text style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic",right:18 }} >
-                      Items
-                    </UI.Text>
-                    <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
-                      <UI.Text   style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic",  marginRight: 16 }}>
-                        Qty
-                      </UI.Text>
-                    <UI.Text style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>
-                      Amount
-                    </UI.Text>
+                  <UI.Text style={styles.statusValTxt}>
+                    {Order.orderstatus}
+                  </UI.Text>
                 </UI.Box>
-          </UI.Box>       
-        </UI.Box>
+                <UI.Box style={styles.dottedLine}>
+                  <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                </UI.Box>
+                <AccordionTrigger className="focus:web:rounded-lg" onPress={() => handleToggle(index)}>
+                  <UI.Box style={styles.pickUpDetailsContainer}>
+                    <UI.Box style={styles.pickUpSubContainer}>
+                      <UI.Box>
+                        <UI.Text style={styles.labelPickUpTime} >
+                          Pickup Time
+                        </UI.Text>
+                        <UI.Text style={styles.pickValue} >
+                          {Order.pickuptime}
+                        </UI.Text>
+                      </UI.Box>
+                      <UI.Box style={styles.verticalLine} />
+                      <UI.Box>
+                        <UI.Text style={styles.labelPickUpPoint}>
+                          Pickup Point
+                        </UI.Text>
+                        <UI.Text style={styles.pickUpLocation}>
+                          Cabana
+                        </UI.Text>
+                      </UI.Box>
+                    </UI.Box>
+                    <UI.Box style={styles.detailsContainer}>
+                      <UI.Box>
+                        <UI.Text style={styles.labelOrderId} >
+                          Order Id #: {Order.OrderID}
+                        </UI.Text>
+                        <UI.Text style={styles.labelOrderId} >
+                          Date: {Order.Ordereddate}
+                        </UI.Text>
+                      </UI.Box>
+                      <AccordionIcon
+                        as={expandedIndex === index ? ChevronDownIcon : ChevronRightIcon}
+                        size={"xl"}
+                        color="#4B5154"
+                        style={{ left: isPlatformAndroid()?15:5 }}
+                      />
+                    </UI.Box>
 
-          <UI.Box style={{ marginBottom: 12 }}>
-          {pendingOrders
-    .filter((order) => order.OrderID === Order.OrderID) // Ensure we are grouping items by order
-    .map((order, index) => (  <React.Fragment key={index}>
-    <UI.Box style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-      <UI.Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: "700", right: 18 }}>
-        {index + 1}. {Order.Item_Name}
-      </UI.Text>
-      <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
-        <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic", marginRight: 16 }}>
-          1 {/* Since there is no Quantity field in response, default to 1 */}
-        </UI.Text>
-        <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic" }}>
-          ${Order.Price.toFixed(2)}
-        </UI.Text>
-      </UI.Box>
-    </UI.Box>
-    <UI.Box>
-      {Order?.Modifiers?.length > 0 && Order.Modifiers.map((Modifier, modIndex) => (
-        <React.Fragment key={modIndex}>
-          <UI.Text style={{ fontSize: 11, color: "#5773A2", fontFamily: "SourceSansPro_Bold", fontStyle: "italic" }}>
-            {Modifier.Item_Name}
-          </UI.Text>
-        </React.Fragment>
-      ))}
-    </UI.Box>
-    {Order.Comments && Order.Comments !== "No Comments added" && (
-      <UI.Box style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-        <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top: 1 }} />} />
-        <UI.Text
-          style={{
-            fontSize: 12,
-            fontFamily: "SourceSansPro_Bold",
-            fontStyle: "italic",
-            flexShrink: 1,
-            flexWrap: "wrap",
-            maxWidth: "90%"
-          }}
-        >
-          {Order.Comments}
-        </UI.Text>
-      </UI.Box>
-    )}
-  </React.Fragment>
-))}
+                  </UI.Box>
+                </AccordionTrigger>
+                {
+                  expandedIndex === index &&
+                  <UI.Box style={[styles.dottedLine, { marginTop: -5 }]}>
+                    <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                  </UI.Box>
+                }
+               
+              </AccordionHeader>
+              <AccordionContent >
+                <UI.Box style={styles.orderSummaryContainer}>
+                  <UI.Box>
+                    <UI.Text style={styles.labelOrdSummary}>
+                      Order Summary
+                    </UI.Text>
+                    <UI.Box style={styles.itemContainer}>
+                      <UI.Text style={styles.labelItem} >
+                        Items
+                      </UI.Text>
+                      <UI.Box style={styles.amountContainer}>
+                        <UI.Text style={styles.labelQty}>
+                          Qty
+                        </UI.Text>
+                        <UI.Text style={styles.labelAmount}>
+                          Amount
+                        </UI.Text>
+                      </UI.Box>
+                    </UI.Box>
 
-          </UI.Box>
-          <UI.Box>
-  <UI.Box
-    style={{
-      borderTopWidth: 1,
-      borderTopColor: "#eee",
-      marginTop: 12,
-      paddingTop: 12,
-      alignSelf: "flex-end",
-      alignItems: "flex-end",
-    }}
-  >
-    {Order?.SubTotal !== undefined && (
-      <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
-        {`Sub Total: $${Order.SubTotal.toFixed(2)}`}
-      </UI.Text>
-    )}
+                   
+                  </UI.Box>
+                  <UI.Box style={styles.pendingOrderContainer}>
+                    {pendingOrders
+                      ?.filter((order) => order.OrderID === Order.OrderID)
+                      ?.map((order, index) => (<React.Fragment key={index}>
+                        <UI.Box style={styles.pendingOrderBox}>
+                          <UI.Text style={styles.labelItemName}>
+                            {index + 1}. {Order.Item_Name}
+                          </UI.Text>
+                          <UI.Box style={styles.amountContainer}>
+                            <UI.Text style={styles.labelQuantity}>
+                              1 {/* Since there is no Quantity field in response, default to 1 */}
+                            </UI.Text>
+                            <UI.Text style={styles.itemPrice}>
+                              ${Order.Price.toFixed(2)}
+                            </UI.Text>
+                          </UI.Box>
+                        </UI.Box>
+                        <UI.Box>
+                          {Order?.Modifiers?.length > 0 && Order.Modifiers.map((Modifier, modIndex) => (
+                            <React.Fragment key={modIndex}>
+                              <UI.Text style={styles.modifierName}>
+                                {Modifier.Item_Name}
+                              </UI.Text>
+                            </React.Fragment>
+                          ))}
+                        </UI.Box>
+                        {Order.Comments && Order.Comments !== "No Comments added" && (
+                          <UI.Box style={styles.commentBox}>
+                            <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={styles.commentIcon} />} />
+                            <UI.Text
+                              style={styles.labelComment}
+                            >
+                              {Order.Comments}
+                            </UI.Text>
+                          </UI.Box>
+                        )}
+                      </React.Fragment>
+                      ))}
+                  </UI.Box>
+                  <UI.Box>
+                    <UI.Box
+                      style={styles.priceSplitContainer}
+                    >
+                      <UI.Box style={{}}>
+                        <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                      </UI.Box>
+                      {Order?.SubTotal !== undefined && (
+                        <UI.Text style={styles.labelSubTotal}>
+                          {`Sub Total: $${Order.SubTotal.toFixed(2)}`}
+                        </UI.Text>
+                      )}
 
-  </UI.Box>
+                    </UI.Box>
 
-  <UI.Box
-    style={{
-      borderTopWidth: 1,
-      borderTopColor: "#eee",
-      marginTop: 12,
-      paddingTop: 12,
-      alignSelf: "flex-end",
-      alignItems: "flex-end",
-      fontFamily: "SourceSansPro_Regular"
-    }}
-  >
-
-    {Order?.Tip !== undefined && <UI.Text>{`Tip: $${Order.Tip.toFixed(2)}`}</UI.Text>}
-    {Order?.GrandTotal !== undefined && (
-      <UI.Text>{`Grand Total: $${Order.GrandTotal.toFixed(2)}`}</UI.Text>
-    )}
-  </UI.Box>
-</UI.Box>
-        
-        </UI.Box>
-      </AccordionContent>
-    </AccordionItem>
-     ))}
-  </Accordion>
+                    <UI.Box
+                      style={styles.tipDetailsContainer}
+                    >
+                      <UI.Box>
+                        <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                      </UI.Box>
+                      {Order?.Tip !== undefined && <UI.Text style={[styles.tipVal,{marginTop:10}]}>{`Tip: $${Order.Tip.toFixed(2)}`}</UI.Text>}
+                      {Order?.GrandTotal !== undefined && (
+                        <UI.Text style={styles.tipVal}>{`Grand Total: $${Order.GrandTotal.toFixed(2)}`}</UI.Text>
+                      )}
+                    </UI.Box>
+                  </UI.Box>
+                </UI.Box>
+              </AccordionContent>
+            </AccordionItem>
+          );
+        }}
+      />
+    </Accordion>
   );
 };
 
