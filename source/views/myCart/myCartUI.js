@@ -62,11 +62,11 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
  
   const renderModifierList = ({ item }) => {
     return (
-      <UI.TouchableOpacity>
+      <UI.Box>
         <UI.Text style={styles.itemCategory}>
           {item?.Modifier_Name}
         </UI.Text>
-      </UI.TouchableOpacity>
+      </UI.Box>
     );
   }
   const renderCartItems = (item) => {

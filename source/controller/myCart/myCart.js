@@ -112,11 +112,7 @@ export const useMyCartLogic = () => {
          "TipPercentage": tipSelection.current?.TipPercentage,
          "TipCustom": customTipVal,
       }
-      const parmas2 = {   
-        "Location_Id":`${getProfitCenterId?.LocationId}`,
-        "Items":cartItemIds,
-     }
-      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",tipSelection.current?.TipPercentage === "" ? parmas2: params)
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
@@ -263,6 +259,7 @@ export const useMyCartLogic = () => {
     }
   }
   const editCommentBtn = (props,item) => {
+    closePreviewModal()
     navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
@@ -272,7 +269,6 @@ export const useMyCartLogic = () => {
       ...item,
       quantityIncPrice:item?.TotalPrice
     })
-    closePreviewModal()
   }
   const handlePlaceOrder = async() => {
     try {
