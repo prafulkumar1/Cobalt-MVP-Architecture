@@ -29,6 +29,25 @@ function RenderingPendingOrders(props) {
       return newIndexes;
     });
   };
+    const PriceRow = ({ label, value }) => (
+      <UI.Box style={styles.splitPriceContainer}>
+        <UI.Box style={styles.priceLabelContainer}>
+          <UI.Text style={styles.priceLabel}>{label}</UI.Text>
+        </UI.Box>
+        <UI.Box style={styles.valueMainContainer}>
+          <UI.Text style={styles.priceLabel}>${value}</UI.Text>
+        </UI.Box>
+      </UI.Box>
+    );
+    const PriceDetails = (ordersPrice) => (
+      <UI.Box style={styles.priceContainer}>
+        <UI.Box style={styles.priceSubContainer}>
+          {ordersPrice && ordersPrice?.Breakdown?.map((item, index) => (
+            <PriceRow key={index} label={item.Label} value={item.Value} />
+          ))}
+        </UI.Box>
+      </UI.Box>
+    );
 
   return (
     <Accordion
@@ -156,19 +175,24 @@ function RenderingPendingOrders(props) {
                               ))}
                             </UI.Box>
 
-                            {items.Comments && items.Comments !== "No Comments added" && (
+                            {items?.comments && (
                               <UI.Box style={styles.commentBox}>
                                 <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment3x.png')} style={styles.commentIcon} />} />
                                 <UI.Text
                                   style={styles.labelComment}
                                 >
-                                  {items.Comments}
+                                  {items.comments}
                                 </UI.Text>
                               </UI.Box>
                             )}
                           </React.Fragment>
                         )
                       })}
+                  </UI.Box>
+                  <UI.Box
+                    style={styles.priceContainer}
+                  >
+                    {PriceDetails(Order)}
                   </UI.Box>
                   <UI.Box>
                     <UI.Box
@@ -183,7 +207,7 @@ function RenderingPendingOrders(props) {
                        
                       {Order?.SubTotal !== undefined && (
                         <UI.Text style={styles.labelSubTotal}>
-                          {`Sub Total: $${Order.SubTotal.toFixed(2)}`}
+                          {`Sub Total: $${Order.SubTotal?.toFixed(2)}`}
                         </UI.Text>
                       )}
                     </UI.Box>
@@ -197,10 +221,10 @@ function RenderingPendingOrders(props) {
                           <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
                         </UI.Box>
                       }
-                      {Order?.Tip !== undefined && <UI.Text style={[styles.tipVal,{marginTop:10}]}>{`Tip: $${Order.Tip.toFixed(2)}`}</UI.Text>}
-                      {Order?.GrandTotal !== undefined && (
-                        <UI.Text style={styles.tipVal}>{`Grand Total: $${Order.GrandTotal.toFixed(2)}`}</UI.Text>
-                      )}
+                      {Order?.Tip !== undefined && <UI.Text style={[styles.tipVal,{marginTop:10}]}>{`Tip: $${Order.Tip?.toFixed(2)}`}</UI.Text>}
+                      {/* {Order?.GrandTotal !== undefined && (
+                        <UI.Text style={styles.tipVal}>{`Grand Total: $${Order?.GrandTotal? Order?.GrandTotal?.toFixed(2):0}`}</UI.Text>
+                      )} */}
                     </UI.Box>
                   </UI.Box>
                 </UI.Box>
@@ -282,7 +306,7 @@ function RenderingFavoritesList({ props }) {
                         {item.Item_Name}
                       </UI.Text>
                       <UI.Text style={styles.itemLables}>
-                        ${item.Price.toFixed(2)}
+                        ${item.Price?.toFixed(2)}
                       </UI.Text>
                       <UI.Text style={styles.showLessTxt}>
                         {expandedItems[index]
