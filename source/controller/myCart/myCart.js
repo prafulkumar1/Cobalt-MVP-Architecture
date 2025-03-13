@@ -285,12 +285,13 @@ export const useMyCartLogic = () => {
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
+          "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
           "PickupTime": selectedTime ? selectedTime :"",
           "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
           "TipPercentage": tipSelection.current?.TipPercentage, 
-          "TipCustom": customTipVal 
+          "TipCustom": customTipVal
         },
         "Items": cartItemIds,
       }
