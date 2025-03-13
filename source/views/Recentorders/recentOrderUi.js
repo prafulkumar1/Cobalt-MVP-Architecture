@@ -150,6 +150,7 @@ function RenderingPendingOrders(props) {
                   </UI.Box>
                   <UI.Box style={styles.pendingOrderContainer}>
                     {Order?.Items?.map((items, index) => {
+                      const modifierList = typeof items?.Modifiers === "string" ? JSON.parse(items?.Modifiers):items?.Modifiers
                         return(
                           <React.Fragment key={index}>
                             <UI.Box style={styles.pendingOrderBox}>
@@ -166,7 +167,7 @@ function RenderingPendingOrders(props) {
                               </UI.Box>
                             </UI.Box>
                             <UI.Box>
-                              {items?.Modifiers?.length > 0 && items.Modifiers.map((Modifier, modIndex) => (
+                              {modifierList?.length > 0 && modifierList?.map((Modifier, modIndex) => (
                                 <UI.Box key={modIndex} style={{left:15}}>
                                   <UI.Text style={styles.modifierName}>
                                     {Modifier.ModifierName}
