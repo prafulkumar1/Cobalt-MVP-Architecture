@@ -112,6 +112,7 @@ export const useMyCartLogic = () => {
          "TipPercentage": tipSelection.current?.TipPercentage,
          "TipCustom": customTipVal,
       }
+
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
@@ -293,6 +294,7 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
+      console.log(JSON.stringify(params),"=============>>>>>catrssshsh")
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
  
       if(placeOrderDetails?.response?.ResponseCode === "Success"){

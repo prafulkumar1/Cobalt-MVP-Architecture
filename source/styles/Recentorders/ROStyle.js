@@ -149,5 +149,22 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_Regular",
   },
   pendingOrderContainer:{},
-  tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,}
+  tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,},
+  loaderContainer:{height:responsiveHeight(80),alignItems:"center",justifyContent:"center"},
+  priceContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginVertical:5
+  },
+  priceSubContainer: { alignSelf: "flex-end" },
+  totalPriceContainer: {
+    alignSelf: "flex-end",
+    justifyContent: "flex-end",
+    width: responsiveWidth(25),
+  },
+  splitPriceContainer: { marginTop: 2, flexDirection: "row", width: responsiveWidth(55), justifyContent: "space-between", alignItems: "center" },
+  priceLabelContainer: { alignSelf: "flex-end", width: responsiveWidth(30) },
+  priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
+  valueMainContainer: { flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end", },
 })
