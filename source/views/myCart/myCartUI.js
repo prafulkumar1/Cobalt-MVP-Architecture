@@ -55,7 +55,8 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
      isOrderPlaced,
      orderSuccessModal,
      successResponse,
-     closeSuccessModal
+     closeSuccessModal,
+     closeKeyBoard
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
    
@@ -324,7 +325,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                   <UI.Box
                     style={styles.bottomBtn}
                   >
-                    <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => Keyboard.dismiss()} />
+                    <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => closeKeyBoard()} />
                     <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
                   </UI.Box>
                 )}
@@ -334,6 +335,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                   && <UI.Box style={styles.pickUpContainer}>
                     {
                       cartConfigData?.ShowPickupTime === 1 &&
+                      showPickupTime.length > 0 &&
                       <UI.Box>
                         <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
                         <UI.cbSelectTime
@@ -347,6 +349,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
  
                     {
                       cartConfigData?.ShowPickupLocation ===1 &&
+                      showPickupLocation.length > 0 && 
                       <UI.Box>
                         <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
                         <UI.cbSelectTime

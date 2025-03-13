@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold"
   },
   tipMainContainer: {
-    width: 83,
+    width: isPlatformIos()?80:83,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     marginVertical: 10,
     borderWidth: 2,
     borderColor: "#00BFF6",
@@ -171,7 +171,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex: 1,
     backgroundColor: '#fff',
-    paddingVertical:10
+    paddingVertical:10,
+    paddingBottom:isPlatformIos()?responsiveHeight(4):0
   },
   btnTextStyle: { color: "#4B5154", fontSize: 16, textAlign: "center", fontFamily: "SourceSansPro_SemiBold" },
   operationBtn: {

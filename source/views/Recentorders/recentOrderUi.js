@@ -17,11 +17,16 @@ import { CbDottedLine } from '@/source/constants/dottedLine';
 function RenderingPendingOrders(props) {
   const { pendingOrders } = useRecentOrderLogic(props);
   const OrdersList = pendingOrders
-  const [expandedIndex, setExpandedIndex] = useState(null);
+  const [expandedIndexes, setExpandedIndexes] = useState(new Set());
   const handleToggle = (index) => {
-    setExpandedIndex((prevIndex) => {
-      const newIndex = prevIndex === index ? null : index;
-      return newIndex;
+    setExpandedIndexes((prevIndexes) => {
+      const newIndexes = new Set(prevIndexes);
+      if (newIndexes.has(index)) {
+        newIndexes.delete(index); 
+      } else {
+        newIndexes.add(index);
+      }
+      return newIndexes;
     });
   };
 
@@ -31,7 +36,7 @@ function RenderingPendingOrders(props) {
     >
       <UI.FlatList
         data={pendingOrders}
-        contentContainerStyle={{marginVertical:5,marginHorizontal:2}}
+        contentContainerStyle={{marginHorizontal:2}}
         renderItem={({ item, index }) => {
           const Order = item
           return (
@@ -39,7 +44,7 @@ function RenderingPendingOrders(props) {
               key={index}
               value={`item-${index}`}
               style={styles.recentCardContainer}
-              expanded={expandedIndex === index}
+              expanded={expandedIndexes.has(index)}
             >
               <AccordionHeader >
                 <UI.Box style={styles.recentStatusContainer}>
@@ -85,7 +90,7 @@ function RenderingPendingOrders(props) {
                         </UI.Text>
                       </UI.Box>
                       <AccordionIcon
-                        as={expandedIndex === index ? ChevronDownIcon : ChevronRightIcon}
+                        as={expandedIndexes.has(index) ? ChevronDownIcon : ChevronRightIcon}
                         size={"xl"}
                         color="#4B5154"
                         style={{ left: isPlatformAndroid()?15:5 }}
@@ -95,7 +100,7 @@ function RenderingPendingOrders(props) {
                   </UI.Box>
                 </AccordionTrigger>
                 {
-                  expandedIndex === index &&
+                 expandedIndexes.has(index) &&
                   <UI.Box style={[styles.dottedLine, { marginTop: -5 }]}>
                     <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
                   </UI.Box>
@@ -125,65 +130,73 @@ function RenderingPendingOrders(props) {
                    
                   </UI.Box>
                   <UI.Box style={styles.pendingOrderContainer}>
-                    {pendingOrders
-                      ?.filter((order) => order.OrderID === Order.OrderID)
-                      ?.map((order, index) => (<React.Fragment key={index}>
-                        <UI.Box style={styles.pendingOrderBox}>
-                          <UI.Text style={styles.labelItemName}>
-                            {index + 1}. {Order.Item_Name}
-                          </UI.Text>
-                          <UI.Box style={styles.amountContainer}>
-                            <UI.Text style={styles.labelQuantity}>
-                              1 {/* Since there is no Quantity field in response, default to 1 */}
-                            </UI.Text>
-                            <UI.Text style={styles.itemPrice}>
-                              ${Order.Price.toFixed(2)}
-                            </UI.Text>
-                          </UI.Box>
-                        </UI.Box>
-                        <UI.Box>
-                          {Order?.Modifiers?.length > 0 && Order.Modifiers.map((Modifier, modIndex) => (
-                            <React.Fragment key={modIndex}>
-                              <UI.Text style={styles.modifierName}>
-                                {Modifier.Item_Name}
+                    {Order?.Items?.map((items, index) => {
+                        return(
+                          <React.Fragment key={index}>
+                            <UI.Box style={styles.pendingOrderBox}>
+                              <UI.Text style={styles.labelItemName}>
+                                {index + 1}. {items.Item_Name}
                               </UI.Text>
-                            </React.Fragment>
-                          ))}
-                        </UI.Box>
-                        {Order.Comments && Order.Comments !== "No Comments added" && (
-                          <UI.Box style={styles.commentBox}>
-                            <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={styles.commentIcon} />} />
-                            <UI.Text
-                              style={styles.labelComment}
-                            >
-                              {Order.Comments}
-                            </UI.Text>
-                          </UI.Box>
-                        )}
-                      </React.Fragment>
-                      ))}
+                              <UI.Box style={styles.amountContainer}>
+                                <UI.Text style={styles.labelQuantity}>
+                                  1 {/* Since there is no Quantity field in response, default to 1 */}
+                                </UI.Text>
+                                <UI.Text style={styles.itemPrice}>
+                                  ${items.Price?.toFixed(2)}
+                                </UI.Text>
+                              </UI.Box>
+                            </UI.Box>
+                            <UI.Box>
+                              {items?.Modifiers?.length > 0 && items.Modifiers.map((Modifier, modIndex) => (
+                                <UI.Box key={modIndex} style={{left:15}}>
+                                  <UI.Text style={styles.modifierName}>
+                                    {Modifier.ModifierName}
+                                  </UI.Text>
+                                </UI.Box>
+                              ))}
+                            </UI.Box>
+
+                            {items.Comments && items.Comments !== "No Comments added" && (
+                              <UI.Box style={styles.commentBox}>
+                                <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment3x.png')} style={styles.commentIcon} />} />
+                                <UI.Text
+                                  style={styles.labelComment}
+                                >
+                                  {items.Comments}
+                                </UI.Text>
+                              </UI.Box>
+                            )}
+                          </React.Fragment>
+                        )
+                      })}
                   </UI.Box>
                   <UI.Box>
                     <UI.Box
                       style={styles.priceSplitContainer}
                     >
-                      <UI.Box style={{}}>
-                        <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
-                      </UI.Box>
+                      {
+                        Order?.SubTotal !== undefined &&
+                        <UI.Box>
+                          <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                        </UI.Box>
+                      }
+                       
                       {Order?.SubTotal !== undefined && (
                         <UI.Text style={styles.labelSubTotal}>
                           {`Sub Total: $${Order.SubTotal.toFixed(2)}`}
                         </UI.Text>
                       )}
-
                     </UI.Box>
 
                     <UI.Box
                       style={styles.tipDetailsContainer}
                     >
-                      <UI.Box>
-                        <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
-                      </UI.Box>
+                      {
+                        (Order?.Tip !== undefined && Order?.GrandTotal !== undefined) &&
+                        <UI.Box>
+                          <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
+                        </UI.Box>
+                      }
                       {Order?.Tip !== undefined && <UI.Text style={[styles.tipVal,{marginTop:10}]}>{`Tip: $${Order.Tip.toFixed(2)}`}</UI.Text>}
                       {Order?.GrandTotal !== undefined && (
                         <UI.Text style={styles.tipVal}>{`Grand Total: $${Order.GrandTotal.toFixed(2)}`}</UI.Text>

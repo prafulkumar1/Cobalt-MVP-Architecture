@@ -285,7 +285,7 @@ export const useMyCartLogic = () => {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
           "PickupTime": selectedTime ? selectedTime :"",
-          "PickupLocationId": selectedLocationId,
+          "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
           "TipPercentage": tipSelection.current?.TipPercentage, 
@@ -293,7 +293,6 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
-      console.log('params', params);
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
  
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
@@ -313,6 +312,11 @@ export const useMyCartLogic = () => {
     setTimeout(() => {
       setOrderSuccessModal(false);
     }, 100);
+  }
+  const closeKeyBoard = () => {
+    setIsCustomTipAdded(true)
+    setCustomTipValue("")
+    Keyboard.dismiss()
   }
   return {
     tipData,
@@ -356,6 +360,7 @@ export const useMyCartLogic = () => {
     setOrderSuccessModal,
     successResponse,
     closeSuccessModal,
-    setIsCustomTipAdded
+    setIsCustomTipAdded,
+    closeKeyBoard
   };
 };
