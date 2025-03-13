@@ -333,7 +333,7 @@ function RenderingFavoritesList({ props }) {
 export default function RecentordersScreen(props) { 
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
-  const {} = useRecentOrderLogic(props)
+  const {loading} = useRecentOrderLogic(props)
   const { cartData } =  useFormContext();
   const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
   console.log('Orders', orders);
@@ -356,8 +356,13 @@ export default function RecentordersScreen(props) {
       <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
         {isRecentOrder ?
           <>
-            <RenderingPendingOrders />
-            <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
+            {
+              loading ? <UI.Box style={styles.loaderContainer}><CbLoader /></UI.Box> :
+                <>
+                  <RenderingPendingOrders />
+                  <UI.CbRecentAccordion key={orders.length} componentData={orders} screenName="RecentOrders" navigation={navigation} />
+                </>
+            }
           </>
           :
           <RenderingFavoritesList props={props} />

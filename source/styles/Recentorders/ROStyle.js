@@ -149,5 +149,6 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_Regular",
   },
   pendingOrderContainer:{},
-  tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,}
+  tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,},
+  loaderContainer:{height:responsiveHeight(80),alignItems:"center",justifyContent:"center"}
 })
