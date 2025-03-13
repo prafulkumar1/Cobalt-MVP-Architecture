@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-
+import { horizontalScale, moderateScale, verticalScale } from '@/source/constants/Matrices';
 export const styles = StyleSheet.create({
   mainContainer:{ backgroundColor: "#fff",flex:1 },
   subContainer:{ flexDirection: "row", marginVertical: 11, marginLeft: 8,height:responsiveHeight(5),alignItems:"center"},
@@ -44,6 +44,48 @@ export const styles = StyleSheet.create({
     fontSize: 16, 
     textAlign:"center"
   },
+
+  pendingOrderAccordion:{
+    paddingHorizontal: horizontalScale(10),
+        width: "100%", 
+        maxHeight: "100%",
+        borderRadius: moderateScale(8),
+        backgroundColor: "#ffffff",
+        shadowColor: "#00000029",
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 8,
+        padding: moderateScale(10),
+        alignSelf: "center"
+  },
+  accordionHeaderBox:{
+    flexDirection: "row", alignItems: "center", paddingVertical:20,justifyContent:"space-between"
+  },
+  pendingOrderImg:{ width: 28, height: 28, left: 6 },
+  orderStaticStatusTxt:{fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_Bold", fontWeight: "700", marginLeft: 10, left: 10 },
+  orderStatusTxt:{ marginLeft: "auto", color: "#FF6F00", fontSize: 16, fontFamily: "SourceSansPro_Bold", fontWeight: "700", right: 20 },
+  accordionRriggerBox:{flexDirection: "row", justifyContent: "space-between", alignItems: "center",},
+  pickUpTimeAndLocation:{ fontSize: 16, fontFamily: "SourceSansPro_Bold", color: "#2A4E7D" },
+  orderIdAndDateStaticTxt:{ fontSize: 14, color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" },
+  pickUpTimeAndLocationStaticTxt:{ fontSize: 11, color: "#4F4F4F", fontFamily: "SourceSansPro_Bold", },
+  accordionContentBox:{ padding: 12, backgroundColor: "#fff" },
+  orderSummaryStaticTxt:{ fontSize: 14, fontFamily: "SourceSansPro_Bold", right: 18, bottom: 10 },
+  accordionContentBox2:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8, },
+  timeQtyAmtStaticTxt:{ fontSize: 12, color: "#5773A2", fontFamily: "SourceSansPro_Bold", fontStyle: "italic", },
+  itemName:{ fontSize: 12, fontStyle: "italic", fontWeight: "700", right: 18 },
+  qtnAnd$:{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic" },
+  itemModifierName:{ fontSize: 11, color: "#5773A2", fontFamily: "SourceSansPro_Bold", fontStyle: "italic" },
+  itemCommentsImg:{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top: 1 },
+  itemCommentsTxt: {
+    fontSize: 12,
+    fontFamily: "SourceSansPro_Bold",
+    fontStyle: "italic",
+    flexShrink: 1,
+    flexWrap: "wrap",
+    maxWidth: "90%"
+  },
+  finalAccordionBoxes:{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12, alignSelf: "flex-end", alignItems: "flex-end", },
   Item_Image: { height: responsiveHeight(9),width:responsiveWidth(24), borderRadius: 6,resizeMode:"cover" },
   Favorite_Image: { height: 22, width: 20 },
   AddButton: {   width:30, height: 30,left:40,top:12},
