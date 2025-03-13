@@ -15,8 +15,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 10,
-    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(20),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(4.5),
+    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
+    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.8),
     marginHorizontal:3
   },
   ButtonTextStyle: { 
@@ -35,8 +35,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(20),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(4.5),
+    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
+    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.8),
     marginHorizontal:3
   },
   ActiveButtonTextStyle: { 
@@ -96,6 +96,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 8,
     borderRadius: 5,
     elevation: 5,
+    marginTop:10,
   },
   recentStatusContainer:{ flexDirection: "row", alignItems: "center", paddingVertical: 18, justifyContent: "space-between" },
   orderIcon:{ width: 28, height: 28, left: 6 },

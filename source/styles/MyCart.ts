@@ -171,7 +171,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex: 1,
     backgroundColor: '#fff',
-    paddingVertical:10
+    paddingVertical:10,
+    paddingBottom:isPlatformIos()?responsiveHeight(4):0
   },
   btnTextStyle: { color: "#4B5154", fontSize: 16, textAlign: "center", fontFamily: "SourceSansPro_SemiBold" },
   operationBtn: {

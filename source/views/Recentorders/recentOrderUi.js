@@ -137,7 +137,7 @@ function RenderingPendingOrders(props) {
                               1 {/* Since there is no Quantity field in response, default to 1 */}
                             </UI.Text>
                             <UI.Text style={styles.itemPrice}>
-                              ${Order.Price.toFixed(2)}
+                              ${Order.Price?.toFixed(2)}
                             </UI.Text>
                           </UI.Box>
                         </UI.Box>
