@@ -189,43 +189,13 @@ function RenderingPendingOrders(props) {
                         )
                       })}
                   </UI.Box>
+                  <UI.Box>
+                    <CbDottedLine length={isPlatformAndroid() ? 100 : 45} dotSize={6} dotColor="#0000002B" />
+                  </UI.Box>
                   <UI.Box
                     style={styles.priceContainer}
                   >
                     {PriceDetails(Order)}
-                  </UI.Box>
-                  <UI.Box>
-                    <UI.Box
-                      style={styles.priceSplitContainer}
-                    >
-                      {
-                        Order?.SubTotal !== undefined &&
-                        <UI.Box>
-                          <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
-                        </UI.Box>
-                      }
-                       
-                      {Order?.SubTotal !== undefined && (
-                        <UI.Text style={styles.labelSubTotal}>
-                          {`Sub Total: $${Order.SubTotal?.toFixed(2)}`}
-                        </UI.Text>
-                      )}
-                    </UI.Box>
-
-                    <UI.Box
-                      style={styles.tipDetailsContainer}
-                    >
-                      {
-                        (Order?.Tip !== undefined && Order?.GrandTotal !== undefined) &&
-                        <UI.Box>
-                          <CbDottedLine length={isPlatformAndroid() ? 50 : 45} dotSize={6} dotColor="#0000002B" />
-                        </UI.Box>
-                      }
-                      {Order?.Tip !== undefined && <UI.Text style={[styles.tipVal,{marginTop:10}]}>{`Tip: $${Order.Tip?.toFixed(2)}`}</UI.Text>}
-                      {/* {Order?.GrandTotal !== undefined && (
-                        <UI.Text style={styles.tipVal}>{`Grand Total: $${Order?.GrandTotal? Order?.GrandTotal?.toFixed(2):0}`}</UI.Text>
-                      )} */}
-                    </UI.Box>
                   </UI.Box>
                 </UI.Box>
               </AccordionContent>

@@ -113,7 +113,6 @@ export const useMyCartLogic = () => {
          "TipCustom": customTipVal,
       }
 
-      console.log("--->>custom tip",JSON.stringify(params))
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)

@@ -155,7 +155,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    marginVertical: responsiveHeight(1),
+    marginVertical:5
   },
   priceSubContainer: { alignSelf: "flex-end" },
   totalPriceContainer: {
