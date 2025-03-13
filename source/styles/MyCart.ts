@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold"
   },
   tipMainContainer: {
-    width: 83,
+    width: isPlatformIos()?80:83,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -104,7 +104,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     marginVertical: 10,
     borderWidth: 2,
     borderColor: "#00BFF6",

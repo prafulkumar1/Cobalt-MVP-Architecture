@@ -4,7 +4,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-nat
 
 export const styles = StyleSheet.create({
   mainContainer:{ backgroundColor: "#fff",flex:1 },
-  subContainer:{ flexDirection: "row", marginVertical: 11, marginLeft: 8,height:responsiveHeight(5),alignItems:"center"},
+  subContainer:{ flexDirection: "row",marginTop:responsiveHeight(1), marginLeft: 8,height:responsiveHeight(5),alignItems:"center"},
   ButtonStyle: {
     backgroundColor: '#FFFFFF', 
     shadowColor: "#000", 
@@ -126,9 +126,9 @@ export const styles = StyleSheet.create({
   labelItemName:{ fontSize: 15,color:"#4B5154",fontFamily:"SourceSansPro_SemiBold" },
   labelQuantity:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",marginRight: 20,color:"#4B5154" },
   itemPrice:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154" },
-  modifierName:{ fontSize: 11, color: "#3B87C1", fontFamily: "SourceSansPro_SemiBoldItalic", },
-  commentBox:{ flexDirection: "row", alignItems: "center", marginTop: 5 },
-  commentIcon:{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top: 1 },
+  modifierName:{ fontSize: 12, color: "#3B87C1", fontFamily: "SourceSansPro_SemiBoldItalic", },
+  commentBox:{ flexDirection: "row", alignItems: "flex-start", marginTop: 5 },
+  commentIcon:{ width: horizontalScale(12), height: verticalScale(12), marginRight: 10, top: 5 },
   labelComment: {
     fontSize: 12,
     fontFamily: "SourceSansPro_SemiBoldItalic",
