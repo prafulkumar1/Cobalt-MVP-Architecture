@@ -33,6 +33,7 @@ export const useMyCartLogic = () => {
     const [grandTotal,setGrandTotal] = useState(0)
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
+    const [height, setHeight] = useState(29);
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
@@ -321,6 +322,10 @@ export const useMyCartLogic = () => {
     setCustomTipValue("")
     Keyboard.dismiss()
   }
+  const handleContentSizeChange = (event) => {
+    const newHeight = event?.nativeEvent?.contentSize.height;
+    setHeight(newHeight > 30 ? newHeight : 29); 
+  };
   return {
     tipData,
     value,
@@ -364,6 +369,8 @@ export const useMyCartLogic = () => {
     successResponse,
     closeSuccessModal,
     setIsCustomTipAdded,
-    closeKeyBoard
+    closeKeyBoard,
+    handleContentSizeChange,
+    height
   };
 };

@@ -56,7 +56,9 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
      orderSuccessModal,
      successResponse,
      closeSuccessModal,
-     closeKeyBoard
+     closeKeyBoard,
+     handleContentSizeChange,
+     height
    } = useMyCartLogic();
    const { cartData,selectedTime,selectedLocation}= useFormContext();
    
@@ -246,7 +248,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
     return (
       <>
         <UI.Box style={styles.mainSubContainer}>
-          <UI.TouchableOpacity style={styles.orderInstContainer}>
+          <UI.TouchableOpacity style={[styles.orderInstContainer]}>
             <Image
               alt="notes"
               source={require("@/assets/images/icons/notes.png")}
@@ -254,13 +256,15 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
               resizeMode="contain"
             />
             <TextInput
-              style={[styles.orderInstTxt,{ width:"92%",left:8,height:50}]}
+              style={[styles.orderInstTxt,{ width:"92%",left:8,height:height}]}
               placeholder='Order Instructions'
               placeholderTextColor={"#4B5154"}
               onChangeText={(text)=>orderInstructions(text)}
               value={orderInstruction}
               onFocus={() =>setTipKeyboardOpen(false)}
               onBlur={() =>setTipKeyboardOpen(false)}
+              multiline={true}
+              onContentSizeChange={handleContentSizeChange}
             />
           </UI.TouchableOpacity>
           <UI.CbCommonButton
@@ -311,7 +315,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
                     <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
-                    <UI.ScrollView style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <UI.ScrollView scrollEnabled={false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)

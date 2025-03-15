@@ -1,4 +1,4 @@
-import { horizontalScale, isPlatformAndroid } from "@/source/constants/Matrices";
+import { horizontalScale, isPlatformAndroid, isPlatformIos } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
@@ -180,7 +180,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 32,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(2.6),
+    fontSize: isPlatformIos()?responsiveFontSize(2.4):responsiveFontSize(2.6),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",

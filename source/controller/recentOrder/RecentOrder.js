@@ -12,6 +12,7 @@ export const useRecentOrderLogic = () => {
   const {pendingOrders, setPendingOrders} = useFormContext();
   const [favItems, setFavItems] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [emptyOrderMessage, setEmptyOrderMessage] = useState("");
   
   useEffect(() => {
     fetchRecentOrders();
@@ -31,12 +32,13 @@ export const useRecentOrderLogic = () => {
       console.log('location ID', params);
 
       let response = await postApiCall("RECENT_ORDERS", "GET_RECENT_ORDERS", params);
-
       if (response.statusCode === 200 && response.response.ResponseCode === "Success") {
-        recentOrderData = response.response.CompletedOrders || [];
-        pendingOrderData = response.response.PendingOrders || [];
-        setOrders(recentOrderData); // Update local state
+        recentOrderData = response?.response.CompletedOrders || [];
+        pendingOrderData = response?.response.PendingOrders || [];
+        setOrders(recentOrderData);
         setPendingOrders(pendingOrderData);
+      }else if(response.response?.ResponseCode == "Fail"){
+        setEmptyOrderMessage(response.response?.ResponseMessage);
       }
     } catch (error) {
       console.error("Error fetching recent orders:", error);
@@ -64,5 +66,5 @@ export const useRecentOrderLogic = () => {
     }
   };
 
-  return { loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders};
+  return { loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage};
 };
