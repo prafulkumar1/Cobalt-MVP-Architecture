@@ -1,18 +1,20 @@
 import * as UI from '@/components/cobalt/importUI';
 import React, { useState, useEffect } from 'react';
-import { Image } from 'react-native';
+import { Image, Modal } from 'react-native';
 import { styles } from '@/source/styles/Recentorders/ROStyle';
 import { useFormContext } from '@/components/cobalt/event';
 import { isPlatformAndroid,} from '@/source/constants/Matrices';
-import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon ,CloseIcon} from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { useRecentOrderLogic } from '@/source/controller/recentOrder/RecentOrder';
 import { useRoute } from "@react-navigation/native";
 import { navigateToScreen } from '@/source/constants/Navigations';
-import { useNavigation } from "@react-navigation/native";
 import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 import { Divider } from '@/components/ui/divider';
+import ItemModifier from '../ItemModifier/ItemModifierUI';
+import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
+import { Icon } from '@/components/ui/icon';
 
 
 function RenderingPendingOrders(props) {
@@ -210,7 +212,7 @@ function RenderingPendingOrders(props) {
 
 const RenderingCompletedOrders = (props) => {
   const { orders} = useRecentOrderLogic(props);
-  const  { cartData, addItemToCartBtn, updateCartItemQuantity } = useFormContext()
+  const  { cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
   
   const handleReorder = (itemDetails) => {
@@ -227,8 +229,8 @@ const RenderingCompletedOrders = (props) => {
         "Description": item.DESCRIPTION,
         "Price": item.PRICE,
         "ImageUrl": item.IMAGEURL,
-        // "IsAvailable": item,
-        // "IsDisable": item,
+        "IsAvailable": item?.IsAvailable,
+        "IsDisable": item?.IsDisable,
         "quantity": item.QUANTITY,
         "quantityIncPrice":item?.TOTALPRICE,
         "comments":item.COMMENTS,
@@ -238,7 +240,7 @@ const RenderingCompletedOrders = (props) => {
       if (existingItem) {
         updateCartItemQuantity(existingItem, existingItem.quantity + 1);
       } else {
-        addItemToCartBtn(itemWithModifiers);
+        addItemToCartBtnForReOrder(itemWithModifiers, item.QUANTITY);
       }
     });
   };
@@ -266,7 +268,6 @@ const RenderingCompletedOrders = (props) => {
     data={ordersData}
     contentContainerStyle={{marginTop:10}}
     renderItem={({ item, index }) => {
-      const order = item;
       const isDisabled = item?.ITEMS?.some(order => order.IsDisable === 1);
       return (
         <Accordion
@@ -461,15 +462,14 @@ function RenderingFavoritesList({ props }) {
     menuOrderData,
     storeSingleItem,
     closePreviewModal,
-    cartData,
-    singleItemDetails,
-    modifierCartItemData,
-    increaseQuantity
+    increaseQuantity,
   } = useFormContext();
   
   const {
     favItems,
     loaded,
+    favErrorMessage,
+    toggleFavBtn
   } = useRecentOrderLogic();
 
   const toggleReadMore = (index) => {
@@ -480,7 +480,7 @@ function RenderingFavoritesList({ props }) {
   };
 
   const editCommentBtn = (props, item) => {
-    navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
+    closePreviewModal()
     storeSingleItem({
       ...item,
       quantityIncPrice: item?.TotalPrice
@@ -491,7 +491,7 @@ function RenderingFavoritesList({ props }) {
     })
     closePreviewModal()
   }
- 
+
   return (
     <>
       {
@@ -501,65 +501,76 @@ function RenderingFavoritesList({ props }) {
           </UI.Box>
           :
           <UI.Box style={styles.favMainContainer}>
-            {favItems && favItems?.map((item, index) => {
-
-              const itemDetails = menuOrderData?.find((value) => value.Item_ID == item?.Item_ID);
-              return (
-                <UI.TouchableOpacity
-                  key={index}
-                  style={styles.favItem}
-                  onPress={() => editCommentBtn(props, item)}
-                >
-                  <UI.Box style={{flexDirection:"row"}}>
-                    <UI.Box style={styles.itemImg}>
-                      <UI.CbImage source={item.ImageUrl} style={styles.Item_Image} />
-                    </UI.Box>
-                    <UI.Box style={styles.labelContainer}>
-                      <UI.Text style={styles.itemLables}>
-                        {item.Item_Name}
-                      </UI.Text>
-                      <UI.Text style={styles.itemLables}>
-                        ${item.Price?.toFixed(2)}
-                      </UI.Text>
-                      <UI.Text style={styles.showLessTxt}>
-                        {expandedItems[index]
-                          ? item.Description || ""
-                          : item.Description
-                            ? `${item.Description.substring(0, 35)}...`
-                            : ""
-                        }
-
-                      </UI.Text>
-                      <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
-                        <UI.Text style={styles.readLessTxt}>
-                          {expandedItems[index] ? 'Read Less' : 'Read More'}
-                        </UI.Text>
-                      </UI.TouchableOpacity>
-                    </UI.Box>
-                  </UI.Box>
-
-                  <UI.Box
-                    style={styles.rightContainer}
+            {
+              favItems && favItems?.length > 0 ? 
+             <>
+              <Divider style={styles.divider} />
+              <UI.FlatList 
+              data={favItems}
+              renderItem={({item, index}) =>{
+                const itemDetails = menuOrderData?.find((value) => value.Item_ID == item?.Item_ID);
+                return (
+                  <UI.TouchableOpacity
+                    key={index}
+                    style={styles.favItem}
+                    onPress={() => editCommentBtn(props, item)}
                   >
-                  <UI.Box>
-                  <Image
-                        source={require("@/assets/images/icons/Fav3x.png")}
-                        style={[styles.favIcon,{right:10}]}
-                        resizeMode="contain"
-                      />
-                  </UI.Box>
-
-                    <UI.Box style={{marginRight:20}}>
-                    <UI.CbAddToCartButton
-                      mealItemDetails={itemDetails}
-                      routeName={screenName}
-                      style={styles.addToCartBtn}
-                    />
+                    <UI.Box style={{ flexDirection: "row" }}>
+                      <UI.Box style={styles.itemImg}>
+                        <UI.CbImage
+                          source={item.ImageUrl}
+                          style={styles.Item_Image}
+                        />
+                      </UI.Box>
+                      <UI.Box style={styles.labelContainer}>
+                        <UI.Text style={styles.itemLables}>
+                          {item.Item_Name}
+                        </UI.Text>
+                        <UI.Text style={styles.itemLables}>
+                          ${item.Price?.toFixed(2)}
+                        </UI.Text>
+                        <UI.Text style={styles.showLessTxt}>
+                          {expandedItems[index]
+                            ? item.Description || ""
+                            : item.Description
+                            ? `${item.Description.substring(0, 35)}...`
+                            : ""}
+                        </UI.Text>
+                        <UI.TouchableOpacity
+                          onPress={() => toggleReadMore(index)}
+                        >
+                          <UI.Text style={styles.readLessTxt}>
+                            {expandedItems[index] ? "Read Less" : "Read More"}
+                          </UI.Text>
+                        </UI.TouchableOpacity>
+                      </UI.Box>
                     </UI.Box>
-                  </UI.Box>
-                </UI.TouchableOpacity>
-              );
-            })}
+
+                    <UI.Box style={styles.rightContainer}>
+                      <UI.Box>
+                        <UI.TouchableOpacity onPress={() => toggleFavBtn(item)}>
+                          <Image
+                            source={require("@/assets/images/icons/Fav3x.png")}
+                            style={[styles.favIcon, { right: 15 }]}
+                            resizeMode="contain"
+                          />
+                        </UI.TouchableOpacity>
+                      </UI.Box>
+                      <UI.Box style={{ marginRight: 20 }}>
+                        <UI.CbAddToCartButton
+                          mealItemDetails={itemDetails}
+                          routeName={screenName}
+                          style={styles.addToCartBtn}
+                        />
+                      </UI.Box>
+                    </UI.Box>
+                  </UI.TouchableOpacity>
+                );
+              }}
+            /> 
+             </>: <UI.Text style={styles.emptyFavList}>{favErrorMessage}</UI.Text>
+            }
+            
           </UI.Box>
       }
     </>
@@ -570,11 +581,30 @@ function RenderingFavoritesList({ props }) {
 export default function RecentordersScreen(props) { 
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
-  const {loading,emptyOrderMessage} = useRecentOrderLogic(props)
-  const { cartData } =  useFormContext();
+  const {loading,emptyOrderMessage,favItems,} = useRecentOrderLogic(props)
+  const { 
+    cartData,
+    itemDataVisible ,
+    closePreviewModal,
+    isKeyboardVisible,
+    setIsVisible,
+    updateModifierItemQuantity,
+    selectedModifiers,
+    setSelectedModifiers,
+    singleItemDetails,
+    updateOrAddTxt,
+    modifierCartItemData
+  } =  useFormContext();
   const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
+  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
-  const navigation = useNavigation();
+
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
+
 
   useEffect(() => {
     fetchRecentOrders();
@@ -637,10 +667,59 @@ export default function RecentordersScreen(props) {
             )}
           </>
         ) : (
-          <RenderingFavoritesList props={props} />
+          <>
+            <RenderingFavoritesList props={props} />
+          </>
         )}
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
+
+
+      <Modal
+          visible={itemDataVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePreviewModal}
+        >
+          <UI.Box style={styles.modalBackground}>
+            {
+              !isKeyboardVisible
+              && 
+              <UI.TouchableOpacity
+              onPress={() =>
+                handleCloseItemDetails(
+                  setIsVisible,
+                  updateModifierItemQuantity,
+                  closePreviewModal,
+                  selectedModifiers,
+                  setSelectedModifiers,
+                  singleItemDetails
+                )
+              }
+              style={styles.crossIcon}
+            >
+              <Icon
+                as={CloseIcon}
+                color="#fff"
+                size={"md"}
+                style={styles.closeIcon}
+              />
+            </UI.TouchableOpacity>
+            }
+            <UI.Box style={styles.modiferItems}>
+              <ItemModifier />
+            </UI.Box>
+            <UI.Box style={styles.footerContainer}>
+              <UI.Box>
+                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
+              </UI.Box>
+              <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
+                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              </UI.TouchableOpacity>
+            </UI.Box>
+          </UI.Box>
+        </Modal>
     </UI.Box>
   );
 }

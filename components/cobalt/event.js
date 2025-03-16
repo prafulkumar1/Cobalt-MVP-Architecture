@@ -38,7 +38,8 @@ export const UseFormContextProvider = ({children}) => {
     const [selectedLocationId, setSelectedLocationId] = useState("");
     const [toastDetails,setToastDetails] = useState({isToastVisiable:false,toastMessage:""})
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  
+    const [isItemFavorite,setIsItemFavorite] = useState(0)
+
     const commentValue = useRef("")
     const modifiersData = useRef(null)
     const singleModifierData = useRef(null)
@@ -138,6 +139,18 @@ export const UseFormContextProvider = ({children}) => {
       setCartData((prevCartData) => {
         let updatedCartData = [...prevCartData];
         updatedCartData.push({ ...data, quantity: 1, quantityIncPrice: data.Price, profitCenterId: getProfitCenterId.LocationId });
+        AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+        return updatedCartData;
+      });
+    } catch (error) { }
+  };
+  const addItemToCartBtnForReOrder = async (data,quantity) => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      setCartData((prevCartData) => {
+        let updatedCartData = [...prevCartData];
+        updatedCartData.push({ ...data, quantity: quantity, quantityIncPrice: data.Price, profitCenterId: getProfitCenterId.LocationId });
         AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
         return updatedCartData;
       });
@@ -343,6 +356,51 @@ export const UseFormContextProvider = ({children}) => {
     setCartData([])
     setModifierCartItemData([])
   }
+
+  const addItemToFavorites = async(Items) => {
+    const updatedFavData = [
+      {
+          "ItemId": Items.Item_ID,
+          "IsFavourite":isItemFavorite,
+          "Modifiers":selectedModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
+      }
+  ]
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const params = {
+      "Location_Id": getProfitCenterId?.LocationId,
+      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "Items": updatedFavData
+    }
+    let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
+    if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
+    }else if(response.response?.ResponseCode == "Fail"){
+    }
+  }
+
+  const toggleFavoriteItems = () => {
+    setIsItemFavorite(isItemFavorite === 0?1:0)
+  }
+  const removeFavoriteItems = async(Items) => {
+    const updatedFavData = [
+      {
+          "ItemId": Items.Item_ID,
+          "IsFavourite":0,
+          "Modifiers":Items?.Modifiers?.map((modifiers) =>({ModifierId:modifiers.Modifier_Id}))
+      }
+  ]
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const params = {
+      "Location_Id": getProfitCenterId?.LocationId,
+      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "Items": updatedFavData
+    }
+    let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
+    if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
+    }else if(response.response?.ResponseCode == "Fail"){
+    }
+  }
     
     const initialValues = {
       getFormFieldData,
@@ -402,7 +460,12 @@ export const UseFormContextProvider = ({children}) => {
       orders, 
       setOrders,
       pendingOrders,
-      setPendingOrders
+      setPendingOrders,
+      addItemToFavorites,
+      toggleFavoriteItems,
+      isItemFavorite,
+      removeFavoriteItems,
+      addItemToCartBtnForReOrder
     }
     return (
       <FormContext.Provider

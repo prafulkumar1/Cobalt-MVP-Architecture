@@ -265,7 +265,6 @@ export const useMyCartLogic = () => {
   const editCommentBtn = (props,item) => {
     closePreviewModal()
     const cartItem = cartData?.find((items) => items.Item_ID === item?.Item_ID);
-    navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
       quantityIncPrice:item?.TotalPrice,

@@ -10,6 +10,8 @@ import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
 import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
+import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
+import ItemModifier from '../ItemModifier/ItemModifierUI';
  
  
 const pageId='MyCart';
@@ -60,8 +62,29 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
      handleContentSizeChange,
      height
    } = useMyCartLogic();
-   const { cartData,selectedTime,selectedLocation}= useFormContext();
+   const { 
+    cartData,
+    selectedTime,
+    selectedLocation,
+    itemDataVisible ,
+    closePreviewModal,
+    isKeyboardVisible,
+    setIsVisible,
+    updateModifierItemQuantity,
+    selectedModifiers,
+    setSelectedModifiers,
+    singleItemDetails,
+    updateOrAddTxt,
+    modifierCartItemData
+  }= useFormContext();
    
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
+  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
+
  
  
   const renderModifierList = ({ item }) => {
@@ -441,6 +464,52 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
           </UI.Box>
         </UI.Box>
       </Modal>
+
+      <Modal
+          visible={itemDataVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePreviewModal}
+        >
+          <UI.Box style={styles.modalBackground}>
+            {
+              !isKeyboardVisible
+              && 
+              <UI.TouchableOpacity
+              onPress={() =>
+                handleCloseItemDetails(
+                  setIsVisible,
+                  updateModifierItemQuantity,
+                  closePreviewModal,
+                  selectedModifiers,
+                  setSelectedModifiers,
+                  singleItemDetails
+                )
+              }
+              style={styles.crossIcon}
+            >
+              <Icon
+                as={CloseIcon}
+                color="#fff"
+                size={"md"}
+                style={styles.closeIcon2}
+              />
+            </UI.TouchableOpacity>
+            }
+            <UI.Box style={styles.modiferItems}>
+              <ItemModifier />
+            </UI.Box>
+            <UI.Box style={styles.footerContainer}>
+              <UI.Box>
+                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
+              </UI.Box>
+              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
+                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              </UI.TouchableOpacity>
+            </UI.Box>
+          </UI.Box>
+        </Modal>
     </KeyboardAvoidingView>
  
   );

@@ -45,7 +45,9 @@ export const useMenuOrderLogic = (props) => {
     setModifierCartItemData,
     updateWithoutModifierCartItem,
     setFormFieldData,
-    setToastDetails
+    setToastDetails,
+    addItemToFavorites,
+    toggleFavoriteItems
   } = useFormContext();
 
 
@@ -88,6 +90,7 @@ export const useMenuOrderLogic = (props) => {
         ImageUrl: item.ImageUrl,
         IsAvailable: item.IsAvailable,
         IsDisable: item.IsDisable,
+        IsFavourite:0
       });
 
       return acc;
@@ -245,12 +248,18 @@ export const useMenuOrderLogic = (props) => {
         if (isItemAvailableInCart) {
             if (categoryData?.length > 0) {
                 updateModifierCartItem(existingCartItem);
+                addItemToFavorites(existingCartItem)
+                toggleFavoriteItems()
             } else {
                 updateWithoutModifierCartItem(existingCartItem);
+                addItemToFavorites(existingCartItem)
+                toggleFavoriteItems()
             }
         } else {
             addItemToModifierForCart(singleItemDetails);
+            addItemToFavorites(singleItemDetails)
             closePreviewModal();
+            toggleFavoriteItems()
         }
     }
 }

@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 10,
     width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.8),
+    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.5),
     marginHorizontal:3
   },
   ButtonTextStyle: { 
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.8),
+    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.5),
     marginHorizontal:3
   },
   ActiveButtonTextStyle: { 
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     right:15,
   },
-  favIcon:{ width: 25, height:25,top:10 },
+  favIcon:{ width: 20, height:20,top:10 },
   addToCartBtn: {
     padding: responsiveWidth(1.8),
   },
@@ -184,5 +184,74 @@ export const styles = StyleSheet.create({
   collapseIcon:{right:10},
   roReordertext:{ fontFamily: "SourceSansPro_Bold", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   roReoderButton:{alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5,marginTop:20,marginBottom:15 },
-  reorderBox:{ marginTop: 12, marginBottom: 6 }
+  reorderBox:{ marginTop: 12, marginBottom: 6 },
+  emptyFavList:{   
+  fontFamily:"SourceSansPro_SemiBoldItalic",
+  alignSelf:"center",
+  marginTop:responsiveHeight(3)
+},
+divider:{marginTop:14,marginBottom:8,width:"95%",alignSelf:"center"},
+modalBackground:{
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: "100%",
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+},
+crossIcon: {
+  width: 30,
+  height: 30,
+  borderRadius: 15,
+  backgroundColor: "#000",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  top: horizontalScale(60),
+  alignSelf: "center",
+  opacity: 1,
+  zIndex: 1000,
+},
+closeIcon:{ width: 20, height: 20 },
+modiferItems:{height:responsiveHeight(85),width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
+footerContainer: {
+  backgroundColor: "#fff",
+  width: "100%",
+  height: 80,
+  position: "absolute",
+  bottom: 0,
+  right: 0,
+  left: 0,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  borderTopWidth: 1,
+  borderColor: "#ccc",
+  paddingHorizontal: 20,
+},
+totalAmountTxt: {
+  fontSize: 12,
+  color: "#4B5154",
+  fontFamily: "SourceSansPro_Italic",
+},
+orderAmount: {
+  fontSize: 24,
+  color: "#4B5154",
+  paddingVertical: 8,
+  fontFamily: "SourceSansPro_SemiBold",
+},
+addToCartBtn2: {
+  backgroundColor: "#5773a2",
+  width:responsiveWidth(40),
+  height:responsiveHeight(5),
+  borderRadius: 20,
+  justifyContent: "center",
+  alignItems: "center",
+},
+addCartTxt: {
+  color: "#fff",
+  fontSize: responsiveFontSize(2.8),
+  fontFamily: "SourceSansPro_SemiBold",
+  textAlign: "center",
+  paddingTop:isPlatformAndroid()?8:10
+},
 })
