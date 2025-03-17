@@ -43,6 +43,7 @@ export const endpoints = {
         GET_RECENT_ORDERS: "MobileOrdering/MO_getrecentorders"
     },
     FAVORITES:{
-        GET_FAVORITES :"MobileOrdering/MO_getfavouriteitems"
+        GET_FAVORITES :"MobileOrdering/MO_getfavouriteitems",
+        SAVE_FAVORITES:"MobileOrdering/MO_SaveFavourites"
     }
 }

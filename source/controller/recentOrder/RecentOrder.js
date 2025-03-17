@@ -3,15 +3,23 @@ import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormContext } from '@/components/cobalt/event';
 
-let recentOrderData = []; // Global variable to store fetched data
+let recentOrderData = []; 
 let pendingOrderData = [];
 
 export const useRecentOrderLogic = () => {
   const [loading, setLoading] = useState(false);
-  const {orders, setOrders} = useFormContext()
   const {pendingOrders, setPendingOrders} = useFormContext();
   const [favItems, setFavItems] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [emptyOrderMessage, setEmptyOrderMessage] = useState("");
+  const [favErrorMessage, setFavErrorMessage] = useState("");
+
+  const {
+    orders, 
+    setOrders,    
+    removeFavoriteItems
+  } = useFormContext()
+  
   
   useEffect(() => {
     fetchRecentOrders();
@@ -31,12 +39,13 @@ export const useRecentOrderLogic = () => {
       console.log('location ID', params);
 
       let response = await postApiCall("RECENT_ORDERS", "GET_RECENT_ORDERS", params);
-
       if (response.statusCode === 200 && response.response.ResponseCode === "Success") {
-        recentOrderData = response.response.CompletedOrders || [];
-        pendingOrderData = response.response.PendingOrders || [];
-        setOrders(recentOrderData); // Update local state
+        recentOrderData = response?.response.CompletedOrders || [];
+        pendingOrderData = response?.response.PendingOrders || [];
+        setOrders(recentOrderData);
         setPendingOrders(pendingOrderData);
+      }else if(response.response?.ResponseCode == "Fail"){
+        setEmptyOrderMessage(response.response?.ResponseMessage);
       }
     } catch (error) {
       console.error("Error fetching recent orders:", error);
@@ -49,13 +58,17 @@ export const useRecentOrderLogic = () => {
       setLoaded(true);
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
       let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
-     
       const params = {  
         "Location_Id": `${getProfitCenterId.LocationId}`,
       };
-     
       let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
-      setFavItems(favItemInfo.response?.CompletedOrders);
+
+      if (favItemInfo.statusCode === 200 && favItemInfo?.response?.ResponseCode === "Success") {
+          setFavItems(favItemInfo.response?.FavouriteItems);
+      }else if(favItemInfo.response?.ResponseCode == "Fail"){
+        setFavItems([])
+        setFavErrorMessage(favItemInfo.response?.ResponseMessage);
+      }
       setLoaded(false);
     } catch (err) {
       console.error("Error fetching favorites:", err);
@@ -63,6 +76,12 @@ export const useRecentOrderLogic = () => {
       setLoaded(false);
     }
   };
+  const toggleFavBtn = (items) => {
+    removeFavoriteItems(items)
+    setTimeout(() => {
+      getFavorites()
+    }, 300);
+  }
 
-  return { loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders};
+  return { favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn};
 };

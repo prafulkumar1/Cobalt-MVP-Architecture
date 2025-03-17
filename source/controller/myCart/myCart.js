@@ -33,6 +33,7 @@ export const useMyCartLogic = () => {
     const [grandTotal,setGrandTotal] = useState(0)
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
+    const [height, setHeight] = useState(29);
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
@@ -264,7 +265,6 @@ export const useMyCartLogic = () => {
   const editCommentBtn = (props,item) => {
     closePreviewModal()
     const cartItem = cartData?.find((items) => items.Item_ID === item?.Item_ID);
-    navigateToScreen(props, "MenuOrder", true, { itemId: item.Item_ID })
     storeSingleItem({
       ...item,
       quantityIncPrice:item?.TotalPrice,
@@ -285,12 +285,13 @@ export const useMyCartLogic = () => {
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
+          "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
           "PickupTime": selectedTime ? selectedTime :"",
           "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,
           "GrandTotal": grandTotal,
           "TipPercentage": tipSelection.current?.TipPercentage, 
-          "TipCustom": customTipVal 
+          "TipCustom": customTipVal
         },
         "Items": cartItemIds,
       }
@@ -320,6 +321,10 @@ export const useMyCartLogic = () => {
     setCustomTipValue("")
     Keyboard.dismiss()
   }
+  const handleContentSizeChange = (event) => {
+    const newHeight = event?.nativeEvent?.contentSize.height;
+    setHeight(newHeight > 30 ? newHeight : 29); 
+  };
   return {
     tipData,
     value,
@@ -363,6 +368,8 @@ export const useMyCartLogic = () => {
     successResponse,
     closeSuccessModal,
     setIsCustomTipAdded,
-    closeKeyBoard
+    closeKeyBoard,
+    handleContentSizeChange,
+    height
   };
 };
