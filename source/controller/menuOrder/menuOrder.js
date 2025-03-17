@@ -213,54 +213,140 @@ export const useMenuOrderLogic = (props) => {
     });
   };
   
-  const handleModifierAddCart = () => {
-    let categoryData = typeof modifiersResponseData?.Categories === "string" 
-        ? JSON.parse(modifiersResponseData?.Categories) 
-        : modifiersResponseData?.Categories;
+//   const handleModifierAddCart = () => {
+//     let categoryData = typeof modifiersResponseData?.Categories === "string" 
+//         ? JSON.parse(modifiersResponseData?.Categories) 
+//         : modifiersResponseData?.Categories;
     
-    let isRequiredModifier = false;
-    let requiredModifier = ""
-    const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-    if(getRequiredItem.length>0){
-      isRequiredModifier = true
-      getRequiredItem?.map((item) => {
-        requiredModifier = item?.Category_Name
-        return selectedModifiers?.forEach((modifierId) => {
-          if (item.Category_Id == modifierId.Category_Id) {
-            isRequiredModifier = false
-          }
+//     let isRequiredModifier = false;
+//     let requiredModifier = ""
+//     const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+//     const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+//       const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+//       return modifier.isChecked && index === lastIndex;
+//     });
+//     if(getRequiredItem.length>0){
+//       isRequiredModifier = true
+//       getRequiredItem?.map((item) => {
+//         requiredModifier = item?.Category_Name
+//         return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+//           if (item.Category_Id == modifierId.Category_Id) {
+//             isRequiredModifier = false
+//           }
+//         })
+//       })
+//     }
+//     if (isRequiredModifier) {
+//         setToastDetails({isToastVisiable:true,toastMessage:`Please select the required ${requiredModifier} to proceed with your order`})
+//         setTimeout(() => {
+//           setToastDetails({isToastVisiable:false,toastMessage:""})
+//         }, 6000);
+//     } else {
+//         let isItemAvailableInCart = false;
+//         cartData?.forEach((items) => {
+//             if (items.Item_ID === singleItemDetails.Item_ID) {
+//                 isItemAvailableInCart = true;
+//             }
+//         });
+//         const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+//         if (isItemAvailableInCart) {
+//             if (categoryData?.length > 0) {
+//               const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+//               console.log(existingCartItem,"---->>>editititiititi")
+//                 updateModifierCartItem(existingCartItem);
+//                 addItemToFavorites(existingCartItem)
+//                 toggleFavoriteItems()
+//             } else {
+//                 updateWithoutModifierCartItem(existingCartItem);
+//                 addItemToFavorites(existingCartItem)
+//                 toggleFavoriteItems()
+//             }
+//         } else {
+//             addItemToModifierForCart(singleItemDetails);
+//             addItemToFavorites(singleItemDetails)
+//             closePreviewModal();
+//             toggleFavoriteItems()
+//         }
+//     }
+// }
+
+
+  const handleModifierAddCart = () => {
+    let isItemAvailableInCart = false;
+    cartData?.forEach((items) => {
+      if (items.Item_ID === singleItemDetails.Item_ID) {
+        isItemAvailableInCart = true;
+      }
+    });
+
+    let categoryData = typeof modifiersResponseData?.Categories === "string"
+    ? JSON.parse(modifiersResponseData?.Categories)
+    : modifiersResponseData?.Categories;
+
+    if (!isItemAvailableInCart) {
+      let isRequiredModifier = false;
+      let requiredModifier = ""
+      const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+      const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+        return modifier.isChecked && index === lastIndex;
+      });
+      if (getRequiredItem.length > 0) {
+        isRequiredModifier = true
+        getRequiredItem?.map((item) => {
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
         })
-      })
-    }
-    if (isRequiredModifier) {
-        setToastDetails({isToastVisiable:true,toastMessage:`Please select the required ${requiredModifier} to proceed with your order`})
+      }
+      if (isRequiredModifier) {
+        setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
         setTimeout(() => {
-          setToastDetails({isToastVisiable:false,toastMessage:""})
+          setToastDetails({ isToastVisiable:false,toastMessage: "" })
         }, 6000);
+      } else {
+        addItemToModifierForCart(singleItemDetails);
+        addItemToFavorites(singleItemDetails)
+        closePreviewModal();
+      }
     } else {
-        let isItemAvailableInCart = false;
-        cartData?.forEach((items) => {
-            if (items.Item_ID === singleItemDetails.Item_ID) {
-                isItemAvailableInCart = true;
-            }
+      let isRequiredModifier = false
+      let requiredModifier = ""
+      const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+      if (categoryData?.length > 0) {
+        const newAddedModifiers = [...existingCartItem?.selectedModifiers,...selectedModifiers]
+        const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+        const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
         });
-        const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
-        if (isItemAvailableInCart) {
-            if (categoryData?.length > 0) {
-                updateModifierCartItem(existingCartItem);
-                addItemToFavorites(existingCartItem)
-                toggleFavoriteItems()
-            } else {
-                updateWithoutModifierCartItem(existingCartItem);
-                addItemToFavorites(existingCartItem)
-                toggleFavoriteItems()
+
+        getRequiredItem?.map((item) => {
+          isRequiredModifier = true
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
             }
-        } else {
-            addItemToModifierForCart(singleItemDetails);
-            addItemToFavorites(singleItemDetails)
-            closePreviewModal();
-            toggleFavoriteItems()
+          })
+        })
+
+        if(isRequiredModifier){
+          setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+          setTimeout(() => {
+            setToastDetails({ isToastVisiable: false, toastMessage: "" })
+          }, 6000);
+        }else{
+          updateModifierCartItem(existingCartItem);
+          addItemToFavorites(existingCartItem)
         }
+      } else {
+        updateWithoutModifierCartItem(existingCartItem);
+        addItemToFavorites(existingCartItem)
+      }
     }
 }
   const removeCartItems = async () => {
