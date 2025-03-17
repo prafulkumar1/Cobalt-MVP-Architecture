@@ -370,6 +370,7 @@ export const useMyCartLogic = () => {
     setIsCustomTipAdded,
     closeKeyBoard,
     handleContentSizeChange,
-    height
+    height,
+    postQuantityApiCall
   };
 };

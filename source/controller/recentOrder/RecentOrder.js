@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormContext } from '@/components/cobalt/event';
-
+import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 let recentOrderData = []; 
 let pendingOrderData = [];
 
@@ -15,9 +15,14 @@ export const useRecentOrderLogic = () => {
   const [favErrorMessage, setFavErrorMessage] = useState("");
 
   const {
+    postQuantityApiCall
+     } = useMyCartLogic();
+  const {
     orders, 
     setOrders,    
-    removeFavoriteItems
+    removeFavoriteItems,
+    updateCartItemQuantity,
+    updateModifierItemQuantity
   } = useFormContext()
   
   
@@ -76,6 +81,27 @@ export const useRecentOrderLogic = () => {
       setLoaded(false);
     }
   };
+
+  const handleIncrement = async (item, quantity) => {
+    let quantityInfo = await postQuantityApiCall(item, quantity + 1)
+
+    if (quantityInfo.statusCode === 200) {
+      if (quantityInfo?.response.IsAvailable === 1) {
+        updateCartItemQuantity(item, quantity + 1);
+        updateModifierItemQuantity(item, quantity + 1);
+      } else {
+        Alert.alert(quantityInfo?.response?.ResponseMessage)
+      }
+    }
+  }
+  const handleDecrement = async (item, quantity) => {
+    let quantityInfo = await postQuantityApiCall(item, quantity - 1)
+
+    if (quantityInfo.statusCode === 200) {
+      updateCartItemQuantity(item, quantity - 1);
+      updateModifierItemQuantity(item, quantity - 1);
+    }
+  }
   const toggleFavBtn = (items) => {
     removeFavoriteItems(items)
     setTimeout(() => {
@@ -83,5 +109,5 @@ export const useRecentOrderLogic = () => {
     }, 300);
   }
 
-  return { favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn};
+  return { favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
 };

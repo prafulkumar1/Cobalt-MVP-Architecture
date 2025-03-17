@@ -1,4 +1,4 @@
-import { horizontalScale, isPlatformAndroid, moderateScale, verticalScale } from "@/source/constants/Matrices";
+import { horizontalScale, isPlatformAndroid,isPlatformIos, moderateScale, verticalScale } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
   favMainContainer:{ paddingHorizontal: 8, height: '100%', paddingBottom: responsiveHeight(20) },
   favItem:{ flexDirection: 'row', justifyContent: 'space-between', gap: 3, paddingVertical: 15, borderBottomWidth: 0.2, borderBlockColor: "#00000026" },
   itemImg:{ width:responsiveWidth(25)},
-  labelContainer:{ paddingHorizontal: 5,width:responsiveWidth(44)},
+  labelContainer:{ paddingHorizontal: 5,width:responsiveWidth(38)},
   itemLables:{ 
     fontSize: 18, 
     color: "#4B5154", 
@@ -68,6 +68,8 @@ export const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent:"space-between", 
+    width:responsiveWidth(35),
   },
   rightSubContainer: {
     width: responsiveWidth(5),
@@ -80,7 +82,30 @@ export const styles = StyleSheet.create({
   addToCartBtn: {
     padding: responsiveWidth(1.8),
   },
-  recentContainer:{
+  operationBtn: {
+    borderColor: '#5773a2',
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    left:-20
+  },
+  operationBtn2:{
+    borderWidth:1,borderColor:"#5773a2",borderRadius:5,left:-20,padding: responsiveWidth(1.8)
+  },
+   iconBtn: { width: responsiveWidth(7.9), height: responsiveHeight(5), justifyContent: "center", alignItems: 'center', alignSelf: "center" },
+   trashIcon: { width: 23, height: 23 },
+   addIcon: { width: 25, height: 25 },
+    quantityTxt: {
+       fontSize: responsiveFontSize(2.8),
+       fontFamily: "SourceSansPro_Regular",
+       paddingLeft: responsiveWidth(1.2),
+       paddingRight: responsiveWidth(0.8),
+       paddingTop: isPlatformIos() ? 2 : 4
+     },
+   recentContainer:{
     paddingHorizontal: horizontalScale(10),
     width: "100%",
     borderRadius: moderateScale(8),
@@ -159,7 +184,7 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
     fontFamily: "SourceSansPro_Regular",
   },
-  pendingOrderContainer:{paddingBottom:10},
+  pendingOrderContainer:{},
   tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,},
   loaderContainer:{height:responsiveHeight(80),alignItems:"center",justifyContent:"center"},
   priceContainer: {
