@@ -19,7 +19,7 @@
 // }, [])
 // https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
 // https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/  ------->>>>>> Testing
-export const baseURL = "https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/"
+export const baseURL = global.apiURL;
 
 export const endpoints = {
     UI_CONFIGURATIONS:{

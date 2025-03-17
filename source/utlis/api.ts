@@ -19,8 +19,8 @@ export default api;
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": "09071",
-      "ID": "128EF3F3-A7F1-4278-A99E-6C53F5B3B047",
+      "MemberID": global.memberID,
+      "ID": global.memberID,
       "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
         {
@@ -34,15 +34,15 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         }
       ],
       "IsAdmin": "0",
-      "UserName": "Henry, aa Luther",
+      "UserName": global.username,
       "Role": "Full Access",
-      "UserId": "9837",
+      "UserId": global.userID,
     };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);
 
     let responseData = await api.post(
-      `${baseURL}/${endpoints[screenName][endpoint]}`,
+      `${global.apiURL}/${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {
