@@ -159,7 +159,7 @@ export const styles = StyleSheet.create({
     alignItems: "flex-end",
     fontFamily: "SourceSansPro_Regular",
   },
-  pendingOrderContainer:{},
+  pendingOrderContainer:{paddingBottom:10},
   tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,},
   loaderContainer:{height:responsiveHeight(80),alignItems:"center",justifyContent:"center"},
   priceContainer: {
