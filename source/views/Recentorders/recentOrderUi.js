@@ -472,13 +472,16 @@ function RenderingFavoritesList({ props }) {
     storeSingleItem,
     closePreviewModal,
     increaseQuantity,
+    cartData,
+    addItemToCartBtn 
   } = useFormContext();
-  
   const {
     favItems,
     loaded,
     favErrorMessage,
-    toggleFavBtn
+    toggleFavBtn,
+    handleIncrement,
+    handleDecrement,
   } = useRecentOrderLogic();
 
   const toggleReadMore = (index) => {
@@ -517,7 +520,9 @@ function RenderingFavoritesList({ props }) {
               <UI.FlatList 
               data={favItems}
               renderItem={({item, index}) =>{
-                const itemDetails = menuOrderData?.find((value) => value.Item_ID == item?.Item_ID);
+               
+                const cartItem = cartData && cartData?.find((cartItem) => cartItem?.Item_ID === item?.Item_ID);
+                const quantity = cartItem ? cartItem.quantity : 0;
                 return (
                   <UI.TouchableOpacity
                     key={index}
@@ -538,41 +543,81 @@ function RenderingFavoritesList({ props }) {
                         <UI.Text style={styles.itemLables}>
                           ${item.Price?.toFixed(2)}
                         </UI.Text>
+                        { item.Description ?
+                        <>
                         <UI.Text style={styles.showLessTxt}>
-                          {expandedItems[index]
-                            ? item.Description || ""
-                            : item.Description
+                        {expandedItems[index]
+                          ? item.Description || ""
+                          : item.Description
                             ? `${item.Description.substring(0, 35)}...`
                             : ""}
+                      </UI.Text>
+                      <UI.TouchableOpacity
+                        onPress={() => toggleReadMore(index)}
+                      >
+                        <UI.Text style={styles.readLessTxt}>
+                          {expandedItems[index] ? "Read Less" : "Read More"}
                         </UI.Text>
-                        <UI.TouchableOpacity
-                          onPress={() => toggleReadMore(index)}
-                        >
-                          <UI.Text style={styles.readLessTxt}>
-                            {expandedItems[index] ? "Read Less" : "Read More"}
-                          </UI.Text>
-                        </UI.TouchableOpacity>
+                      </UI.TouchableOpacity>
+                      </>
+                      : ""}
+                        
                       </UI.Box>
                     </UI.Box>
 
                     <UI.Box style={styles.rightContainer}>
-                      <UI.Box>
-                        <UI.TouchableOpacity onPress={() => toggleFavBtn(item)}>
-                          <Image
-                            source={require("@/assets/images/icons/Fav3x.png")}
-                            style={[styles.favIcon, { right: 15 }]}
-                            resizeMode="contain"
-                          />
-                        </UI.TouchableOpacity>
-                      </UI.Box>
-                      <UI.Box style={{ marginRight: 20 }}>
-                        <UI.CbAddToCartButton
-                          mealItemDetails={itemDetails}
-                          routeName={screenName}
-                          style={styles.addToCartBtn}
+                      <UI.TouchableOpacity
+                        onPress={() => toggleFavBtn(item)}
+                        style={{ left: quantity === 0 ? 35 : -5 }}
+                      >
+
+                        <Image
+                          source={require("@/assets/images/icons/Fav3x.png")}
+                          style={[styles.favIcon]}
+                          resizeMode="contain"
                         />
-                      </UI.Box>
-                    </UI.Box>
+                      </UI.TouchableOpacity>
+                    
+                      {quantity >= 1 ? 
+                        <UI.Box style={styles.operationBtn}>
+                          <UI.TouchableOpacity
+                            style={styles.iconBtn}
+                            onPress={() => handleDecrement(item, quantity)}
+                          >
+                            <Icon
+                              as={quantity === 1 ? TrashIcon : RemoveIcon}
+                              color="#5773a2"
+                              size={"md"}
+                              style={styles.trashIcon}
+                            />
+                          </UI.TouchableOpacity>
+
+                          <UI.Text style={styles.quantityTxt}>{quantity}</UI.Text>
+
+                          <UI.TouchableOpacity
+                            style={styles.iconBtn}
+                            onPress={() => handleIncrement(item, quantity)}
+                          >
+                            <Icon
+                              as={AddIcon}
+                              color="#5773a2"
+                              size={"xl"}
+                              style={styles.addIcon}
+                            />
+                          </UI.TouchableOpacity>
+                        </UI.Box>
+                      : <UI.Box>
+                        <UI.TouchableOpacity  onPress={() => addItemToCartBtn(item)} style={styles.operationBtn2}>
+                        <Icon
+                              as={AddIcon}
+                              color="#5773a2"
+                              size={"xl"}
+                              style={[styles.addIcon,]}
+                            />
+                        </UI.TouchableOpacity>
+                        
+                        </UI.Box>}
+                    </UI.Box>      
                   </UI.TouchableOpacity>
                 );
               }}
