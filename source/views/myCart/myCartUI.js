@@ -12,6 +12,7 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
+import { isPlatformAndroid } from '@/source/constants/Matrices';
  
  
 const pageId='MyCart';
@@ -275,7 +276,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             <Image
               alt="notes"
               source={require("@/assets/images/icons/notes.png")}
-              style={styles.notesIcon}
+              style={[isPlatformAndroid()?styles.notesIcon:styles.noteIcon2]}
               resizeMode="contain"
             />
             <TextInput

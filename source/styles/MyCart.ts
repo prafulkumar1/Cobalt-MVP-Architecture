@@ -71,9 +71,10 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "SourceSansPro_SemiBold"
   },
-  emptyCartTxt: { fontSize: 18, fontWeight: "500", padding: 10, fontFamily: "SourceSansPro_BoldItalic" },
+  emptyCartTxt: { fontSize: 18, padding: 10, fontFamily: "SourceSansPro_BoldItalic" },
   orderInstContainer: { borderWidth: 1, borderColor: "#C4C4C4", justifyContent: "flex-start", flexDirection: "row", alignItems: "center", width: 180,borderRadius: 4, paddingHorizontal: 10 },
-  notesIcon: { width: 12, height: 18 ,alignSelf:"flex-start",marginTop:4},
+  notesIcon: { width: 12, height: 18 },
+  noteIcon2: { width: 12, height: 18 ,alignSelf:"flex-start",marginTop:4},
   orderInstTxt: { fontSize: 12, color: "#4B5154", paddingLeft: 10, fontFamily: "SourceSansPro_SemiBoldItalic" },
   mainSubContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
