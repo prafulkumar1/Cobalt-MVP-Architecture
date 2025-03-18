@@ -36,16 +36,12 @@ export const styles = StyleSheet.create({
   bottomStyle: {
     width: "100%",
     borderRadius: 4,
-    borderWidth: 3,
-    borderColor: "#00c6ff",
-    marginTop: 5,
-    position: "absolute",
-    bottom: -15,
-    zIndex:1
+    marginTop:10,
+    backgroundColor:"#00c6ff",
+    height:4
   },
   categoryBtn: {
     marginRight: responsiveWidth(6),
-    zIndex:-1
   },
   activeMenuType: {
     justifyContent: "center",
@@ -77,22 +73,20 @@ export const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
-    // shadowColor: "#000",
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
     backgroundColor: "#fff",
-    marginBottom: 4,
     paddingHorizontal: 10,
+    zIndex:1
   },
   categoryListContainer: {
-    height: isPlatformAndroid() ? responsiveHeight(5) : width * 0.105,
+    height: isPlatformAndroid() ? responsiveHeight(4.8) : width * 0.105,
     paddingTop: responsiveHeight(1.2),
     paddingHorizontal: responsiveWidth(2),
-    borderBottomWidth:1.5,
-    borderColor:"#F4F6FB",
-    marginBottom:responsiveHeight(1)
+    marginBottom:responsiveHeight(0.5),
   },
   subCategoryContainer: {
     flexDirection: "row",
@@ -239,7 +233,6 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   bottomMiddleContainer: {
-    marginTop: 10,
     marginHorizontal: responsiveWidth(2),
     backgroundColor: "#F4F6FB",
   },
@@ -375,5 +368,6 @@ modalNoYesBtn: {
   width: responsiveWidth(37)
 },
 closeIcon:{ width: 20, height: 20 },
-mainContainerList:{paddingBottom:responsiveHeight(80)}
+mainContainerList:{paddingBottom:responsiveHeight(80)},
+horizontalLineStyle:{width:"95%",alignSelf:"center"}
 });

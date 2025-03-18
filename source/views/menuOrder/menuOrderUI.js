@@ -14,6 +14,7 @@ import { useRef, useState, useEffect } from "react";
 import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { CbDottedLine } from "@/source/constants/dottedLine";
+import { Divider } from "@/components/ui/divider";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -275,6 +276,7 @@ export default function MenuOrderScreen(props) {
             {selectedCategory?.map((group) => renderMenuCategoryList(group))}
           </UI.ScrollView>
         )}
+         <Divider style={styles.horizontalLineStyle}/>
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
           ref={scrollViewRef}
