@@ -7,7 +7,7 @@ import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModif
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
-
+ 
 const pageId = "ItemModifier"
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -48,10 +48,11 @@ const ItemModifier = (props) => {
             </UI.Text>
             <UI.Text style={styles.foodItemPrice}>${Price}</UI.Text>
           </UI.Box>
-
+ 
           <UI.Box
             style={[
               styles.rightItemContainer,
+              props?.isRecentOrder? {}:
               {
                 width:
                   (quantity >= 1 || modifierQuantity >= 1)
@@ -75,10 +76,13 @@ const ItemModifier = (props) => {
               />
               )}
             </UI.TouchableOpacity>
-            <UI.CbAddToCartButton
+            {
+              props?.isRecentOrder ? null :
+              <UI.CbAddToCartButton
               mealItemDetails={singleItemDetails}
               style={styles.addBtn}
             />
+            }
           </UI.Box>
         </Animated.View>
         
@@ -93,7 +97,7 @@ const ItemModifier = (props) => {
          >
           <UI.Box style={[styles.mainContainer, styles.itemMainContainer]}>
             {
-              ImageUrl && 
+              ImageUrl &&
               <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
               <UI.CbImage
                 imageJsx={
@@ -107,7 +111,7 @@ const ItemModifier = (props) => {
               />
             </UI.TouchableOpacity>
             }
-
+ 
             <UI.Box style={styles.modifierContainer}>
               <UI.Box
                 style={[
@@ -121,10 +125,11 @@ const ItemModifier = (props) => {
                   </UI.Text>
                   <UI.Text style={styles.foodItemPrice}>${Price}</UI.Text>
                 </UI.Box>
-
+ 
                 <UI.Box
                   style={[
                     styles.rightItemContainer,
+                    props?.isRecentOrder? {}:
                     {
                       width:
                         (quantity >= 1 || modifierQuantity >= 1)
@@ -148,14 +153,17 @@ const ItemModifier = (props) => {
                     />
                     )}
                   </UI.TouchableOpacity>
-                  <UI.CbAddToCartButton
-                    mealItemDetails={singleItemDetails}
-                    style={styles.addBtn}
-                  />
+                  {
+                    props?.isRecentOrder ? null :
+                      <UI.CbAddToCartButton
+                        mealItemDetails={singleItemDetails}
+                        style={styles.addBtn}
+                      />
+                  }
                 </UI.Box>
               </UI.Box>
-
-
+ 
+ 
               {
                 Description &&
                 <UI.Box style={styles.foodDiscripContainer}>
@@ -166,7 +174,7 @@ const ItemModifier = (props) => {
                   <CbDottedLine length={50} dotSize={6} dotColor="#0000002B" />
                 </UI.Box>
               }
-
+ 
               <UI.Box style={styles.modifierSubContainer}>
                 <UI.Box>
                   {Array.isArray(categoryData) && categoryData.length > 0 && (
@@ -192,7 +200,7 @@ const ItemModifier = (props) => {
               </UI.Box>
             </UI.Box>
           </UI.Box>
-
+ 
           <Modal
             visible={isVisible}
             transparent
@@ -203,7 +211,7 @@ const ItemModifier = (props) => {
               style={styles.modalContainer}
               onPress={() => setIsVisible(false)}
             />
-
+ 
             <UI.Box style={styles.confirmMdl}>
               <UI.Box style={styles.innerModal}>
                 <UI.Box style={styles.innerModalMsgContainer}>
@@ -214,7 +222,7 @@ const ItemModifier = (props) => {
                   <UI.Text style={styles.innerModalAlertTxt}>
                     Are you sure you want to discard your changes?
                   </UI.Text>
-
+ 
                   <UI.Box style={styles.discardBtn}>
                     <UI.TouchableOpacity
                       onPress={() => setIsVisible(false)}
@@ -222,7 +230,7 @@ const ItemModifier = (props) => {
                     >
                       <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
                     </UI.TouchableOpacity>
-
+ 
                     <UI.TouchableOpacity
                       onPress={handleDiscardChanges}
                       style={styles.modalNoYesBtn}
@@ -236,7 +244,7 @@ const ItemModifier = (props) => {
           </Modal>
         </Animated.ScrollView>
         {
-          toastDetails?.isToastVisiable && 
+          toastDetails?.isToastVisiable &&
           <UI.CbToastMessage
           message={toastDetails?.toastMessage}
           isToastMessageVisiable={toastDetails?.isToastVisiable}
@@ -249,6 +257,5 @@ const ItemModifier = (props) => {
     );
     
 };
-
+ 
 export default ItemModifier;
-
