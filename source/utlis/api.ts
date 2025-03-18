@@ -1,6 +1,7 @@
 import axios from "axios";
 import { baseURL, endpoints } from "../config/config";
 import * as DeviceInfo from 'expo-device';
+import { isPlatformAndroid } from "../constants/Matrices";
  
 const api = axios.create({
     baseURL,
@@ -19,8 +20,8 @@ export default api;
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": global.memberID,
-      "ID": global.memberID,
+      "MemberID": isPlatformAndroid()?"09071":global.memberID,
+      "ID":isPlatformAndroid()?"128EF3F3-A7F1-4278-A99E-6C53F5B3B047": global.memberID,
       "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
         {
@@ -34,15 +35,15 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         }
       ],
       "IsAdmin": "0",
-      "UserName": global.username,
+      "UserName":isPlatformAndroid()?"Henry, aa Luther": global.username,
       "Role": "Full Access",
-      "UserId": global.userID,
+      "UserId":isPlatformAndroid()?"9837": global.userID,
     };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);
 
     let responseData = await api.post(
-      `${global.apiURL}/${endpoints[screenName][endpoint]}`,
+      `${isPlatformAndroid()?baseURL:global.apiURL}${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {
