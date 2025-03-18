@@ -27,9 +27,12 @@ export const useProfitCenterLogic = (props) => {
         const responseData = profitCenterResponseData.response?.MealPeriodData[0]
         if (responseData.Isnavigate == 1) {
           await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
-          setLoading(false)
-          navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
+          // navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
           setProfitCenterData(profitCenterResponseData.response)
+          setLoading(false)
+        }else{
+          setProfitCenterData(profitCenterResponseData.response)
+          setLoading(false)
         }
     }else{
         setProfitCenterData(profitCenterResponseData.response)
@@ -39,11 +42,11 @@ export const useProfitCenterLogic = (props) => {
   }
 
   const navigateToMenuOrder = async (props, item) => {
-    if (item.Isnavigate == 1) {
+    // if (item.Isnavigate == 1) {
       await AsyncStorage.setItem("profit_center",JSON.stringify(item))
      
        navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
-    }
+    // }
   }
 
   return {

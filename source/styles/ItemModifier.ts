@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
 
 export const styles = StyleSheet.create({
+    itemNameContainer:{
+        marginTop: 10
+    },
     iconBtn: {
         marginHorizontal: 10,
     },
@@ -96,5 +99,6 @@ export const styles = StyleSheet.create({
         elevation: 5,
         zIndex: 100,
         flexDirection: 'row', paddingRight: 20, paddingLeft: 12
-    }
+    },
+    modifierScroll:{ borderTopLeftRadius: 35, borderTopRightRadius: 35},
 });

@@ -187,7 +187,7 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 20,
     fontFamily: "SourceSansPro_SemiBold",
-    width: responsiveWidth(45),
+    width: responsiveWidth(55),
     color: "#4B5154",
   },
   priceTxt: {
@@ -253,17 +253,19 @@ export const styles = StyleSheet.create({
     height: 22,
   },
   crossIcon: {
+    position: "absolute",
+    top: 60,
+    zIndex: 1000,
+  },
+  CloseIconContainer:{
+    alignSelf: "center",
+    opacity: 1,
     width: 30,
     height: 30,
     borderRadius: 15,
     backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    position: "absolute",
-    top: horizontalScale(60),
-    alignSelf: "center",
-    opacity: 1,
-    zIndex: 1000,
   },
   blackShadow: {
     flex: 1,
@@ -335,5 +337,45 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     width: "100%",
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  }
+  },
+  mainItemContainer:{backgroundColor:"#fff"},
+  modalContainer: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+},
+innerModalAlertTxt:{ fontSize: 22, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(80),marginTop:responsiveHeight(3) },
+innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
+innerModal:{
+    width: '100%',
+    backgroundColor: "#fff",
+    height: responsiveHeight(35),
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    padding: 20,
+    justifyContent: 'space-between',
+},
+confirmMdl:{
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+},
+diningIcon:{width:responsiveWidth(25),height:responsiveHeight(8),resizeMode:"contain",marginTop:responsiveHeight(6)},
+discardBtn:{ flexDirection: 'row', justifyContent: "space-between",width:"85%",marginTop:responsiveHeight(6) },
+modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21,fontFamily:"SourceSansPro_SemiBold" },
+modalNoYesBtn: {
+  padding: 10,
+  backgroundColor: "#fff",
+  alignItems: 'center',
+  borderWidth: 1,
+  borderColor: "#5773A2",
+  borderRadius: 32,
+  width: responsiveWidth(37)
+},
+closeIcon:{ width: 32, height: 32 },
+mainContainerList:{paddingBottom:responsiveHeight(80)}
 });

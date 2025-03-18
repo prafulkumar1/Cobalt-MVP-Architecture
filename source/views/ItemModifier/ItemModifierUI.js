@@ -14,16 +14,22 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
 }
 const ItemModifier = (props) => {
    
-    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData } = useFormContext()
+    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
 
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
     const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
+    const value = getFormFieldData(pageId,"Comments")
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
+    if(loading){
+      return(
+        <CbLoader />
+      )
+    }
     return (
       <>
         <Animated.View
@@ -38,12 +44,12 @@ const ItemModifier = (props) => {
             },
           ]}
         >
-          <UI.Box style={{ marginTop: 10 }}>
-            <UI.Text style={styles.foodItemName} numberOfLines={2}>
+          <UI.CbBox id="ItemNameContainer" pageId="ItemModifier" style={styles.itemNameContainer}>
+            <UI.CbText id="ItemNameText" pageId="ItemModifier" style={styles.foodItemName} numberOfLines={2}>
               {Item_Name ? Item_Name : ""}
-            </UI.Text>
-            <UI.Text style={styles.foodItemPrice}>${Price}</UI.Text>
-          </UI.Box>
+            </UI.CbText>
+            <UI.CbText id="ItemPriceText" pageId="ItemModifier" style={styles.foodItemPrice}>${Price}</UI.CbText>
+          </UI.CbBox>
 
           <UI.Box
             style={[
@@ -79,7 +85,7 @@ const ItemModifier = (props) => {
                 />
               )}
             </UI.TouchableOpacity>
-            <UI.CbAddToCartButton
+            <UI.CbAddToCartButton id="AddtoCartButton" pageId="MenuOrder"
               mealItemDetails={singleItemDetails}
               style={styles.addBtn}
             />
@@ -89,15 +95,17 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={{ borderTopLeftRadius: 35, borderTopRightRadius: 35 }}
+          contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
           )}
          >
-          <UI.Box style={[styles.mainContainer, styles.itemMainContainer]}>
-            <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
-              <UI.CbImage
+          <UI.CbBox id="ItemModifierContainer" pageId="ItemModifier" style={[styles.mainContainer, styles.itemMainContainer]}>
+            {
+              ImageUrl && 
+              <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
+              <UI.CbImage id="ItemModifierContainer" pageId="ItemModifier"
                 imageJsx={
                   <Image
                     alt="image"
@@ -108,6 +116,7 @@ const ItemModifier = (props) => {
                 }
               />
             </UI.TouchableOpacity>
+            }
 
             <UI.Box style={styles.modifierContainer}>
               <UI.Box
@@ -116,12 +125,12 @@ const ItemModifier = (props) => {
                   { marginRight: (quantity !== 0 || modifierQuantity !== 0) && responsiveWidth(5) },
                 ]}
               >
-                <UI.Box style={{ marginTop: 10 }}>
-                  <UI.Text style={styles.foodItemName} numberOfLines={2}>
-                    {Item_Name ? Item_Name : ""}
-                  </UI.Text>
-                  <UI.Text style={styles.foodItemPrice}>${Price}</UI.Text>
-                </UI.Box>
+                      <UI.CbBox id="ItemNameContainer" pageId="ItemModifier" style={styles.itemNameContainer}>
+                            <UI.CbText id="ItemNameText" pageId="ItemModifier" style={styles.foodItemName} numberOfLines={2}>
+                                 {Item_Name ? Item_Name : ""}
+                            </UI.CbText>
+                            <UI.CbText id="ItemPriceText" pageId="ItemModifier" style={styles.foodItemPrice}>${Price}</UI.CbText>
+                      </UI.CbBox>
 
                 <UI.Box
                   style={[
@@ -157,7 +166,7 @@ const ItemModifier = (props) => {
                       />
                     )}
                   </UI.TouchableOpacity>
-                  <UI.CbAddToCartButton
+                  <UI.CbAddToCartButton id="AddtoCartButton" pageId="ItemModifier"
                     mealItemDetails={singleItemDetails}
                     style={styles.addBtn}
                   />
@@ -177,21 +186,14 @@ const ItemModifier = (props) => {
               }
 
               <UI.Box style={styles.modifierSubContainer}>
-                  { loading ? (
-                    <CbLoader />
-                  ) : (
-                    <UI.Box>
-                      {
-                        categoryData?.length > 0 &&
-                        <>  <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                          <UI.CbAccordionlist
-                            screenName="Modifiers"
-                            props={props}
-                            getAllSelectedModifiers={getAllSelectedModifiers}
-                          /></>
-                      }
-                    </UI.Box>
+                <UI.Box>
+                  {Array.isArray(categoryData) && categoryData.length > 0 && (
+                    <>
+                    <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
+                    <UI.CbAccordionlist screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}    />
+                    </>
                   )}
+                </UI.Box>
                   <UI.Box style={{paddingBottom:100}}>
                     <UI.Text style={styles.allergyInfoTxt}>
                       Comment/Allergy Info
@@ -201,12 +203,13 @@ const ItemModifier = (props) => {
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
                     >   
-                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} value={singleItemDetails?.comments} formId={pageId}/>
+                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId} value={value?.value}/>
+                      {/* <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/> */}
                     </UI.cbForm>
                   </UI.Box>
               </UI.Box>
             </UI.Box>
-          </UI.Box>
+          </UI.CbBox>
 
           <Modal
             visible={isVisible}
@@ -256,5 +259,4 @@ const ItemModifier = (props) => {
 };
 
 export default ItemModifier;
-
 

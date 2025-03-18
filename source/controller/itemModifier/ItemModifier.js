@@ -3,6 +3,7 @@ import { useFormContext } from '@/components/cobalt/event';
 import { foodOrderData } from '@/source/constants/commonData';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ConstructionIcon } from 'lucide-react-native';
 const pageId='ItemModifier';
 export const useItemModifierLogic = () => {
     const [itemNames, setItemNames] = useState([]);
@@ -15,45 +16,21 @@ export const useItemModifierLogic = () => {
         selectedModifiers,
         setSelectedModifiers,
         updateModifierItemQuantity,
-        isVisible, 
+        isVisible,
         setIsVisible,
         cartData,
         modifierCartItemData,
         setModifierCartItemData,
         modifiersData,
-        singleModifierData
+        singleModifierData,
+        setUpdateOrAddTxt,
+        setFormFieldData
     } = useFormContext()
 
 
     useEffect(() => {
-        getModifiersData()
+      getModifiersData()
     }, []);
-
-    function addIsCheckedProperty(item) {
-      if (!item) return item;
-    
-      const isItemAvailableInCart = cartData?.some(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
-      const getCartDetails = cartData?.find(cartItem => cartItem.Item_ID === singleItemDetails.Item_ID);
-      let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
-    
-      let updatedData = {
-        ...item,
-        Categories: categoryData.map(category => ({
-          ...category,
-          Modifiers: isItemAvailableInCart
-            ? getCartDetails?.selectedModifiers
-            : category.Modifiers.map(modifier => ({
-                ...modifier,
-                isChecked: cartData?.some(cartItem =>
-                  cartItem?.selectedModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
-                )
-              }))
-        }))
-      };
-      return updatedData;
-    }
-      
-
     const getModifiersData = async() => {
       try {
         setLoading(true)
@@ -64,13 +41,41 @@ export const useItemModifierLogic = () => {
           "LocationId": getProfitCenterId?.LocationId
         // Item_Id:"9EFC6F4B-DA70-4991-AFAB-8174C00BCBB7",
         // LocationId:"8AF9F050-0935-430E-BC33-2A154A99E37A"
-        }          
+        }
+        console.log('Item Modifiers Request', params);          
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
-                const updatedItem = addIsCheckedProperty(modifiersResponse?.response);
-                setModifiersResponseData(updatedItem)
-                setLoading(false)
+              const item = modifiersResponse.response
+
+              let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
+              let updatedData = {
+                ...modifiersResponse.response,
+                Categories: categoryData?.map(category => ({
+                  ...category,
+                  Modifiers: category.Modifiers.map(modifier => ({
+                        ...modifier,
+                        isChecked: cartData?.some(cartItem =>{
+                          const uniqueModifiers = cartItem?.selectedModifiers?.filter((modifier, index, self) => {
+                            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+                            return modifier.isChecked && index === lastIndex;
+                          });
+                         return uniqueModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                        }
+                        )
+                      }))
+                }))
+              };
+               setModifiersResponseData(updatedData)
+               console.log
+              const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
+              setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
+              if(cartItem !==undefined){
+                setUpdateOrAddTxt("Update Cart")
+              }else{
+                setUpdateOrAddTxt("Add to Cart")
+              }
+               setLoading(false)
             }
         }
       } catch (err) {
@@ -102,21 +107,24 @@ export const useItemModifierLogic = () => {
     const getAllSelectedModifiers = (modifiers) => {
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
-        updatedModifiers.push(modifiers);
+        updatedModifiers.push({
+          ...modifiers,
+          Price : modifiers.Price == null ? "0" : modifiers.Price
+        });
         return updatedModifiers;
       });
     };
 
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
-        return modifier.isChecked ? (total + modifier.Price) : (total - modifier.Price);
+        return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
       }, 0);
     
       let finalValue = Math.ceil(modifiersTotal);
     
       let updatedModifierData = modifierCartItemData?.map((items) => {
         const basePrice = items.basePrice ?? items.quantityIncPrice;
-        const totalItemPrice = items.quantity * (items.Price || 0);
+        const totalItemPrice = items.quantity * (parseFloat(items.Price) || 0);
     
         return {
           ...items,

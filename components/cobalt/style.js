@@ -43,6 +43,14 @@ export const styles = StyleSheet.create({
     padding: responsiveWidth(2),
     position: 'absolute',
     right: -22,
+    backgroundColor: "#fff",
+    borderRadius:5,
+    borderWidth: 1,
+  },
+  addCartIcons:{
+    width: 15, 
+    height: 15,
+    resizeMode: 'contain'
   },
   operationBtn: {
     position: 'absolute',
@@ -180,7 +188,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     bottom: 28,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(2.9),
+    fontSize: responsiveFontSize(2.6),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -329,13 +337,13 @@ CheckIcon:{color:"#ffff"},
   roAccordionIcon:{width:20,height:20,right:12},
   roAccordionContentouterbox:{ display: "flex", flexDirection: "row", alignItems: "center",marginVertical:10 },
   roAccordionContentItembox:{ display: "flex",  alignItems: "left" },
-  roItemName:{fontSize:18,fontFamily:"Source Sans Pro",fontWeight:"700"},
-  roItemprice:{fontSize:16,fontFamily:"Source Sans Pro",fontWeight:"700",marginLeft:4},
-  roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", },
+  roItemName:{fontSize:18,fontFamily:"SourceSansPro_Bold"},
+  roItemprice:{fontSize:16,fontFamily:"SourceSansPro_Bold",marginLeft:4},
+  roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", right :10},
   roItemImage:{  marginRight: 10 },
-  roItemButton:{ width: 30 ,height:30},
-  roReoderButton:{ top:10, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
-  roReordertext:{ fontFamily: "Source Sans Pro", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
+  roItemButton:{ width: 27 ,height:29},
+  roReoderButton:{ bottom : 5, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
+  roReordertext:{ fontFamily: "SourceSansPro_Bold", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   selectedContainer:{
     minHeight:responsiveHeight(30),
     maxHeight: responsiveHeight(45),
@@ -422,10 +430,16 @@ CheckIcon:{color:"#ffff"},
   modifierContainer:{
     color: "#4B5154",
     fontSize: 14,
-    fontFamily:"SourceSansPro_SemiBold"
+    fontFamily:"SourceSansPro_SemiBold",
+    alignSelf:"center"
   },
   requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
   maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  requiredTxt:{     
+    color: "#4B5154",
+    fontSize: 14,
+    fontFamily:"SourceSansPro_SemiBold",
+  },
   orderSubContainer:{
     display: "flex",
     flexDirection: "row",
@@ -507,4 +521,36 @@ CheckIcon:{color:"#ffff"},
     borderRadius: 4,
     backgroundColor: "#f0f0f0"
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent:"center",
+    alignSelf:"center",
+    shadowColor: '#000',
+    width:responsiveWidth(85),
+    height:responsiveHeight(7),
+    marginBottom:responsiveHeight(10),
+    borderColor:"#3B87C1",
+    borderWidth:2
+  },
+  textStyle: {
+    color: 'white',
+    textAlign: 'center',
+    fontFamily:"SourceSansPro_SemiBold"
+  },
+  modalText: {
+    textAlign: 'left',
+    fontFamily:"SourceSansPro_SemiBold",
+    padding:10,
+    lineHeight:15
+  },
+  blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
+  collapseIcon:{right:18},
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:2}
 })
