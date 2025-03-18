@@ -85,7 +85,7 @@ const ItemModifier = (props) => {
                 />
               )}
             </UI.TouchableOpacity>
-            <UI.CbAddToCartButton id="AddtoCartButton" pageId="MenuOrder"
+            <UI.CbAddToCartButton id="AddtoCartButton" pageId="ItemModifier"
               mealItemDetails={singleItemDetails}
               style={styles.addBtn}
             />
@@ -105,7 +105,7 @@ const ItemModifier = (props) => {
             {
               ImageUrl && 
               <UI.TouchableOpacity onPress={() => setIsVisible(false)}>
-              <UI.CbImage id="ItemModifierContainer" pageId="ItemModifier"
+              <UI.CbImage id="itemImage" pageId="ItemModifier"
                 imageJsx={
                   <Image
                     alt="image"

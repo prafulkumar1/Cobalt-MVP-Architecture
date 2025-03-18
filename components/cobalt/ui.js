@@ -762,6 +762,8 @@ class CbImage extends React.Component {
     const StyleProps = transformStyles(Styles);  
     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
     const jsx = this.imageJsx;
+    
+    console.log("!@##$$",jsx,dynamicStyle)
     if (source) {
 
       if (source.endsWith('.svg')) {
@@ -771,8 +773,13 @@ class CbImage extends React.Component {
 
         return <Image alt='image' source={{ uri: source }}  style={dynamicStyle}/>;
       }
+    } else if (React.isValidElement(jsx)) {
+      // Clone the element and merge styles
+      return React.cloneElement(this.imageJsx, {
+        style: [jsx.props.style, dynamicStyle], // Merge styles
+      });
     } else {
-      return jsx;
+      return null; // Return nothing if no image source or JSX is provided
     }
   }
 }
