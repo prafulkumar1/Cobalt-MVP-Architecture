@@ -4,6 +4,8 @@ import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
+import { Alert } from 'react-native';
+import { navigateToScreen } from '@/source/constants/Navigations';
 
 
 const pageId = 'MenuOrder';
@@ -42,7 +44,10 @@ export const useMenuOrderLogic = (props) => {
     setIsExitProfitCenter,
     setModifierCartItemData,
     updateWithoutModifierCartItem,
-    setFormFieldData
+    setFormFieldData,
+    setToastDetails,
+    addItemToFavorites,
+    toggleFavoriteItems
   } = useFormContext();
 
 
@@ -85,6 +90,7 @@ export const useMenuOrderLogic = (props) => {
         ImageUrl: item.ImageUrl,
         IsAvailable: item.IsAvailable,
         IsDisable: item.IsDisable,
+        IsFavourite:0
       });
 
       return acc;
@@ -190,7 +196,6 @@ export const useMenuOrderLogic = (props) => {
   };
 
   const openItemDetails = async (box) => {
-    console.log(box,"-->box")
     if (box.IsAvailable === 1 && box.IsDisable === 0) {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
       storeSingleItem({ ...box, response: quantityInfo.response })
@@ -207,29 +212,145 @@ export const useMenuOrderLogic = (props) => {
         : [...prevExpandedIds, id];
     });
   };
+  
+//   const handleModifierAddCart = () => {
+//     let categoryData = typeof modifiersResponseData?.Categories === "string" 
+//         ? JSON.parse(modifiersResponseData?.Categories) 
+//         : modifiersResponseData?.Categories;
+    
+//     let isRequiredModifier = false;
+//     let requiredModifier = ""
+//     const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+//     const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+//       const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+//       return modifier.isChecked && index === lastIndex;
+//     });
+//     if(getRequiredItem.length>0){
+//       isRequiredModifier = true
+//       getRequiredItem?.map((item) => {
+//         requiredModifier = item?.Category_Name
+//         return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+//           if (item.Category_Id == modifierId.Category_Id) {
+//             isRequiredModifier = false
+//           }
+//         })
+//       })
+//     }
+//     if (isRequiredModifier) {
+//         setToastDetails({isToastVisiable:true,toastMessage:`Please select the required ${requiredModifier} to proceed with your order`})
+//         setTimeout(() => {
+//           setToastDetails({isToastVisiable:false,toastMessage:""})
+//         }, 6000);
+//     } else {
+//         let isItemAvailableInCart = false;
+//         cartData?.forEach((items) => {
+//             if (items.Item_ID === singleItemDetails.Item_ID) {
+//                 isItemAvailableInCart = true;
+//             }
+//         });
+//         const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+//         if (isItemAvailableInCart) {
+//             if (categoryData?.length > 0) {
+//               const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+//               console.log(existingCartItem,"---->>>editititiititi")
+//                 updateModifierCartItem(existingCartItem);
+//                 addItemToFavorites(existingCartItem)
+//                 toggleFavoriteItems()
+//             } else {
+//                 updateWithoutModifierCartItem(existingCartItem);
+//                 addItemToFavorites(existingCartItem)
+//                 toggleFavoriteItems()
+//             }
+//         } else {
+//             addItemToModifierForCart(singleItemDetails);
+//             addItemToFavorites(singleItemDetails)
+//             closePreviewModal();
+//             toggleFavoriteItems()
+//         }
+//     }
+// }
+
 
   const handleModifierAddCart = () => {
-    let isItemAvailableInCart = false
+    let isItemAvailableInCart = false;
     cartData?.forEach((items) => {
       if (items.Item_ID === singleItemDetails.Item_ID) {
-        isItemAvailableInCart = true
+        isItemAvailableInCart = true;
       }
-    })
-    const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID)
-    let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
-    if (isItemAvailableInCart) {
-      if (categoryData?.length > 0) {
-        updateModifierCartItem(existingCartItem)
+    });
+
+    let categoryData = typeof modifiersResponseData?.Categories === "string"
+    ? JSON.parse(modifiersResponseData?.Categories)
+    : modifiersResponseData?.Categories;
+
+    if (!isItemAvailableInCart) {
+      let isRequiredModifier = false;
+      let requiredModifier = ""
+      const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+      const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+        return modifier.isChecked && index === lastIndex;
+      });
+      if (getRequiredItem.length > 0) {
+        isRequiredModifier = true
+        getRequiredItem?.map((item) => {
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+      }
+      if (isRequiredModifier) {
+        setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+        setTimeout(() => {
+          setToastDetails({ isToastVisiable:false,toastMessage: "" })
+        }, 6000);
       } else {
-        updateWithoutModifierCartItem(existingCartItem)
+        addItemToModifierForCart(singleItemDetails);
+        addItemToFavorites(singleItemDetails)
+        closePreviewModal();
       }
     } else {
-      addItemToModifierForCart(singleItemDetails);
-      closePreviewModal();
+      let isRequiredModifier = false
+      let requiredModifier = ""
+      const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+      if (categoryData?.length > 0) {
+        const newAddedModifiers = [...existingCartItem?.selectedModifiers,...selectedModifiers]
+        const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+        const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+
+        getRequiredItem?.map((item) => {
+          isRequiredModifier = true
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+
+        if(isRequiredModifier){
+          setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+          setTimeout(() => {
+            setToastDetails({ isToastVisiable: false, toastMessage: "" })
+          }, 6000);
+        }else{
+          updateModifierCartItem(existingCartItem);
+          addItemToFavorites(existingCartItem)
+        }
+      } else {
+        updateWithoutModifierCartItem(existingCartItem);
+        addItemToFavorites(existingCartItem)
+      }
     }
-  }
+}
   const removeCartItems = async () => {
-    props.navigation?.goBack()
+    navigateToScreen(props,"ProfitCenters",false,{isCartItemsRemove:true})
     setIsExitProfitCenter(false)
     setModifierCartItemData([])
     await AsyncStorage.removeItem('cart_data')

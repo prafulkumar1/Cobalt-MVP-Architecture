@@ -25,9 +25,23 @@ global.controlsConfigJson = [];
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function App(props) {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const { NativeNavigationModule } = NativeModules; // iOS Native Module
+
+
+const {username,userID, apiURL,memberID} = props
+global.username = username;
+global.userID = userID;
+global.memberID = memberID;
+global.apiURL = props.apiURL; 
+
+  useEffect(() => {
+    console.log("App started with username:", username);
+    console.log("App started with password:", apiURL);
+
+  
+  }, [username, userID]);
 
   const backAction = () => {
     console.log('tapped');

@@ -13,9 +13,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const ItemModifier = (props) => {
-   
-    const {  singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
-
+    const {isItemFavorite,toggleFavoriteItems,toastDetails,setToastDetails, singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
@@ -62,27 +60,19 @@ const ItemModifier = (props) => {
               },
             ]}
           >
-            <UI.TouchableOpacity style={styles.favIconBtn}>
-              {modifiersResponseData?.IsFavorite == 1 ? (
-                <UI.CbImage
-                  imageJsx={
-                    <Image
-                      source={require("@/assets/images/icons/Fav3x.png")}
-                      style={styles.favIcon}
-                      resizeMode='contain'
-                    />
-                  }
-                />
+            <UI.TouchableOpacity style={styles.favIconBtn} onPress={() => toggleFavoriteItems()}>
+              {isItemFavorite === 1 ? (
+                <Image
+                source={require("@/assets/images/icons/Fav3x.png")}
+                style={styles.favIcon}
+                resizeMode='contain'
+              />
               ) : (
-                <UI.CbImage
-                  imageJsx={
-                    <Image
-                      source={require("@/assets/images/icons/Notfav3x.png")}
-                      style={styles.favIcon}
-                      resizeMode='contain'
-                    />
-                  }
-                />
+                <Image
+                source={require("@/assets/images/icons/Notfav3x.png")}
+                style={styles.favIcon}
+                resizeMode='contain'
+              />
               )}
             </UI.TouchableOpacity>
             <UI.CbAddToCartButton
@@ -143,27 +133,19 @@ const ItemModifier = (props) => {
                     },
                   ]}
                 >
-                  <UI.TouchableOpacity style={styles.favIconBtn}>
-                    {modifiersResponseData?.IsFavorite == 1 ? (
-                      <UI.CbImage
-                        imageJsx={
-                          <Image
-                            source={require("@/assets/images/icons/Fav3x.png")}
-                            style={styles.favIcon}
-                            resizeMode='contain'
-                          />
-                        }
-                      />
+                  <UI.TouchableOpacity style={styles.favIconBtn} onPress={() => toggleFavoriteItems()}>
+                    {isItemFavorite === 1 ? (
+                      <Image
+                      source={require("@/assets/images/icons/Fav3x.png")}
+                      style={styles.favIcon}
+                      resizeMode='contain'
+                    />
                     ) : (
-                      <UI.CbImage
-                        imageJsx={
-                          <Image
-                            source={require("@/assets/images/icons/Notfav3x.png")}
-                            style={styles.favIcon}
-                            resizeMode='contain'
-                          />
-                        }
-                      />
+                      <Image
+                      source={require("@/assets/images/icons/Notfav3x.png")}
+                      style={styles.favIcon}
+                      resizeMode='contain'
+                    />
                     )}
                   </UI.TouchableOpacity>
                   <UI.CbAddToCartButton
@@ -253,6 +235,16 @@ const ItemModifier = (props) => {
             </UI.Box>
           </Modal>
         </Animated.ScrollView>
+        {
+          toastDetails?.isToastVisiable && 
+          <UI.CbToastMessage
+          message={toastDetails?.toastMessage}
+          isToastMessageVisiable={toastDetails?.isToastVisiable}
+          transparent={true}
+          onRequestClose={() => setToastDetails({isToastVisiable:false,toastMessage:""})}
+          closePreviewModal={() => setToastDetails({isToastVisiable:false,toastMessage:""})}
+        />
+        }
       </>
     );
     

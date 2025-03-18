@@ -1,9 +1,9 @@
 import { StyleSheet } from "react-native";
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-import { isPlatformIos } from "../constants/Matrices";
+import { horizontalScale, isPlatformAndroid, isPlatformIos } from "../constants/Matrices";
 
 export const styles = StyleSheet.create({
-  topContainer: { flex: 1, padding: 10, backgroundColor: "#fff" },
+  topContainer: { flex: 1, backgroundColor: "#fff" },
   scrollContent: {
     padding: 20,
   },
@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    paddingBottom: responsiveHeight(1.5),
   },
   itemTitle: {
     fontSize: 16,
@@ -72,20 +71,21 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "SourceSansPro_SemiBold"
   },
-  emptyCartTxt: { fontSize: 18, fontWeight: "500", padding: 10, fontFamily: "SourceSansPro_BoldItalic" },
-  orderInstContainer: { borderWidth: 1, borderColor: "#C4C4C4", justifyContent: "flex-start", flexDirection: "row", alignItems: "center", width: 180, height: 27, borderRadius: 4, paddingHorizontal: 10 },
+  emptyCartTxt: { fontSize: 18, padding: 10, fontFamily: "SourceSansPro_BoldItalic" },
+  orderInstContainer: { borderWidth: 1, borderColor: "#C4C4C4", justifyContent: "flex-start", flexDirection: "row", alignItems: "center", width: 180,borderRadius: 4, paddingHorizontal: 10 },
   notesIcon: { width: 12, height: 18 },
+  noteIcon2: { width: 12, height: 18 ,alignSelf:"flex-start",marginTop:4},
   orderInstTxt: { fontSize: 12, color: "#4B5154", paddingLeft: 10, fontFamily: "SourceSansPro_SemiBoldItalic" },
   mainSubContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
-  tipContainer: { borderTopWidth: 0.6, borderBottomWidth: 0.6, justifyContent: "center", alignItems: "center", borderColor: "#B9B9B9", padding: 10 },
+  tipContainer: { justifyContent: "center", alignItems: "center", padding: 10 },
   tipTxt: {
     color: "#4B5154",
     fontSize: 14,
     fontFamily: "SourceSansPro_SemiBold"
   },
   tipMainContainer: {
-    width: 83,
+    width: isPlatformIos()?80:83,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 10,
     marginVertical: 10,
     borderWidth: 2,
     borderColor: "#00BFF6",
@@ -128,7 +128,13 @@ export const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: responsiveWidth(25),
   },
-  pickUpContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-around", backgroundColor: "#EFEFEF", padding: 10 },
+  pickUpContainer: { 
+    flexDirection: "row",
+    alignItems: "center", 
+    justifyContent: "space-around", 
+    backgroundColor: "#EFEFEF", 
+    padding: 10, 
+  },
   pickUpTimeTxt: { textAlign: "center", fontSize: 12, fontFamily: "SourceSansPro_BoldItalic" },
   timeBtn: { borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 32, marginTop: 5, },
   timeTxt: { color: "#4B5154", fontSize: 18, fontFamily: "SourceSansPro_BoldItalic" },
@@ -158,7 +164,7 @@ export const styles = StyleSheet.create({
   },
   bottomBtn: {
     position: 'absolute',
-    bottom: isPlatformIos() ? responsiveHeight(10) : responsiveHeight(0),
+    bottom: isPlatformIos() ? responsiveHeight(-13) : responsiveHeight(0),
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -166,6 +172,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex: 1,
     backgroundColor: '#fff',
+    paddingVertical:10,
+    paddingBottom:isPlatformIos()?responsiveHeight(4):0
   },
   btnTextStyle: { color: "#4B5154", fontSize: 16, textAlign: "center", fontFamily: "SourceSansPro_SemiBold" },
   operationBtn: {
@@ -201,7 +209,7 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)'
+    backgroundColor: 'rgba(0, 0, 0, 0.9)'
   },
   confirmMdl: {
     flex: 1,
@@ -210,14 +218,14 @@ export const styles = StyleSheet.create({
     margin: 10
   },
   modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21, fontFamily: "SourceSansPro_SemiBold" },
-  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: responsiveWidth(50), paddingVertical: 5, marginTop: responsiveHeight(5), lineHeight: 30 },
+  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: isPlatformIos()?responsiveWidth(100):responsiveWidth(50), paddingVertical: 5, marginTop: responsiveHeight(5), lineHeight: 30 },
   timeAlertMsg: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', paddingVertical: 5 },
   pickDetails: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', marginTop: responsiveHeight(5), paddingVertical: 5 },
   innerModalMsgContainer: { width: "100%", justifyContent: 'space-between', alignItems: 'center', },
   innerModal: {
     width: '100%',
     backgroundColor: "#fff",
-    height: responsiveHeight(65),
+    height: isPlatformIos()?responsiveHeight(68):responsiveHeight(65),
     padding: 20,
     justifyContent: 'space-between',
     borderRadius: 10,
@@ -241,5 +249,69 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_Bold",
     marginTop:responsiveHeight(5),
     lineHeight:50
-  }
+  },
+  tipBox:{backgroundColor:"#F3F3F3",borderRadius:10,marginBottom:5,margin:10},
+  modalBackground:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: "100%",
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  crossIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    top: horizontalScale(60),
+    alignSelf: "center",
+    opacity: 1,
+    zIndex: 1000,
+  },
+  closeIcon2:{ width: 20, height: 20 },
+  modiferItems:{height:responsiveHeight(85),width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
+  footerContainer: {
+    backgroundColor: "#fff",
+    width: "100%",
+    height: 80,
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    left: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: "#ccc",
+    paddingHorizontal: 20,
+  },
+  totalAmountTxt: {
+    fontSize: 12,
+    color: "#4B5154",
+    fontFamily: "SourceSansPro_Italic",
+  },
+  orderAmount: {
+    fontSize: 24,
+    color: "#4B5154",
+    paddingVertical: 8,
+    fontFamily: "SourceSansPro_SemiBold",
+  },
+  addToCartBtn2: {
+    backgroundColor: "#5773a2",
+    width:responsiveWidth(40),
+    height:responsiveHeight(5),
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addCartTxt: {
+    color: "#fff",
+    fontSize: responsiveFontSize(2.8),
+    fontFamily: "SourceSansPro_SemiBold",
+    textAlign: "center",
+    paddingTop:isPlatformAndroid()?8:10
+  },
 }); 

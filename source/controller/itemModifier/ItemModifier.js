@@ -24,7 +24,8 @@ export const useItemModifierLogic = () => {
         modifiersData,
         singleModifierData,
         setUpdateOrAddTxt,
-        setFormFieldData
+        setFormFieldData,
+        menuOrderData
     } = useFormContext()
 
 
@@ -38,7 +39,8 @@ export const useItemModifierLogic = () => {
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
         const params = {
           "Item_Id":singleItemDetails?.Item_ID,
-          "LocationId": getProfitCenterId?.LocationId
+          "Location_Id": getProfitCenterId?.LocationId,
+          "MealPeriod_Id":menuOrderData[0]?.MealPeriod_Id
         // Item_Id:"9EFC6F4B-DA70-4991-AFAB-8174C00BCBB7",
         // LocationId:"8AF9F050-0935-430E-BC33-2A154A99E37A"
         }

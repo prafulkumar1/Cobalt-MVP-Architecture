@@ -1,4 +1,4 @@
-import { horizontalScale, isPlatformAndroid } from "@/source/constants/Matrices";
+import { horizontalScale, isPlatformAndroid, isPlatformIos } from "@/source/constants/Matrices";
 import { StyleSheet } from "react-native";
 import { responsiveWidth,responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
@@ -174,13 +174,13 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    padding:5
+    padding:8
   },
   cartCountTxt:{
     position: "absolute",
-    bottom: 28,
+    bottom: 32,
     color: "#FFFFFF",
-    fontSize: responsiveFontSize(2.6),
+    fontSize: isPlatformIos()?responsiveFontSize(2.4):responsiveFontSize(2.6),
     padding: 4,
     borderRadius: 20,
     overflow: "hidden",
@@ -268,7 +268,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#F3F3F3",
     borderRadius: 5,
     padding: 0,
-    height: 30,
     justifyContent: "center",
   },
   topItem:{
@@ -327,12 +326,12 @@ CheckIcon:{color:"#ffff"},
   roAccordionIcon:{width:20,height:20,right:12},
   roAccordionContentouterbox:{ display: "flex", flexDirection: "row", alignItems: "center",marginVertical:10 },
   roAccordionContentItembox:{ display: "flex",  alignItems: "left" },
-  roItemName:{fontSize:18,fontFamily:"SourceSansPro_Bold"},
+  roItemName:{fontSize:16,fontFamily:"SourceSansPro_Bold"},
   roItemprice:{fontSize:16,fontFamily:"SourceSansPro_Bold",marginLeft:4},
   roImagescetion:{ display: "flex",flexDirection: "row",alignItems: "center",marginLeft: "auto", right :10},
   roItemImage:{  marginRight: 10 },
   roItemButton:{ width: 27 ,height:29},
-  roReoderButton:{ bottom : 5, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
+  roReoderButton:{ top : 5, alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5, },
   roReordertext:{ fontFamily: "SourceSansPro_Bold", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   selectedContainer:{
     minHeight:responsiveHeight(30),
@@ -421,10 +420,10 @@ CheckIcon:{color:"#ffff"},
     color: "#4B5154",
     fontSize: 14,
     fontFamily:"SourceSansPro_SemiBold",
-    alignSelf:"center"
+    alignSelf:"center",
   },
   requireText:{ color: "red",fontFamily:"SourceSansPro_SemiBold",fontSize: 12, },
-  maxAllowedTxt:{ color: "#3B87C1", fontSize: 12 ,fontFamily:"SourceSansPro_SemiBold"},
+  maxAllowedTxt:{ color: "#3B87C1", fontSize: 13 ,fontFamily:"SourceSansPro_SemiBold"},
   requiredTxt:{     
     color: "#4B5154",
     fontSize: 14,
@@ -521,6 +520,6 @@ CheckIcon:{color:"#ffff"},
     lineHeight:15
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
-  collapseIcon:{right:18},
-  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:2}
+  collapseIcon:{},
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center"}
 })

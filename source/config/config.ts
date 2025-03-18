@@ -18,7 +18,8 @@
 //     // getBaseUrl()
 // }, [])
 // https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
-export const baseURL = "https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/"
+// https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/  ------->>>>>> Testing
+export const baseURL = global.apiURL;
 
 export const endpoints = {
     UI_CONFIGURATIONS:{
@@ -37,6 +38,13 @@ export const endpoints = {
     CART:{
         GET_CART_CONFIG:"MobileOrdering/MO_GetCartConfig",
         GET_CART_PRICE:"MobileOrdering/MO_GetCartPrice",
-        PLACE_ORDER:"MobileOrdering/MO_SaveOrder"
+        PLACE_ORDER:"MobileOrdering/MO_SaveOrder",
+    },
+    RECENT_ORDERS:{
+        GET_RECENT_ORDERS: "MobileOrdering/MO_getrecentorders"
+    },
+    FAVORITES:{
+        GET_FAVORITES :"MobileOrdering/MO_getfavouriteitems",
+        SAVE_FAVORITES:"MobileOrdering/MO_SaveFavourites"
     }
 }

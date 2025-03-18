@@ -1,4 +1,3 @@
-
 import * as UI from '@/components/cobalt/importUI';
 import {useFormContext } from '@/components/cobalt/event';
 import { ActivityIndicator, Image, Keyboard, KeyboardAvoidingView, Modal, Platform, TextInput } from 'react-native';
@@ -10,15 +9,19 @@ import { AddIcon,TrashIcon,RemoveIcon,CloseIcon } from '@/components/ui/icon';
 import { styles } from '@/source/styles/MyCart';
 import { Icon } from '@/components/ui/icon';
 import CbLoader from '@/components/cobalt/cobaltLoader';
-
-
+import { CbDottedLine } from '@/source/constants/dottedLine';
+import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
+import ItemModifier from '../ItemModifier/ItemModifierUI';
+import { isPlatformAndroid } from '@/source/constants/Matrices';
+ 
+ 
 const pageId='MyCart';
 export default function MyCartScreen(props) {
-
- let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
-
- global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-
+ 
+let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
+ 
+global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
+ 
    const {
      cartConfigData,
      tipData,
@@ -55,24 +58,48 @@ export default function MyCartScreen(props) {
      isOrderPlaced,
      orderSuccessModal,
      successResponse,
-     closeSuccessModal
+     closeSuccessModal,
+     closeKeyBoard,
+     handleContentSizeChange,
+     height
    } = useMyCartLogic();
-   const { cartData,selectedTime,selectedLocation}= useFormContext();
+   const { 
+    cartData,
+    selectedTime,
+    selectedLocation,
+    itemDataVisible ,
+    closePreviewModal,
+    isKeyboardVisible,
+    setIsVisible,
+    updateModifierItemQuantity,
+    selectedModifiers,
+    setSelectedModifiers,
+    singleItemDetails,
+    updateOrAddTxt,
+    modifierCartItemData
+  }= useFormContext();
    
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
+  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
 
-
+ 
+ 
   const renderModifierList = ({ item }) => {
     return (
-      <UI.TouchableOpacity>
+      <UI.Box>
         <UI.Text style={styles.itemCategory}>
           {item?.Modifier_Name}
         </UI.Text>
-      </UI.TouchableOpacity>
+      </UI.Box>
     );
   }
   const renderCartItems = (item) => {
     const renderRightActions = (progress, dragX) => {
-      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0; 
+      const safeDragX = typeof dragX === "number" && !isNaN(dragX) ? dragX : 0;
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
       setValue(roundedAbsolute);
       return (
@@ -94,8 +121,9 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
-          <UI.Box
+          <UI.TouchableOpacity
             style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
+            onPress={() => editCommentBtn(props,item)}
           >
             <UI.Box style={styles.mainContainer}>
               <UI.Box style={styles.cartItemContainer}>
@@ -108,13 +136,24 @@ export default function MyCartScreen(props) {
                     children={renderModifierList}
                   />
                 }
+                {item?.Modifiers && item.Modifiers.length > 0 && (
+                <UI.CbFlatList
+                  scrollEnabled={false}
+                  flatlistData={item.Modifiers}
+                  children={({ item }) => (
+                    <UI.Text style={styles.modifierItem}>
+                      {item.Modifier_Name}
+                    </UI.Text>
+                  )}
+                />
+              )}
               </UI.Box>
-
+ 
               <UI.Box style={styles.rightContainer}>
                 <UI.Text
                   style={styles.itemPrice}
                 >{`$${item.TotalPrice}`}</UI.Text>
-
+ 
                 <UI.Box style={styles.operationBtn}>
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
@@ -127,9 +166,9 @@ export default function MyCartScreen(props) {
                       style={styles.trashIcon}
                     />
                   </UI.TouchableOpacity>
-
+ 
                   <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
-
+ 
                   <UI.TouchableOpacity
                     style={styles.iconBtn}
                     onPress={() => handleIncrement(item)}
@@ -148,7 +187,7 @@ export default function MyCartScreen(props) {
               <UI.Box style={styles.notesContainer}>
                 <UI.TouchableOpacity
                   style={styles.commentBtn}
-                  onPress={() => editCommentBtn(props,item)} 
+                  onPress={() => editCommentBtn(props,item)}
                 >
                   <Image
                     source={require("@/assets/images/icons/messageIcon2x.png")}
@@ -158,35 +197,34 @@ export default function MyCartScreen(props) {
                 </UI.TouchableOpacity>
               </UI.Box>
             )}
-          </UI.Box>
+          </UI.TouchableOpacity>
         </Swipeable>
       </UI.Pressable>
     );
   };
-
+ 
   const renderAddTip = (tipDetails,index) => {
     let lastIndex = tipData.length - 1;
     let item = tipDetails
     const isCustomAdded = item.isCustomAdded === 1;
-    const isSelected = item.isSelected === 1;
   
     const containerStyle = isCustomAdded
       ? styles.customTipItem
       : [
           styles.tipMainContainer,
-          { backgroundColor: isSelected ? '#00BFF6' : '#fff' },
+          { backgroundColor: item.isSelected ? '#00BFF6' : '#fff' },
         ];
   
     const textStyle = isCustomAdded
       ? [styles.tipCount, { color: '#000' }]
-      : [styles.tipCount, { color: isSelected ? '#fff' : '#00BFF6' }];
+      : [styles.tipCount, { color: item.isSelected ? '#fff' : '#00BFF6' }];
     return(
      <>
         <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>
-          <UI.Text style={textStyle}>{item.tip}</UI.Text>
+          <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
         </UI.TouchableOpacity>
        {
-        (lastIndex === index && isCustomTipAdded) && 
+        (lastIndex === index && isCustomTipAdded) &&
         <UI.Box style={[styles.tipMainContainer,{ backgroundColor:"#fff",}]} >
             <TextInput
               ref={textInputRef}
@@ -199,6 +237,7 @@ export default function MyCartScreen(props) {
               onBlur={() => handleResetTip()}
               onChangeText={(value) => getCustomTip(value)}
               value={customTipValue}
+              onSubmitEditing={() => handleSaveTip()}
             />
           </UI.Box>
        }
@@ -206,14 +245,14 @@ export default function MyCartScreen(props) {
      </>
     )
   }
-
+ 
   const PriceRow = ({ label, value }) => (
     <UI.Box style={styles.splitPriceContainer}>
       <UI.Box style={styles.priceLabelContainer}>
         <UI.Text style={styles.priceLabel}>{label}</UI.Text>
       </UI.Box>
       <UI.Box style={styles.valueMainContainer}>
-        <UI.Text style={styles.priceLabel}>{value}</UI.Text>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
       </UI.Box>
     </UI.Box>
   );
@@ -227,27 +266,29 @@ export default function MyCartScreen(props) {
       </UI.Box>
     </UI.Box>
   );
-
-
+ 
+ 
   const renderCartPriceCalculations = () => {
     return (
       <>
         <UI.Box style={styles.mainSubContainer}>
-          <UI.TouchableOpacity style={styles.orderInstContainer}>
+          <UI.TouchableOpacity style={[styles.orderInstContainer]}>
             <Image
               alt="notes"
               source={require("@/assets/images/icons/notes.png")}
-              style={styles.notesIcon}
+              style={[isPlatformAndroid()?styles.notesIcon:styles.noteIcon2]}
               resizeMode="contain"
             />
-            <TextInput 
-              style={[styles.orderInstTxt,{ width:"92%",left:8,height:50}]} 
-              placeholder='Order Instructions' 
+            <TextInput
+              style={[styles.orderInstTxt,{ width:"92%",left:8,height:height}]}
+              placeholder='Order Instructions'
               placeholderTextColor={"#4B5154"}
               onChangeText={(text)=>orderInstructions(text)}
               value={orderInstruction}
               onFocus={() =>setTipKeyboardOpen(false)}
               onBlur={() =>setTipKeyboardOpen(false)}
+              multiline={true}
+              onContentSizeChange={handleContentSizeChange}
             />
           </UI.TouchableOpacity>
           <UI.CbCommonButton
@@ -257,7 +298,7 @@ export default function MyCartScreen(props) {
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
-
+ 
         <UI.Box
           style={styles.priceContainer}
         >
@@ -266,7 +307,7 @@ export default function MyCartScreen(props) {
       </>
     )
   }
-
+ 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -275,7 +316,7 @@ export default function MyCartScreen(props) {
         loading ? <CbLoader />
           :
           <UI.TouchableOpacity style={styles.topContainer} activeOpacity={1} onPress={() => closeAllSwipeables()}>
-            <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <UI.ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} style={{padding:10}}>
               {myCartData && myCartData?.length > 0 ? (
                 myCartData?.map((items) => {
                   return renderCartItems(items);
@@ -287,40 +328,42 @@ export default function MyCartScreen(props) {
               )}
               {myCartData && myCartData.length > 0 && renderCartPriceCalculations()}
             </UI.ScrollView>
-
+ 
             {
               cartData && cartData.length > 0 &&
               <UI.Box>
                 {
-                  cartConfigData?.ShowTip ===1 && 
-                  <>
+                  cartConfigData?.ShowTip ===1 &&
+                  <UI.Box style={styles.tipBox}>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
-                    <UI.ScrollView style={{alignSelf:"center"}} scrollEnabled={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
+                    <UI.ScrollView scrollEnabled={false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)
                         })
                       }
                     </UI.ScrollView>
-                  </>
+                  </UI.Box>
                 }
-
+ 
                 {keyboardVisible && tipKeyboardOpen && (
                   <UI.Box
                     style={styles.bottomBtn}
                   >
-                    <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => Keyboard.dismiss()} />
+                    <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => closeKeyBoard()} />
                     <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
                   </UI.Box>
                 )}
-
+ 
                 {
                   (cartConfigData?.ShowPickupLocation === 1 || cartConfigData?.ShowPickupTime === 1)
                   && <UI.Box style={styles.pickUpContainer}>
                     {
                       cartConfigData?.ShowPickupTime === 1 &&
+                      showPickupTime.length > 0 &&
                       <UI.Box>
                         <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
                         <UI.cbSelectTime
@@ -331,9 +374,10 @@ export default function MyCartScreen(props) {
                         />
                       </UI.Box>
                     }
-
+ 
                     {
                       cartConfigData?.ShowPickupLocation ===1 &&
+                      showPickupLocation.length > 0 && 
                       <UI.Box>
                         <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
                         <UI.cbSelectTime
@@ -346,7 +390,7 @@ export default function MyCartScreen(props) {
                     }
                   </UI.Box>
                 }
-
+ 
                   <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={() => handlePlaceOrder()}>
                     {
                       isOrderPlaced ? <UI.Box style={styles.loadingContainer}><ActivityIndicator color={"#00C6FF"} size={"small"} /></UI.Box>
@@ -365,7 +409,7 @@ export default function MyCartScreen(props) {
                         </>
                     }
                   </UI.TouchableOpacity>
-
+ 
               </UI.Box>
             }
           </UI.TouchableOpacity>
@@ -378,7 +422,7 @@ export default function MyCartScreen(props) {
         <UI.Box
           style={styles.modalContainer}
         />
-
+ 
         <UI.Box style={styles.confirmMdl}>
           <UI.Box style={styles.innerModal}>
             <UI.TouchableOpacity onPress={() => closeSuccessModal(props)} style={styles.closeMainContainer}>
@@ -421,8 +465,53 @@ export default function MyCartScreen(props) {
           </UI.Box>
         </UI.Box>
       </Modal>
-    </KeyboardAvoidingView>
 
+      <Modal
+          visible={itemDataVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePreviewModal}
+        >
+          <UI.Box style={styles.modalBackground}>
+            {
+              !isKeyboardVisible
+              && 
+              <UI.TouchableOpacity
+              onPress={() =>
+                handleCloseItemDetails(
+                  setIsVisible,
+                  updateModifierItemQuantity,
+                  closePreviewModal,
+                  selectedModifiers,
+                  setSelectedModifiers,
+                  singleItemDetails
+                )
+              }
+              style={styles.crossIcon}
+            >
+              <Icon
+                as={CloseIcon}
+                color="#fff"
+                size={"md"}
+                style={styles.closeIcon2}
+              />
+            </UI.TouchableOpacity>
+            }
+            <UI.Box style={styles.modiferItems}>
+              <ItemModifier />
+            </UI.Box>
+            <UI.Box style={styles.footerContainer}>
+              <UI.Box>
+                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
+              </UI.Box>
+              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
+                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              </UI.TouchableOpacity>
+            </UI.Box>
+          </UI.Box>
+        </Modal>
+    </KeyboardAvoidingView>
+ 
   );
 }
-

@@ -1,176 +1,489 @@
 import * as UI from '@/components/cobalt/importUI';
-import { RecentordersData,FavoritesList } from '@/source/constants/commonData';
-import React, { useState } from 'react';
-import { Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, Modal } from 'react-native';
 import { styles } from '@/source/styles/Recentorders/ROStyle';
-import { Box } from 'lucide-react-native';
 import { useFormContext } from '@/components/cobalt/event';
-import { height, horizontalScale, moderateScale, verticalScale } from '@/source/constants/Matrices';
-import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon } from '@/components/ui/icon';
+import { isPlatformAndroid,} from '@/source/constants/Matrices';
+import {  CheckIcon, ChevronDownIcon,ChevronRightIcon, CircleIcon,ChevronUpIcon,AddIcon,TrashIcon,RemoveIcon ,CloseIcon} from '@/components/ui/icon';
 import { Accordion,  AccordionItem,  AccordionHeader, AccordionTrigger, AccordionTitleText, AccordionContentText, AccordionIcon, AccordionContent, } from '@/components/ui/accordion';
 import { useRecentOrderLogic } from '@/source/controller/recentOrder/RecentOrder';
-function RenderingPendingOrders(props) {
-  const OrdersList=RecentordersData.RecentOrders  
-  
-  return (
-<Accordion
-  style={{
-    paddingHorizontal: horizontalScale(10),
-    width: "100%", 
-    maxHeight: "100%",
-    borderRadius: moderateScale(8),
-    backgroundColor: "#ffffff",
-    shadowColor: "#00000029",
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 8,
-    padding: moderateScale(10),
-    alignSelf: "center"
-  }}
->
-         {OrdersList?.PendingOrders?.length > 0 && OrdersList.PendingOrders.map((Order, index) => (
-    <AccordionItem key={index} value={`item-${index}`}>
-      <AccordionHeader >
-        <UI.Box style={{ flexDirection: "row", alignItems: "center", paddingVertical:20,justifyContent:"space-between" }}>
-            <UI.CbImage  imageJsx={<Image source={require("@/assets/images/icons/Pendingorder.png")}    style={{ width: 28, height: 28, left:6}}  /> }/>
-            <UI.Text   style={{ fontSize: 18, fontStyle: "italic", fontFamily: "SourceSansPro_Bold",fontWeight: "700",  marginLeft: 10,   left:10  }}>
-               Ordered Status
-            </UI.Text>
-            <UI.Text   style={{ marginLeft: "auto",  color: "#FF6F00", fontSize: 16,fontFamily: "SourceSansPro_Bold", fontWeight: "700",  right:20 }}>   
-              {Order.OrderStatus}
-            </UI.Text>
-        </UI.Box>
-        <AccordionTrigger className="focus:web:rounded-lg">
-        <UI.Box  style={{ flexDirection: "row", justifyContent: "space-between",  alignItems: "center",  }}>
-            <UI.Box>
-              <UI.Text   style={{ fontSize:11, color: "#4F4F4F", fontFamily: "SourceSansPro_Bold",  }} >
-                  Pickup Time
-                </UI.Text>
-                <UI.Text  style={{  fontSize: 16, fontFamily: "SourceSansPro_Bold", color:"#2A4E7D"  }} >
-                  {Order.Pickup_Time}
-                </UI.Text>
-            </UI.Box>
-            <UI.Box style={{ paddingHorizontal:8,   }}>
-                <UI.Text style={{ fontSize: 11,  color: "#4F4F4F", fontFamily: "SourceSansPro_Bold" }}>
-                    Pickup Place
-                  </UI.Text>
-                <UI.Text style={{ fontSize: 16, fontFamily: "SourceSansPro_Bold",color:"#2A4E7D" }}>
-                {Order.Pickup_Location}
-                </UI.Text>
-              </UI.Box>
-            <UI.Box style={{ paddingHorizontal:60 }}>
-                <UI.Text   style={{fontSize: 14, color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Order Id #: {Order.OrderId}
-                </UI.Text>
-                <UI.Text style={{ fontSize: 14,  color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" }} >
-                  Date: {Order.OrderDate}
-                </UI.Text>
-            </UI.Box> 
-            <>
-            {({ isExpanded }) => {
-            return (
-              <>
-                {isExpanded ? (
-                  <AccordionIcon as={ChevronRightIcon} className="mr-3" style={{width:20,height:20,}} />
-                ) : (
-                  <AccordionIcon as={ChevronDownIcon} className="mr-3" style={{width:20,height:20,}}/>
-                )}
-              </>
-            )
-          }}
-            </>
-         </UI.Box>           
-        </AccordionTrigger>
-      </AccordionHeader>
-      <AccordionContent >
-        <UI.Box style={{ padding: 12, backgroundColor: "#fff" }}>
-         <UI.Box>
-                <UI.Text style={{ fontSize: 14, fontFamily: "SourceSansPro_Bold",right:18,bottom:10}}>
-                  Order Summary
-                </UI.Text>
-                <UI.Box style={{ flexDirection: "row",justifyContent: "space-between",alignItems: "center",marginBottom: 8,}}>
-                    <UI.Text style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic",right:18 }} >
-                      Items
-                    </UI.Text>
-                    <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
-                      <UI.Text   style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic",  marginRight: 16 }}>
-                        Qty
-                      </UI.Text>
-                    <UI.Text style={{ fontSize: 12, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>
-                      Amount
-                    </UI.Text>
-                </UI.Box>
-          </UI.Box>       
-        </UI.Box>
+import { useRoute } from "@react-navigation/native";
+import CbLoader from '@/components/cobalt/cobaltLoader';
+import { CbDottedLine } from '@/source/constants/dottedLine';
+import { Divider } from '@/components/ui/divider';
+import ItemModifier from '../ItemModifier/ItemModifierUI';
+import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
+import { Icon } from '@/components/ui/icon';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
-          <UI.Box style={{ marginBottom: 12 }}>
-          {Order?.Items?.length > 0 && Order.Items.map((Item, index) => (
-            <React.Fragment key={index}>
-            <UI.Box style={{ flexDirection: "row",justifyContent: "space-between",alignItems: "center", }}>
-                <UI.Text style={{ fontSize: 12, fontStyle: "italic", fontWeight: "700",right:18 }}>{index + 1}.{Item.ItemName}</UI.Text>
-                <UI.Box style={{ flexDirection: "row", alignItems: "center" }}>
-                  <UI.Text style={{  fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic",  marginRight: 16 }}> {Item.Quantity.toFixed(2)} </UI.Text>
-                  <UI.Text style={{ fontSize: 12, fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>${Item.Price.toFixed(2)}</UI.Text>
-                </UI.Box>             
-            </UI.Box>
-            <UI.Box>
-                {Item?.Modifiers?.length > 0 &&  Item.Modifiers.map((Modifier, index) => (
-                <React.Fragment key={index}>
-                  <UI.Text style={{ fontSize: 11, color: "#5773A2",fontFamily: "SourceSansPro_Bold", fontStyle: "italic"}}>{Modifier.ItemName}</UI.Text>
-                  </React.Fragment>
-                ))}
-            </UI.Box>
-            {Item.comment && 
-              <UI.Box style={{ flexDirection: "row", alignItems: "center", marginTop: 5 }}>
-  <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/ROComment.png')} style={{ width: horizontalScale(15), height: verticalScale(15), marginRight: 5, top:1 }} />} />
-  <UI.Text 
-    style={{ 
-      fontSize: 12, 
-      fontFamily: "SourceSansPro_Bold", 
-      fontStyle: "italic", 
-      flexShrink: 1, 
-      flexWrap: "wrap", 
-      maxWidth: "90%" 
-    }}
-  >
-    {Item.comment}
-  </UI.Text>
-</UI.Box>}
-            </React.Fragment>
-            ))}
-          </UI.Box>
-            <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
-               {Order.SubTotal && <UI.Text style={{ fontWeight: "700", fontFamily: "SourceSansPro_Bold" }}>
-                  Sub Total:${Order.SubTotal.toFixed(2)}
-                </UI.Text>}
-                {Order.ServiceCharge && <UI.Text>10% Service Charge: ${Order.ServiceCharge.toFixed(2)}</UI.Text>}
-               {Order.FoodTax && <UI.Text>Food Tax: ${Order.FoodTax.toFixed(2)}</UI.Text> }
-                {Order.StateTax && <UI.Text>State Tax: ${Order.StateTax.toFixed(2)}</UI.Text> }
-            </UI.Box>
-            <UI.Box style={{ borderTopWidth: 1, borderTopColor: "#eee", marginTop: 12, paddingTop: 12,alignSelf: "flex-end",alignItems: "flex-end",  }}>
-            {Order.Total &&  <UI.Text style={{ fontWeight: "700", marginTop: 8 }}>Total: ${Order.Total.toFixed(2)}</UI.Text> }
-                {Order.Tip &&   <UI.Text>Tip: ${Order.Tip.toFixed(2)}</UI.Text> }
-                {Order.GrandTotal &&    <UI.Text>Garnd Total: ${Order.GrandTotal.toFixed(2)}</UI.Text> }
-            </UI.Box>
-        
+
+function RenderingPendingOrders(props) {
+  const { pendingOrders } = useRecentOrderLogic(props);
+  const OrdersList = pendingOrders
+  const [expandedIndexes, setExpandedIndexes] = useState(new Set());
+  const handleToggle = (index) => {
+    setExpandedIndexes((prevIndexes) => {
+      const newIndexes = new Set(prevIndexes);
+      if (newIndexes.has(index)) {
+        newIndexes.delete(index); 
+      } else {
+        newIndexes.add(index);
+      }
+      return newIndexes;
+    });
+  };
+    const PriceRow = ({ label, value }) => (
+      <UI.Box style={styles.splitPriceContainer}>
+        <UI.Box style={styles.priceLabelContainer}>
+          <UI.Text style={styles.priceLabel}>{label}</UI.Text>
         </UI.Box>
-      </AccordionContent>
-    </AccordionItem>
-     ))}
-  </Accordion>
+        <UI.Box style={styles.valueMainContainer}>
+          <UI.Text style={styles.priceLabel}>${value}</UI.Text>
+        </UI.Box>
+      </UI.Box>
+    );
+    const PriceDetails = (ordersPrice) => (
+      <UI.Box style={styles.priceContainer}>
+        <UI.Box style={styles.priceSubContainer}>
+          {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
+            <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
+          ))}
+        </UI.Box>
+      </UI.Box>
+    );
+
+  return (
+    <UI.FlatList
+      data={pendingOrders}
+      renderItem={({ item, index }) => {
+        const Order = item
+        return (
+          <Accordion style={styles.recentContainer}>
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              style={styles.recentCardContainer}
+              expanded={expandedIndexes.has(index)}
+            >
+              <AccordionHeader>
+                <UI.Box style={styles.recentStatusContainer}>
+                  <UI.CbImage
+                    imageJsx={
+                      <Image
+                        source={require("@/assets/images/icons/Pendingorder3x.png")}
+                        style={styles.orderIcon}
+                      />
+                    }
+                  />
+                  <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
+                  <UI.Text style={styles.statusValTxt}>
+                    {Order.ORDERSTATUS}
+                  </UI.Text>
+                </UI.Box>
+                <UI.Box style={styles.dottedLine}>
+                  <CbDottedLine
+                    length={isPlatformAndroid() ? 50 : 90}
+                    dotSize={6}
+                    dotColor="#0000002B"
+                  />
+                </UI.Box>
+                <AccordionTrigger
+                  className="focus:web:rounded-lg"
+                  onPress={() => handleToggle(index)}
+                >
+                  <UI.Box style={styles.pickUpDetailsContainer}>
+                    <UI.Box style={styles.pickUpSubContainer}>
+                      <UI.Box>
+                        <UI.Text style={styles.labelPickUpTime}>
+                          Pickup Time
+                        </UI.Text>
+                        <UI.Text style={styles.pickValue}>
+                          {Order.PICKUPTIME}
+                        </UI.Text>
+                      </UI.Box>
+                      <UI.Box style={styles.verticalLine} />
+                      <UI.Box>
+                        <UI.Text style={styles.labelPickUpPoint}>
+                          Pickup Point
+                        </UI.Text>
+                        <UI.Text style={styles.pickUpLocation}>
+                          {Order.PICKUPLOCATION}
+                        </UI.Text>
+                      </UI.Box>
+                    </UI.Box>
+                    <UI.Box style={styles.detailsContainer}>
+                      <UI.Box>
+                        <UI.Text style={styles.labelOrderId}>
+                          Order Id #: {Order.ORDERID}
+                        </UI.Text>
+                        <UI.Text style={styles.labelOrderId}>
+                          Date: {Order.ORDEREDDATE}
+                        </UI.Text>
+                      </UI.Box>
+                      <AccordionIcon
+                        as={
+                          expandedIndexes.has(index)
+                            ? ChevronDownIcon
+                            : ChevronRightIcon
+                        }
+                        size={"xl"}
+                        color="#4B5154"
+                        style={{ left: isPlatformAndroid() ? 15 : 5 }}
+                      />
+                    </UI.Box>
+                  </UI.Box>
+                </AccordionTrigger>
+                {expandedIndexes.has(index) && (
+                  <UI.Box style={[styles.dottedLine, { marginTop: -5 }]}>
+                    <CbDottedLine
+                      length={isPlatformAndroid() ? 50 : 90}
+                      dotSize={6}
+                      dotColor="#0000002B"
+                    />
+                  </UI.Box>
+                )}
+              </AccordionHeader>
+              <AccordionContent>
+                <UI.Box style={styles.orderSummaryContainer}>
+                  <UI.Box>
+                    <UI.Text style={styles.labelOrdSummary}>
+                      Order Summary
+                    </UI.Text>
+                    <UI.Box style={styles.itemContainer}>
+                      <UI.Text style={styles.labelItem}>Items</UI.Text>
+                      <UI.Box style={styles.amountContainer}>
+                        <UI.Text style={styles.labelQty}>Qty</UI.Text>
+                        <UI.Text style={styles.labelAmount}>Amount</UI.Text>
+                      </UI.Box>
+                    </UI.Box>
+                  </UI.Box>
+                  <UI.Box style={styles.pendingOrderContainer}>
+                    {Order?.ITEMS?.map((items, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <UI.Box style={styles.pendingOrderBox}>
+                            <UI.Text style={styles.labelItemName}>
+                              {index + 1}. {items.ITEM_NAME}
+                            </UI.Text>
+                            <UI.Box style={styles.amountContainer}>
+                              <UI.Text style={styles.labelQuantity}>
+                                {item?.QUANTITY}
+                              </UI.Text>
+                              <UI.Text style={styles.itemPrice}>
+                                ${items.PRICE?.toFixed(2)}
+                              </UI.Text>
+                            </UI.Box>
+                          </UI.Box>
+                          <UI.Box>
+                            {items?.MODIFIERS?.length > 0 &&
+                              items?.MODIFIERS.map((Modifier, modIndex) => (
+                                <UI.Box key={modIndex} style={{ left: 15 }}>
+                                  <UI.Text style={styles.modifierName}>
+                                    {Modifier.MODIFIER_NAME}
+                                  </UI.Text>
+                                </UI.Box>
+                              ))}
+                          </UI.Box>
+
+                          {items?.COMMENTS && (
+                            <UI.Box style={styles.commentBox}>
+                              <UI.CbImage
+                                imageJsx={
+                                  <Image
+                                    source={require("@/assets/images/icons/ROComment3x.png")}
+                                    style={styles.commentIcon}
+                                  />
+                                }
+                              />
+                              <UI.Text style={styles.labelComment}>
+                                {items.COMMENTS}
+                              </UI.Text>
+                            </UI.Box>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                  </UI.Box>
+                  <UI.Box style={styles.reorderBox}>
+                    <Divider />
+                  </UI.Box>
+                  <UI.Box style={styles.priceContainer}>
+                    {PriceDetails(Order)}
+                  </UI.Box>
+                </UI.Box>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        );
+      }}
+    />
   );
 };
 
+const RenderingCompletedOrders = (props) => {
+  const { orders} = useRecentOrderLogic(props);
+  const  { cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
+  const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
+  
+  const handleReorder = (itemDetails) => {
+    if (!itemDetails || itemDetails.length === 0) {
+      return;
+    }
+
+    itemDetails.forEach((item) => {
+      const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item.Item_ID);
+
+      const itemWithModifiers = {
+        Item_ID:item.ITEM_ID,
+        "Item_Name": item.ITEM_NAME,
+        "Description": item.DESCRIPTION,
+        "Price": item.PRICE,
+        "ImageUrl": item.IMAGEURL,
+        "IsAvailable": item?.IsAvailable,
+        "IsDisable": item?.IsDisable,
+        "quantity": item.QUANTITY,
+        "quantityIncPrice":item?.TOTALPRICE,
+        "comments":item.COMMENTS,
+        selectedModifiers: item.MODIFIERS || [],
+      };
+
+      if (existingItem) {
+        updateCartItemQuantity(existingItem, existingItem.quantity + 1);
+      } else {
+        addItemToCartBtnForReOrder(itemWithModifiers, item.QUANTITY);
+      }
+    });
+  };
+  const PriceRow = ({ label, value }) => (
+    <UI.Box style={styles.splitPriceContainer}>
+      <UI.Box style={styles.priceLabelContainer}>
+        <UI.Text style={styles.priceLabel}>{label}</UI.Text>
+      </UI.Box>
+      <UI.Box style={styles.valueMainContainer}>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
+      </UI.Box>
+    </UI.Box>
+  );
+  const PriceDetails = (ordersPrice) => (
+    <UI.Box style={styles.priceContainer}>
+      <UI.Box style={styles.priceSubContainer}>
+        {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
+          <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
+        ))}
+      </UI.Box>
+    </UI.Box>
+  );
+  return(
+    <UI.FlatList
+    data={ordersData}
+    contentContainerStyle={{marginTop:10}}
+    renderItem={({ item, index }) => {
+      const isDisabled = item?.ITEMS?.some(order => order.IsDisable === 1);
+      return (
+        <Accordion
+          defaultValue={[`item-${index}`]}
+          variant="filled"
+          type="single"
+          size="md"
+          style={styles.roAccordion}
+        >
+          <AccordionItem
+            value={`item-${index}`}
+            style={styles.itemDetailsSubContainer}
+          >
+            <AccordionHeader style={styles.roAccordionHeader}>
+              <AccordionTrigger>
+                {({ isExpanded }) => (
+                  <>
+                    <UI.Box key={index} style={styles.roAccordionHeading}>
+                      <Image
+                        alt="image"
+                        source={require("@/assets/images/icons/ROdate.png")}
+                      />
+                      <AccordionTitleText style={styles.roAccordionTitleText}>
+                        {`Ordered Date: ${item.ORDEREDDATE}`}
+                      </AccordionTitleText>
+                    </UI.Box>
+                    {isExpanded ? (
+                      <AccordionIcon
+                        as={ChevronDownIcon}
+                        size={"md"}
+                        color="#4B5154"
+                        style={styles.collapseIcon}
+                      />
+                    ) : (
+                      <AccordionIcon
+                        as={ChevronUpIcon}
+                        size={"md"}
+                        color="#4B5154"
+                        style={styles.collapseIcon}
+                      />
+                    )}
+                  </>
+                )}
+              </AccordionTrigger>
+            </AccordionHeader>
+            <AccordionContent style={{}}>
+              <UI.Box style={styles.recentStatusContainer}>
+                <UI.CbImage
+                  imageJsx={
+                    <Image
+                      source={require("@/assets/images/icons/Pendingorder3x.png")}
+                      style={styles.orderCompIcon}
+                    />
+                  }
+                />
+                <UI.Text style={styles.completeLabelStatus}>
+                  Order Status
+                </UI.Text>
+                <UI.Text style={styles.statusCompelete}>
+                  {item.ORDERSTATUS}
+                </UI.Text>
+              </UI.Box>
+              <UI.Box style={[styles.dottedLine,{width:"100%",left:5}]}>
+                <CbDottedLine
+                  length={isPlatformAndroid() ? 50 : 90}
+                  dotSize={6}
+                  dotColor="#0000002B"
+                />
+              </UI.Box>
+              <UI.Box style={styles.completedContainer}>
+                <UI.Box style={styles.pickUpSubContainer}>
+                  <UI.Box>
+                    <UI.Text style={styles.labelPickUpPoint}>
+                      Profit Center
+                    </UI.Text>
+                    <UI.Text style={styles.compPickUpLocation}>
+                      {item.PICKUPLOCATION}
+                    </UI.Text>
+                  </UI.Box>
+                </UI.Box>
+                <UI.Box style={styles.detailsContainer}>
+                  <UI.Box>
+                    <UI.Text style={styles.labelOrderId}>
+                      Order Id #: {item.ORDERID}
+                    </UI.Text>
+                  </UI.Box>
+                </UI.Box>
+              </UI.Box>
+
+              <UI.Box style={styles.orderSummaryContainer}>
+                <UI.Box>
+                  <UI.Text style={styles.labelOrdSummary}>
+                    Order Summary
+                  </UI.Text>
+                  <UI.Box style={styles.itemContainer}>
+                    <UI.Text style={styles.labelItem}>Items</UI.Text>
+                    <UI.Box style={styles.amountContainer}>
+                      <UI.Text style={styles.labelQty}>Qty</UI.Text>
+                      <UI.Text style={styles.labelAmount}>Amount</UI.Text>
+                    </UI.Box>
+                  </UI.Box>
+                </UI.Box>
+                <UI.Box style={styles.pendingOrderContainer}>
+                  {item?.ITEMS?.map((items, index) => {
+                    return (
+                      <React.Fragment key={index}>
+                        <UI.Box style={styles.pendingOrderBox}>
+                          <UI.Text style={styles.labelItemName}>
+                            {index + 1}. {items.ITEM_NAME}
+                          </UI.Text>
+                          <UI.Box style={styles.amountContainer}>
+                            <UI.Text style={styles.labelQuantity}>
+                              {items?.QUANTITY}
+                            </UI.Text>
+                            <UI.Text style={styles.itemPrice}>
+                              ${items.PRICE?.toFixed(2)}
+                            </UI.Text>
+                          </UI.Box>
+                        </UI.Box>
+                        <UI.Box>
+                          {items?.MODIFIERS?.length > 0 &&
+                            items?.MODIFIERS?.map((Modifier, modIndex) => {
+                              return (
+                                <UI.Box key={modIndex} style={{ left: 15 }}>
+                                  <UI.Text style={styles.modifierName}>
+                                    {Modifier.MODIFIER_NAME}
+                                  </UI.Text>
+                                </UI.Box>
+                              );
+                            })}
+                        </UI.Box>
+
+                        {items?.COMMENTS && (
+                          <UI.Box style={styles.commentBox}>
+                            <UI.CbImage
+                              imageJsx={
+                                <Image
+                                  source={require("@/assets/images/icons/ROComment3x.png")}
+                                  style={styles.commentIcon}
+                                  resizeMode='contain'
+                                />
+                              }
+                            />
+                            <UI.Text style={styles.labelComment}>
+                              {items.COMMENTS}
+                            </UI.Text>
+                          </UI.Box>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </UI.Box>
+                <UI.Box style={styles.reorderBox}>
+                  <Divider />
+                </UI.Box>
+                <UI.Box style={styles.priceContainer}>
+                  {PriceDetails(item)}
+                </UI.Box>
+              </UI.Box>
+              {
+                item?.ISREORDER === 1 && 
+                <UI.TouchableOpacity disabled={isDisabled}  style={[
+                  styles.roReoderButton,
+                  isDisabled
+                    ? { backgroundColor: "#D3D3D3", borderColor: "#A9A9A9" }
+                    : {},
+                ]}
+                onPress={() =>
+                  !isDisabled &&
+                  handleReorder(item.ITEMS)
+                }
+                >
+                  <UI.Text style={styles.roReordertext}>Re-Order</UI.Text>
+                </UI.TouchableOpacity>
+              }
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      );
+    }}
+  />
+  )
+}
 
 
-
-
-
-
-
-function RenderingFavoritesList() {
+function RenderingFavoritesList({ props }) {
   const [expandedItems, setExpandedItems] = useState({});
+  const route = useRoute();
+  const screenName = route.name;
+
+  const {
+    menuOrderData,
+    storeSingleItem,
+    closePreviewModal,
+    increaseQuantity,
+    cartData,
+    addItemToCartBtn 
+  } = useFormContext();
+  const {
+    favItems,
+    loaded,
+    favErrorMessage,
+    toggleFavBtn,
+    handleIncrement,
+    handleDecrement,
+  } = useRecentOrderLogic();
 
   const toggleReadMore = (index) => {
     setExpandedItems((prevState) => ({
@@ -178,30 +491,143 @@ function RenderingFavoritesList() {
       [index]: !prevState[index],
     }));
   };
+
+  const editCommentBtn = (props, item) => {
+    closePreviewModal()
+    storeSingleItem({
+      ...item,
+      quantityIncPrice: item?.TotalPrice
+    })
+    increaseQuantity({
+      ...item,
+      quantityIncPrice: item?.TotalPrice
+    })
+    closePreviewModal()
+  }
+
   return (
-    <UI.Box style={{ paddingHorizontal: 8, height: '100%' }}>
-    {FavoritesList.FavoriteItems.map((item, index) => (
-      <UI.TouchableOpacity key={index} style={{ marginVertical: 15 }}>
-        <UI.Box style={{ display: 'flex', flexDirection: 'row', alignContent: 'space-between' }}>
-          <UI.CbImage source={item.Image} style={styles.Item_Image} />
-          <UI.Box style={{ paddingHorizontal: 18, width: 220 }}>
-            <UI.Text style={{ fontSize: 18, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>{item.Item_Name}</UI.Text>
-            <UI.Text style={{ fontSize: 16, fontFamily: 'Source Sans Pro', fontWeight: '700' }}>${item.Price.toFixed(2)}</UI.Text>
-            <UI.Text style={{ fontSize: 11, color: '#3B87C1', fontFamily: 'Source Sans Pro',fontWeight:"bold", lineHeight: 14,}}>
-              {expandedItems[index] ? item.Description : `${item.Description.substring(0, 30)}... `}
-              <UI.TouchableOpacity onPress={() => toggleReadMore(index)}>
-                <UI.Text style={{ color: '#26BAE2',fontSize: 11,  }}>
-                  {expandedItems[index] ? 'Read Less' : 'Read More'}
-                </UI.Text>
-              </UI.TouchableOpacity>
-            </UI.Text>
+    <>
+      {
+        loaded ?
+          <UI.Box style={styles.loadingContainer}>
+            <CbLoader />
           </UI.Box>
-          <UI.CbImage imageJsx={<Image source={require('@/assets/images/icons/Fav.png')} style={{ width: 14, height: 16, left: 25, marginVertical: 24 }} />} />
-           <UI.CbAddToCartButton mealItemDetails={{}} style={styles.AddButton} />
-        </UI.Box>
-      </UI.TouchableOpacity>
-    ))}
-  </UI.Box>  
+          :
+          <UI.Box style={styles.favMainContainer}>
+            {
+              favItems && favItems?.length > 0 ? 
+             <>
+              <Divider style={styles.divider} />
+              <UI.FlatList 
+              data={favItems}
+              renderItem={({item, index}) =>{
+               
+                const cartItem = cartData && cartData?.find((cartItem) => cartItem?.Item_ID === item?.Item_ID);
+                const quantity = cartItem ? cartItem.quantity : 0;
+                return (
+                  <UI.TouchableOpacity
+                    key={index}
+                    style={styles.favItem}
+                    onPress={() => editCommentBtn(props, item)}
+                  >
+                    <UI.Box style={{ flexDirection: "row" }}>
+                      <UI.Box style={styles.itemImg}>
+                        <UI.CbImage
+                          source={item.ImageUrl}
+                          style={styles.Item_Image}
+                        />
+                      </UI.Box>
+                      <UI.Box style={styles.labelContainer}>
+                        <UI.Text style={styles.itemLables}>
+                          {item.Item_Name}
+                        </UI.Text>
+                        <UI.Text style={styles.itemLables}>
+                          ${item.Price?.toFixed(2)}
+                        </UI.Text>
+                        { item.Description ?
+                        <>
+                        <UI.Text style={styles.showLessTxt}>
+                        {expandedItems[index]
+                          ? item.Description || ""
+                          : item.Description
+                            ? `${item.Description.substring(0, 35)}...`
+                            : ""}
+                      </UI.Text>
+                      <UI.TouchableOpacity
+                        onPress={() => toggleReadMore(index)}
+                      >
+                        <UI.Text style={styles.readLessTxt}>
+                          {expandedItems[index] ? "Read Less" : "Read More"}
+                        </UI.Text>
+                      </UI.TouchableOpacity>
+                      </>
+                      : ""}
+                        
+                      </UI.Box>
+                    </UI.Box>
+
+                    <UI.Box style={styles.rightContainer}>
+                      <UI.TouchableOpacity
+                        onPress={() => toggleFavBtn(item)}
+                        style={{ left: quantity === 0 ? responsiveWidth(13) : quantity >= 10 ? responsiveWidth(0) : responsiveWidth(1.4) }}
+                      >
+                        <Image
+                          source={require("@/assets/images/icons/Fav3x.png")}
+                          style={[styles.favIcon]}
+                          resizeMode="contain"
+                        />
+                      </UI.TouchableOpacity>
+                    
+                      {quantity >= 1 ? 
+                        <UI.Box style={styles.operationBtn}>
+                          <UI.TouchableOpacity
+                            style={styles.iconBtn}
+                            onPress={() => handleDecrement(item, quantity)}
+                          >
+                            <Icon
+                              as={quantity === 1 ? TrashIcon : RemoveIcon}
+                              color="#5773a2"
+                              size={"md"}
+                              style={styles.trashIcon}
+                            />
+                          </UI.TouchableOpacity>
+
+                          <UI.Text style={styles.quantityTxt}>{quantity}</UI.Text>
+
+                          <UI.TouchableOpacity
+                            style={styles.iconBtn}
+                            onPress={() => handleIncrement(item, quantity)}
+                          >
+                            <Icon
+                              as={AddIcon}
+                              color="#5773a2"
+                              size={"xl"}
+                              style={styles.addIcon}
+                            />
+                          </UI.TouchableOpacity>
+                        </UI.Box>
+                      : <UI.Box>
+                        <UI.TouchableOpacity  onPress={() => addItemToCartBtn(item)} style={styles.operationBtn2}>
+                        <Icon
+                              as={AddIcon}
+                              color="#5773a2"
+                              size={"xl"}
+                              style={[styles.addIcon,]}
+                            />
+                        </UI.TouchableOpacity>
+                        
+                        </UI.Box>}
+                    </UI.Box>      
+                  </UI.TouchableOpacity>
+                );
+              }}
+            /> 
+             </>: <UI.Text style={styles.emptyFavList}>{favErrorMessage}</UI.Text>
+            }
+            
+          </UI.Box>
+      }
+    </>
   );
 };
 
@@ -209,37 +635,145 @@ function RenderingFavoritesList() {
 export default function RecentordersScreen(props) { 
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
-  const {} = useRecentOrderLogic(props)
-  const { cartData } =  useFormContext();
-
+  const {loading,emptyOrderMessage,favItems,} = useRecentOrderLogic(props)
+  const { 
+    cartData,
+    itemDataVisible ,
+    closePreviewModal,
+    isKeyboardVisible,
+    setIsVisible,
+    updateModifierItemQuantity,
+    selectedModifiers,
+    setSelectedModifiers,
+    singleItemDetails,
+    updateOrAddTxt,
+    modifierCartItemData
+  } =  useFormContext();
+  const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
+  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
-      
+  const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+  const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
+  const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
+  const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
+
+
+  useEffect(() => {
+    fetchRecentOrders();
+  }, []);
   return (
-    <UI.Box style={{ backgroundColor: "white", height: "100%" }}>
-      <UI.Box style={{ display: "flex", flexDirection: "row", marginVertical: 11, marginLeft: 8, gap: 5 }}>
-      
-      <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(false)} style={!isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
-          <UI.Text style={!isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Favorites     </UI.Text>
+    <UI.Box style={styles.mainContainer}>
+      <UI.Box style={styles.subContainer}>
+        <UI.TouchableOpacity
+          activeOpacity={1}
+          onPress={() => setIsRecentOrderOpen(false)}
+          style={[
+            !isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
+          ]}
+        >
+          <UI.Text
+            style={[
+              !isRecentOrder
+                ? styles.ActiveButtonTextStyle
+                : styles.ButtonTextStyle,
+            ]}
+          >
+            Favorites
+          </UI.Text>
         </UI.TouchableOpacity>
-        <UI.TouchableOpacity onPress={() => setIsRecentOrderOpen(true)} style={isRecentOrder ?styles.ActiveButtonStyle:styles.ButtonStyle}> 
-          <UI.Text style={isRecentOrder ?styles.ActiveButtonTextStyle : styles.ButtonTextStyle}>  Recent Orders     </UI.Text>
+        <UI.TouchableOpacity
+          onPress={() => setIsRecentOrderOpen(true)}
+          style={[
+            isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
+          ]}
+        >
+          <UI.Text
+            style={[
+              isRecentOrder
+                ? styles.ActiveButtonTextStyle
+                : styles.ButtonTextStyle,
+            ]}
+          >
+            Recent Orders
+          </UI.Text>
         </UI.TouchableOpacity>
       </UI.Box>
-      <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>  
-        
-        {isRecentOrder ? 
-            <>
-              <RenderingPendingOrders />
-              <UI.CbRecentAccordion componentData={RecentordersData.RecentOrders} screenName="RecentOrders" />
+      <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
+        {isRecentOrder ? (
+          <>
+            {loading ? (
+              <UI.Box style={styles.loaderContainer}>
+                <CbLoader />
+              </UI.Box>
+            ) : (
+              <>
+                {emptyOrderMessage === "" ? (
+                  <>
+                    <RenderingPendingOrders />
+                    <RenderingCompletedOrders />
+                  </>
+                ) : (
+                  <UI.Text>{emptyOrderMessage}</UI.Text>
+                )}
+              </>
+            )}
           </>
-          : 
-          <RenderingFavoritesList />  
-        }
+        ) : (
+          <>
+            <RenderingFavoritesList props={props} />
+          </>
+        )}
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
 
-    </UI.Box>    
-      
+
+      <Modal
+          visible={itemDataVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closePreviewModal}
+        >
+          <UI.Box style={styles.modalBackground}>
+            {
+              !isKeyboardVisible
+              && 
+              <UI.TouchableOpacity
+              onPress={() =>
+                handleCloseItemDetails(
+                  setIsVisible,
+                  updateModifierItemQuantity,
+                  closePreviewModal,
+                  selectedModifiers,
+                  setSelectedModifiers,
+                singleItemDetails
+                )
+              }
+              style={styles.crossIcon}
+            >
+              <Icon
+                as={CloseIcon}
+                color="#fff"
+                size={"md"}
+                style={styles.closeIcon}
+              />
+            </UI.TouchableOpacity>
+            }
+            <UI.Box style={styles.modiferItems}>
+              <ItemModifier />
+            </UI.Box>
+            <UI.Box style={styles.footerContainer}>
+              <UI.Box>
+                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
+                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
+              </UI.Box>
+              <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
+                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              </UI.TouchableOpacity>
+            </UI.Box>
+          </UI.Box>
+        </Modal>
+    </UI.Box>
   );
 }
