@@ -52,6 +52,7 @@ const ItemModifier = (props) => {
           <UI.Box
             style={[
               styles.rightItemContainer,
+              props?.isRecentOrder? {}:
               {
                 width:
                   (quantity >= 1 || modifierQuantity >= 1)
@@ -75,10 +76,13 @@ const ItemModifier = (props) => {
               />
               )}
             </UI.TouchableOpacity>
-            <UI.CbAddToCartButton
+            {
+              props?.isRecentOrder ? null :
+              <UI.CbAddToCartButton
               mealItemDetails={singleItemDetails}
               style={styles.addBtn}
             />
+            } 
           </UI.Box>
         </Animated.View>
         
@@ -125,6 +129,7 @@ const ItemModifier = (props) => {
                 <UI.Box
                   style={[
                     styles.rightItemContainer,
+                    props?.isRecentOrder? {}:
                     {
                       width:
                         (quantity >= 1 || modifierQuantity >= 1)
@@ -148,10 +153,13 @@ const ItemModifier = (props) => {
                     />
                     )}
                   </UI.TouchableOpacity>
-                  <UI.CbAddToCartButton
-                    mealItemDetails={singleItemDetails}
-                    style={styles.addBtn}
-                  />
+                  {
+                    props?.isRecentOrder ? null :
+                      <UI.CbAddToCartButton
+                        mealItemDetails={singleItemDetails}
+                        style={styles.addBtn}
+                      />
+                  }
                 </UI.Box>
               </UI.Box>
 
