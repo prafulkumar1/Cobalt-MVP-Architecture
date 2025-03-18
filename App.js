@@ -89,7 +89,7 @@ export default function App(props) {
                 headerLeft: () => {
               if(route.name === "ProfitCenters"){
                 return (
-                  <UI.TouchableOpacity onPress={()=>backAction()} style={styles.homeHeader}>
+                  <UI.TouchableOpacity onPress={()=>backAction()} style={[styles.homeHeader,{marginRight:20}]}>
                            {
           this.source ? <Image source={{ uri: this.source}}/>:<Image alt='image' source={require("@/assets/images/icons/Back.png")} />
         }
@@ -211,5 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle:{ flex: 1, alignItems: 'flex-start' }
+  headerTitle:{ flex: 1, alignItems: 'flex-start' },
+  homeHeader:{}
 });
