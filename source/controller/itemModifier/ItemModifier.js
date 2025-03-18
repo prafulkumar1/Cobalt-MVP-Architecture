@@ -25,13 +25,24 @@ export const useItemModifierLogic = () => {
         singleModifierData,
         setUpdateOrAddTxt,
         setFormFieldData,
-        menuOrderData
+        menuOrderData,
+        favoriteItemsList,
+        setIsItemFavorite
     } = useFormContext()
-
-
+ 
+ 
     useEffect(() => {
       getModifiersData()
     }, []);
+ 
+    useEffect(() => {
+      const updateFavList = favoriteItemsList.find((itemDetails)=>itemDetails?.Item_ID === singleItemDetails?.Item_ID)
+      if(updateFavList){
+        setIsItemFavorite(1)
+      }else{
+        setIsItemFavorite(0)
+      }
+    },[favoriteItemsList])
     const getModifiersData = async() => {
       try {
         setLoading(true)
@@ -49,7 +60,7 @@ export const useItemModifierLogic = () => {
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
               const item = modifiersResponse.response
-
+ 
               let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
               let updatedData = {
                 ...modifiersResponse.response,
@@ -84,7 +95,7 @@ export const useItemModifierLogic = () => {
         setLoading(false)
       }
     }
-
+ 
     const handleCloseItemDetails = () => {
         if (selectedModifiers.length === 0) {
             setIsVisible(false)
@@ -96,7 +107,7 @@ export const useItemModifierLogic = () => {
             setIsVisible(true)
         }
     }
-
+ 
     const handleDiscardChanges = () => {
         setIsVisible(false)
         updateModifierItemQuantity(singleItemDetails, 0)
@@ -105,7 +116,7 @@ export const useItemModifierLogic = () => {
             closePreviewModal()
         }, 100)
     }
-
+ 
     const getAllSelectedModifiers = (modifiers) => {
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
@@ -116,7 +127,7 @@ export const useItemModifierLogic = () => {
         return updatedModifiers;
       });
     };
-
+ 
     const calculateTotalPrice = () => {
       const modifiersTotal = selectedModifiers?.reduce((total, modifier) => {
         return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));

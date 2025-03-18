@@ -498,7 +498,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifier />
+            <ItemModifier isRecentOrder={false}/>
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>

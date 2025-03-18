@@ -82,6 +82,14 @@ export const styles = StyleSheet.create({
   addToCartBtn: {
     padding: responsiveWidth(1.8),
   },
+  addToCartBtn2: {
+    backgroundColor: "#5773a2",
+    width:responsiveWidth(40),
+    height:responsiveHeight(5),
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   operationBtn: {
     borderColor: '#5773a2',
     borderWidth: 1,

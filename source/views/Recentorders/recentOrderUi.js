@@ -222,17 +222,41 @@ function RenderingPendingOrders(props) {
 
 const RenderingCompletedOrders = (props) => {
   const { orders} = useRecentOrderLogic(props);
-  const  { cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
+  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
+ 
+  const editCommentBtn = (props, item) => {
+    const updatedItems =  {
+      "Description": item?.DESCRIPTION,
+      "ImageUrl": item?.IMAGEURL,
+      "IsAvailable": item?.IsAvailable,
+      "IsDisable": item?.IsDisable,
+      "Item_ID":item?.ITEM_ID,
+      "Item_Name": item?.ITEM_NAME,
+      "Modifiers": item?.MODIFIERS,
+      "Price": item?.PRICE,
+      "Comments":item?.COMMENTS,
+    }
+    closePreviewModal()
+    storeSingleItem({
+      ...updatedItems,
+      quantityIncPrice: item?.TOTALPRICE
+    })
+    increaseQuantity({
+      ...updatedItems,
+      quantityIncPrice: item?.TOTALPRICE
+    })
+    closePreviewModal()
+  }
   
   const handleReorder = (itemDetails) => {
     if (!itemDetails || itemDetails.length === 0) {
       return;
     }
-
+ 
     itemDetails.forEach((item) => {
       const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item.Item_ID);
-
+ 
       const itemWithModifiers = {
         Item_ID:item.ITEM_ID,
         "Item_Name": item.ITEM_NAME,
@@ -246,7 +270,7 @@ const RenderingCompletedOrders = (props) => {
         "comments":item.COMMENTS,
         selectedModifiers: item.MODIFIERS || [],
       };
-
+ 
       if (existingItem) {
         updateCartItemQuantity(existingItem, existingItem.quantity + 1);
       } else {
@@ -366,7 +390,7 @@ const RenderingCompletedOrders = (props) => {
                   </UI.Box>
                 </UI.Box>
               </UI.Box>
-
+ 
               <UI.Box style={styles.orderSummaryContainer}>
                 <UI.Box>
                   <UI.Text style={styles.labelOrdSummary}>
@@ -383,7 +407,7 @@ const RenderingCompletedOrders = (props) => {
                 <UI.Box style={styles.pendingOrderContainer}>
                   {item?.ITEMS?.map((items, index) => {
                     return (
-                      <React.Fragment key={index}>
+                      <UI.TouchableOpacity key={index} onPress={() => editCommentBtn(props,items)}>
                         <UI.Box style={styles.pendingOrderBox}>
                           <UI.Text style={styles.labelItemName}>
                             {index + 1}. {items.ITEM_NAME}
@@ -409,7 +433,7 @@ const RenderingCompletedOrders = (props) => {
                               );
                             })}
                         </UI.Box>
-
+ 
                         {items?.COMMENTS && (
                           <UI.Box style={styles.commentBox}>
                             <UI.CbImage
@@ -426,7 +450,7 @@ const RenderingCompletedOrders = (props) => {
                             </UI.Text>
                           </UI.Box>
                         )}
-                      </React.Fragment>
+                      </UI.TouchableOpacity>
                     );
                   })}
                 </UI.Box>
@@ -438,7 +462,7 @@ const RenderingCompletedOrders = (props) => {
                 </UI.Box>
               </UI.Box>
               {
-                item?.ISREORDER === 1 && 
+                item?.ISREORDER === 1 &&
                 <UI.TouchableOpacity disabled={isDisabled}  style={[
                   styles.roReoderButton,
                   isDisabled
@@ -725,10 +749,6 @@ export default function RecentordersScreen(props) {
             <RenderingFavoritesList props={props} />
           </>
         )}
-      </UI.ScrollView>
-      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
-
-
       <Modal
           visible={itemDataVisible}
           transparent={true}
@@ -738,7 +758,7 @@ export default function RecentordersScreen(props) {
           <UI.Box style={styles.modalBackground}>
             {
               !isKeyboardVisible
-              && 
+              &&
               <UI.TouchableOpacity
               onPress={() =>
                 handleCloseItemDetails(
@@ -761,19 +781,21 @@ export default function RecentordersScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifier />
+              <ItemModifier isRecentOrder={isRecentOrder ? true:false}/>
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
               </UI.Box>
-              <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
+              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
                 <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
               </UI.TouchableOpacity>
             </UI.Box>
           </UI.Box>
         </Modal>
+      </UI.ScrollView>
+      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
     </UI.Box>
   );
 }
