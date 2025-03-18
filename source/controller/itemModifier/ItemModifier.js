@@ -25,13 +25,24 @@ export const useItemModifierLogic = () => {
         singleModifierData,
         setUpdateOrAddTxt,
         setFormFieldData,
-        menuOrderData
+        menuOrderData,
+        favoriteItemsList,
+        setIsItemFavorite
     } = useFormContext()
 
 
     useEffect(() => {
       getModifiersData()
     }, []);
+
+    useEffect(() => {
+      const updateFavList = favoriteItemsList.find((itemDetails)=>itemDetails?.Item_ID === singleItemDetails?.Item_ID)
+      if(updateFavList){
+        setIsItemFavorite(1)
+      }else{
+        setIsItemFavorite(0)
+      }
+    },[favoriteItemsList])
     const getModifiersData = async() => {
       try {
         setLoading(true)

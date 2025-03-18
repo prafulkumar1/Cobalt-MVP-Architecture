@@ -22,7 +22,8 @@ export const useRecentOrderLogic = () => {
     setOrders,    
     removeFavoriteItems,
     updateCartItemQuantity,
-    updateModifierItemQuantity
+    updateModifierItemQuantity,
+    setFavoriteItemsList
   } = useFormContext()
   
   
@@ -70,9 +71,11 @@ export const useRecentOrderLogic = () => {
 
       if (favItemInfo.statusCode === 200 && favItemInfo?.response?.ResponseCode === "Success") {
           setFavItems(favItemInfo.response?.FavouriteItems);
+          setFavoriteItemsList(favItemInfo.response?.FavouriteItems)
       }else if(favItemInfo.response?.ResponseCode == "Fail"){
         setFavItems([])
         setFavErrorMessage(favItemInfo.response?.ResponseMessage);
+        setFavoriteItemsList([])
       }
       setLoaded(false);
     } catch (err) {
@@ -109,5 +112,5 @@ export const useRecentOrderLogic = () => {
     }, 300);
   }
 
-  return { favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
+  return {getFavorites, favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
 };

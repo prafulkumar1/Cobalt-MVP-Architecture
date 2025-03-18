@@ -75,8 +75,8 @@ export const styles = StyleSheet.create({
         justifyContent:"space-between",
         marginRight:responsiveWidth(5)
     },
-    favIconBtn:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
-    favIcon:{width:"100%",height:"100%"},
+    favIconBtn:{width:responsiveWidth(7),height:responsiveHeight(5),justifyContent:"center",alignItems:"center"},
+    favIcon:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
     itemMainContainer:{  },

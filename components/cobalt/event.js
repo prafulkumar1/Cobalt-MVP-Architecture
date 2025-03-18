@@ -39,6 +39,7 @@ export const UseFormContextProvider = ({children}) => {
     const [toastDetails,setToastDetails] = useState({isToastVisiable:false,toastMessage:""})
     const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
     const [isItemFavorite,setIsItemFavorite] = useState(0)
+    const [favoriteItemsList,setFavoriteItemsList] = useState(null)
 
     const commentValue = useRef("")
     const modifiersData = useRef(null)
@@ -465,7 +466,10 @@ export const UseFormContextProvider = ({children}) => {
       toggleFavoriteItems,
       isItemFavorite,
       removeFavoriteItems,
-      addItemToCartBtnForReOrder
+      addItemToCartBtnForReOrder,
+      favoriteItemsList,
+      setFavoriteItemsList,
+      setIsItemFavorite
     }
     return (
       <FormContext.Provider

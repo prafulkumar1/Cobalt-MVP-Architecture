@@ -6,6 +6,7 @@ import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
 import { Alert } from 'react-native';
 import { navigateToScreen } from '@/source/constants/Navigations';
+import { useRecentOrderLogic } from '../recentOrder/RecentOrder';
 
 
 const pageId = 'MenuOrder';
@@ -50,6 +51,7 @@ export const useMenuOrderLogic = (props) => {
     toggleFavoriteItems
   } = useFormContext();
 
+  const  {getFavorites} = useRecentOrderLogic()
 
   const openRecentOrder = () => {
     setIsRecentOrderOpen(!isRecentOrderOpen)
@@ -116,6 +118,7 @@ export const useMenuOrderLogic = (props) => {
   useEffect(() => {
     getMenuOrderList()
     getCartData()
+    getFavorites()
   }, [])
 
 
