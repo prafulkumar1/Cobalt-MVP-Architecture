@@ -38,16 +38,17 @@ export const transformStyles = (styles) => {
 
 
 import { postApiCall } from '@/source/utlis/api';
-
-export const FormContext = createContext(); 
-
+import { Keyboard } from 'react-native';
+ 
+export const FormContext = createContext();
+ 
 export const useFormContext = () => {
     return useContext(FormContext);
   };
  
 export const UseFormContextProvider = ({children}) => {
   const [AppConfigJson , setAppConfigJsonData] = useState(null);
-
+ 
     
     const [menuOrderData,setMenuOrderData] = useState(null)
     const [modifiersResponseData,setModifiersResponseData] = useState(null)
@@ -57,7 +58,8 @@ export const UseFormContextProvider = ({children}) => {
     const [cartData, setCartData] = useState(null)
     const [isCategoryEmpty, setIsCategoryEmpty] = useState(false)
     const [singleItemDetails, setSingleItemDetails] = useState(null)
- 
+    const [orders, setOrders] = useState([]); // Local state for reactivity
+    const [pendingOrders, setPendingOrders] = useState([]);
     const [modifierCartItemData , setModifierCartItemData] = useState([])
     const [selectedModifiers, setSelectedModifiers] = useState([]);
     const [selectedTime,setSelectedTime] = useState("")
@@ -70,8 +72,10 @@ export const UseFormContextProvider = ({children}) => {
     const [isExitProfitCenter,setIsExitProfitCenter] = useState(false)
     const [isPrevCartScreen, setIsPrevCartScreen] = useState(false);
     const [selectedLocationId, setSelectedLocationId] = useState("");
+    const [toastDetails,setToastDetails] = useState({isToastVisiable:false,toastMessage:""})
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+    const [isItemFavorite,setIsItemFavorite] = useState(0)
 
-  
     const commentValue = useRef("")
     const modifiersData = useRef(null)
     const singleModifierData = useRef(null)
@@ -85,6 +89,26 @@ export const UseFormContextProvider = ({children}) => {
       getConfigurations();
     }, []);
 
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener(
+        'keyboardDidShow',
+        () => {
+          setIsKeyboardVisible(true);
+        }
+      );
+      const keyboardDidHideListener = Keyboard.addListener(
+        'keyboardDidHide',
+        () => {
+          setIsKeyboardVisible(false);
+        }
+      );
+  
+      return () => {
+        keyboardDidHideListener.remove();
+        keyboardDidShowListener.remove();
+      };
+    }, []);
+ 
        
     const getConfigurations = async () => {
       let AppConfigJsonData = await postApiCall("UI_CONFIGURATIONS", "GET_UI_CONFIGURATIONS", {});
@@ -92,7 +116,7 @@ export const UseFormContextProvider = ({children}) => {
         setAppConfigJsonData(AppConfigJsonData?.response?.Data);
       }    
     };
-
+ 
     const getParticularControls = (PageId) =>{
     }
   
@@ -156,6 +180,18 @@ export const UseFormContextProvider = ({children}) => {
       });
     } catch (error) { }
   };
+  const addItemToCartBtnForReOrder = async (data,quantity) => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      setCartData((prevCartData) => {
+        let updatedCartData = [...prevCartData];
+        updatedCartData.push({ ...data, quantity: quantity, quantityIncPrice: data.Price, profitCenterId: getProfitCenterId.LocationId });
+        AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
+        return updatedCartData;
+      });
+    } catch (error) { }
+  };
  
     const updateCartItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
@@ -165,8 +201,8 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
@@ -180,28 +216,6 @@ export const UseFormContextProvider = ({children}) => {
       } catch (error) {}
     };
  
-    const updateCartItemQuantity2 = async (mealItemDetails, newQuantity) => {
-      try {
-        setCartData((prevCartData) => {
-          let updatedCartData;
-    
-          if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
-          } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
-            : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
-            }, 0);
-            updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice } : item
-            );
-          }
-          AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
-          return updatedCartData;
-        });
-      } catch (error) {}
-    };
     const deleteCartItem = async (mealItemDetails) => {
       let updatedCartData = cartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartData));
@@ -235,42 +249,13 @@ export const UseFormContextProvider = ({children}) => {
           if (newQuantity === 0) {
             updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.Item_ID);
           } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
+            const modifiePrice = selectedModifiers.length === 1
+            ? parseFloat(selectedModifiers[0].Price)
             : selectedModifiers?.reduce((total, modifier) => {
               return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
             }, 0);
             updatedCartData = prevCartData.map((item) =>
               item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
-            );
-           
-          }
-          const getCurrentItemDetails = updatedCartData?.find(
-            (item) => item.Item_ID === singleItemDetails.Item_ID
-          );
-          singleModifierData.current = {
-            quantity: getCurrentItemDetails?.quantity,
-            quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
-          };
-          return updatedCartData;
-        });
-      } catch (error) {}
-    };
-    const updateModifierItemQuantity2 = async (mealItemDetails, newQuantity) => {
-      try {
-        setModifierCartItemData((prevCartData) => {
-          let updatedCartData;
-
-          if (newQuantity === 0) {
-            updatedCartData = prevCartData.filter((item) => item.Item_ID !== mealItemDetails.ItemId);
-          } else {
-            const modifiePrice = selectedModifiers.length === 1 
-            ? parseFloat(selectedModifiers[0].Price) 
-            : selectedModifiers?.reduce((total, modifier) => {
-              return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
-            }, 0);
-            updatedCartData = prevCartData.map((item) =>
-              item.Item_ID === mealItemDetails.ItemId ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+modifiePrice,basePrice :(mealItemDetails.Price * newQuantity)+modifiePrice} : item
             );
            
           }
@@ -295,31 +280,20 @@ export const UseFormContextProvider = ({children}) => {
       const existingCartData = await AsyncStorage.getItem("cart_data");
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
       let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
-      let categoryData = typeof modifiersResponseData?.Categories === "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories;
   
       let prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
   
       const updatedModifierData = [...prevCartItems];
- 
-      if(categoryData?.length > 0){
-        updatedModifierData.push({
-          ...modifierItem,
-          quantity: singleModifierData.current.quantity,
-          quantityIncPrice: singleModifierData.current.quantityIncPrice,
-          comments: commentValue.current || "",
-          selectedModifiers: modifiersData.current,
-          profitCenterId: getProfitCenterId?.LocationId,
-        });
-      }else{
-        updatedModifierData.push({
-          ...modifierItem,
-          quantity: singleModifierData.current.quantity,
-          quantityIncPrice: singleModifierData.current.quantityIncPrice,
-          comments: commentValue.current || "",
-          profitCenterId: getProfitCenterId?.LocationId,
-        });
-      }
   
+      updatedModifierData.push({
+        ...modifierItem,
+        quantity: singleModifierData.current.quantity,
+        quantityIncPrice: singleModifierData.current.quantityIncPrice,
+        comments: commentValue.current || "",
+        selectedModifiers: modifiersData.current,
+        profitCenterId: getProfitCenterId?.LocationId,
+      });
+    
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setFormFieldData("ItemModifier","","Comments","",false)
       setCartData(updatedModifierData);
@@ -346,9 +320,9 @@ export const UseFormContextProvider = ({children}) => {
         const updatedCartItems = prevCartItems.map((item) =>{
           if(item.Item_ID === updatedItem.Item_ID){
             return{
-              ...item, 
+              ...item,
               comments: commentValue.current || "",
-              selectedModifiers:[...item.selectedModifiers,...modifiersData.current], 
+              selectedModifiers:[...item.selectedModifiers,...modifiersData.current],
               profitCenterId: getProfitCenterId?.LocationId
             }
           }else{
@@ -380,7 +354,7 @@ export const UseFormContextProvider = ({children}) => {
     const getProfitCenterId = getProfitCenterItem
       ? JSON.parse(getProfitCenterItem)
       : null;
-
+ 
     const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
     const updatedCartItems = prevCartItems.map((item) => {
       if (item.Item_ID === updatedItem.Item_ID) {
@@ -395,18 +369,18 @@ export const UseFormContextProvider = ({children}) => {
         return item;
       }
     });
-
+ 
     await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
     setCartData(updatedCartItems);
     setFormFieldData("ItemModifier", "", "Comments", "", false);
-
+ 
     setTimeout(() => {
       formData.ItemModifier_Comments = "";
       closePreviewModal();
       singleModifierData.current = null
-    }, 1000);
+    }, 500);
   };
-
+ 
   const storeSingleItem = (item) => {
     setSingleItemDetails(item)
   }
@@ -417,6 +391,51 @@ export const UseFormContextProvider = ({children}) => {
     await AsyncStorage.removeItem("cart_data");
     setCartData([])
     setModifierCartItemData([])
+  }
+
+  const addItemToFavorites = async(Items) => {
+    const updatedFavData = [
+      {
+          "ItemId": Items.Item_ID,
+          "IsFavourite":isItemFavorite,
+          "Modifiers":selectedModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
+      }
+  ]
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const params = {
+      "Location_Id": getProfitCenterId?.LocationId,
+      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "Items": updatedFavData
+    }
+    let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
+    if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
+    }else if(response.response?.ResponseCode == "Fail"){
+    }
+  }
+
+  const toggleFavoriteItems = () => {
+    setIsItemFavorite(isItemFavorite === 0?1:0)
+  }
+  const removeFavoriteItems = async(Items) => {
+    const updatedFavData = [
+      {
+          "ItemId": Items.Item_ID,
+          "IsFavourite":0,
+          "Modifiers":Items?.Modifiers?.map((modifiers) =>({ModifierId:modifiers.Modifier_Id}))
+      }
+  ]
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const params = {
+      "Location_Id": getProfitCenterId?.LocationId,
+      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "Items": updatedFavData
+    }
+    let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
+    if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
+    }else if(response.response?.ResponseCode == "Fail"){
+    }
   }
     
     const initialValues = {
@@ -466,13 +485,23 @@ export const UseFormContextProvider = ({children}) => {
       updateModifierCartItem,
       isExitProfitCenter,setIsExitProfitCenter,
       updateWithoutModifierCartItem,
-      updateModifierItemQuantity2,
-      updateCartItemQuantity2,
       removeCartItems,
       setIsPrevCartScreen,
       isPrevCartScreen,
-      selectedLocationId, 
-      setSelectedLocationId
+      selectedLocationId,
+      setSelectedLocationId,
+      toastDetails,
+      setToastDetails,
+      isKeyboardVisible,
+      orders, 
+      setOrders,
+      pendingOrders,
+      setPendingOrders,
+      addItemToFavorites,
+      toggleFavoriteItems,
+      isItemFavorite,
+      removeFavoriteItems,
+      addItemToCartBtnForReOrder
     }
     return (
       <FormContext.Provider
@@ -486,39 +515,39 @@ export const UseFormContextProvider = ({children}) => {
   
   UseFormContextProvider.displayName='UseFormContextProvider';
  
-export const handleSearchClick = (setState, onSearchActivate) => {
-  setState({ showSearchInput: true });
-  if (onSearchActivate) {
-    onSearchActivate(true);
-  }
-};
- 
-export const handleClearClick = (setState, onSearch) => {
-  setState({ searchValue: "" });
-
-  // Reset the list to default items
-  if (onSearch) {
-    onSearch(""); // Trigger parent function to reset the list
-  }
-};
- 
-export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
-  setState({ showSearchInput: false, searchValue: "" }, () => {
-    // Blur input to stop typing
-    if (setState.inputRef?.current) {
-      setState.inputRef.current.blur();
+  export const handleSearchClick = (setState, onSearchActivate) => {
+    setState({ showSearchInput: true });
+    if (onSearchActivate) {
+      onSearchActivate(true);
     }
-    
-    // Reset the list by calling handleClear or directly setting empty search
-    if (handleClear) {
-      handleClear();
-    } else if (onSearchActivate) {
-      onSearchActivate(false);
+  };
+   
+  export const handleClearClick = (setState, onSearch) => {
+    setState({ searchValue: "" });
+  
+    // Reset the list to default items
+    if (onSearch) {
+      onSearch(""); // Trigger parent function to reset the list
     }
-
-    // Call onBackPress to restore the default item list
-    if (onBackPress) {
-      onBackPress();
-    }
-  });
-};
+  };
+   
+  export const handleCloseClick = (setState, onSearchActivate, handleClear, onBackPress) => {
+    setState({ showSearchInput: false, searchValue: "" }, () => {
+      // Blur input to stop typing
+      if (setState.inputRef?.current) {
+        setState.inputRef.current.blur();
+      }
+      
+      // Reset the list by calling handleClear or directly setting empty search
+      if (handleClear) {
+        handleClear();
+      } else if (onSearchActivate) {
+        onSearchActivate(false);
+      }
+  
+      // Call onBackPress to restore the default item list
+      if (onBackPress) {
+        onBackPress();
+      }
+    });
+  };

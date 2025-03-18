@@ -78,11 +78,11 @@ export const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 1,
+    // shadowColor: "#000",
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 1,
     backgroundColor: "#fff",
     marginBottom: 4,
     paddingHorizontal: 10,
@@ -130,7 +130,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 10,
   },
-  recentOrderImage: { width: 120, height: 60, borderRadius: 10 },
+  recentOrderImage: {
+    width: responsiveWidth(30),
+    height: responsiveHeight(9),
+    borderRadius: 5,
+    resizeMode: "cover",
+  },
   recentOrderName: {
     fontSize: 12,
     color: "#4B5154",
@@ -216,14 +221,9 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   horizontalLine: {
-    height: 1,
-    width: "100%",
-    borderRadius: 1,
-    borderWidth: 1,
-    borderColor: "#9F9F9F",
-    borderStyle: "dotted",
-    opacity: 0.4,
+    width: responsiveWidth(95),
     marginTop: responsiveHeight(2),
+    opacity:0.6
   },
   itemCategoryLabel: {
     color: "#5773a2",
@@ -312,8 +312,8 @@ export const styles = StyleSheet.create({
   },
   addToCartBtn: {
     backgroundColor: "#5773a2",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    width:responsiveWidth(40),
+    height:responsiveHeight(5),
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -326,9 +326,10 @@ export const styles = StyleSheet.create({
   },
   addCartTxt: {
     color: "#fff",
-    fontSize: 22,
+    fontSize: responsiveFontSize(2.8),
     fontFamily: "SourceSansPro_SemiBold",
     textAlign: "center",
+    paddingTop:isPlatformAndroid()?8:10
   },
   dropdownIcon:{width: 15, height: 15, resizeMode: "contain",right: 20},
   modalBackground:{
