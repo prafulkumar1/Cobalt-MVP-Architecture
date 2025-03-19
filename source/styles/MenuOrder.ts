@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   bottomStyle: {
     width: "100%",
     borderRadius: 4,
-    marginTop:10,
+    marginTop:isPlatformAndroid()?10:7,
     backgroundColor:"#00c6ff",
     height:4
   },
