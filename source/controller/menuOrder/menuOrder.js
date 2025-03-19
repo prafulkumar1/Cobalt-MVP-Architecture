@@ -418,7 +418,7 @@ export const useMenuOrderLogic = (props) => {
     let visibleCategory = null;
  
     for (const [categoryId, y] of Object.entries(categoryRefs.current)) {
-      if (scrollY >= y - 50 && scrollY < y + 100) {
+      if (scrollY >= y - 50 && scrollY < y + 50) {
         visibleCategory = categoryId;
         break;
       }

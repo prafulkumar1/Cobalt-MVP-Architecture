@@ -276,7 +276,7 @@ export default function MenuOrderScreen(props) {
             {selectedCategory?.map((group) => renderMenuCategoryList(group))}
           </UI.ScrollView>
         )}
-         <Divider style={styles.horizontalLineStyle}/>
+         {/* <Divider style={styles.horizontalLineStyle}/> */}
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
           ref={scrollViewRef}

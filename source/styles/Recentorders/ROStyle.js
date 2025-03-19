@@ -148,7 +148,7 @@ export const styles = StyleSheet.create({
   compDottedLine:{width:"100%",alignSelf:"center"},
   pickUpDetailsContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingBottom:10,width:"96%" },
   completedContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end",paddingVertical:10,width:"100%" },
-  pickUpSubContainer:{ flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
+  pickUpSubContainer:{ flexDirection: "row", justifyContent: "space-around", alignItems: "flex-start" },
   labelPickUpTime:{ fontSize: responsiveFontSize(1.3), color: "#4F4F4F", fontFamily: "SourceSansPro_SemiBoldItalic", },
   pickValue:{ fontSize:responsiveFontSize(2.2), fontFamily: "SourceSansPro_SemiBold", color: "#2A4E7D" },
   pickUpLocation:{ fontSize:responsiveFontSize(2.2), fontFamily: "SourceSansPro_SemiBold", color: "#2A4E7D",width:responsiveWidth(29) },
@@ -219,7 +219,7 @@ export const styles = StyleSheet.create({
   roAccordion:{width:"96%",marginHorizontal:8,marginVertical:5},
   roAccordionHeader:{backgroundColor:"#F3F3F3"},
   roAccordionHeading:{ display: "flex", flexDirection: "row", gap: 5 },
-  roAccordionTitleText:{fontSize:16,fontFamily:"SourceSansPro_SemiBoldItalic"},
+  roAccordionTitleText:{fontSize:18,fontFamily:"SourceSansPro_SemiBoldItalic",left:5},
   collapseIcon:{right:10},
   roReordertext:{ fontFamily: "SourceSansPro_Bold", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   roReoderButton:{alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5,marginTop:20,marginBottom:15 },
@@ -292,5 +292,12 @@ addCartTxt: {
   fontFamily: "SourceSansPro_SemiBold",
   textAlign: "center",
   paddingTop:isPlatformAndroid()?8:10
+},
+itemCategory: {
+  color: "#3B87C1",
+  fontSize: 10,
+  lineHeight: 16,
+  width: responsiveWidth(35),
+  fontFamily: "SourceSansPro_SemiBold"
 },
 })

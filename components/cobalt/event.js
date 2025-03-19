@@ -359,11 +359,15 @@ export const UseFormContextProvider = ({children}) => {
   }
 
   const addItemToFavorites = async(Items) => {
+    const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      return modifier.isChecked && index === lastIndex;
+    });
     const updatedFavData = [
       {
           "ItemId": Items.Item_ID,
           "IsFavourite":isItemFavorite,
-          "Modifiers":selectedModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
+          "Modifiers":uniqueModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
       }
   ]
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")

@@ -102,7 +102,9 @@ function RenderingPendingOrders(props) {
                         </UI.Text>
                       </UI.Box>
                       <UI.Box style={styles.verticalLine} />
-                      <UI.Box>
+                      {
+                        Order?.PICKUPLOCATION &&
+                        <UI.Box>
                         <UI.Text style={styles.labelPickUpPoint}>
                           Pickup Point
                         </UI.Text>
@@ -110,6 +112,7 @@ function RenderingPendingOrders(props) {
                           {Order.PICKUPLOCATION}
                         </UI.Text>
                       </UI.Box>
+                      }
                     </UI.Box>
                     <UI.Box style={styles.detailsContainer}>
                       <UI.Box>
@@ -167,7 +170,7 @@ function RenderingPendingOrders(props) {
                             </UI.Text>
                             <UI.Box style={styles.amountContainer}>
                               <UI.Text style={styles.labelQuantity}>
-                                {item?.QUANTITY}
+                                {items?.QUANTITY}
                               </UI.Text>
                               <UI.Text style={styles.itemPrice}>
                                 ${items.PRICE?.toFixed(2)}
@@ -226,27 +229,29 @@ const RenderingCompletedOrders = (props) => {
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
  
   const editCommentBtn = (props, item) => {
-    const updatedItems =  {
-      "Description": item?.DESCRIPTION,
-      "ImageUrl": item?.IMAGEURL,
-      "IsAvailable": item?.IsAvailable,
-      "IsDisable": item?.IsDisable,
-      "Item_ID":item?.ITEM_ID,
-      "Item_Name": item?.ITEM_NAME,
-      "Modifiers": item?.MODIFIERS,
-      "Price": item?.PRICE,
-      "Comments":item?.COMMENTS,
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      const updatedItems =  {
+        "Description": item?.DESCRIPTION,
+        "ImageUrl": item?.IMAGEURL,
+        "IsAvailable": item?.IsAvailable,
+        "IsDisable": item?.IsDisable,
+        "Item_ID":item?.ITEM_ID,
+        "Item_Name": item?.ITEM_NAME,
+        "Modifiers": item?.MODIFIERS,
+        "Price": item?.PRICE,
+        "Comments":item?.COMMENTS,
+      }
+      closePreviewModal()
+      storeSingleItem({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+      increaseQuantity({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+      closePreviewModal()
     }
-    closePreviewModal()
-    storeSingleItem({
-      ...updatedItems,
-      quantityIncPrice: item?.TOTALPRICE
-    })
-    increaseQuantity({
-      ...updatedItems,
-      quantityIncPrice: item?.TOTALPRICE
-    })
-    closePreviewModal()
   }
   
   const handleReorder = (itemDetails) => {
@@ -324,9 +329,7 @@ const RenderingCompletedOrders = (props) => {
                         alt="image"
                         source={require("@/assets/images/icons/ROdate.png")}
                       />
-                      <AccordionTitleText style={styles.roAccordionTitleText}>
-                        {`Ordered Date: ${item.ORDEREDDATE}`}
-                      </AccordionTitleText>
+                      <UI.Text style={styles.roAccordionTitleText}>{`Ordered Date: ${item.ORDEREDDATE}`}</UI.Text>
                     </UI.Box>
                     {isExpanded ? (
                       <AccordionIcon
@@ -375,10 +378,10 @@ const RenderingCompletedOrders = (props) => {
                 <UI.Box style={styles.pickUpSubContainer}>
                   <UI.Box>
                     <UI.Text style={styles.labelPickUpPoint}>
-                      Profit Center
+                      Pickup Location
                     </UI.Text>
                     <UI.Text style={styles.compPickUpLocation}>
-                      {item.PICKUPLOCATION}
+                      {item?.ProfitCenter}
                     </UI.Text>
                   </UI.Box>
                 </UI.Box>
@@ -517,16 +520,17 @@ function RenderingFavoritesList({ props }) {
   };
 
   const editCommentBtn = (props, item) => {
-    closePreviewModal()
-    storeSingleItem({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
-    increaseQuantity({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
-    closePreviewModal()
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      closePreviewModal()
+      storeSingleItem({
+        ...item,
+        quantityIncPrice: item?.TotalPrice
+      })
+      increaseQuantity({
+        ...item,
+        quantityIncPrice: item?.TotalPrice
+      })
+    }
   }
 
   return (
@@ -568,25 +572,17 @@ function RenderingFavoritesList({ props }) {
                         <UI.Text style={styles.itemLables}>
                           ${item.Price?.toFixed(2)}
                         </UI.Text>
-                        { item.Description ?
-                        <>
-                        <UI.Text style={styles.showLessTxt}>
-                        {expandedItems[index]
-                          ? item.Description || ""
-                          : item.Description
-                            ? `${item.Description.substring(0, 35)}...`
-                            : ""}
-                      </UI.Text>
-                      <UI.TouchableOpacity
-                        onPress={() => toggleReadMore(index)}
-                      >
-                        <UI.Text style={styles.readLessTxt}>
-                          {expandedItems[index] ? "Read Less" : "Read More"}
-                        </UI.Text>
-                      </UI.TouchableOpacity>
-                      </>
-                      : ""}
-                        
+                        {item?.Modifiers && item.Modifiers?.length > 0 && (
+                          <UI.CbFlatList
+                            scrollEnabled={false}
+                            flatlistData={item.Modifiers}
+                            children={({ item }) => (
+                              <UI.Text style={styles.itemCategory}>
+                                {item.Modifier_Name}
+                              </UI.Text>
+                            )}
+                          />
+                        )}
                       </UI.Box>
                     </UI.Box>
 
