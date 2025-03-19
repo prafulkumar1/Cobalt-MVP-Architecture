@@ -608,50 +608,6 @@ export default function MenuOrderScreen(props) {
     );
   };
 
-  const OnRecentOrderPress = () => {
-    const RenderingRecentOrders = ({ item }) => {
-      const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_ID )
-      return (
-        <UI.Box style={{ marginRight: 30, }}>
-          <UI.Box style={{ alignItems: "center", justifyContent: "center" }}>
-            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.ImageUrl ? recentOrderImage?.ImageUrl : item.ImageUrl }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
-            ]} />} />
-            <UI.CbAddToCartButton mealItemDetails={itemDetails}
-            />
-          </UI.Box>
-          <UI.Box style={styles.recentMainList}>
-            <UI.Text id="recentOrderName"
-              style={[
-                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >{item.Item_Name}
-            </UI.Text>
-
-          </UI.Box>
-        </UI.Box>
-      );
-    };
-
-    return (
-      <UI.Box style={styles.recentContainer}>
-        <UI.CbFlatList
-          flatlistData={menuOrderData}
-          horizontal
-          children={({ item }) => <RenderingRecentOrders item={item} />}
-        />
-        <UI.TouchableOpacity onPress={() => navigateToScreen(props, "Recentorders", true)}>
-          <UI.Text
-            style={[
-              seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
-            ]}
-          >Show All</UI.Text>
-        </UI.TouchableOpacity>
-      </UI.Box>
-    );
-  };
-
   const renderMenuOrderItems = () => {
     if (errorMessage === "") {
       if (loading) {
@@ -700,9 +656,9 @@ export default function MenuOrderScreen(props) {
           <UI.TouchableOpacity
             style={[
               styles.recentOrderContainer,
-              { width: isRecentOrderOpen ? "100%" : "90%" },
+              { width:"90%" },
             ]}
-            onPress={() => openRecentOrder()}
+            onPress={() => navigateToScreen(props, "Recentorders", true)}
           >
             <UI.Box style={styles.recentOrderBox}>
             <UI.TouchableOpacity
@@ -721,12 +677,11 @@ export default function MenuOrderScreen(props) {
             </UI.Box>
 
             <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
-              <Icon as={isRecentOrderOpen ? ChevronDownIcon:ChevronRightIcon} style={styles.dropdownIcon}/>
+              <Icon as={ChevronRightIcon} style={styles.dropdownIcon}/>
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>
         )}
       </UI.Box>
-      {isRecentOrderOpen && <OnRecentOrderPress />}
 
       {renderMenuOrderItems()}
 

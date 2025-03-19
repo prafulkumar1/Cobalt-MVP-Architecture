@@ -51,10 +51,20 @@ function RenderingPendingOrders(props) {
         </UI.Box>
       </UI.Box>
     );
-
+    const ITEM_HEIGHT = 100
   return (
     <UI.FlatList
       data={pendingOrders}
+      removeClippedSubviews={true}
+      initialNumToRender={10}
+      updateCellsBatchingPeriod={100}
+      windowSize={21}
+      onEndReachedThreshold={0.1}
+      getItemLayout={(_, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index,
+      })}
       renderItem={({ item, index }) => {
         const Order = item
         return (

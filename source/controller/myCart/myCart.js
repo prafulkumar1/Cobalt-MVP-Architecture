@@ -80,7 +80,7 @@ export const useMyCartLogic = () => {
       setTipData(tipDetails)
       setSelectedTime(showTimeData[0]?.value)
       setSelectedLocation(showPickLocationData[0]?.value)
-      setSelectedLocationId(showPickLocationData?.length === 1 && showPickLocationData[0]?.pickUpLocationId)
+      setSelectedLocationId(showPickLocationData[0]?.pickUpLocationId)
       setPickUpLocations(cartInfo?.response?.Pickup_Locations)
       setShowPickupTime(showTimeData)
       setShowPickupLocation(showPickLocationData)
