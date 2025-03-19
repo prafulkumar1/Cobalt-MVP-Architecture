@@ -107,7 +107,7 @@ function RenderingPendingOrders(props) {
                         <><UI.Box style={styles.verticalLine} />
                         <UI.Box>
                         <UI.Text style={styles.labelPickUpPoint}>
-                          Pickup Point
+                          Pickup Place
                         </UI.Text>
                         <UI.Text style={styles.pickUpLocation}>
                           {Order.PICKUPLOCATION}

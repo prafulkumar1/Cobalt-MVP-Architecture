@@ -204,7 +204,8 @@ export const useMyCartLogic = () => {
  
   const handleSaveTip = () => {
     if (customTip.current.length === 0) {
-      Alert.alert('Please select a custom tip');
+      Keyboard.dismiss()
+      getCartPrice()
     } else {
       const newTip = {
         id: uuid.v4(),
@@ -320,6 +321,7 @@ export const useMyCartLogic = () => {
     setIsCustomTipAdded(true)
     setCustomTipValue("")
     Keyboard.dismiss()
+    getCartPrice()
   }
   const handleContentSizeChange = (event) => {
     const newHeight = event?.nativeEvent?.contentSize.height;
