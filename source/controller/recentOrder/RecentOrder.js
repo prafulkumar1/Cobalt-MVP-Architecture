@@ -112,5 +112,5 @@ export const useRecentOrderLogic = () => {
     }, 300);
   }
  
-  return {getFavorites, favErrorMessage,loading, orders, fetchRecentOrders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
+  return {getFavorites, favErrorMessage,loading, orders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
 };

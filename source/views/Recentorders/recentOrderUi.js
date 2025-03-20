@@ -56,7 +56,6 @@ function RenderingPendingOrders(props) {
     <UI.FlatList
       data={pendingOrders}
       removeClippedSubviews={true}
-      initialNumToRender={10}
       updateCellsBatchingPeriod={100}
       windowSize={21}
       onEndReachedThreshold={0.1}
@@ -117,7 +116,7 @@ function RenderingPendingOrders(props) {
                         <><UI.Box style={styles.verticalLine} />
                         <UI.Box>
                         <UI.Text style={styles.labelPickUpPoint}>
-                          Pickup Place
+                          Pickup Location
                         </UI.Text>
                         <UI.Text style={styles.pickUpLocation}>
                           {Order.PICKUPLOCATION}
@@ -680,7 +679,7 @@ export default function RecentordersScreen(props) {
     updateOrAddTxt,
     modifierCartItemData
   } =  useFormContext();
-  const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
+  const {  orders } = useRecentOrderLogic(props);
   const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
@@ -690,10 +689,6 @@ export default function RecentordersScreen(props) {
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
 
-
-  useEffect(() => {
-    fetchRecentOrders();
-  }, []);
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.Box style={styles.subContainer}>

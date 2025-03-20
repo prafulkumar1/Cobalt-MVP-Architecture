@@ -318,6 +318,7 @@ export const useMyCartLogic = () => {
     }, 100);
   }
   const closeKeyBoard = () => {
+    tipSelection.current = ({"TipPercentage": "","TipCustom":"" })
     setIsCustomTipAdded(true)
     setCustomTipValue("")
     Keyboard.dismiss()
