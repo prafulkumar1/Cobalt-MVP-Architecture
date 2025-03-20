@@ -238,29 +238,29 @@ const RenderingCompletedOrders = (props) => {
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
  
   const editCommentBtn = (props, item) => {
-    if(item?.IsAvailable ===1 && item.IsDisable === 0){
-      const updatedItems =  {
-        "Description": item?.DESCRIPTION,
-        "ImageUrl": item?.IMAGEURL,
-        "IsAvailable": item?.IsAvailable,
-        "IsDisable": item?.IsDisable,
-        "Item_ID":item?.ITEM_ID,
-        "Item_Name": item?.ITEM_NAME,
-        "Modifiers": item?.MODIFIERS,
-        "Price": item?.PRICE,
-        "Comments":item?.COMMENTS,
-      }
-      closePreviewModal()
-      storeSingleItem({
-        ...updatedItems,
-        quantityIncPrice: item?.TOTALPRICE
-      })
-      increaseQuantity({
-        ...updatedItems,
-        quantityIncPrice: item?.TOTALPRICE
-      })
-      closePreviewModal()
+    // if(item?.IsAvailable ===1 && item.IsDisable === 0){
+    // }
+    const updatedItems =  {
+      "Description": item?.DESCRIPTION,
+      "ImageUrl": item?.IMAGEURL,
+      "IsAvailable": item?.IsAvailable,
+      "IsDisable": item?.IsDisable,
+      "Item_ID":item?.ITEM_ID,
+      "Item_Name": item?.ITEM_NAME,
+      "Modifiers": item?.MODIFIERS,
+      "Price": item?.PRICE,
+      "Comments":item?.COMMENTS,
     }
+    closePreviewModal()
+    storeSingleItem({
+      ...updatedItems,
+      quantityIncPrice: item?.TOTALPRICE
+    })
+    increaseQuantity({
+      ...updatedItems,
+      quantityIncPrice: item?.TOTALPRICE
+    })
+    closePreviewModal()
   }
   
   const handleReorder = (itemDetails) => {
@@ -500,7 +500,6 @@ const RenderingCompletedOrders = (props) => {
 
 
 function RenderingFavoritesList({ props }) {
-  const [expandedItems, setExpandedItems] = useState({});
   const route = useRoute();
   const screenName = route.name;
 
@@ -521,25 +520,19 @@ function RenderingFavoritesList({ props }) {
     handleDecrement,
   } = useRecentOrderLogic();
 
-  const toggleReadMore = (index) => {
-    setExpandedItems((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
-  };
-
   const editCommentBtn = (props, item) => {
-    if(item?.IsAvailable ===1 && item.IsDisable === 0){
-      closePreviewModal()
-      storeSingleItem({
-        ...item,
-        quantityIncPrice: item?.TotalPrice
-      })
-      increaseQuantity({
-        ...item,
-        quantityIncPrice: item?.TotalPrice
-      })
-    }
+    // if(item?.IsAvailable ===1 && item.IsDisable === 0){
+     
+    // }
+    closePreviewModal()
+    storeSingleItem({
+      ...item,
+      quantityIncPrice: item?.TotalPrice
+    })
+    increaseQuantity({
+      ...item,
+      quantityIncPrice: item?.TotalPrice
+    })
   }
 
   return (
