@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormContext } from '@/components/cobalt/event';
-import { useMyCartLogic } from '@/source/controller/myCart/myCart';
 let recentOrderData = [];
 let pendingOrderData = [];
  
@@ -13,17 +12,41 @@ export const useRecentOrderLogic = () => {
   const [loaded, setLoaded] = useState(false);
   const [emptyOrderMessage, setEmptyOrderMessage] = useState("");
   const [favErrorMessage, setFavErrorMessage] = useState("");
+
+  const postQuantityApiCall = async (item,quantity) => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const params = {
+        "Item_ID": item?.Item_ID,
+        "Item_Quantity": quantity,
+        "LocationId":`${getProfitCenterId.LocationId}`
+      }
+      let quantityInfo = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_STATUS", params)
+      return quantityInfo
+    } catch (err) { }
+  }
  
-  const {
-    postQuantityApiCall
-     } = useMyCartLogic();
   const {
     orders,
     setOrders,    
     removeFavoriteItems,
     updateCartItemQuantity,
     updateModifierItemQuantity,
-    setFavoriteItemsList
+    setFavoriteItemsList,
+    closePreviewModal,
+    cartData,
+    singleItemDetails,
+    modifiersResponseData,
+    addItemToModifierForCart,
+    selectedModifiers,
+    updateModifierCartItem,
+    updateWithoutModifierCartItem,
+    setToastDetails,
+    addItemToFavorites,
+    setIsVisible,
+    setModifiersResponseData,
+    setFormFieldData,
   } = useFormContext()
   
   
@@ -111,6 +134,98 @@ export const useRecentOrderLogic = () => {
       getFavorites()
     }, 300);
   }
+
+  const handleModifierAddCart = () => {
+    let isItemAvailableInCart = false;
+    cartData?.forEach((items) => {
+      if (items.Item_ID === singleItemDetails.Item_ID) {
+        isItemAvailableInCart = true;
+      }
+    });
  
-  return {getFavorites, favErrorMessage,loading, orders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
+    let categoryData = typeof modifiersResponseData?.Categories === "string"
+    ? JSON.parse(modifiersResponseData?.Categories)
+    : modifiersResponseData?.Categories;
+ 
+    if (!isItemAvailableInCart) {
+      let isRequiredModifier = false;
+      let requiredModifier = ""
+      const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+      const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+        return modifier.isChecked && index === lastIndex;
+      });
+      if (getRequiredItem.length > 0) {
+        isRequiredModifier = true
+        getRequiredItem?.map((item) => {
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+      }
+      if (isRequiredModifier) {
+        setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+        setTimeout(() => {
+          setToastDetails({ isToastVisiable:false,toastMessage: "" })
+        }, 6000);
+      } else {
+        addItemToModifierForCart(singleItemDetails);
+        addItemToFavorites(singleItemDetails)
+        closePreviewModal();
+      }
+    } else {
+      let isRequiredModifier = false
+      let requiredModifier = ""
+      const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+      if (categoryData?.length > 0) {
+        const newAddedModifiers = [...existingCartItem?.selectedModifiers,...selectedModifiers]
+        const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+        const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+ 
+        getRequiredItem?.map((item) => {
+          isRequiredModifier = true
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+ 
+        if(isRequiredModifier){
+          setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+          setTimeout(() => {
+            setToastDetails({ isToastVisiable: false, toastMessage: "" })
+          }, 6000);
+        }else{
+          updateModifierCartItem(existingCartItem);
+          addItemToFavorites(existingCartItem)
+        }
+      } else {
+        updateWithoutModifierCartItem(existingCartItem);
+        addItemToFavorites(existingCartItem)
+      }
+    }
+}
+const handleCloseItemDetails = () => {
+  setFormFieldData("ItemModifier", "", "Comments", "", false)
+  if (selectedModifiers.length === 0) {
+    setIsVisible(false)
+    updateModifierItemQuantity(singleItemDetails, 0)
+    setModifiersResponseData([])
+    setTimeout(() => {
+      closePreviewModal()
+    }, 100)
+  } else {
+    setIsVisible(true)
+  }
+}
+ 
+  return {handleCloseItemDetails,handleModifierAddCart,getFavorites, favErrorMessage,loading, orders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
 };

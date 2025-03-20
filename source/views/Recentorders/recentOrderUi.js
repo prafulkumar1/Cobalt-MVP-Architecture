@@ -12,10 +12,10 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 import { Divider } from '@/components/ui/divider';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
-import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import { Icon } from '@/components/ui/icon';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
+import ItemModifierUIFavs from '../ItemModifier/ItemModifierUIFavs';
 
 
 function RenderingPendingOrders(props) {
@@ -44,14 +44,7 @@ function RenderingPendingOrders(props) {
     <UI.FlatList
       data={pendingOrders}
       removeClippedSubviews={true}
-      updateCellsBatchingPeriod={100}
       windowSize={21}
-      onEndReachedThreshold={0.1}
-      getItemLayout={(_, index) => ({
-        length: ITEM_HEIGHT,
-        offset: ITEM_HEIGHT * index,
-        index,
-      })}
       renderItem={({ item, index }) => {
         const Order = item
         return (
@@ -239,37 +232,36 @@ const RenderingCompletedOrders = (props) => {
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
  
   const editCommentBtn = (props, item) => {
-    // if(item?.IsAvailable ===1 && item.IsDisable === 0){
-    // }
-    const updatedItems =  {
-      "Description": item?.DESCRIPTION,
-      "ImageUrl": item?.IMAGEURL,
-      "IsAvailable": item?.IsAvailable,
-      "IsDisable": item?.IsDisable,
-      "Item_ID":item?.ITEM_ID,
-      "Item_Name": item?.ITEM_NAME,
-      "Modifiers": item?.MODIFIERS,
-      "Price": item?.PRICE,
-      "Comments":item?.COMMENTS,
-    }
-    closePreviewModal()
-    storeSingleItem({
-      ...updatedItems,
-      quantityIncPrice: item?.TOTALPRICE
-    })
-    increaseQuantity({
-      ...updatedItems,
-      quantityIncPrice: item?.TOTALPRICE
-    })
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      const updatedItems =  {
+        "Description": item?.DESCRIPTION,
+        "ImageUrl": item?.IMAGEURL,
+        "IsAvailable": item?.IsAvailable,
+        "IsDisable": item?.IsDisable,
+        "Item_ID":item?.ITEM_ID,
+        "Item_Name": item?.ITEM_NAME,
+        "Modifiers": item?.MODIFIERS,
+        "Price": item?.PRICE,
+        "Comments":item?.COMMENTS,
+      }
+      closePreviewModal()
+      storeSingleItem({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+      increaseQuantity({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+    }  
   }
   
   const handleReorder = (itemDetails) => {
     if (!itemDetails || itemDetails.length === 0) {
       return;
     }
- 
     itemDetails.forEach((item) => {
-      const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item.Item_ID);
+      const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item?.ITEM_ID);
  
       const itemWithModifiers = {
         Item_ID:item.ITEM_ID,
@@ -286,7 +278,7 @@ const RenderingCompletedOrders = (props) => {
       };
  
       if (existingItem) {
-        updateCartItemQuantity(existingItem, existingItem.quantity + 1);
+        updateCartItemQuantity(existingItem, existingItem.quantity + item.QUANTITY);
       } else {
         addItemToCartBtnForReOrder(itemWithModifiers, item.QUANTITY);
       }
@@ -521,18 +513,17 @@ function RenderingFavoritesList({ props }) {
   } = useRecentOrderLogic();
 
   const editCommentBtn = (props, item) => {
-    // if(item?.IsAvailable ===1 && item.IsDisable === 0){
-     
-    // }
-    closePreviewModal()
-    storeSingleItem({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
-    increaseQuantity({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      closePreviewModal();
+      storeSingleItem({
+        ...item,
+        quantityIncPrice: item?.TotalPrice,
+      });
+      increaseQuantity({
+        ...item,
+        quantityIncPrice: item?.TotalPrice,
+      });
+    }
   }
 
   const openItemDetails = async (box) => {
@@ -674,7 +665,7 @@ function RenderingFavoritesList({ props }) {
 export default function RecentordersScreen(props) { 
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
-  const {loading,emptyOrderMessage,favItems,} = useRecentOrderLogic(props)
+  const {loading,emptyOrderMessage,handleModifierAddCart,handleCloseItemDetails} = useRecentOrderLogic(props)
   const { 
     cartData,
     itemDataVisible ,
@@ -688,8 +679,6 @@ export default function RecentordersScreen(props) {
     updateOrAddTxt,
     modifierCartItemData
   } =  useFormContext();
-  const {  orders } = useRecentOrderLogic(props);
-  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -715,7 +704,7 @@ export default function RecentordersScreen(props) {
                 : styles.ButtonTextStyle,
             ]}
           >
-            Favorites
+            Favourite
           </UI.Text>
         </UI.TouchableOpacity>
         <UI.TouchableOpacity
@@ -792,7 +781,7 @@ export default function RecentordersScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifier isRecentOrder={isRecentOrder ? true:false}/>
+              <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
