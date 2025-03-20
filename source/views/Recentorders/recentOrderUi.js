@@ -15,6 +15,7 @@ import ItemModifier from '../ItemModifier/ItemModifierUI';
 import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import { Icon } from '@/components/ui/icon';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
+import { postQuantityApiCall } from '@/components/cobalt/ui';
 
 
 function RenderingPendingOrders(props) {
@@ -260,7 +261,6 @@ const RenderingCompletedOrders = (props) => {
       ...updatedItems,
       quantityIncPrice: item?.TOTALPRICE
     })
-    closePreviewModal()
   }
   
   const handleReorder = (itemDetails) => {
@@ -535,6 +535,23 @@ function RenderingFavoritesList({ props }) {
     })
   }
 
+  const openItemDetails = async (box) => {
+    if (box.IsAvailable === 1 && box.IsDisable === 0) {
+      let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+      storeSingleItem({ ...box, response: quantityInfo.response })
+      increaseQuantity(box)
+      closePreviewModal()
+    }
+  }
+
+  const addItemToCartBtnDetails = (itemsDetails) => {
+    if(itemsDetails?.Modifiers.length > 0){
+      openItemDetails(itemsDetails)
+    }else{
+      addItemToCartBtn(itemsDetails)
+    }
+  }
+
   return (
     <>
       {
@@ -629,7 +646,7 @@ function RenderingFavoritesList({ props }) {
                           </UI.TouchableOpacity>
                         </UI.Box>
                       : <UI.Box>
-                        <UI.TouchableOpacity  onPress={() => addItemToCartBtn(item)} style={styles.operationBtn2}>
+                        <UI.TouchableOpacity  onPress={() => addItemToCartBtnDetails(item)} style={styles.operationBtn2}>
                         <Icon
                               as={AddIcon}
                               color="#5773a2"

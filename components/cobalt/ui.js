@@ -205,7 +205,7 @@ class CbAccordionlist extends React.Component {
                                     style={styles.orderSubContainer}
                                   >
                                     <Checkbox
-                                      isChecked={item.isChecked}
+                                      isChecked={item?.IsFavourite !==null ? item.IsFavourite===1 : item.isChecked}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
