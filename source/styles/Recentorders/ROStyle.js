@@ -137,16 +137,16 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     elevation: 5,
   },
-  recentStatusContainer:{ flexDirection: "row", alignItems: "center", paddingVertical: 10, justifyContent: "space-between" },
+  recentStatusContainer:{ flexDirection: "row", alignItems: "center", paddingVertical: 10, justifyContent: "space-between" ,width:"100%"},
   orderIcon:{ width: 28, height: 28, left: 6 },
   orderCompIcon:{ width: 28, height: 28 },
   labelStatus:{ fontSize: 18, fontFamily: "SourceSansPro_SemiBoldItalic", marginLeft: 10, left: 10 },
   completeLabelStatus:{ fontSize: 18, fontFamily: "SourceSansPro_SemiBoldItalic", marginLeft: 10, left: 5 },
   statusValTxt:{ marginLeft: "auto", color: "#FF6F00", fontSize: responsiveFontSize(1.9), fontFamily: "SourceSansPro_SemiBold", right: 15 },
   statusCompelete:{ marginLeft: "auto", color: "#FF6F00", fontSize: responsiveFontSize(1.9), fontFamily: "SourceSansPro_SemiBold", },
-  dottedLine:{width:"92%",alignSelf:"center"},
+  dottedLine:{width:"95%",alignSelf:"center"},
   compDottedLine:{width:"100%",alignSelf:"center"},
-  pickUpDetailsContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingBottom:10,width:"96%" },
+  pickUpDetailsContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center",paddingBottom:10,width:"96%",marginTop:10 },
   completedContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end",paddingVertical:10,width:"100%" },
   pickUpSubContainer:{ flexDirection: "row", justifyContent: "space-around", alignItems: "flex-start" },
   labelPickUpTime:{ fontSize: responsiveFontSize(1.3), color: "#4F4F4F", fontFamily: "SourceSansPro_SemiBoldItalic", },
@@ -300,4 +300,5 @@ itemCategory: {
   width: responsiveWidth(35),
   fontFamily: "SourceSansPro_SemiBold"
 },
+headerContainer:{ flexDirection: "column" }
 })

@@ -19,39 +19,26 @@ import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 function RenderingPendingOrders(props) {
   const { pendingOrders } = useRecentOrderLogic(props);
-  const OrdersList = pendingOrders
-  const [expandedIndexes, setExpandedIndexes] = useState(new Set());
-  const handleToggle = (index) => {
-    setExpandedIndexes((prevIndexes) => {
-      const newIndexes = new Set(prevIndexes);
-      if (newIndexes.has(index)) {
-        newIndexes.delete(index); 
-      } else {
-        newIndexes.add(index);
-      }
-      return newIndexes;
-    });
-  };
-    const PriceRow = ({ label, value }) => (
-      <UI.Box style={styles.splitPriceContainer}>
-        <UI.Box style={styles.priceLabelContainer}>
-          <UI.Text style={styles.priceLabel}>{label}</UI.Text>
-        </UI.Box>
-        <UI.Box style={styles.valueMainContainer}>
-          <UI.Text style={styles.priceLabel}>${value}</UI.Text>
-        </UI.Box>
+  const PriceRow = ({ label, value }) => (
+    <UI.Box style={styles.splitPriceContainer}>
+      <UI.Box style={styles.priceLabelContainer}>
+        <UI.Text style={styles.priceLabel}>{label}</UI.Text>
       </UI.Box>
-    );
-    const PriceDetails = (ordersPrice) => (
-      <UI.Box style={styles.priceContainer}>
-        <UI.Box style={styles.priceSubContainer}>
-          {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
-            <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
-          ))}
-        </UI.Box>
+      <UI.Box style={styles.valueMainContainer}>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
       </UI.Box>
-    );
-    const ITEM_HEIGHT = 100
+    </UI.Box>
+  );
+  const PriceDetails = (ordersPrice) => (
+    <UI.Box style={styles.priceContainer}>
+      <UI.Box style={styles.priceSubContainer}>
+        {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
+          <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
+        ))}
+      </UI.Box>
+    </UI.Box>
+  );
+  const ITEM_HEIGHT = 100
   return (
     <UI.FlatList
       data={pendingOrders}
@@ -72,89 +59,101 @@ function RenderingPendingOrders(props) {
               key={index}
               value={`item-${index}`}
               style={styles.recentCardContainer}
-              expanded={expandedIndexes.has(index)}
             >
               <AccordionHeader>
-                <UI.Box style={styles.recentStatusContainer}>
-                  <UI.CbImage
-                    imageJsx={
-                      <Image
-                        source={require("@/assets/images/icons/Pendingorder3x.png")}
-                        style={styles.orderIcon}
-                      />
-                    }
-                  />
-                  <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
-                  <UI.Text style={styles.statusValTxt}>
-                    {Order.ORDERSTATUS}
-                  </UI.Text>
-                </UI.Box>
-                <UI.Box style={styles.dottedLine}>
-                  <CbDottedLine
-                    length={isPlatformAndroid() ? 50 : 90}
-                    dotSize={6}
-                    dotColor="#0000002B"
-                  />
-                </UI.Box>
-                <AccordionTrigger
-                  className="focus:web:rounded-lg"
-                  onPress={() => handleToggle(index)}
-                >
-                  <UI.Box style={styles.pickUpDetailsContainer}>
-                    <UI.Box style={styles.pickUpSubContainer}>
-                      <UI.Box>
-                        <UI.Text style={styles.labelPickUpTime}>
-                          Pickup Time
-                        </UI.Text>
-                        <UI.Text style={styles.pickValue}>
-                          {Order.PICKUPTIME}
-                        </UI.Text>
-                      </UI.Box>
-                     
-                      {
-                        Order?.PICKUPLOCATION &&
-                        <><UI.Box style={styles.verticalLine} />
-                        <UI.Box>
-                        <UI.Text style={styles.labelPickUpPoint}>
-                          Pickup Location
-                        </UI.Text>
-                        <UI.Text style={styles.pickUpLocation}>
-                          {Order.PICKUPLOCATION}
-                        </UI.Text>
-                      </UI.Box></>
-                      }
-                    </UI.Box>
-                    <UI.Box style={styles.detailsContainer}>
-                      <UI.Box>
-                        <UI.Text style={styles.labelOrderId}>
-                          Order Id #: {Order.ORDERID}
-                        </UI.Text>
-                        <UI.Text style={styles.labelOrderId}>
-                          Date: {Order.ORDEREDDATE}
-                        </UI.Text>
-                      </UI.Box>
-                      <AccordionIcon
-                        as={
-                          expandedIndexes.has(index)
-                            ? ChevronDownIcon
-                            : ChevronRightIcon
+                <AccordionTrigger>
+                  {({ isExpanded }) => {
+                    return (
+                      <UI.Box style={styles.headerContainer}>
+                        <UI.Box style={styles.recentStatusContainer}>
+                          <UI.CbImage
+                            imageJsx={
+                              <Image
+                                source={require("@/assets/images/icons/Pendingorder3x.png")}
+                                style={styles.orderIcon}
+                              />
+                            }
+                          />
+                          <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
+                          <UI.Text style={styles.statusValTxt}>
+                            {Order.ORDERSTATUS}
+                          </UI.Text>
+                        </UI.Box>
+
+                        <UI.Box style={styles.dottedLine}>
+                          <CbDottedLine
+                            length={isPlatformAndroid() ? 50 : 90}
+                            dotSize={6}
+                            dotColor="#0000002B"
+                          />
+                        </UI.Box>
+
+                        <UI.Box style={styles.pickUpDetailsContainer}>
+                          <UI.Box style={styles.pickUpSubContainer}>
+                            <UI.Box>
+                              <UI.Text style={styles.labelPickUpTime}>
+                                Pickup Time
+                              </UI.Text>
+                              <UI.Text style={styles.pickValue}>
+                                {Order.PICKUPTIME}
+                              </UI.Text>
+                            </UI.Box>
+
+                            {
+                              Order?.PICKUPLOCATION &&
+                              <><UI.Box style={styles.verticalLine} />
+                                <UI.Box>
+                                  <UI.Text style={styles.labelPickUpPoint}>
+                                    Pickup Location
+                                  </UI.Text>
+                                  <UI.Text style={styles.pickUpLocation}>
+                                    {Order.PICKUPLOCATION}
+                                  </UI.Text>
+                                </UI.Box></>
+                            }
+                          </UI.Box>
+                          <UI.Box style={styles.detailsContainer}>
+                            <UI.Box>
+                              <UI.Text style={styles.labelOrderId}>
+                                Order Id #: {Order.ORDERID}
+                              </UI.Text>
+                              <UI.Text style={styles.labelOrderId}>
+                                Date: {Order.ORDEREDDATE}
+                              </UI.Text>
+                            </UI.Box>
+
+                            {isExpanded ? (
+                              <AccordionIcon
+                                as={ChevronDownIcon}
+                                size={"xl"}
+                                color="#4B5154"
+                                style={{ left: isPlatformAndroid() ? 15 : 5 }}
+                              />
+                            ) : (
+                              <AccordionIcon
+                                as={ChevronRightIcon}
+                                size={"xl"}
+                                color="#4B5154"
+                                style={{ left: isPlatformAndroid() ? 15 : 5 }}
+                              />
+                            )}
+                          </UI.Box>
+                        </UI.Box>
+                        {
+                          isExpanded ?
+                            <UI.Box style={[styles.dottedLine, { marginTop: 0 }]}>
+                              <CbDottedLine
+                                length={isPlatformAndroid() ? 50 : 90}
+                                dotSize={6}
+                                dotColor="#0000002B"
+                              />
+                            </UI.Box> : null
                         }
-                        size={"xl"}
-                        color="#4B5154"
-                        style={{ left: isPlatformAndroid() ? 15 : 5 }}
-                      />
-                    </UI.Box>
-                  </UI.Box>
+
+                      </UI.Box>
+                    );
+                  }}
                 </AccordionTrigger>
-                {expandedIndexes.has(index) && (
-                  <UI.Box style={[styles.dottedLine, { marginTop: -5 }]}>
-                    <CbDottedLine
-                      length={isPlatformAndroid() ? 50 : 90}
-                      dotSize={6}
-                      dotColor="#0000002B"
-                    />
-                  </UI.Box>
-                )}
               </AccordionHeader>
               <AccordionContent>
                 <UI.Box style={styles.orderSummaryContainer}>
@@ -741,7 +740,7 @@ export default function RecentordersScreen(props) {
                     <RenderingCompletedOrders />
                   </>
                 ) : (
-                  <UI.Text>{emptyOrderMessage}</UI.Text>
+                  <UI.Text style={styles.emptyFavList}>{emptyOrderMessage}</UI.Text>
                 )}
               </>
             )}
