@@ -664,7 +664,7 @@ function RenderingFavoritesList({ props }) {
 
 export default function RecentordersScreen(props) { 
 
-  const [isRecentOrder, setIsRecentOrderOpen] = useState(false);
+  const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   const {loading,emptyOrderMessage,handleModifierAddCart,handleCloseItemDetails} = useRecentOrderLogic(props)
   const { 
     cartData,
