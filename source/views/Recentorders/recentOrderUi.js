@@ -536,7 +536,7 @@ function RenderingFavoritesList({ props }) {
   }
 
   const addItemToCartBtnDetails = (itemsDetails) => {
-    if(itemsDetails?.Modifiers.length > 0){
+    if(itemsDetails?.Modifiers?.length > 0){
       openItemDetails(itemsDetails)
     }else{
       addItemToCartBtn(itemsDetails)
