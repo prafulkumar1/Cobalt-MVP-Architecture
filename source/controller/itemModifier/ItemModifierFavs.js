@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useFormContext } from '@/components/cobalt/event';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const pageId='ItemModifierFavs';
+const pageId='ItemModifier';
 export const useItemModifierFavsLogic = () => {
     const [loading,setLoading] = useState(false)
     const {

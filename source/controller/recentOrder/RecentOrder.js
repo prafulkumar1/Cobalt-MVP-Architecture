@@ -40,13 +40,15 @@ export const useRecentOrderLogic = () => {
     modifiersResponseData,
     addItemToModifierForCart,
     selectedModifiers,
-    updateModifierCartItem,
+    updateModifierCartItemForFavs,
     updateWithoutModifierCartItem,
     setToastDetails,
     addItemToFavorites,
     setIsVisible,
     setModifiersResponseData,
     setFormFieldData,
+    favoriteItemsList,
+    updateItemToFavorites
   } = useFormContext()
   
   
@@ -179,9 +181,20 @@ export const useRecentOrderLogic = () => {
     } else {
       let isRequiredModifier = false
       let requiredModifier = ""
-      const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+      const existingFavItem = favoriteItemsList?.find((items) => items.Item_ID === singleItemDetails?.Item_ID);
+
       if (categoryData?.length > 0) {
-        const newAddedModifiers = [...existingCartItem?.selectedModifiers,...selectedModifiers]
+        const updateModifiers = existingFavItem?.Modifiers?.map((items) => ({
+          "Modifier_Id": items?.Modifier_Id,
+          "Modifier_Name": items?.Modifier_Name,
+          "Price": items?.ModifierPrice,
+          "IsFavourite": 1,
+          "isChecked": true,
+          "Item_ID":existingFavItem?.Item_ID,
+          "Category_Id": ""
+        }))
+  
+        const newAddedModifiers = [...updateModifiers,...selectedModifiers]
         const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
         const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
           const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
@@ -192,9 +205,11 @@ export const useRecentOrderLogic = () => {
           isRequiredModifier = true
           requiredModifier = item?.Category_Name
           return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
-            if (item.Category_Id == modifierId.Category_Id) {
-              isRequiredModifier = false
-            }
+            return item?.Modifiers.forEach((modifier) => {
+              if(modifier?.Modifier_Id === modifierId?.Modifier_Id){
+                isRequiredModifier = false
+              }
+            })
           })
         })
  
@@ -204,12 +219,12 @@ export const useRecentOrderLogic = () => {
             setToastDetails({ isToastVisiable: false, toastMessage: "" })
           }, 6000);
         }else{
-          updateModifierCartItem(existingCartItem);
-          addItemToFavorites(existingCartItem)
+          updateModifierCartItemForFavs(existingFavItem);
+          updateItemToFavorites(existingFavItem)
         }
       } else {
-        updateWithoutModifierCartItem(existingCartItem);
-        addItemToFavorites(existingCartItem)
+        updateWithoutModifierCartItem(existingFavItem);
+        updateItemToFavorites(existingFavItem)
       }
     }
 }

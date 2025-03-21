@@ -406,6 +406,82 @@ export const UseFormContextProvider = ({children}) => {
     }else if(response.response?.ResponseCode == "Fail"){
     }
   }
+
+  const updateModifierCartItemForFavs = async (updatedItem) => {
+    try {
+      if(modifiersResponseData?.Categories.length > 0){
+        const existingCartData = await AsyncStorage.getItem("cart_data");
+        const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+        const getProfitCenterId = getProfitCenterItem ? JSON.parse(getProfitCenterItem) : null;
+    
+        const prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
+        const updateModifiers = updatedItem?.Modifiers.map((items) => ({
+          "Modifier_Id": items?.Modifier_Id,
+          "Modifier_Name": items?.Modifier_Name,
+          "Price": items?.ModifierPrice,
+          "IsFavourite": 1,
+          "isChecked": true,
+          "Item_ID":updatedItem?.Item_ID,
+          "Category_Id": ""
+        }))
+        
+        const updatedCartItems = prevCartItems.map((item) =>{
+          if(item.Item_ID === updatedItem.Item_ID){
+            return{
+              ...item,
+              comments: commentValue.current || "",
+              selectedModifiers:[...item.selectedModifiers,...updateModifiers],
+              profitCenterId: getProfitCenterId?.LocationId
+            }
+          }else{
+            return item
+          }
+        }
+      );
+    
+        await AsyncStorage.setItem("cart_data", JSON.stringify(updatedCartItems));
+        setFormFieldData("ItemModifier","","Comments","",false)
+    
+        setCartData(updatedCartItems);
+        
+        setTimeout(() => {
+          formData.ItemModifier_Comments = "";
+          setSelectedModifiers([]);
+          closePreviewModal()
+        }, 1000);
+      }else{
+        addItemToModifierForCart(singleItemDetails)
+      }
+    } catch (error) {
+      console.error("Error updating cart item:", error);
+    }
+  }
+
+  const updateItemToFavorites = async(Items) => {
+    const newAddedModifiers = [...Items.Modifiers,...selectedModifiers]
+    const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      return modifier.isChecked && index === lastIndex;
+    });
+    const updatedFavData = [
+      {
+          "ItemId": Items.Item_ID,
+          "IsFavourite":isItemFavorite,
+          "Modifiers":uniqueModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
+      }
+  ]
+    const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+    let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const params = {
+      "Location_Id": getProfitCenterId?.LocationId,
+      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "Items": updatedFavData
+    }
+    let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
+    if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
+    }else if(response.response?.ResponseCode == "Fail"){
+    }
+  }
     
     const initialValues = {
       getFormFieldData,
@@ -473,7 +549,9 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartBtnForReOrder,
       favoriteItemsList,
       setFavoriteItemsList,
-      setIsItemFavorite
+      setIsItemFavorite,
+      updateModifierCartItemForFavs,
+      updateItemToFavorites
     }
     return (
       <FormContext.Provider

@@ -8,7 +8,7 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 import { useItemModifierFavsLogic } from '@/source/controller/itemModifier/ItemModifierFavs';
  
-const pageId = "ItemModifierUIFavs"
+const pageId = "ItemModifier"
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
