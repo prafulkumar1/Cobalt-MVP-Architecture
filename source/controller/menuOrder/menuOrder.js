@@ -48,7 +48,7 @@ export const useMenuOrderLogic = (props) => {
     setFormFieldData,
     setToastDetails,
     addItemToFavorites,
-    toggleFavoriteItems
+    setCartApiResponse,
   } = useFormContext();
  
   const  {getFavorites} = useRecentOrderLogic()
@@ -119,6 +119,7 @@ export const useMenuOrderLogic = (props) => {
     getMenuOrderList()
     getCartData()
     getFavorites()
+    getCartPrice()
   }, [])
  
  
@@ -436,6 +437,33 @@ export const useMenuOrderLogic = (props) => {
       [categoryId]: layout.y,
     }));
   };
+
+  const getCartPrice = async () => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const cartItemIds = cartData?.map((item) => {
+        const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+        return{
+          Comments:"",
+          ItemId:item.Item_ID,
+          Quantity:item.quantity,
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
+        }
+      })
+      const params = {   
+         "Location_Id":`${getProfitCenterId?.LocationId}`,
+         "Items":cartItemIds,
+         "TipPercentage": "",
+         "TipCustom": "",
+      }
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
+      setCartApiResponse(cartInfo.response?.Items)
+    } catch (err) { }
+  }
   return {
     isRecentOrderOpen,
     openRecentOrder,

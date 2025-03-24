@@ -27,7 +27,8 @@ export const useItemModifierLogic = () => {
         setFormFieldData,
         menuOrderData,
         favoriteItemsList,
-        setIsItemFavorite
+        setIsItemFavorite,
+        cartApiResponse
     } = useFormContext()
  
  
@@ -87,6 +88,11 @@ export const useItemModifierLogic = () => {
               }else{
                 setUpdateOrAddTxt("Add to Cart")
               }
+              const cartItemDetails = cartApiResponse?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+              if(cartItemDetails){
+                let updateModifierCartItem = modifierCartItemData?.map((items) => ({...items,quantityIncPrice:cartItemDetails?.TotalPrice,quantity:cartItemDetails?.quantity}))
+                setModifierCartItemData(updateModifierCartItem)
+              }
                setLoading(false)
             }
         }
@@ -140,8 +146,8 @@ export const useItemModifierLogic = () => {
     
         return {
           ...items,
-          basePrice: totalItemPrice + basePrice + finalValue,
-          quantityIncPrice: totalItemPrice + finalValue,
+          basePrice: totalItemPrice + basePrice + (finalValue*items.quantity),
+          quantityIncPrice: totalItemPrice + (finalValue*items.quantity),
         };
       });
     
