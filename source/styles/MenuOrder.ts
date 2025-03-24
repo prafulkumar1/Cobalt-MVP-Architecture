@@ -49,14 +49,14 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
-    paddingHorizontal:responsiveWidth(4)
+    paddingHorizontal:responsiveWidth(5)
   },
   inactiveMenuType: {
     backgroundColor: "#ECECEC",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    paddingHorizontal:responsiveWidth(4),
+    paddingHorizontal:responsiveWidth(5),
     borderRadius: 5,
     opacity: 0.8,
     marginHorizontal: 5,
