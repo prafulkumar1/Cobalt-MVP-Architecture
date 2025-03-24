@@ -542,6 +542,13 @@ function RenderingFavoritesList({ props }) {
       addItemToCartBtn(itemsDetails)
     }
   }
+  const commonStyles = (isAvailable, IsDisable, primaryColor, secondaryColor) => {
+    if (isAvailable === 1 && IsDisable === 0) {
+      return primaryColor
+    } else {
+      return secondaryColor
+    }
+  }
 
   return (
     <>
@@ -562,6 +569,8 @@ function RenderingFavoritesList({ props }) {
                
                 const cartItem = cartData && cartData?.find((cartItem) => cartItem?.Item_ID === item?.Item_ID);
                 const quantity = cartItem ? cartItem.quantity : 0;
+                const IsAvailable = item?.IsAvailable;
+                const IsDisable = item?.IsDisable
                 return (
                   <UI.TouchableOpacity
                     key={index}
@@ -637,7 +646,10 @@ function RenderingFavoritesList({ props }) {
                           </UI.TouchableOpacity>
                         </UI.Box>
                       : <UI.Box>
-                        <UI.TouchableOpacity  onPress={() => addItemToCartBtnDetails(item)} style={styles.operationBtn2}>
+                        <UI.TouchableOpacity 
+                          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}  
+                          onPress={() => addItemToCartBtnDetails(item)}
+                          style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2" , "#ABABAB")}]}>
                         <Icon
                               as={AddIcon}
                               color="#5773a2"
@@ -664,7 +676,7 @@ function RenderingFavoritesList({ props }) {
 
 export default function RecentordersScreen(props) { 
 
-  const [isRecentOrder, setIsRecentOrderOpen] = useState(false);
+  const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
   const {loading,emptyOrderMessage,handleModifierAddCart,handleCloseItemDetails} = useRecentOrderLogic(props)
   const { 
     cartData,

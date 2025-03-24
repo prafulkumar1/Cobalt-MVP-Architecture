@@ -482,7 +482,49 @@ export const UseFormContextProvider = ({children}) => {
     }else if(response.response?.ResponseCode == "Fail"){
     }
   }
+
+  const addItemToCartForFavs = async (modifierItem) => {
+    try {
+      const existingCartData = await AsyncStorage.getItem("cart_data");
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+  
+      let prevCartItems = existingCartData ? JSON.parse(existingCartData) : [];
+  
+      const updatedModifierData = [...prevCartItems];
+
+      const updateModifiers = modifierItem?.Modifiers.map((items) => ({
+        "Modifier_Id": items?.Modifier_Id,
+        "Modifier_Name": items?.Modifier_Name,
+        "Price": items?.ModifierPrice,
+        "IsFavourite": 1,
+        "isChecked": true,
+        "Item_ID":modifierItem?.Item_ID,
+        "Category_Id": ""
+      }))
+  
+      updatedModifierData.push({
+        ...modifierItem,
+        quantity: singleModifierData.current.quantity,
+        quantityIncPrice: singleModifierData.current.quantityIncPrice,
+        comments: commentValue.current || "",
+        selectedModifiers: [...updateModifiers,...modifiersData.current],
+        profitCenterId: getProfitCenterId?.LocationId,
+      });
     
+      await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
+      setFormFieldData("ItemModifier","","Comments","",false)
+      setCartData(updatedModifierData);
+      setTimeout(() => {
+        formData.ItemModifier_Comments = ""
+        setSelectedModifiers([])
+        modifiersData.current= null
+        singleModifierData.current = null
+      }, 1000);
+    } catch (error) {
+      console.error("Error updating cart item:", error);
+    }
+  };
     const initialValues = {
       getFormFieldData,
       setFormFieldData,
@@ -551,7 +593,8 @@ export const UseFormContextProvider = ({children}) => {
       setFavoriteItemsList,
       setIsItemFavorite,
       updateModifierCartItemForFavs,
-      updateItemToFavorites
+      updateItemToFavorites,
+      addItemToCartForFavs
     }
     return (
       <FormContext.Provider
