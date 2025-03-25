@@ -373,9 +373,12 @@ export const UseFormContextProvider = ({children}) => {
   ]
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
     let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const currentMealPeriodId = menuOrderData
+    ?.filter((item) => item?.MealPeriodIsSelect === 1)
+    ?.map((items) => items.MealPeriod_Id);
     const params = {
       "Location_Id": getProfitCenterId?.LocationId,
-      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "MealPeriod_Id":currentMealPeriodId[0],
       "Items": updatedFavData
     }
     let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
@@ -397,9 +400,12 @@ export const UseFormContextProvider = ({children}) => {
   ]
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
     let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const currentMealPeriodId = menuOrderData
+    ?.filter((item) => item?.MealPeriodIsSelect === 1)
+    ?.map((items) => items.MealPeriod_Id);
     const params = {
       "Location_Id": getProfitCenterId?.LocationId,
-      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "MealPeriod_Id":currentMealPeriodId[0],
       "Items": updatedFavData
     }
     let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
@@ -473,9 +479,12 @@ export const UseFormContextProvider = ({children}) => {
   ]
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
     let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+    const currentMealPeriodId = menuOrderData
+    ?.filter((item) => item?.MealPeriodIsSelect === 1)
+    ?.map((items) => items.MealPeriod_Id);
     const params = {
       "Location_Id": getProfitCenterId?.LocationId,
-      "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+      "MealPeriod_Id":currentMealPeriodId[0],
       "Items": updatedFavData
     }
     let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);

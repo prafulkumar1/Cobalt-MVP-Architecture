@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
 import * as UI from '@/components/cobalt/importUI';
-import { UseFormContextProvider } from '@/components/cobalt/event';
+import { UseFormContextProvider, useFormContext } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 import ProfitCenters from './source/views/ProfitCenters/ProfitCertersUI';
 import ItemModifier from './source/views/ItemModifier/ItemModifierUI';
@@ -76,7 +76,10 @@ global.apiURL = props.apiURL;
   }, []);
 
   const removeCartItems = async() => {
+    const {setCartData,setModifierCartItemData}  = useFormContext()
     await AsyncStorage.removeItem("cart_data");
+    setCartData([])
+    setModifierCartItemData([])
   }
 
   if (!fontsLoaded) {

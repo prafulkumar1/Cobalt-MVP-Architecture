@@ -44,10 +44,11 @@ export const useItemModifierFavsLogic = () => {
         setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+        const currentMealPeriodId = menuOrderData?.filter((item) => item?.MealPeriodIsSelect === 1)?.map((items) => items.MealPeriod_Id);
         const params = {
           "Item_Id":singleItemDetails?.Item_ID,
           "Location_Id": getProfitCenterId?.LocationId,
-          "MealPeriod_Id":menuOrderData[0]?.MealPeriod_Id
+          "MealPeriod_Id":currentMealPeriodId[0]
         }
         console.log('Item Modifiers Request', params);          
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)

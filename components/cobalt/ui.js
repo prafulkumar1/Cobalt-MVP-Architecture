@@ -595,7 +595,7 @@ class CbBackButton extends React.Component {
                 if (menuOrderData !== null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
                 } else {
-                  this.props.navigation?.goBack()
+                  navigateToScreen(this.props, "ProfitCenters", true, { profileCenterTile: this.state.profitCenterTitle })
                 }
               } else if (currentRoute === "Recentorders") {
                 if (isPrevCartScreen) {
@@ -1005,7 +1005,25 @@ class CbAddToCartButton extends React.Component {
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
         </TouchableOpacity>
       );
-    } else {
+    } else if(IsDisable == 1)
+      {
+        return (
+          <TouchableOpacity
+            style={[this.style ? this.style : styles.addItemToCartBtn,
+            { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
+            { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
+            { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
+            { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
+            ]}
+            activeOpacity={0.5}
+            onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+            disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
+          >
+            <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
+          </TouchableOpacity>
+        );
+      }
+      else {
       return (
         <Box style={[this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
           <TouchableOpacity

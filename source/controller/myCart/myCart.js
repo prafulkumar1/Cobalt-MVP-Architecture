@@ -61,9 +61,12 @@ export const useMyCartLogic = () => {
       setLoading(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const currentMealPeriodId = menuOrderData
+      ?.filter((item) => item?.MealPeriodIsSelect === 1)
+      ?.map((items) => items.MealPeriod_Id);
       const params = {   
         "Location_Id":`${getProfitCenterId?.LocationId}`,
-        "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id
+        "MealPeriod_Id":currentMealPeriodId[0]
       }
       let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
       const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.PickupTime,value:item.PickupTime}))
@@ -284,10 +287,13 @@ export const useMyCartLogic = () => {
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
+      const currentMealPeriodId = menuOrderData
+        ?.filter((item) => item?.MealPeriodIsSelect === 1)
+        ?.map((item) => item.MealPeriod_Id);
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
-          "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+          "MealPeriod_Id":currentMealPeriodId[0],
           "PickupTime": selectedTime ? selectedTime :"",
           "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,

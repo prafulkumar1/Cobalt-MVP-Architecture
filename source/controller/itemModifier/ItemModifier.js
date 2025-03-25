@@ -49,10 +49,13 @@ export const useItemModifierLogic = () => {
         setLoading(true)
         const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
         let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+        const currentMealPeriodId = menuOrderData
+        ?.filter((item) => item?.MealPeriodIsSelect === 1)
+        ?.map((items) => items.MealPeriod_Id);
         const params = {
           "Item_Id":singleItemDetails?.Item_ID,
           "Location_Id": getProfitCenterId?.LocationId,
-          "MealPeriod_Id":menuOrderData[0]?.MealPeriod_Id
+          "MealPeriod_Id":currentMealPeriodId[0]
         // Item_Id:"9EFC6F4B-DA70-4991-AFAB-8174C00BCBB7",
         // LocationId:"8AF9F050-0935-430E-BC33-2A154A99E37A"
         }

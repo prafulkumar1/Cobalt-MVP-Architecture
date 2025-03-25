@@ -159,7 +159,7 @@ export const styles = StyleSheet.create({
   mainContainerList:{ flexGrow: 1},
   itemCategoryLabel:{ color: "#5773a2", fontSize: 20 ,fontFamily:"SourceSansPro_Bold",paddingVertical:8},
   horizontalLine:{ height: 1, width: '100%', borderRadius: 1, borderWidth: 1, borderColor: '#9F9F9F', borderStyle: 'dotted',opacity:0.4 , marginTop:responsiveHeight(2)},
-  floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(1.5) },
+  floatingContainer:{ position: "absolute", bottom: responsiveHeight(8), right: responsiveWidth(5) },
   floatingBtn:{
     width: 72,
     height: 72,
