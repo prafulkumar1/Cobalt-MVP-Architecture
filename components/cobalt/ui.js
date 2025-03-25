@@ -139,7 +139,7 @@ class CbAccordionlist extends React.Component {
                         <AccordionHeader
                           style={styles.subHeader}
                         >
-                          <AccordionTrigger>
+                          <AccordionTrigger style={{marginVertical:-4}}>
                             {({ isExpanded }) => {
                               return (
                                 <>
