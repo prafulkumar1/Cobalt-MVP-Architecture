@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
   },
   operationBtn: {
     position: 'absolute',
-    right: -18,
+    right: -22,
     borderColor: '#5773a2',
     borderWidth: 1,
     backgroundColor: '#fff',
@@ -190,7 +190,7 @@ export const styles = StyleSheet.create({
   BackIcon:{width:12,height:24},
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
-    paddingVertical: 10,
+    paddingVertical: 6,
     paddingHorizontal: 10,
     borderRadius: 20,
     justifyContent: "space-around",
@@ -383,6 +383,7 @@ CheckIcon:{color:"#ffff"},
   },
   doneBtn: {
     marginTop: 20,
+    marginBottom:30,
     paddingHorizontal: 52,
     paddingVertical:6,
     backgroundColor: "#5773A2",
@@ -461,7 +462,7 @@ CheckIcon:{color:"#ffff"},
     borderRadius: 5,
     backgroundColor: "#f0f0f0"
   },
-  selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
+  selectedLabelItem:{fontSize:responsiveFontSize(2.5),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
   crossIcon:{
     width: 30,
     height: 30,
