@@ -18,10 +18,6 @@ import { isPlatformAndroid } from '@/source/constants/Matrices';
 const pageId='MyCart';
 export default function MyCartScreen(props) {
 
-//  let pageConfigJson = global.appConfigJsonArray.find(item => item.PageId === pageId);
-
-//  global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageConfigJson.Controlls : [];
-
    const {
      cartConfigData,
      tipData,
@@ -91,9 +87,9 @@ export default function MyCartScreen(props) {
   const renderModifierList = ({ item }) => {
     return (
       <UI.Box>
-        <UI.Text style={styles.itemCategory}>
+        <UI.CbText id="CartitemCategory" pageId="MyCart" style={styles.itemCategory}>
           {item?.Modifier_Name}
-        </UI.Text>
+        </UI.CbText>
       </UI.Box>
     );
   }
@@ -103,11 +99,10 @@ export default function MyCartScreen(props) {
       let roundedAbsolute = Math.abs(Math.round(safeDragX));
       setValue(roundedAbsolute);
       return (
-          <UI.TouchableOpacity
-            style={styles.swipeActionContainer}
-            onPress={() => handleDelete(item)}
-          >
-            <UI.Text style={styles.removeBtb}>Remove</UI.Text>
+          <UI.TouchableOpacity  onPress={() => handleDelete(item)}>
+            <UI.CbBox id="SwipeActionContainer" pageId="MyCart" style={styles.swipeActionContainer}>
+              <UI.CbText id="RemoveBtb" pageId="MyCart" style={styles.removeBtb}></UI.CbText>
+            </UI.CbBox>
           </UI.TouchableOpacity>
       );
     };
@@ -121,13 +116,10 @@ export default function MyCartScreen(props) {
           renderRightActions={renderRightActions}
           onSwipeableOpen={() => handleSwipeOpen(item.Item_ID)}
         >
-          <UI.TouchableOpacity
-            style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}
-            onPress={() => editCommentBtn(props,item)}
-          >
-            <UI.Box style={styles.mainContainer}>
-              <UI.Box style={styles.cartItemContainer}>
-                <UI.Text style={styles.itemTitle}>{item.Item_Name}</UI.Text>
+          <UI.TouchableOpacity  style={[styles.cardContainer, { opacity: value === 0 ? 1 : 0.5 }]}  onPress={() => editCommentBtn(props,item)} >
+            <UI.CbBox id="ItemmainContainer" pageId="MyCart" style={styles.mainContainer}>
+              <UI.CbBox id="CartItemContainer" pageId="MyCart"  style={styles.cartItemContainer}>
+                <UI.CbText id="CartitemTitle" pageId="MyCart" style={styles.itemTitle}>{item.Item_Name}</UI.CbText>
                 {
                   item?.selectedModifiers && item.selectedModifiers.length > 0 &&
                   <UI.CbFlatList
@@ -136,66 +128,43 @@ export default function MyCartScreen(props) {
                     children={renderModifierList}
                   />
                 }
-                {item?.Modifiers && item.Modifiers.length > 0 && (
-                <UI.CbFlatList
-                  scrollEnabled={false}
-                  flatlistData={item.Modifiers}
-                  children={({ item }) => (
-                    <UI.Text style={styles.modifierItem}>
-                      {item.Modifier_Name}
-                    </UI.Text>
-                  )}
-                />
-              )}
-              </UI.Box>
+              </UI.CbBox>
  
-              <UI.Box style={styles.rightContainer}>
-                <UI.Text
+              <UI.CbBox id="CartrightContainer" pageId="MyCart" style={styles.rightContainer}>
+                <UI.CbText id="CartTotalPrice" pageId="MyCart"
                   style={styles.itemPrice}
-                >{`$${item.TotalPrice}`}</UI.Text>
+                >{`$${item.TotalPrice}`}</UI.CbText>
  
-                <UI.Box style={styles.operationBtn}>
-                  <UI.TouchableOpacity
-                    style={styles.iconBtn}
-                    onPress={() => handleDecrement(item)}
-                  >
-                    <Icon
-                      as={item.quantity === 1 ? TrashIcon : RemoveIcon}
-                      color="#5773a2"
-                      size={"md"}
-                      style={styles.trashIcon}
-                    />
+                <UI.CbBox id="CartoperationBtn" pageId="MyCart" style={styles.operationBtn}>
+                  <UI.TouchableOpacity onPress={() => handleDecrement(item)}>
+                    <UI.CbBox id="DecrementButton" pageId="MyCart" style={styles.iconBtn}>
+                          {item.quantity === 1 ? (
+                            <UI.CbImage key="trash" id="TrashIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Trash_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/>  
+                          ) : (
+                            <UI.CbImage key="minu" id="MinusIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Minus_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/> 
+                          )}
+                    </UI.CbBox>
                   </UI.TouchableOpacity>
  
-                  <UI.Text style={styles.quantityTxt}>{item.quantity}</UI.Text>
+                  <UI.CbText id="Itemquantitytxt" pageId="MyCart" style={styles.quantityTxt}>{item.quantity}</UI.CbText>
  
-                  <UI.TouchableOpacity
-                    style={styles.iconBtn}
-                    onPress={() => handleIncrement(item)}
-                  >
-                    <Icon
-                      as={AddIcon}
-                      color="#5773a2"
-                      size={"xl"}
-                      style={styles.addIcon}
-                    />
-                  </UI.TouchableOpacity>
-                </UI.Box>
-              </UI.Box>
-            </UI.Box>
+                  <UI.TouchableOpacity  onPress={() => handleIncrement(item)} >
+                    <UI.CbBox id="IncrementButton" pageId="MyCart" style={styles.iconBtn}>
+                    <UI.CbImage key="minu" id="PlusIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Plus_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/>       
+                    </UI.CbBox>
+                  </UI.TouchableOpacity>                  
+                </UI.CbBox>
+              </UI.CbBox>
+            </UI.CbBox>
             {item.comments && (
-              <UI.Box style={styles.notesContainer}>
-                <UI.TouchableOpacity
-                  style={styles.commentBtn}
-                  onPress={() => editCommentBtn(props,item)}
-                >
-                  <Image
-                    source={require("@/assets/images/icons/messageIcon2x.png")}
-                    style={styles.noteIcon}
-                  />
-                  <UI.Text style={styles.itemNotes}>{item.comments}</UI.Text>
+              <UI.CbBox id="NotesContainer" pageId="MyCart" style={styles.notesContainer}>
+                <UI.TouchableOpacity  onPress={() => editCommentBtn(props,item)}  >
+                  <UI.CbBox id="CommentBtn" pageId="MyCart" style={styles.commentBtn}>
+                  <UI.CbImage  id="NoteIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/messageIcon2x.png')} resizeMode='contain' style={styles.noteIcon}/>}/>       
+                   <UI.CbText id="ItemNotes" pageId="MyCart" style={styles.itemNotes}>{item.comments}</UI.CbText>
+                  </UI.CbBox>
                 </UI.TouchableOpacity>
-              </UI.Box>
+              </UI.CbBox>
             )}
           </UI.TouchableOpacity>
         </Swipeable>
@@ -220,8 +189,10 @@ export default function MyCartScreen(props) {
       : [styles.tipCount, { color: item.isSelected ? '#fff' : '#00BFF6' }];
     return(
      <>
-        <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>
-          <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
+        <UI.TouchableOpacity  onPress={() => addTip(tipDetails)}>
+          <UI.Box style={containerStyle}>
+            <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
+          </UI.Box>
         </UI.TouchableOpacity>
        {
         (lastIndex === index && isCustomTipAdded) &&
@@ -247,38 +218,39 @@ export default function MyCartScreen(props) {
   }
  
   const PriceRow = ({ label, value }) => (
-    <UI.Box style={styles.splitPriceContainer}>
-      <UI.Box style={styles.priceLabelContainer}>
-        <UI.Text style={styles.priceLabel}>{label}</UI.Text>
-      </UI.Box>
-      <UI.Box style={styles.valueMainContainer}>
-        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
-      </UI.Box>
-    </UI.Box>
+    <UI.CbBox id="SplitPriceContainer" pageId="MyCart"  style={styles.splitPriceContainer}>
+      <UI.CbBox id="PriceLabelContainer" pageId="MyCart" style={styles.priceLabelContainer}>
+        <UI.CbText id="PriceLabel" pageId="MyCart" style={styles.priceLabel}>{label}</UI.CbText>
+      </UI.CbBox>
+      <UI.CbBox id="ValueMainContainer" pageId="MyCart" style={styles.valueMainContainer}>
+        <UI.CbText id="PriceLabel" pageId="MyCart" style={styles.priceLabel}>${value}</UI.CbText>
+      </UI.CbBox>
+    </UI.CbBox>
   );
   
   const PriceDetails = () => (
-    <UI.Box style={styles.priceContainer}>
-      <UI.Box style={styles.priceSubContainer}>
+    <UI.CbBox id="PriceContainer" pageId="MyCart"   style={styles.priceContainer}>
+      <UI.CbBox id="PriceSubContainer" pageId="MyCart"   style={styles.priceSubContainer}>
         {priceBreakDownData && priceBreakDownData?.map((item, index) => (
           <PriceRow key={index} label={item.Label} value={item.Value} />
         ))}
-      </UI.Box>
-    </UI.Box>
+      </UI.CbBox>
+    </UI.CbBox>
   );
  
  
   const renderCartPriceCalculations = () => {
     return (
       <>
-        <UI.Box style={styles.mainSubContainer}>
+        <UI.CbBox id="MainSubContainer" pageId="MyCart" style={styles.mainSubContainer}>
           <UI.TouchableOpacity style={[styles.orderInstContainer]}>
-            <Image
+          <UI.CbImage  id="OderNoteIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/notes.png')} resizeMode='contain' style={styles.noteIcon}/>}/>  
+            {/* <Image
               alt="notes"
               source={require("@/assets/images/icons/notes.png")}
               style={[isPlatformAndroid()?styles.notesIcon:styles.noteIcon2]}
               resizeMode="contain"
-            />
+            /> */}
             <TextInput
               style={[styles.orderInstTxt,{ width:"92%",left:8,height:height}]}
               placeholder='Order Instructions'
@@ -291,19 +263,15 @@ export default function MyCartScreen(props) {
               onContentSizeChange={handleContentSizeChange}
             />
           </UI.TouchableOpacity>
-          <UI.CbCommonButton
-            id={"addMorebtn"}
+          <UI.CbCommonButton id="Addmore" pageId="MyCart"
             showBtnName={"Add More"}
-            screenName={"MenuOrder"}
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
-        </UI.Box>
+        </UI.CbBox>
  
-        <UI.Box
-          style={styles.priceContainer}
-        >
+        <UI.CbBox id="PriceContainer" pageId="MyCart"  style={styles.priceContainer}>
           <PriceDetails />
-        </UI.Box>
+        </UI.CbBox>
       </>
     )
   }
@@ -322,22 +290,22 @@ export default function MyCartScreen(props) {
                   return renderCartItems(items);
                 })
               ) : (
-                <UI.View style={styles.cartEmptyContainer}>
-                  <UI.Text style={styles.emptyCartTxt}>Cart is empty</UI.Text>
-                </UI.View>
+                <UI.CbView id="CartEmptyContainer" pageId="MyCart" style={styles.cartEmptyContainer}>
+                  <UI.CbText id="EmptyCartTxt" pageId="MyCart" style={styles.emptyCartTxt}></UI.CbText>
+                </UI.CbView>
               )}
               {myCartData && myCartData.length > 0 && renderCartPriceCalculations()}
             </UI.ScrollView>
- 
+    
             {
               cartData && cartData.length > 0 &&
               <UI.Box>
                 {
                   cartConfigData?.ShowTip ===1 &&
-                  <UI.Box style={styles.tipBox}>
-                    <UI.Box style={styles.tipContainer}>
-                      <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
-                    </UI.Box>
+                  <UI.CbBox id="TipBox" pageId="MyCart" style={styles.tipBox}>
+                    <UI.CbBox id="TipContainer" pageId="MyCart" style={styles.tipContainer}>
+                      <UI.CbText id="TipText" pageId="MyCart" style={styles.tipTxt}></UI.CbText>
+                    </UI.CbBox>
                     <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
                     <UI.ScrollView scrollEnabled={false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
@@ -346,13 +314,11 @@ export default function MyCartScreen(props) {
                         })
                       }
                     </UI.ScrollView>
-                  </UI.Box>
+                  </UI.CbBox>
                 }
  
                 {keyboardVisible && tipKeyboardOpen && (
-                  <UI.Box
-                    style={styles.bottomBtn}
-                  >
+                  <UI.Box style={styles.bottomBtn}>
                     <UI.CbCommonButton showBtnName="Cancel" style={styles.customBtn} btnTextStyle={styles.btnTextStyle} onPress={() => closeKeyBoard()} />
                     <UI.CbCommonButton showBtnName="Save" style={[styles.customBtn, { backgroundColor: "#5773A2", }]} btnTextStyle={[styles.btnTextStyle, { color: "#fff" }]} onPress={() => handleSaveTip()} />
                   </UI.Box>
@@ -360,12 +326,12 @@ export default function MyCartScreen(props) {
  
                 {
                   (cartConfigData?.ShowPickupLocation === 1 || cartConfigData?.ShowPickupTime === 1)
-                  && <UI.Box style={styles.pickUpContainer}>
+                  && <UI.CbBox id="PickUpContainer" pageId="MyCart" style={styles.pickUpContainer}>
                     {
                       cartConfigData?.ShowPickupTime === 1 &&
                       showPickupTime.length > 0 &&
                       <UI.Box>
-                        <UI.Text style={styles.pickUpTimeTxt}>Select Pickup Time</UI.Text>
+                        <UI.CbText id="PickUpTimeTxt" pageId="MyCart" style={styles.pickUpTimeTxt}></UI.CbText>
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupTime}
@@ -379,7 +345,7 @@ export default function MyCartScreen(props) {
                       cartConfigData?.ShowPickupLocation ===1 &&
                       showPickupLocation.length > 0 && 
                       <UI.Box>
-                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
+                        <UI.CbText  id="PickUpPointTxt" pageId="MyCart"  style={styles.pickUpPointTxt}></UI.CbText>
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupLocation}
@@ -388,26 +354,28 @@ export default function MyCartScreen(props) {
                         />
                       </UI.Box>
                     }
-                  </UI.Box>
+                  </UI.CbBox>
                 }
  
-                  <UI.TouchableOpacity style={styles.plcOrdBtn} disabled={loading} onPress={() => handlePlaceOrder()}>
+                  <UI.TouchableOpacity  disabled={loading} onPress={() => handlePlaceOrder()}>
+                    <UI.CbBox id="PlaceOrdBtnContainer" pageId="MyCart"   style={styles.plcOrdBtn}>
                     {
-                      isOrderPlaced ? <UI.Box style={styles.loadingContainer}><ActivityIndicator color={"#00C6FF"} size={"small"} /></UI.Box>
+                      isOrderPlaced ? <UI.CbBox id="LoadingContainer" pageId="MyCart" style={styles.loadingContainer}><UI.CbActivityIndicator id="PriceActivityIndicator" pageId="MyCart" color={"#00C6FF"} size={"small"} /></UI.CbBox>
                         : <>
                           {
-                            isPriceLoaded ? <ActivityIndicator color={"#00C6FF"} size={"small"} />
-                              : <UI.Box style={styles.plcMainContainer}>
-                                <UI.Text style={styles.totalAmtTxt}>Total Amount</UI.Text>
-                                <UI.Text style={styles.totalPrcTxt}>{`$${grandTotal?grandTotal:0}`}</UI.Text>
-                              </UI.Box>
+                            isPriceLoaded ? <UI.CbActivityIndicator id="PriceActivityIndicator" pageId="MyCart" color={"#00C6FF"} size={"small"} />
+                              : <UI.CbBox id="PlcMainContainer" pageId="MyCart"  style={styles.plcMainContainer}>
+                                <UI.CbText id="TotalAmtTxt" pageId="MyCart" style={styles.totalAmtTxt}></UI.CbText>
+                                <UI.CbText id="TotalPrcTxt" pageId="MyCart" style={styles.totalPrcTxt}>{`$${grandTotal?grandTotal:0}`}</UI.CbText>
+                              </UI.CbBox>
                           }
-                          <UI.Box style={styles.verticalLn} />
-                          <UI.Box style={styles.plcOrderTxtContainer}>
-                            <UI.Text style={styles.plcOrderTxt}>Place Order</UI.Text>
-                          </UI.Box>
+                          <UI.CbBox id="VerticalLn" pageId="MyCart" style={styles.verticalLn} />
+                          <UI.CbBox id="PlcOrderTxtContainer" pageId="MyCart" style={styles.plcOrderTxtContainer}>
+                            <UI.CbText id="PlcOrderTxt" pageId="MyCart"  style={styles.plcOrderTxt}></UI.CbText>
+                          </UI.CbBox>
                         </>
                     }
+                    </UI.CbBox>
                   </UI.TouchableOpacity>
  
               </UI.Box>
@@ -419,51 +387,51 @@ export default function MyCartScreen(props) {
         transparent
         animationType="fade"
       >
-        <UI.Box
+        <UI.CbBox id="ModalContainer" pageId="MyCart" 
           style={styles.modalContainer}
         />
  
-        <UI.Box style={styles.confirmMdl}>
-          <UI.Box style={styles.innerModal}>
-            <UI.TouchableOpacity onPress={() => closeSuccessModal(props)} style={styles.closeMainContainer}>
+        <UI.CbBox id="ConfirmMdl" pageId="MyCart"  style={styles.confirmMdl}>
+          <UI.CbBox id="InnerModal" pageId="MyCart"  style={styles.innerModal}>
+            <UI.TouchableOpacity onPress={() => closeSuccessModal(props)} >
+              <UI.CbBox id="CloseMainContainer" pageId="MyCart"  style={styles.closeMainContainer}>
               <Icon
                 as={CloseIcon}
                 color="#5773a2"
                 size={"md"}
                 style={styles.closeIcon}
               />
+              </UI.CbBox>
             </UI.TouchableOpacity>
-            <UI.Box style={styles.innerModalMsgContainer}>
+            <UI.CbBox id="InnerModalMsgContainer" pageId="MyCart"  style={styles.innerModalMsgContainer}>
               <Image
                 source={require("@/assets/images/icons/dining3x.png")}
                 style={styles.diningIcon}
               />
-              <UI.Text style={styles.innerModalAlertTxt}>
+              <UI.CbText id="InnerModalAlertTxt" pageId="MyCart"  style={styles.innerModalAlertTxt}>
                 {successResponse?.ResponseMessage}
-              </UI.Text>
+              </UI.CbText>
               {
                 successResponse?.PickupMesaage?.map((msg) => {
                   return (
                     <>
-                      <UI.Text style={styles.pickDetails}>
+                      <UI.CbText id="PickDetails" pageId="MyCart"  style={styles.pickDetails}>
                         {msg?.Message}
-                      </UI.Text>
-                      <UI.Text style={styles.timeAlertMsg}>
+                      </UI.CbText>
+                      <UI.CbText id="TimeAlertMsg" pageId="MyCart"  style={styles.timeAlertMsg}>
                         {msg?.Time}
-                      </UI.Text>
-                      <UI.Text style={styles.timeAlertMsg}>
+                      </UI.CbText>
+                      <UI.CbText id="TimeAlertMsg" pageId="MyCart"  style={styles.timeAlertMsg}>
                         {msg?.Location}
-                      </UI.Text>
+                      </UI.CbText>
                     </>
                   )
                 })
               }
-              <UI.Text style={styles.thankMsg}>
-                THANK YOU
-              </UI.Text>
-            </UI.Box>
-          </UI.Box>
-        </UI.Box>
+              <UI.CbText id="ThankMsg" pageId="MyCart"  style={styles.thankMsg}></UI.CbText>
+            </UI.CbBox>
+          </UI.CbBox>
+        </UI.CbBox>
       </Modal>
 
       <Modal
@@ -472,7 +440,7 @@ export default function MyCartScreen(props) {
           animationType="fade"
           onRequestClose={closePreviewModal}
         >
-          <UI.Box style={styles.modalBackground}>
+          <UI.Box id="ModalBackground" pageId="MyCart"  style={styles.modalBackground}>
             {
               !isKeyboardVisible
               && 

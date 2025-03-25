@@ -22,6 +22,7 @@ export const loadAppConfigurations = async () => {
 
 
 export const loadPageConfig = async (pageId,controlId) => {
+  
   try {      
     const pageConfig = await getConfig(pageId); 
   const pageConfigJson = pageConfig.map((control) => {

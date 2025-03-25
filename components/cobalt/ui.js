@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, ImageBackground, Image, TouchableOpacity, View, Alert, Animated, Modal, Pressable, } from 'react-native';
+import { ActivityIndicator,FlatList, ImageBackground, Image, TouchableOpacity, View, Alert, Animated, Modal, Pressable, } from 'react-native';
 import {
   FormControl,
   FormControlError,
@@ -42,6 +42,43 @@ export const postQuantityApiCall = async (quantity, itemId) => {
     let quantityInfo = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_STATUS", params)
     return quantityInfo
   } catch (err) { }
+}
+
+
+class CbActivityIndicator extends React.Component{
+  constructor(props){
+      super(props)
+      this.id=props.id;
+      this.pageID=props.pageId;
+      this.color=props.color;
+      this.size=props.size;
+      this.state={
+        ControlConfig:[]
+      }
+      console.log("$$$$$",props)
+  }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+      console.log("!!!!###@",ControlConfig);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
+  render() {
+    const { ControlConfig } = this.state;  
+    console.log("#@$#@$",ControlConfig)
+     const Color = ControlConfig?.color || this.color;    
+     const Size=ControlConfig?.size || this.size;
+      return(
+      <ActivityIndicator color={Color} size={Size} />
+      )
+  }
 }
 
 class CbBackButton extends React.Component {
@@ -223,7 +260,6 @@ class CbText extends React.Component {
       const StyleProps = transformStyles(Styles);  
       const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
       const LabelText=ControlConfig?.LabelText || this.props.children;
-      console.log("12345",dynamicStyle);
      return (
       <Text strikeThrough={StrikeThrough} style={[dynamicStyle,this.Conditionalstyle]} numberOfLines={this.numberOfLines}>
          {LabelText}
@@ -290,9 +326,8 @@ class CbAccordionlist extends React.Component {
   constructor(props) {
     super(props);
     this.id = props.id;
-    this.screenName = props.screenName;
+    this.pageID=props.pageId;
     this.getAllSelectedModifiers = props.getAllSelectedModifiers
-
     this.state = {
       selectedModifiers: [],
       isItemSelected: false,
@@ -302,7 +337,17 @@ class CbAccordionlist extends React.Component {
       toastMessage: ""
     };
   }
-
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);      
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
   handleCheckboxToggle = (
     item,
     value,
@@ -351,13 +396,15 @@ class CbAccordionlist extends React.Component {
   };
 
   render() {
-    const Notfavsource = this.Notfavsource;
-    const favsource = this.favsource;
+    const { ControlConfig } = this.state; 
+     const Styles=ControlConfig?.Styles;
+     const StyleProps = transformStyles(Styles); 
+      
     return (
       <FormContext.Consumer>
         {({ modifiersResponseData, setModifiersResponseData, cartData, singleItemDetails }) => {
           let categoryData = typeof modifiersResponseData?.Categories == "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories
-          const defaultOpenItems = categoryData?.map((_, index) => `item-${index}`);
+          const defaultOpenItems = categoryData?.map((_, index) => `item-${index}`); 
           return (
             <>
               <CbFlatList
@@ -370,36 +417,36 @@ class CbAccordionlist extends React.Component {
                       variant="filled"
                       type="single"
                       size="md"
-                      style={styles.itemDetailsContainer}
+                      style={StyleProps?.itemDetailsContainer || styles.itemDetailsContainer}
                     >
                       <AccordionItem
                         value={`item-${index}`}
-                        style={styles.itemDetailsSubContainer}
+                        style={StyleProps?.itemDetailsSubContainer || styles.itemDetailsSubContainer}
                       >
                         <AccordionHeader
-                          style={styles.subHeader}
+                          style={StyleProps?.subHeader ||  styles.subHeader}
                         >
                           <AccordionTrigger>
                             {({ isExpanded }) => {
                               return (
                                 <>
-                                  <Box style={styles.recentOrderContainer}>
+                                  <Box style={StyleProps?.recentOrderContainer ||  styles.recentOrderContainer}>
                                     <Text
-                                      style={styles.modifierContainer}
+                                      style={StyleProps?.modifierContainer ||  styles.modifierContainer}
                                     >
                                       {order.Category_Name}
                                     </Text>
-                                    <Box style={styles.quantityMessage}>
+                                    <Box style={StyleProps?.quantityMessage ||  styles.quantityMessage}>
                                         {
                                           order.DisplayOption &&
                                           <Text
-                                            style={styles.requiredTxt}
+                                            style={StyleProps?.requiredTxt ||  styles.requiredTxt}
                                           >
                                             {` (${(order.DisplayOption)}) `}
                                           </Text>
                                         }
                                         <Text
-                                          style={styles.maxAllowedTxt}
+                                          style={StyleProps?.maxAllowedTxt ||  styles.maxAllowedTxt}
                                         >
                                           {order.Message
                                             ? `(${order.Message})`
@@ -442,7 +489,7 @@ class CbAccordionlist extends React.Component {
                                 return (
                                   <Box
                                     key={itemIndex}
-                                    style={styles.orderSubContainer}
+                                    style={StyleProps?.orderSubContainer ||  styles.orderSubContainer}
                                   >
                                     <Checkbox
                                       isChecked={item.isChecked}
@@ -470,23 +517,19 @@ class CbAccordionlist extends React.Component {
                                       }}
                                     >
                                       <CheckboxIndicator
-                                        style={styles.CheckboxIndicator}
+                                        style={StyleProps?.CheckboxIndicator ||   styles.CheckboxIndicator}
                                       >
                                         <CheckboxIcon
                                           as={CheckIcon}
-                                          style={{
-                                            color: "#707070",
-                                            width: 17,
-                                            height: 17,
-                                          }}
+                                          style={StyleProps?.modifiercheckIcon ||   styles.modifiercheckIcon}
                                         />
                                       </CheckboxIndicator>
-                                      <CheckboxLabel style={styles.itemNameTxt}>
+                                      <CheckboxLabel style={StyleProps?.itemNameTxt ||   styles.itemNameTxt}>
                                         <Text>{item.Modifier_Name}</Text>
                                       </CheckboxLabel>
                                     </Checkbox>
                                     <AccordionContentText
-                                      style={styles.priceMainTxt}
+                                      style={StyleProps?.priceMainTxt || styles.priceMainTxt}
                                     >
                                       {
                                         (item.Price !== null && parseFloat(item.Price) !== 0) &&
@@ -786,6 +829,7 @@ class CbImage extends React.Component {
      this.pageID=props.pageId;
     this.source = props.source || "";
     this.imageJsx = props.imageJsx;
+    this.resizeMode=props.resizeMode || "";
     this.style = props.style || "";
     this.state = {
       ControlConfig: [], 
@@ -804,14 +848,13 @@ class CbImage extends React.Component {
   };
 
   render() {
-    const {ControlConfig} = this.state;
+    const { ControlConfig } = this.state;
     const source = ControlConfig?.ImageSource  || this.source;
     const Styles=ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles);  
     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
     const jsx = this.imageJsx;
-    
-    console.log("!@##$$",jsx,dynamicStyle)
+    const ResizeMode= ControlConfig?.resizeMode || this.resizeMode;
     if (source) {
 
       if (source.endsWith('.svg')) {
@@ -819,7 +862,7 @@ class CbImage extends React.Component {
         return <SvgUri source={{ uri: source }} />;
       } else {
 
-        return <Image alt='image' source={{ uri: source }}  style={dynamicStyle}/>;
+        return <Image alt='image' resizeMode={ResizeMode} source={{ uri: source }}  style={dynamicStyle}/>;
       }
     } else if (React.isValidElement(jsx)) {
       // Clone the element and merge styles
@@ -842,11 +885,7 @@ class CbFloatingButton extends React.Component {
     return (
       <FormContext.Consumer>
         {({ cartData, modifierCartItemData }) => {
-          const buttonArray = global.controlsConfigJson.find(
-            (item) => item.id === this.id
-          );
-          const variant = buttonArray?.variant || this.variant;
-          const buttonText = buttonArray?.text || this.buttonText;
+          
           const getFinalQuantity = cartData && cartData.reduce((total, prev) => total + prev.quantity, 0)
           return (
             <View style={styles.floatingContainer}>
@@ -1570,8 +1609,9 @@ class cbInput extends React.Component {
 
   constructor(props) {
     super(props);
-    this.formId = props.formId;
+   
     this.id = props.id;
+    this.pageID=props.pageId;
     this.labelText = props.labelText || "";
     this.variant = props.variant || "outline";
     this.input = props.input || 'text';
@@ -1586,26 +1626,43 @@ class cbInput extends React.Component {
     this.multiline = props.multiline
     this.numberOfLines = props.numberOfLines
     this.value = props.value
+    this.state = {
+      ControlConfig : []
+    }
   }
-
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+    
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
 
   render() {
-    const variantprop =  this.valueariant;
+    const { ControlConfig } = this.state; 
+   
+     const Styles=ControlConfig?.Styles || this.styles;
+     const StyleProps = transformStyles(Styles);
+     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {};
+     const variantprop = ControlConfig?.variant || this.variant;
+     const multiline = (ControlConfig?.multiline === "true") || this.multiline;
+    const numberOfLines= ControlConfig?.numberOfLines || this.numberOfLines;
     const typeprop =  this.input;
-    const labelTextprop = this.labelText;
-    const placeholderprop =  this.placeholder;
-    const errorMessageprop =  this.errorMessage;
-    const isDisabledprop =  this.isDisabled;
-    const isReadOnlyprop =   this.isReadOnly;
-    const isRequiredprop =   this.isRequired;
-    //const {getFormFieldData}= useFormContext();
-
-    //const fieldData =this.getFormFieldData(this.formId,this.id); 
-
+    const labelTextprop = ControlConfig?.labelText || this.labelText;
+    const placeholderprop = ControlConfig?.placeholder || this.placeholder;
+    const errorMessageprop =ControlConfig?.errorMessage ||  this.errorMessage;
+    const isDisabledprop = (ControlConfig?.isDisabled == "true") ||  this.isDisabled;
+    const isReadOnlyprop = (ControlConfig?.isReadOnly== "true" ) ||  this.isReadOnly;
+    const isRequiredprop =  (ControlConfig?.isRequired== "true" ) || this.isRequired;
     return (
       <FormContext.Consumer>
       {({getFormFieldData}) => {
-          const value  = getFormFieldData(this.formId,this.id)
+          const value  = getFormFieldData(this.pageID,this.id)
           return (
             <FormControl
               isDisabled={isDisabledprop}
@@ -1617,19 +1674,19 @@ class cbInput extends React.Component {
                   <FormControlLabelText>{labelTextprop}</FormControlLabelText>
                 </FormControlLabel>
               )}
-              <Input variant={variantprop} style={this.style}>
+              <Input variant={variantprop} style={dynamicStyle}>
                 <InputField
                   id={this.id}
                   placeholder={placeholderprop}
                   type={typeprop}
-                  multiline={this.multiline}
-                  numberOfLines={this.numberOfLines}
-                  style={[{ textAlignVertical: "top" }, this.style]}
+                  multiline={multiline}
+                  numberOfLines={numberOfLines}
+                  style={[{ textAlignVertical: "top" }, dynamicStyle]}
                   value={value?.value ? value?.value : this.value}
                   onChangeText={(value) => {
-                    this.setFormFieldData(this.formId, 'input', this.id, value);
+                    this.setFormFieldData(this.pageID, 'input', this.id, value);
                   }}
-                  onFocus={() => this.setFormFieldData(this.formId, 'input', this.id, value?.value)}
+                  onFocus={() => this.setFormFieldData(this.pageID, 'input', this.id, value?.value)}
                 />
               </Input>
               {isRequiredprop && errorMessageprop && (
@@ -1858,29 +1915,52 @@ class CbFlatList extends React.Component {
 class CbCommonButton extends React.Component {
   constructor(props) {
     super(props);
-    this.id = props.addMorebtn
+    this.id = props.id
+    this.pageID=props.pageId;
     this.cartQuantity = props.cartQuantity
     this.showBtnName = props.showBtnName || ""
     this.isPlusIconAvailable = props.isPlusIconAvailable || false
     this.style = props.style
     this.btnTextStyle = props.btnTextStyle
     this.onPress = props.onPress
+    this.state={
+      ControlConfig:[]
+    }
   }
+  async componentDidMount() {
+    await this.loadPageConfig();
+  }
+
+  loadPageConfig = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID, this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
   render() {
+    const { ControlConfig } =this.state;
+    const Styles=ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles); 
+    const Buttontext = ControlConfig?.Buttontext ||  this.showBtnName;
+    const ButtonStyleProp =StyleProps?.buttonStyle || this.style;
+    const ButtonTextStyle=StyleProps?.buttonTextStyle || this.btnTextStyle;
+    const isPlusIconAvailable= (ControlConfig?.isPlusIconAvailable == "true") || this.isPlusIconAvailable;
     return (
       <FormContext.Consumer>
         {({ updateOrAddTxt }) => {
           return (
             <Box>
               <TouchableOpacity
-                style={[this.style ? this.style : styles.mediumBtn]}
+                style={[ButtonStyleProp ? ButtonStyleProp : styles.mediumBtn]}
                 onPress={() => this?.onPress()}
               >
                 {
-                  this.isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
+                  isPlusIconAvailable && <Icon as={AddIcon} color='#2A4E7D' />
                 }
-                <Text style={[this.btnTextStyle ? this.btnTextStyle : styles.mediumBtnTxt]}>
-                  {this.showBtnName ? this.showBtnName : updateOrAddTxt}
+                <Text style={[ButtonTextStyle ? ButtonTextStyle : styles.mediumBtnTxt]}>
+                  {Buttontext ? Buttontext : updateOrAddTxt}
                 </Text>
               </TouchableOpacity>
             </Box>
@@ -1949,4 +2029,5 @@ CbText.displayName='CbText';
 CbHeaderTitle.displayName='CbHeaderTitle';
 CbBox.displayName='CbBox';
 CbView.displayName="CbView";
- export {CbView,CbHeaderBackground,CbHeaderTitle,CbBox,CbText,cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion,CbRecentAddToCart };
+CbActivityIndicator.displayName="CbActivityIndicator";
+ export {CbView,CbHeaderBackground,CbHeaderTitle,CbBox,CbActivityIndicator,CbText,cbSelectTime,CbCommonButton, CbHomeButton, CbBackButton, cbButton, cbInput, cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack, cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbImage,CbAddToCartButton,CbAccordionlist,CbToastMessage,CbRecentAccordion,CbRecentAddToCart };

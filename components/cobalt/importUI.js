@@ -25,6 +25,6 @@ export { Accordion,
   AccordionIcon,  } from '@/components/ui/accordion';
  export { Icon,  } from '@/components/ui/icon';
 export { Box } from '@/components/ui/box';
-export {CbView,CbBox,CbHeaderTitle,CbText, CbHeaderBackground,cbSelectTime,CbAccordionlist, CbCommonButton,CbAddToCartButton,CbHomeButton, CbBackButton, CbImage, cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbToastMessage,CbRecentAccordion,CbRecentAddToCart } from '@/components/cobalt/ui'
+export {CbActivityIndicator,CbView,CbBox,CbHeaderTitle,CbText, CbHeaderBackground,cbSelectTime,CbAccordionlist, CbCommonButton,CbAddToCartButton,CbHomeButton, CbBackButton, CbImage, cbButton, cbInput , cbCheckBox, cbSelect, cbImageBackground, cbRadioButton, cbVStack,cbForm,CbFlatList,cbSearchbox,CbFloatingButton,CbToastMessage,CbRecentAccordion,CbRecentAddToCart } from '@/components/cobalt/ui'
 
 

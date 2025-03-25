@@ -6,7 +6,6 @@ import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimen
 export const transformStyles = (styles) => {
   if (!styles || typeof styles !== "object") return {};
 
-  
   const applyResponsive = (styleObj) => {
     if (!styleObj || typeof styleObj !== "object") return styleObj;
 
@@ -14,11 +13,14 @@ export const transformStyles = (styles) => {
       const value = styleObj[key];
 
       if (typeof value === "string") {
-        if (value.startsWith("responsiveWidth")) {
-          const num = parseFloat(value.match(/\d+/)?.[0]);
+        const widthMatch = value.match(/^responsiveWidth\(([\d.]+)\)$/);
+        const heightMatch = value.match(/^responsiveHeight\(([\d.]+)\)$/);
+
+        if (widthMatch) {
+          const num = parseFloat(widthMatch[1]); // Extract number from parentheses
           acc[key] = isNaN(num) ? value : responsiveWidth(num);
-        } else if (value.startsWith("responsiveHeight")) {
-          const num = parseFloat(value.match(/\d+/)?.[0]);
+        } else if (heightMatch) {
+          const num = parseFloat(heightMatch[1]); // Extract number from parentheses
           acc[key] = isNaN(num) ? value : responsiveHeight(num);
         } else {
           acc[key] = value;
@@ -35,6 +37,8 @@ export const transformStyles = (styles) => {
     Object.entries(styles).map(([className, styleObject]) => [className, applyResponsive(styleObject)])
   );
 };
+
+
 
 
 import { postApiCall } from '@/source/utlis/api';

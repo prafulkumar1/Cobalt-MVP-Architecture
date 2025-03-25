@@ -200,15 +200,16 @@ export const styles = StyleSheet.create({
   HeaderBackground:{ backgroundColor: "red" },
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 20,
+    // paddingVertical: 10,
+     paddingHorizontal: 10,
+    borderRadius: 25,
     justifyContent: "space-around",
     alignItems: "center",
     flexDirection: "row",
     borderWidth: 2,
     borderColor: "#2A4E7D",
-    width: responsiveWidth(30)
+    width: responsiveWidth(28),
+    height:38,
   },
   mediumBtnTxt:{ color: "#2A4E7D", fontSize: 16, textAlign: "center",fontFamily: "SourceSansPro_SemiBold"},
   CheckboxIndicator:{
@@ -221,6 +222,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#fff"
   },
+  modifiercheckIcon:{color: "#707070", width: 17,height: 17},
   scrollIndicator:{justifyContent:"center",alignSelf:"center",alignItems:"center"},
   doneBtn:{
     paddingVertical: 10,

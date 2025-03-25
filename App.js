@@ -21,6 +21,8 @@ import RecentordersScreen from './source/views/Recentorders/recentOrderUi';
 import { loadAppConfigurations,loadPageConfig } from '@/source/constants/ConfigLoad';
 import { getConfig } from '@/source/constants/LocalDatabase';
 import * as SQLite from 'expo-sqlite';
+
+
 let controlsConfigJson=[];
 
 const Stack = createNativeStackNavigator();
@@ -58,18 +60,18 @@ const [headerTitle, setHeaderTitle] = useState({});
   const { NativeNavigationModule } = NativeModules; // iOS Native Module
 
 
-const {username,userID, apiURL,memberID} = props
-global.username = username;
-global.userID = userID;
-global.memberID = memberID;
-global.apiURL = props.apiURL; 
+// const {username,userID, apiURL,memberID} = props
+// global.username = username;
+// global.userID = userID;
+// global.memberID = memberID;
+// global.apiURL = props.apiURL; 
 
-  useEffect(() => {
-    console.log("App started with username:", username);
-    console.log("App started with password:", apiURL);
+//   useEffect(() => {
+//     console.log("App started with username:", username);
+//     console.log("App started with password:", apiURL);
 
   
-  }, [username, userID]);
+//   }, [username, userID]);
 
   const backAction = () => {
     console.log('tapped');

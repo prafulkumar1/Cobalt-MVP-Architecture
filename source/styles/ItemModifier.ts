@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     foodDiscripContainer:{},
     foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_SemiBold"},
+    commentContainer:{paddingBottom:100},
     allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_Italic", paddingVertical: 10 },
     commentsBox:{height: 110, borderColor: "#00000026",   borderRadius: 5,paddingTop:10},
     crossbtn: {
@@ -44,32 +45,12 @@ export const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    modalNoYesBtn: {
-        padding: 10,
-        backgroundColor: "#fff",
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: "#5773A2",
-        borderRadius: 32,
-        width: responsiveWidth(37)
-    }, 
+    modalNoYesBtn: {padding: 10,backgroundColor: "#fff",alignItems: 'center',borderWidth: 1,borderColor: "#5773A2",borderRadius: 32,width: responsiveWidth(37)}, 
     modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21,fontFamily:"SourceSansPro_SemiBold" },
     innerModalAlertTxt:{ fontSize: 24, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(50),marginTop:responsiveHeight(3) },
     innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
-    innerModal:{
-        width: '100%',
-        backgroundColor: "#fff",
-        height: responsiveHeight(55),
-        borderTopLeftRadius: 35,
-        borderTopRightRadius: 35,
-        padding: 20,
-        justifyContent: 'space-between',
-    },
-    confirmMdl:{
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
+    innerModal:{   width: '100%', backgroundColor: "#fff", height: responsiveHeight(55), borderTopLeftRadius: 35, borderTopRightRadius: 35,   padding: 20,justifyContent: 'space-between'},
+    confirmMdl:{ flex: 1,  justifyContent: 'flex-end',    alignItems: 'center'},
     rightItemContainer:{ flexDirection: 'row', alignItems: 'center',justifyContent:"space-between"},
     addIconBtn:{ 
         flexDirection: 'row', 

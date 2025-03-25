@@ -19,7 +19,7 @@
 // }, [])
 // https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
 
-const DevSiteURL="https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/";
+const DevSiteURL="https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api";
 const TestingURL="https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/";
 
 
@@ -27,7 +27,7 @@ export const baseURL =DevSiteURL;
  
 
 export const endpoints = {
-    UI_CONFIGURATIONS:{
+UI_CONFIGURATIONS:{
         GET_UI_CONFIGURATIONS:"MobileOrdering/MO_GetControlsInfo"
     },
     PROFIT_CENTER: {

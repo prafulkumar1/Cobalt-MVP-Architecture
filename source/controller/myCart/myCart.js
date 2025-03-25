@@ -295,9 +295,9 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
-      console.log(JSON.stringify(params),"=============>>>>>catrssshsh")
+      console.log(params,"=============>>>>>catrssshsh")
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
- 
+      console.log(JSON.stringify(placeOrderDetails),"=============>>>>>response")
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
         setSuccessResponse(placeOrderDetails?.response)
         removeCartItems()

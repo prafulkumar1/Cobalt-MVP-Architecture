@@ -345,7 +345,7 @@ export default function MenuOrderScreen(props) {
                                             ]}
                                           />
                                         </UI.Box>
-                                        <UI.CbAddToCartButton mealItemDetails={box} />
+                                        <UI.CbAddToCartButton id="AddtoCartButton" pageId="MenuOrder" mealItemDetails={box} />
                                       </UI.Box>
                                     </UI.CbBox>
                                   </UI.TouchableOpacity>
@@ -559,9 +559,8 @@ export default function MenuOrderScreen(props) {
       return (
         <UI.Box style={{ marginRight: 30, }}>
           <UI.Box style={{ alignItems: "center", justifyContent: "center" }}>
-            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.ImageUrl ? recentOrderImage?.ImageUrl : item.ImageUrl }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
-            ]} />} />
-            <UI.CbAddToCartButton mealItemDetails={itemDetails}
+            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: item?.ImageUrl }} style={styles.recentOrderImage} />} />
+            <UI.CbAddToCartButton id="AddtoCartButton" pageId="MenuOrder" mealItemDetails={itemDetails}
             />
           </UI.Box>
           <UI.Box style={styles.recentMainList}>
@@ -587,11 +586,7 @@ export default function MenuOrderScreen(props) {
           children={({ item }) => <RenderingRecentOrders item={item} />}
         />
         <UI.TouchableOpacity onPress={() => navigateToScreen(props, "Recentorders", true)}>
-          <UI.Text
-            style={[
-              seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
-            ]}
-          >Show All</UI.Text>
+          <UI.Text style={styles.seeAllRecentOrders}> Show All </UI.Text>
         </UI.TouchableOpacity>
       </UI.Box>
     );

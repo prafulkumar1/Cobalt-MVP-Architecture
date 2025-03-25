@@ -15,12 +15,12 @@ api.interceptors.response.use((response) => {
   return response;
 });
 export default api;
-
+ 
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": global.memberID,
-      "ID": global.memberID,
+      "MemberID": "09071",
+      "ID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
       "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
         {
@@ -34,15 +34,15 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         }
       ],
       "IsAdmin": "0",
-      "UserName": global.username,
+      "UserName": "Wesselman, Bob",
       "Role": "Full Access",
-      "UserId": global.userID,
+      "UserId": "50189",
     };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);
-
+ 
     let responseData = await api.post(
-      `${global.apiURL}/${endpoints[screenName][endpoint]}`,
+      `${baseURL}/${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {
@@ -51,7 +51,7 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         },
       }
     );
-
+ 
     return {
       response: responseData.data,
       statusCode: responseData.status,

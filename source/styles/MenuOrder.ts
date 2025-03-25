@@ -310,27 +310,14 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
     fontFamily: "SourceSansPro_SemiBold",
   },
-  addToCartBtn: {
-    backgroundColor: "#5773a2",
-    width:responsiveWidth(40),
-    height:responsiveHeight(5),
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  addToCartBtn: {backgroundColor: "#5773a2",width:responsiveWidth(40),height:responsiveHeight(5),borderRadius: 20,justifyContent: "center",alignItems: "center",},
   recentBtn: {
     backgroundColor: "#5773a2",
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
-  addCartTxt: {
-    color: "#fff",
-    fontSize: responsiveFontSize(2.8),
-    fontFamily: "SourceSansPro_SemiBold",
-    textAlign: "center",
-    paddingTop:isPlatformAndroid()?8:10
-  },
+  addCartTxt: {color: "#fff", fontSize: responsiveFontSize(2.8),fontFamily: "SourceSansPro_SemiBold",textAlign: "center", paddingTop:isPlatformAndroid()?8:10},
   dropdownIcon:{width: 15, height: 15, resizeMode: "contain",right: 20},
   modalBackground:{
     flex: 1,

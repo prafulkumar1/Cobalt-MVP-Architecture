@@ -62,17 +62,27 @@ const ItemModifier = (props) => {
           >
             <UI.TouchableOpacity style={styles.favIconBtn} onPress={() => toggleFavoriteItems()}>
               {isItemFavorite === 1 ? (
-                <Image
+                <UI.CbImage id="FavIcon" pageId="ItemModifier"
+                imageJsx={
+                  <Image
                 source={require("@/assets/images/icons/Fav3x.png")}
                 style={styles.favIcon}
                 resizeMode='contain'
               />
+                }
+              />
+                
               ) : (
-                <Image
+                <UI.CbImage id="NotFavIcon" pageId="ItemModifier"
+                imageJsx={
+                  <Image
                 source={require("@/assets/images/icons/Notfav3x.png")}
                 style={styles.favIcon}
                 resizeMode='contain'
               />
+                }
+              />
+                
               )}
             </UI.TouchableOpacity>
             <UI.CbAddToCartButton id="AddtoCartButton" pageId="ItemModifier"
@@ -158,38 +168,36 @@ const ItemModifier = (props) => {
 
               {
                 Description &&
-                <UI.Box style={styles.foodDiscripContainer}>
+                <UI.CbBox id="FoodDiscripContainer" pageId="ItemModifier" style={styles.foodDiscripContainer}>
                   <CbDottedLine length={50} dotSize={6} dotColor="#0000002B" />
-                  <UI.Text style={styles.foodDiscripTxt}>
+                  <UI.CbText id="FoodDiscripText" pageId="ItemModifier" style={styles.foodDiscripTxt}>
                     {Description ? Description : ""}
-                  </UI.Text>
+                  </UI.CbText>
                   <CbDottedLine length={50} dotSize={6} dotColor="#0000002B" />
-                </UI.Box>
+                </UI.CbBox>
               }
 
-              <UI.Box style={styles.modifierSubContainer}>
+              <UI.CbBox id="ModifierSubContainer" pageId="ItemModifier"  style={styles.modifierSubContainer}>
                 <UI.Box>
                   {Array.isArray(categoryData) && categoryData.length > 0 && (
                     <>
-                    <UI.Text style={styles.modifierTxt}>Modifiers</UI.Text>
-                    <UI.CbAccordionlist screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}    />
+                    <UI.CbText id="ModifierText" pageId="ItemModifier" style={styles.modifierTxt}></UI.CbText>
+                    <UI.CbAccordionlist id="ModifiersList" pageId="ItemModifier" screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}/>
                     </>
                   )}
                 </UI.Box>
-                  <UI.Box style={{paddingBottom:100}}>
-                    <UI.Text style={styles.allergyInfoTxt}>
-                      Comment/Allergy Info
-                    </UI.Text>
+                  <UI.CbBox id="CommentContainer" pageId="ItemModifier" style={styles.commentContainer} >
+                    <UI.CbText id="AllergyInfoTxt" pageId="ItemModifier" style={styles.allergyInfoTxt}>          </UI.CbText>
                     <UI.cbForm
                       formId={pageId}
                       setFormFieldData={setFormFieldData}
                       getFormFieldData={getFormFieldData}
                     >   
-                      <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId} value={value?.value}/>
+                      <UI.cbInput id="Comments" pageId="ItemModifier" style={styles.commentsBox} multiline={true} numberOfLines={4} value={value?.value}/>
                       {/* <UI.cbInput id="Comments" style={styles.commentsBox} multiline={true} numberOfLines={4} formId={pageId}/> */}
                     </UI.cbForm>
-                  </UI.Box>
-              </UI.Box>
+                  </UI.CbBox>
+              </UI.CbBox>
             </UI.Box>
           </UI.CbBox>
 
@@ -199,40 +207,37 @@ const ItemModifier = (props) => {
             animationType="fade"
             onRequestClose={() => setIsVisible(false)}
           >
-            <UI.View
+            <UI.CbView id="ConfrimModalContainer" pageId="ItemModifier"
               style={styles.modalContainer}
               onPress={() => setIsVisible(false)}
             />
 
-            <UI.Box style={styles.confirmMdl}>
-              <UI.Box style={styles.innerModal}>
-                <UI.Box style={styles.innerModalMsgContainer}>
-                  <Image
-                    source={require("@/assets/images/icons/dining3x.png")}
-                    style={styles.diningIcon}
-                  />
-                  <UI.Text style={styles.innerModalAlertTxt}>
-                    Are you sure you want to discard your changes?
-                  </UI.Text>
+            <UI.CbBox id="ConfrimModal" pageId="ItemModifier" style={styles.confirmMdl}>
+              <UI.CbBox id="ConfrimInnerModal" pageId="ItemModifier" style={styles.innerModal}>
+                <UI.CbBox id="InnerModalMsgContainer" pageId="ItemModifier" style={styles.innerModalMsgContainer}>
+                  <UI.CbImage id="ModalDiningIcon" pageId="ItemModifier"
+                  imageJsx={
+                    <Image
+                      alt="image"
+                      source={require("@/assets/images/icons/dining3x.png")}
+                      style={styles.diningIcon}
+                    />
+                  }/>
+                  <UI.CbText id="InnerModalAlertTxt" pageId="ItemModifier" style={styles.innerModalAlertTxt}>              
+                  </UI.CbText>
 
-                  <UI.Box style={styles.discardBtn}>
-                    <UI.TouchableOpacity
-                      onPress={() => setIsVisible(false)}
-                      style={styles.modalNoYesBtn}
-                    >
-                      <UI.Text style={styles.modalNoYesBtnTxt}>No</UI.Text>
+                  <UI.CbBox id="DiscardButton" pageId="ItemModifier" style={styles.discardBtn}>
+                    <UI.TouchableOpacity  onPress={() => setIsVisible(false)}>
+                      <UI.CbBox id="ModalNoBtn" pageId="ItemModifier" style={styles.modalNoYesBtn}><UI.CbText id="ModalNoBtnTxt" pageId="ItemModifier" style={styles.modalNoYesBtnTxt}></UI.CbText></UI.CbBox>
                     </UI.TouchableOpacity>
 
-                    <UI.TouchableOpacity
-                      onPress={handleDiscardChanges}
-                      style={styles.modalNoYesBtn}
-                    >
-                      <UI.Text style={styles.modalNoYesBtnTxt}>Yes</UI.Text>
+                    <UI.TouchableOpacity  onPress={handleDiscardChanges} >
+                      <UI.CbBox id="ModalYesBtn" pageId="ItemModifier" style={styles.modalNoYesBtn}><UI.CbText id="ModalYesBtnTxt" pageId="ItemModifier"  style={styles.modalNoYesBtnTxt}></UI.CbText></UI.CbBox>
                     </UI.TouchableOpacity>
-                  </UI.Box>
-                </UI.Box>
-              </UI.Box>
-            </UI.Box>
+                  </UI.CbBox>
+                </UI.CbBox>
+              </UI.CbBox>
+            </UI.CbBox>
           </Modal>
         </Animated.ScrollView>
         {

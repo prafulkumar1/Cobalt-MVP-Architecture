@@ -294,11 +294,11 @@ export const useMenuOrderLogic = (props) => {
         const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
         return modifier.isChecked && index === lastIndex;
       });
-      if (getRequiredItem.length > 0) {
+      if (getRequiredItem?.length > 0) {
         isRequiredModifier = true
         getRequiredItem?.map((item) => {
           requiredModifier = item?.Category_Name
-          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+          return uniqueModifiers?.length > 0 && uniqueModifiers?.forEach((modifierId) => {
             if (item.Category_Id == modifierId.Category_Id) {
               isRequiredModifier = false
             }
@@ -330,7 +330,7 @@ export const useMenuOrderLogic = (props) => {
         getRequiredItem?.map((item) => {
           isRequiredModifier = true
           requiredModifier = item?.Category_Name
-          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+          return uniqueModifiers?.length > 0 && uniqueModifiers?.forEach((modifierId) => {
             if (item.Category_Id == modifierId.Category_Id) {
               isRequiredModifier = false
             }
