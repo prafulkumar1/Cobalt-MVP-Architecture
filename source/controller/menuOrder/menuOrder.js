@@ -22,10 +22,12 @@ export const useMenuOrderLogic = (props) => {
   const [errorMessage, setErrorMessage] = useState("")
   const [mealPeriods, setMealPeriods] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(newData);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedSubmenus, setExpandedSubmenus] = useState({});
   const [itemPositions, setItemPositions] = useState({});
   const [expandedIds, setExpandedIds] = useState([])
+  const [isAvailable, setIsAvailable] = useState(0);
+  const [IsModifierAvailable, setIsModifierAvailable] = useState(0);
  
  
   const {
@@ -49,6 +51,9 @@ export const useMenuOrderLogic = (props) => {
     setToastDetails,
     addItemToFavorites,
     setCartApiResponse,
+    addItemToCartBtn,
+    updateCartItemQuantity,
+    itemDataVisible
   } = useFormContext();
  
   const  {getFavorites} = useRecentOrderLogic()
@@ -464,6 +469,87 @@ export const useMenuOrderLogic = (props) => {
       setCartApiResponse(cartInfo.response?.Items)
     } catch (err) { }
   }
+  const handleAddToCartBtn = async (mealItemDetails) => {  
+    let quantityInfo = await postQuantityApiCall(1, mealItemDetails?.Item_ID);
+  
+    if (quantityInfo.statusCode === 200) {      
+      setIsAvailable(quantityInfo?.response.IsAvailable);
+      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
+      if (quantityInfo?.response?.IsModifierAvailable === 1) {
+        storeSingleItem(mealItemDetails);
+        if (itemDataVisible) {
+          increaseQuantity(mealItemDetails, false);
+        } else {
+          closePreviewModal();
+          increaseQuantity(mealItemDetails, false);
+        }
+      } else {
+        addItemToCartBtn(mealItemDetails);
+      }
+    } else {
+    }
+  };
+
+  const modifierIncDecBtn = async (
+    mealItemDetails,
+    cartQuantity,
+    modifierQuantity,
+    operation
+  ) => {
+    let isItemAvailableInCart = false;
+    cartData?.forEach((items) => {
+      if (items?.Item_ID === mealItemDetails.Item_ID) {
+        isItemAvailableInCart = true;
+      }
+    });
+  
+    let requiredQuantity = IsModifierAvailable === 1 ? modifierQuantity : cartQuantity;
+    let quantityInfo = await postQuantityApiCall(requiredQuantity, mealItemDetails?.Item_ID);
+  
+    if (quantityInfo.statusCode === 200) {
+      if (quantityInfo?.response.IsModifierAvailable === 1) {
+        if (operation === "decrement") {
+          if (isItemAvailableInCart) {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+            updateCartItemQuantity(mealItemDetails, cartQuantity - 1);
+          } else {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+          }
+        } else {
+          if (quantityInfo?.response?.IsAvailable === 1) {
+            if (isItemAvailableInCart) {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+              updateCartItemQuantity(mealItemDetails, cartQuantity + 1);
+            } else {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+            }
+          } else {
+            Alert.alert(quantityInfo?.response?.ResponseMessage);
+          }
+        }
+      } else {
+        if (operation === "decrement") {
+          if (itemDataVisible) {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+          } else {
+            updateCartItemQuantity(mealItemDetails, cartQuantity - 1);
+            updateModifierItemQuantity(mealItemDetails, cartQuantity - 1);
+          }
+        } else {
+          if (quantityInfo?.response?.IsAvailable === 1) {
+            if (itemDataVisible) {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+            } else {
+              updateCartItemQuantity(mealItemDetails, cartQuantity + 1);
+              updateModifierItemQuantity(mealItemDetails, cartQuantity + 1);
+            }
+          } else {
+            Alert.alert(quantityInfo?.response?.ResponseMessage);
+          }
+        }
+      }
+    }
+  };
   return {
     isRecentOrderOpen,
     openRecentOrder,
@@ -494,6 +580,8 @@ export const useMenuOrderLogic = (props) => {
     handleLayout,
     handleCloseItemDetails,
     handleScroll,
-    handleItemLayout
+    handleItemLayout,
+    handleAddToCartBtn,
+    modifierIncDecBtn
   };
 };
