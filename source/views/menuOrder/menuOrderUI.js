@@ -617,11 +617,11 @@ export default function MenuOrderScreen(props) {
       } else {
         return (
           <>
-          <UI.Box style={styles.topContainer}>
-            {mealPeriods.map((item) => {
+          <UI.ScrollView horizontal={true} style={styles.topContainer}>
+            {mealPeriods?.map((item) => {
                 return renderMealTypeList(item, setMealType);
               })}
-            </UI.Box>
+            </UI.ScrollView>
 
             {renderCategoryMainList()}
 

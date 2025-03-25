@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
        fontFamily: "SourceSansPro_Regular",
        paddingLeft: responsiveWidth(1.2),
        paddingRight: responsiveWidth(0.8),
-       paddingTop: isPlatformIos() ? 2 : 4
+       paddingTop: 4
      },
    recentContainer:{
     paddingHorizontal: horizontalScale(10),

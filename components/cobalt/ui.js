@@ -205,7 +205,7 @@ class CbAccordionlist extends React.Component {
                                     style={styles.orderSubContainer}
                                   >
                                     <Checkbox
-                                      isChecked={item?.IsFavourite !==null ? item.IsFavourite===1 : item.isChecked}
+                                      isChecked={item.isChecked}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
@@ -653,7 +653,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?3:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?6:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );

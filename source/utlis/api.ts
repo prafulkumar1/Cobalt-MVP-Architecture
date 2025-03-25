@@ -20,8 +20,8 @@ export default api;
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": isPlatformAndroid()?"09071":global.memberID,
-      "ID":isPlatformAndroid()?"128EF3F3-A7F1-4278-A99E-6C53F5B3B047": global.memberID,
+      "MemberID": isPlatformAndroid()?"EBC475B2-369A-496E-B8B2-AE7F4E846781":global.memberID,
+      "ID":isPlatformAndroid()?"EBC475B2-369A-496E-B8B2-AE7F4E846781": global.memberID,
       "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
         {
@@ -35,9 +35,9 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         }
       ],
       "IsAdmin": "0",
-      "UserName":isPlatformAndroid()?"Henry, aa Luther": global.username,
+      "UserName":isPlatformAndroid()?"Wesselman, Bob": global.username,
       "Role": "Full Access",
-      "UserId":isPlatformAndroid()?"9837": global.userID,
+      "UserId":isPlatformAndroid()?"00026 - 00": global.userID,
     };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);

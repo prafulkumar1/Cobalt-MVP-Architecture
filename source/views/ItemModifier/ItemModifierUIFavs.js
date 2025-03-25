@@ -3,16 +3,16 @@ import React, { useRef} from 'react';
 import { Image, Modal, Animated, UIManager, Platform } from "react-native";
 import { useFormContext } from '@/components/cobalt/event';
 import { styles } from '@/source/styles/ItemModifier';
-import { useItemModifierLogic } from '@/source/controller/itemModifier/ItemModifier';
 import { responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
+import { useItemModifierFavsLogic } from '@/source/controller/itemModifier/ItemModifierFavs';
  
 const pageId = "ItemModifier"
 if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
-const ItemModifier = (props) => {
+const ItemModifierUIFavs = (props) => {
     const {isItemFavorite,toggleFavoriteItems,toastDetails,setToastDetails, singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -21,7 +21,7 @@ const ItemModifier = (props) => {
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     const value = getFormFieldData(pageId,"Comments")
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
-    const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
+    const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierFavsLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
     if(loading){
       return(
@@ -65,13 +65,13 @@ const ItemModifier = (props) => {
               {isItemFavorite === 1 ? (
                 <Image
                 source={require("@/assets/images/icons/Fav3x.png")}
-                style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                style={styles.favIcon}
                 resizeMode='contain'
               />
               ) : (
                 <Image
                 source={require("@/assets/images/icons/Notfav3x.png")}
-                style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                style={styles.favIcon}
                 resizeMode='contain'
               />
               )}
@@ -142,13 +142,13 @@ const ItemModifier = (props) => {
                     {isItemFavorite === 1 ? (
                       <Image
                       source={require("@/assets/images/icons/Fav3x.png")}
-                      style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                      style={styles.favIcon}
                       resizeMode='contain'
                     />
                     ) : (
                       <Image
                       source={require("@/assets/images/icons/Notfav3x.png")}
-                      style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                      style={styles.favIcon}
                       resizeMode='contain'
                     />
                     )}
@@ -258,4 +258,4 @@ const ItemModifier = (props) => {
     
 };
  
-export default ItemModifier;
+export default ItemModifierUIFavs;

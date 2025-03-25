@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useFormContext } from '@/components/cobalt/event';
-import { foodOrderData } from '@/source/constants/commonData';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ConstructionIcon } from 'lucide-react-native';
 const pageId='ItemModifier';
-export const useItemModifierLogic = () => {
-    const [itemNames, setItemNames] = useState([]);
+export const useItemModifierFavsLogic = () => {
     const [loading,setLoading] = useState(false)
     const {
         setModifiersResponseData,
-        modifiersResponseData,
         closePreviewModal,
         singleItemDetails,
         selectedModifiers,
@@ -27,8 +23,7 @@ export const useItemModifierLogic = () => {
         setFormFieldData,
         menuOrderData,
         favoriteItemsList,
-        setIsItemFavorite,
-        cartApiResponse
+        setIsItemFavorite
     } = useFormContext()
  
  
@@ -53,8 +48,6 @@ export const useItemModifierLogic = () => {
           "Item_Id":singleItemDetails?.Item_ID,
           "Location_Id": getProfitCenterId?.LocationId,
           "MealPeriod_Id":menuOrderData[0]?.MealPeriod_Id
-        // Item_Id:"9EFC6F4B-DA70-4991-AFAB-8174C00BCBB7",
-        // LocationId:"8AF9F050-0935-430E-BC33-2A154A99E37A"
         }
         console.log('Item Modifiers Request', params);          
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
@@ -67,17 +60,12 @@ export const useItemModifierLogic = () => {
                 ...modifiersResponse.response,
                 Categories: categoryData?.map(category => ({
                   ...category,
-                  Modifiers: category.Modifiers.map(modifier => ({
-                        ...modifier,
-                        isChecked: cartData?.some(cartItem =>{
-                          const uniqueModifiers = cartItem?.selectedModifiers?.filter((modifier, index, self) => {
-                            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-                            return modifier.isChecked && index === lastIndex;
-                          });
-                         return uniqueModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
-                        }
-                        )
-                      }))
+                  Modifiers: category.Modifiers.map(modifier => {
+                    return{
+                      ...modifier,
+                      isChecked: modifier.IsFavourite === 1
+                    }
+                  })
                 }))
               };
                setModifiersResponseData(updatedData)
@@ -87,11 +75,6 @@ export const useItemModifierLogic = () => {
                 setUpdateOrAddTxt("Update Cart")
               }else{
                 setUpdateOrAddTxt("Add to Cart")
-              }
-              const cartItemDetails = cartApiResponse?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-              if(cartItemDetails){
-                let updateModifierCartItem = modifierCartItemData?.map((items) => ({...items,quantityIncPrice:cartItemDetails?.TotalPrice,quantity:cartItemDetails?.quantity}))
-                setModifierCartItemData(updateModifierCartItem)
               }
                setLoading(false)
             }
@@ -146,8 +129,8 @@ export const useItemModifierLogic = () => {
     
         return {
           ...items,
-          basePrice: totalItemPrice + basePrice + (finalValue*items.quantity),
-          quantityIncPrice: totalItemPrice + (finalValue*items.quantity),
+          basePrice: totalItemPrice + basePrice + finalValue,
+          quantityIncPrice: totalItemPrice + finalValue,
         };
       });
     

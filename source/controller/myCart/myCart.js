@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
  
-    const {setIsPrevCartScreen,setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
+    const {setCartApiResponse,setIsPrevCartScreen,setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -116,6 +116,7 @@ export const useMyCartLogic = () => {
 
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
+      setCartApiResponse(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
       setIsPriceLoaded(false)

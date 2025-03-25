@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
   bottomStyle: {
     width: "100%",
     borderRadius: 4,
-    marginTop:isPlatformAndroid()?10:7,
+    marginTop:isPlatformAndroid()?4:7,
     backgroundColor:"#00c6ff",
     height:4
   },
@@ -47,16 +47,16 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    width: responsiveWidth(30),
     marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
+    paddingHorizontal:responsiveWidth(5)
   },
   inactiveMenuType: {
     backgroundColor: "#ECECEC",
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    width: responsiveWidth(30),
+    paddingHorizontal:responsiveWidth(5),
     borderRadius: 5,
     opacity: 0.8,
     marginHorizontal: 5,
@@ -68,11 +68,8 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBoldItalic",
   },
   topContainer: {
-    flexDirection: "row",
     paddingVertical: 10,
     width: "100%",
-    justifyContent: "flex-start",
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -80,7 +77,9 @@ export const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: "#fff",
     paddingHorizontal: 10,
-    zIndex:1
+    zIndex:1,
+    minHeight:responsiveHeight(7),
+    maxHeight:responsiveHeight(7)
   },
   categoryListContainer: {
     height: isPlatformAndroid() ? responsiveHeight(4.8) : width * 0.105,
