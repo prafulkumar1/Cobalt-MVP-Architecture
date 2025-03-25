@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginHorizontal:4
   },
   mainContainer: { flex: 1, backgroundColor: "#ECECEC" },
   scrollContent: {
@@ -47,7 +48,6 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
-    marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
     paddingHorizontal:responsiveWidth(5)
   },
@@ -59,7 +59,6 @@ export const styles = StyleSheet.create({
     paddingHorizontal:responsiveWidth(5),
     borderRadius: 5,
     opacity: 0.8,
-    marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
   },
   timeDurationTxt: {
@@ -303,7 +302,7 @@ innerModalAlertTxt:{ fontSize: 22, color: "#4B5154",fontFamily:"SourceSansPro_Se
 innerModal:{
     width: '100%',
     backgroundColor: "#fff",
-    height: responsiveHeight(45),
+    height: isPlatformAndroid()?responsiveHeight(45):responsiveHeight(40),
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
     padding: 20,
@@ -332,7 +331,7 @@ mainContainerList:{paddingBottom:responsiveHeight(80)},
 horizontalLineStyle:{width:"95%",alignSelf:"center"},
 operationBtn: {
   position: 'absolute',
-  right: -18,
+  right: -22,
   borderColor: '#5773a2',
   borderWidth: 1,
   backgroundColor: '#fff',
@@ -356,6 +355,7 @@ addIcon: { width: 25, height: 25 },
     borderColor:"#5773a2",
     borderRadius:5,
     padding: responsiveWidth(2),
+    backgroundColor:"#ffffff"
   },
   operationBtn3:{
     position:"absolute",

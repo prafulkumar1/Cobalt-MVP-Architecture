@@ -190,7 +190,7 @@ export const styles = StyleSheet.create({
   BackIcon:{width:12,height:24},
   cartIcon:{width:35,height:35,resizeMode:"contain",margin:5},
   mediumBtn:{
-    paddingVertical: 6,
+    paddingVertical: isPlatformAndroid()?6:8,
     paddingHorizontal: 10,
     borderRadius: 20,
     justifyContent: "space-around",

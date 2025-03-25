@@ -284,6 +284,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             id={"addMorebtn"}
             showBtnName={"Add More"}
             screenName={"MenuOrder"}
+            isPlusIconAvailable = {true}
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
@@ -368,7 +369,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                       cartConfigData?.ShowPickupLocation ===1 &&
                       showPickupLocation.length > 0 && 
                       <UI.Box>
-                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
+                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Location</UI.Text>
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupLocation}
