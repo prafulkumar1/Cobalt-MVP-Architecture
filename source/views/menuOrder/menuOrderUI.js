@@ -176,7 +176,7 @@ export default function MenuOrderScreen(props) {
   const renderMealTypeList = (mealTypeItem,index) => {
     const lastIndex = mealPeriods.length -1 === index
     return (
-      <UI.Box style={[styles.mealTypeContainer,{marginRight:lastIndex?10:0}]}>
+      <UI.Box style={[styles.mealTypeContainer,{marginRight:lastIndex?20:0}]}>
         <UI.TouchableOpacity
           activeOpacity={0.6}
           style={[
@@ -624,11 +624,17 @@ export default function MenuOrderScreen(props) {
       } else {
         return (
           <>
-          <UI.ScrollView horizontal={true} style={styles.topContainer} showsHorizontalScrollIndicator={false}>
-            {mealPeriods?.map((item,index) => {
-                return renderMealTypeList(item, index);
-              })}
-            </UI.ScrollView>
+            <UI.Box style={styles.topContainer2}>
+              <UI.ScrollView
+                horizontal={true}
+                style={styles.topContainer}
+                showsHorizontalScrollIndicator={false}
+              >
+                {mealPeriods?.map((item, index) => {
+                  return renderMealTypeList(item, index);
+                })}
+              </UI.ScrollView>
+            </UI.Box>
 
             {renderCategoryMainList()}
 
@@ -743,12 +749,12 @@ export default function MenuOrderScreen(props) {
           <UI.TouchableOpacity
             style={[
               styles.recentOrderContainer,
-              { width:"90%" },
+              { width:"40%" },
             ]}
             onPress={() => navigateToScreen(props, "Recentorders", true)}
           >
             <UI.Box style={styles.recentOrderBox}>
-            <UI.TouchableOpacity
+            {/* <UI.TouchableOpacity
                 onPress={() => this.props.navigation.goBack()}
               >
                 <UI.CbImage
@@ -759,11 +765,11 @@ export default function MenuOrderScreen(props) {
                     />
                   }
                 />
-              </UI.TouchableOpacity>
+              </UI.TouchableOpacity> */}
               <UI.Text style={styles.recentOrderTxt}>Recent Orders</UI.Text>
             </UI.Box>
 
-            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => openRecentOrder()}>
+            <UI.TouchableOpacity style={styles.rightIconBtn} onPress={() => navigateToScreen(props, "Recentorders", true)}>
               <Icon as={ChevronRightIcon} style={styles.dropdownIcon}/>
             </UI.TouchableOpacity>
           </UI.TouchableOpacity>

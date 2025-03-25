@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
-    marginHorizontal:4
   },
   mainContainer: { flex: 1, backgroundColor: "#ECECEC" },
   scrollContent: {
@@ -48,6 +47,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+    marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
     paddingHorizontal:responsiveWidth(5)
   },
@@ -59,6 +59,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal:responsiveWidth(5),
     borderRadius: 5,
     opacity: 0.8,
+    marginHorizontal: 5,
     paddingVertical: responsiveHeight(0.5),
   },
   timeDurationTxt: {
@@ -78,7 +79,17 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 10,
     zIndex:1,
     minHeight:responsiveHeight(7),
-    maxHeight:responsiveHeight(7)
+    maxHeight:responsiveHeight(7),
+  },
+  topContainer2:{
+    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    backgroundColor: "#fff",
+    zIndex:1,
   },
   categoryListContainer: {
     height: isPlatformAndroid() ? responsiveHeight(4.8) : width * 0.105,
@@ -114,12 +125,12 @@ export const styles = StyleSheet.create({
     lineHeight: 20,
     marginLeft: 8,
   },
-  rightIconBtn: { right: 20 },
+  rightIconBtn: { right: 10 },
   recentOrderBox: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 10,
+    marginLeft: 2,
   },
   recentOrderIcon: { width: 20, height: 20, resizeMode: "contain" },
   loadingContainer: {
@@ -173,7 +184,7 @@ export const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   horizontalLine: {
-    width: responsiveWidth(100),
+    width: responsiveWidth(95),
     marginTop: responsiveHeight(2),
     opacity:0.6
   },
@@ -188,8 +199,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: responsiveHeight(0.8),
-    marginTop: 6,
+    paddingVertical: responsiveHeight(1.5),
+    marginTop: 10,
   },
   bottomMiddleContainer: {
     marginHorizontal: responsiveWidth(2),
@@ -299,15 +310,15 @@ export const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)'
 },
 innerModalAlertTxt:{ fontSize: 22, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(80),marginTop:responsiveHeight(3) },
+innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
 innerModal:{
     width: '100%',
     backgroundColor: "#fff",
-    height: isPlatformAndroid()?responsiveHeight(45):responsiveHeight(40),
+    height: responsiveHeight(35),
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
     padding: 20,
-    justifyContent: 'center',
-    alignItems:"center"
+    justifyContent: 'space-between',
 },
 confirmMdl:{
     flex: 1,
@@ -331,7 +342,7 @@ mainContainerList:{paddingBottom:responsiveHeight(80)},
 horizontalLineStyle:{width:"95%",alignSelf:"center"},
 operationBtn: {
   position: 'absolute',
-  right: -22,
+  right: -18,
   borderColor: '#5773a2',
   borderWidth: 1,
   backgroundColor: '#fff',
@@ -355,10 +366,10 @@ addIcon: { width: 25, height: 25 },
     borderColor:"#5773a2",
     borderRadius:5,
     padding: responsiveWidth(2),
-    backgroundColor:"#ffffff"
   },
   operationBtn3:{
     position:"absolute",
     right: -22,
+    backgroundColor:"#fff"
   },
 });

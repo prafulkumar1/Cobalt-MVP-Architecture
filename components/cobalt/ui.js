@@ -27,6 +27,7 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 export const postQuantityApiCall = async (quantity, itemId) => {
   try {
@@ -653,7 +654,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?6:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -1103,12 +1104,11 @@ class cbSearchbox extends React.Component {
     return (
       <Box
         style={{
-          width: showSearchInput ? "100%" : 40,
+          width: showSearchInput ? "100%" : responsiveWidth(60),
           height: 40,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginLeft: 9,
           borderRadius: 4,
           backgroundColor: showSearchInput ? "#f0f0f0" : "white",
         }}
@@ -1154,6 +1154,7 @@ class cbSearchbox extends React.Component {
           </Box>
         ) : (
           <TouchableOpacity
+            style={{position:"absolute",left:20}}
             onPress={() => {
               this.setState({ showSearchInput: true });
               if (this.props.onSearchPress) {
