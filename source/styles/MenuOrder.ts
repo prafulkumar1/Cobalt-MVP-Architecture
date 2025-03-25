@@ -329,5 +329,36 @@ modalNoYesBtn: {
 },
 closeIcon:{ width: 20, height: 20 },
 mainContainerList:{paddingBottom:responsiveHeight(80)},
-horizontalLineStyle:{width:"95%",alignSelf:"center"}
+horizontalLineStyle:{width:"95%",alignSelf:"center"},
+operationBtn: {
+  position: 'absolute',
+  right: -18,
+  borderColor: '#5773a2',
+  borderWidth: 1,
+  backgroundColor: '#fff',
+  borderRadius: 5,
+  justifyContent: "space-between",
+  flexDirection: "row",
+  alignItems: "center",
+},
+iconBtn: { width: responsiveWidth(7.9), height: responsiveHeight(5), justifyContent: "center", alignItems: 'center', alignSelf: "center" },
+trashIcon: { width: 23, height: 23 },
+addIcon: { width: 25, height: 25 },
+ quantityTxt: {
+    fontSize: responsiveFontSize(2.8),
+    fontFamily: "SourceSansPro_Regular",
+    paddingLeft: responsiveWidth(1.2),
+    paddingRight: responsiveWidth(0.8),
+    paddingTop: 4
+  },
+  operationBtn2:{
+    borderWidth:1,
+    borderColor:"#5773a2",
+    borderRadius:5,
+    padding: responsiveWidth(2),
+  },
+  operationBtn3:{
+    position:"absolute",
+    right: -22,
+  },
 });

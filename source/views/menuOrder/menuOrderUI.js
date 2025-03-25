@@ -7,7 +7,7 @@ import { useMenuOrderLogic } from "@/source/controller/menuOrder/menuOrder";
 import { Image, Modal } from "react-native";
 import { navigateToScreen } from '@/source/constants/Navigations'
 import { RecentOrderData } from "@/source/constants/commonData";
-import { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon } from '@/components/ui/icon';
+import { ChevronRightIcon, ChevronDownIcon, ChevronUpIcon, CloseIcon ,AddIcon,TrashIcon,RemoveIcon} from '@/components/ui/icon';
 import { styles } from "@/source/styles/MenuOrder";
 import CbLoader from "@/components/cobalt/cobaltLoader";
 import { useRef, useState, useEffect } from "react";
@@ -162,7 +162,9 @@ export default function MenuOrderScreen(props) {
       handleLayout,
       handleCloseItemDetails,
       handleScroll,
-      handleItemLayout
+      handleItemLayout,
+      handleAddToCartBtn,
+      modifierIncDecBtn
     } = useMenuOrderLogic(props)
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -387,7 +389,9 @@ export default function MenuOrderScreen(props) {
                                             ]}
                                           />
                                         </UI.Box>
-                                        <UI.CbAddToCartButton mealItemDetails={box} />
+                                        {
+                                            renderAddToCartBtn(box)
+                                        }
                                       </UI.Box>
                                     </UI.Box>
                                   </UI.TouchableOpacity>
@@ -441,7 +445,7 @@ export default function MenuOrderScreen(props) {
                       )}
                       <UI.Box style={styles.mainItemContainer}>
                       {expandedSubmenus[subMenuItem.SubMenu_ID] && (
-                        item.items.map((item,index) => {
+                        item?.items?.map((item,index) => {
                           let box = item;
                           const lastItem =
                             index === subMenuItem.items?.length - 1;
@@ -537,7 +541,9 @@ export default function MenuOrderScreen(props) {
                                               ]}
                                             />
                                           </UI.Box>
-                                          <UI.CbAddToCartButton mealItemDetails={box} />
+                                          {
+                                            renderAddToCartBtn(box)
+                                          }
                                         </UI.Box>
                                       </UI.Box>
                                       {!lastItem && (
@@ -635,6 +641,86 @@ export default function MenuOrderScreen(props) {
       )
     }
   }
+
+  const renderAddToCartBtn = (item) => {
+    const cartItem = cartData && cartData?.find((values) => values.Item_ID === item?.Item_ID);
+    const cartQuantity = cartItem ? cartItem?.quantity : 0
+    const modifierCartItems = modifierCartItemData && modifierCartItemData?.find((values) => values?.Item_ID === item?.Item_ID);
+    const modifierQuantity = modifierCartItems? modifierCartItems?.quantity : 0
+    const commonStyles = (
+      isAvailable,
+      IsDisable,
+      primaryColor,
+      secondaryColor
+    ) => {
+      if (isAvailable === 1 && IsDisable === 0) {
+        return primaryColor;
+      } else {
+        return secondaryColor;
+      }
+    };
+
+    return (
+      <>
+        {cartQuantity === 0 && modifierQuantity === 0 ? (
+          <UI.Box style={styles.operationBtn3}>
+            <UI.TouchableOpacity
+              disabled={
+                item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
+              }
+              onPress={() => handleAddToCartBtn(item)}
+              style={[
+                styles.operationBtn2,
+                {
+                  borderColor: commonStyles(
+                    item.IsAvailable,
+                    item.IsDisable,
+                    "#5773a2",
+                    "#ABABAB"
+                  ),
+                },
+              ]}
+            >
+              <Icon
+                as={AddIcon}
+                color="#5773a2"
+                size={"xl"}
+                style={[styles.addIcon]}
+              />
+            </UI.TouchableOpacity>
+          </UI.Box>
+        ) : (
+           <UI.Box style={styles.operationBtn}>
+            <UI.TouchableOpacity
+              style={styles.iconBtn}
+              onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}
+            >
+              <Icon
+                as={cartQuantity === 1 ? TrashIcon : RemoveIcon}
+                color="#5773a2"
+                size={"md"}
+                style={styles.trashIcon}
+              />
+            </UI.TouchableOpacity>
+
+            <UI.Text style={styles.quantityTxt}>{cartQuantity}</UI.Text>
+
+            <UI.TouchableOpacity
+              style={styles.iconBtn}
+              onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"increment")}
+            >
+              <Icon
+                as={AddIcon}
+                color="#5773a2"
+                size={"xl"}
+                style={styles.addIcon}
+              />
+            </UI.TouchableOpacity>
+          </UI.Box>
+        )}
+      </>
+    );
+  };
 
   return (
     <UI.Box style={styles.mainContainer}>
