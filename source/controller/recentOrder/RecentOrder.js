@@ -49,7 +49,9 @@ export const useRecentOrderLogic = () => {
     setFormFieldData,
     favoriteItemsList,
     updateItemToFavorites,
-    addItemToCartForFavs
+    addItemToCartForFavs,
+    addItemToCartBtn,
+    itemDataVisible
   } = useFormContext()
   
   
@@ -195,8 +197,13 @@ export const useRecentOrderLogic = () => {
           closePreviewModal();
         }
       }else{
-        addItemToCartBtn(existingFavItem)
-        closePreviewModal();
+        if(itemDataVisible){
+          addItemToModifierForCart(existingFavItem)
+          closePreviewModal();
+        }else{
+          addItemToCartBtn(existingFavItem)
+          closePreviewModal();
+        }
       }
     } else {
       let isRequiredModifier = false

@@ -46,9 +46,10 @@ function RenderingPendingOrders(props) {
       removeClippedSubviews={true}
       windowSize={21}
       renderItem={({ item, index }) => {
+        const defaultOpenItems = pendingOrders?.slice(0, 4)?.map((_, index) => `item-${index}`);
         const Order = item
         return (
-          <Accordion style={styles.recentContainer}>
+          <Accordion style={styles.recentContainer} defaultValue={defaultOpenItems}>
             <AccordionItem
               key={index}
               value={`item-${index}`}
@@ -121,14 +122,14 @@ function RenderingPendingOrders(props) {
                                 as={ChevronDownIcon}
                                 size={"xl"}
                                 color="#4B5154"
-                                style={{ left: isPlatformAndroid() ? 15 : 5 }}
+                                style={{ left: isPlatformAndroid() ? 5 : 5 }}
                               />
                             ) : (
                               <AccordionIcon
                                 as={ChevronRightIcon}
                                 size={"xl"}
                                 color="#4B5154"
-                                style={{ left: isPlatformAndroid() ? 15 : 5 }}
+                                style={{ left: isPlatformAndroid() ? 5 : 5 }}
                               />
                             )}
                           </UI.Box>

@@ -520,5 +520,7 @@ CheckIcon:{color:"#ffff"},
   },
   blackShadow:{width:"100%",height:"100%",backgroundColor:"#00000099",position:"absolute",opacity:0.6},
   collapseIcon:{},
-  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center"}
+  quantityMessage:{flexDirection:"row",justifyContent:"center",alignItems:"center"},
+  searchTxt:{fontFamily:"SourceSansPro_Regular",color:"#8A8A8A",marginLeft:12,fontSize:responsiveFontSize(1.8)},
+  searchBtn:{position:"absolute",left:20,flexDirection:"row",alignItems:"center"}
 })

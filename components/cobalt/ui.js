@@ -1120,7 +1120,7 @@ class cbSearchbox extends React.Component {
     const Backarrowsource = this.backarrow;
     const Closesource = this.close;
     return (
-      <Box
+      <Pressable
         style={{
           width: showSearchInput ? "100%" : responsiveWidth(60),
           height: 40,
@@ -1129,6 +1129,12 @@ class cbSearchbox extends React.Component {
           alignItems: "center",
           borderRadius: 4,
           backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+        }}
+        onPress={() => {
+          this.setState({ showSearchInput: true });
+          if (this.props.onSearchPress) {
+            this.props.onSearchPress();
+          }
         }}
       >
         {showSearchInput ? (
@@ -1172,7 +1178,7 @@ class cbSearchbox extends React.Component {
           </Box>
         ) : (
           <TouchableOpacity
-            style={{position:"absolute",left:20}}
+            style={styles.searchBtn}
             onPress={() => {
               this.setState({ showSearchInput: true });
               if (this.props.onSearchPress) {
@@ -1181,10 +1187,11 @@ class cbSearchbox extends React.Component {
             }}          >
             {
               Searchsource ? <Image source={{ uri: Searchsource }} /> : <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
-            }
+          }
+            <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Box>
+      </Pressable>
     );
   }
 }

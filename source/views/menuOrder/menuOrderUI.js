@@ -690,7 +690,7 @@ export default function MenuOrderScreen(props) {
             >
               <Icon
                 as={AddIcon}
-                color="#5773a2"
+                color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
                 size={"xl"}
                 style={[styles.addIcon]}
               />
