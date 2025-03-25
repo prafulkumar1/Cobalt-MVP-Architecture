@@ -173,9 +173,10 @@ export default function MenuOrderScreen(props) {
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
 
-  const renderMealTypeList = (mealTypeItem) => {
+  const renderMealTypeList = (mealTypeItem,index) => {
+    const lastIndex = mealPeriods.length -1 === index
     return (
-      <UI.Box style={styles.mealTypeContainer}>
+      <UI.Box style={[styles.mealTypeContainer,{marginRight:lastIndex?10:0}]}>
         <UI.TouchableOpacity
           activeOpacity={0.6}
           style={[
@@ -623,9 +624,9 @@ export default function MenuOrderScreen(props) {
       } else {
         return (
           <>
-          <UI.ScrollView horizontal={true} style={styles.topContainer}>
-            {mealPeriods?.map((item) => {
-                return renderMealTypeList(item, setMealType);
+          <UI.ScrollView horizontal={true} style={styles.topContainer} showsHorizontalScrollIndicator={false}>
+            {mealPeriods?.map((item,index) => {
+                return renderMealTypeList(item, index);
               })}
             </UI.ScrollView>
 
