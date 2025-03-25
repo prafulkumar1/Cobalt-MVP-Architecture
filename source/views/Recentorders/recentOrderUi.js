@@ -653,7 +653,7 @@ function RenderingFavoritesList({ props }) {
                           style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2" , "#ABABAB")}]}>
                         <Icon
                               as={AddIcon}
-                              color="#5773a2"
+                              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
                               size={"xl"}
                               style={[styles.addIcon,]}
                             />
