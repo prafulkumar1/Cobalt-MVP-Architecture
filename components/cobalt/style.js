@@ -168,7 +168,7 @@ export const styles = StyleSheet.create({
   },
   cartCountTxt:{
     position: "absolute",
-    bottom: isPlatformAndroid()?40:34,
+    bottom: 40,
     color: "#FFFFFF",
     fontSize: isPlatformIos()?responsiveFontSize(2.6):responsiveFontSize(2.6),
     overflow: "hidden",
