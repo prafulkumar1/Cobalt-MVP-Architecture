@@ -18,6 +18,8 @@ import * as Font from 'expo-font';
 import CbLoader from './components/cobalt/cobaltLoader';
 import MenuItems from './source/views/MenuItems';
 import RecentordersScreen from './source/views/Recentorders/recentOrderUi';
+import ItemModifierUIFavs from './source/views/ItemModifier/ItemModifierUIFavs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loadAppConfigurations,loadPageConfig } from '@/source/constants/ConfigLoad';
 import { getConfig } from '@/source/constants/LocalDatabase';
 import * as SQLite from 'expo-sqlite';
@@ -100,9 +102,14 @@ const [headerTitle, setHeaderTitle] = useState({});
       setFontsLoaded(true);
     }
     loadFonts();
+    removeCartItems()
   }, []);
 
-  if (!fontsLoaded || !configLoaded ) {
+  const removeCartItems = async() => {
+    await AsyncStorage.removeItem("cart_data");
+  }
+
+  if (!fontsLoaded) {
     return (
       <CbLoader />
     );
@@ -159,13 +166,18 @@ const [headerTitle, setHeaderTitle] = useState({});
               <Stack.Screen
                 name="Recentorders"
                 component={RecentordersScreen}
-              options={{ headerShown: true,
-                headerTitle: "Order Again",
-               }} 
             />
             <Stack.Screen
               name="ItemModifier"
               component={ItemModifier}
+              options={{
+                headerShown: true,
+                title: "Back to Menu"
+              }}
+              />
+            <Stack.Screen
+              name="ItemModifierUIFavs"
+              component={ItemModifierUIFavs}
               options={{
                 headerShown: true,
                 title: "Back to Menu"

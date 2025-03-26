@@ -13,7 +13,7 @@ import { CbDottedLine } from '@/source/constants/dottedLine';
 import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
 import { isPlatformAndroid } from '@/source/constants/Matrices';
- 
+import { Divider } from '@/components/ui/divider';
  
 const pageId='MyCart';
 export default function MyCartScreen(props) {
@@ -265,6 +265,8 @@ export default function MyCartScreen(props) {
           </UI.TouchableOpacity>
           <UI.CbCommonButton id="Addmore" pageId="MyCart"
             showBtnName={"Add More"}
+            screenName={"MenuOrder"}
+            isPlusIconAvailable = {true}
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.CbBox>
@@ -307,7 +309,7 @@ export default function MyCartScreen(props) {
                       <UI.CbText id="TipText" pageId="MyCart" style={styles.tipTxt}></UI.CbText>
                     </UI.CbBox>
                     <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
-                    <UI.ScrollView scrollEnabled={false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <UI.ScrollView scrollEnabled={isPlatformAndroid()?true :false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)
@@ -408,6 +410,7 @@ export default function MyCartScreen(props) {
                 source={require("@/assets/images/icons/dining3x.png")}
                 style={styles.diningIcon}
               />
+             <Divider style={styles.dividerLine} />
               <UI.CbText id="InnerModalAlertTxt" pageId="MyCart"  style={styles.innerModalAlertTxt}>
                 {successResponse?.ResponseMessage}
               </UI.CbText>

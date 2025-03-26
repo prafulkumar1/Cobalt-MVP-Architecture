@@ -12,136 +12,143 @@ import CbLoader from '@/components/cobalt/cobaltLoader';
 import { CbDottedLine } from '@/source/constants/dottedLine';
 import { Divider } from '@/components/ui/divider';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
-import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import { Icon } from '@/components/ui/icon';
 import { responsiveWidth } from 'react-native-responsive-dimensions';
+import { postQuantityApiCall } from '@/components/cobalt/ui';
+import ItemModifierUIFavs from '../ItemModifier/ItemModifierUIFavs';
 
 
 function RenderingPendingOrders(props) {
   const { pendingOrders } = useRecentOrderLogic(props);
-  const OrdersList = pendingOrders
-  const [expandedIndexes, setExpandedIndexes] = useState(new Set());
-  const handleToggle = (index) => {
-    setExpandedIndexes((prevIndexes) => {
-      const newIndexes = new Set(prevIndexes);
-      if (newIndexes.has(index)) {
-        newIndexes.delete(index); 
-      } else {
-        newIndexes.add(index);
-      }
-      return newIndexes;
-    });
-  };
-    const PriceRow = ({ label, value }) => (
-      <UI.Box style={styles.splitPriceContainer}>
-        <UI.Box style={styles.priceLabelContainer}>
-          <UI.Text style={styles.priceLabel}>{label}</UI.Text>
-        </UI.Box>
-        <UI.Box style={styles.valueMainContainer}>
-          <UI.Text style={styles.priceLabel}>${value}</UI.Text>
-        </UI.Box>
+  const PriceRow = ({ label, value }) => (
+    <UI.Box style={styles.splitPriceContainer}>
+      <UI.Box style={styles.priceLabelContainer}>
+        <UI.Text style={styles.priceLabel}>{label}</UI.Text>
       </UI.Box>
-    );
-    const PriceDetails = (ordersPrice) => (
-      <UI.Box style={styles.priceContainer}>
-        <UI.Box style={styles.priceSubContainer}>
-          {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
-            <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
-          ))}
-        </UI.Box>
+      <UI.Box style={styles.valueMainContainer}>
+        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
       </UI.Box>
-    );
-
+    </UI.Box>
+  );
+  const PriceDetails = (ordersPrice) => (
+    <UI.Box style={styles.priceContainer}>
+      <UI.Box style={styles.priceSubContainer}>
+        {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
+          <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
+        ))}
+      </UI.Box>
+    </UI.Box>
+  );
+  const ITEM_HEIGHT = 100
   return (
     <UI.FlatList
       data={pendingOrders}
+      removeClippedSubviews={true}
+      windowSize={21}
       renderItem={({ item, index }) => {
+        const defaultOpenItems = pendingOrders?.slice(0, 4)?.map((_, index) => `item-${index}`);
         const Order = item
         return (
-          <Accordion style={styles.recentContainer}>
+          <Accordion style={styles.recentContainer} defaultValue={defaultOpenItems}>
             <AccordionItem
               key={index}
               value={`item-${index}`}
               style={styles.recentCardContainer}
-              expanded={expandedIndexes.has(index)}
             >
               <AccordionHeader>
-                <UI.Box style={styles.recentStatusContainer}>
-                  <UI.CbImage
-                    imageJsx={
-                      <Image
-                        source={require("@/assets/images/icons/Pendingorder3x.png")}
-                        style={styles.orderIcon}
-                      />
-                    }
-                  />
-                  <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
-                  <UI.Text style={styles.statusValTxt}>
-                    {Order.ORDERSTATUS}
-                  </UI.Text>
-                </UI.Box>
-                <UI.Box style={styles.dottedLine}>
-                  <CbDottedLine
-                    length={isPlatformAndroid() ? 50 : 90}
-                    dotSize={6}
-                    dotColor="#0000002B"
-                  />
-                </UI.Box>
-                <AccordionTrigger
-                  className="focus:web:rounded-lg"
-                  onPress={() => handleToggle(index)}
-                >
-                  <UI.Box style={styles.pickUpDetailsContainer}>
-                    <UI.Box style={styles.pickUpSubContainer}>
-                      <UI.Box>
-                        <UI.Text style={styles.labelPickUpTime}>
-                          Pickup Time
-                        </UI.Text>
-                        <UI.Text style={styles.pickValue}>
-                          {Order.PICKUPTIME}
-                        </UI.Text>
-                      </UI.Box>
-                      <UI.Box style={styles.verticalLine} />
-                      <UI.Box>
-                        <UI.Text style={styles.labelPickUpPoint}>
-                          Pickup Point
-                        </UI.Text>
-                        <UI.Text style={styles.pickUpLocation}>
-                          {Order.PICKUPLOCATION}
-                        </UI.Text>
-                      </UI.Box>
-                    </UI.Box>
-                    <UI.Box style={styles.detailsContainer}>
-                      <UI.Box>
-                        <UI.Text style={styles.labelOrderId}>
-                          Order Id #: {Order.ORDERID}
-                        </UI.Text>
-                        <UI.Text style={styles.labelOrderId}>
-                          Date: {Order.ORDEREDDATE}
-                        </UI.Text>
-                      </UI.Box>
-                      <AccordionIcon
-                        as={
-                          expandedIndexes.has(index)
-                            ? ChevronDownIcon
-                            : ChevronRightIcon
+                <AccordionTrigger>
+                  {({ isExpanded }) => {
+                    return (
+                      <UI.Box style={styles.headerContainer}>
+                        <UI.Box style={styles.recentStatusContainer}>
+                          <UI.CbImage
+                            imageJsx={
+                              <Image
+                                source={require("@/assets/images/icons/Pendingorder3x.png")}
+                                style={styles.orderIcon}
+                              />
+                            }
+                          />
+                          <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
+                          <UI.Text style={styles.statusValTxt}>
+                            {Order.ORDERSTATUS}
+                          </UI.Text>
+                        </UI.Box>
+
+                        <UI.Box style={styles.dottedLine}>
+                          <CbDottedLine
+                            length={isPlatformAndroid() ? 50 : 90}
+                            dotSize={6}
+                            dotColor="#0000002B"
+                          />
+                        </UI.Box>
+
+                        <UI.Box style={styles.pickUpDetailsContainer}>
+                          <UI.Box style={styles.pickUpSubContainer}>
+                            <UI.Box>
+                              <UI.Text style={styles.labelPickUpTime}>
+                                Pickup Time
+                              </UI.Text>
+                              <UI.Text style={styles.pickValue}>
+                                {Order.PICKUPTIME}
+                              </UI.Text>
+                            </UI.Box>
+
+                            {
+                              Order?.PICKUPLOCATION &&
+                              <><UI.Box style={styles.verticalLine} />
+                                <UI.Box>
+                                  <UI.Text style={styles.labelPickUpPoint}>
+                                    Pickup Location
+                                  </UI.Text>
+                                  <UI.Text style={styles.pickUpLocation}>
+                                    {Order.PICKUPLOCATION}
+                                  </UI.Text>
+                                </UI.Box></>
+                            }
+                          </UI.Box>
+                          <UI.Box style={styles.detailsContainer}>
+                            <UI.Box>
+                              <UI.Text style={styles.labelOrderId}>
+                                Order Id #: {Order.ORDERID}
+                              </UI.Text>
+                              <UI.Text style={styles.labelOrderId}>
+                                Date: {Order.ORDEREDDATE}
+                              </UI.Text>
+                            </UI.Box>
+
+                            {isExpanded ? (
+                              <AccordionIcon
+                                as={ChevronDownIcon}
+                                size={"xl"}
+                                color="#4B5154"
+                                style={{ left: isPlatformAndroid() ? 5 : 5 }}
+                              />
+                            ) : (
+                              <AccordionIcon
+                                as={ChevronRightIcon}
+                                size={"xl"}
+                                color="#4B5154"
+                                style={{ left: isPlatformAndroid() ? 5 : 5 }}
+                              />
+                            )}
+                          </UI.Box>
+                        </UI.Box>
+                        {
+                          isExpanded ?
+                            <UI.Box style={[styles.dottedLine, { marginTop: 0 }]}>
+                              <CbDottedLine
+                                length={isPlatformAndroid() ? 50 : 90}
+                                dotSize={6}
+                                dotColor="#0000002B"
+                              />
+                            </UI.Box> : null
                         }
-                        size={"xl"}
-                        color="#4B5154"
-                        style={{ left: isPlatformAndroid() ? 15 : 5 }}
-                      />
-                    </UI.Box>
-                  </UI.Box>
+
+                      </UI.Box>
+                    );
+                  }}
                 </AccordionTrigger>
-                {expandedIndexes.has(index) && (
-                  <UI.Box style={[styles.dottedLine, { marginTop: -5 }]}>
-                    <CbDottedLine
-                      length={isPlatformAndroid() ? 50 : 90}
-                      dotSize={6}
-                      dotColor="#0000002B"
-                    />
-                  </UI.Box>
-                )}
               </AccordionHeader>
               <AccordionContent>
                 <UI.Box style={styles.orderSummaryContainer}>
@@ -167,7 +174,7 @@ function RenderingPendingOrders(props) {
                             </UI.Text>
                             <UI.Box style={styles.amountContainer}>
                               <UI.Text style={styles.labelQuantity}>
-                                {item?.QUANTITY}
+                                {items?.QUANTITY}
                               </UI.Text>
                               <UI.Text style={styles.itemPrice}>
                                 ${items.PRICE?.toFixed(2)}
@@ -222,17 +229,41 @@ function RenderingPendingOrders(props) {
 
 const RenderingCompletedOrders = (props) => {
   const { orders} = useRecentOrderLogic(props);
-  const  { cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
+  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
+ 
+  const editCommentBtn = (props, item) => {
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      const updatedItems =  {
+        "Description": item?.DESCRIPTION,
+        "ImageUrl": item?.IMAGEURL,
+        "IsAvailable": item?.IsAvailable,
+        "IsDisable": item?.IsDisable,
+        "Item_ID":item?.ITEM_ID,
+        "Item_Name": item?.ITEM_NAME,
+        "Modifiers": item?.MODIFIERS,
+        "Price": item?.PRICE,
+        "Comments":item?.COMMENTS,
+      }
+      closePreviewModal()
+      storeSingleItem({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+      increaseQuantity({
+        ...updatedItems,
+        quantityIncPrice: item?.TOTALPRICE
+      })
+    }  
+  }
   
   const handleReorder = (itemDetails) => {
     if (!itemDetails || itemDetails.length === 0) {
       return;
     }
-
     itemDetails.forEach((item) => {
-      const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item.Item_ID);
-
+      const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item?.ITEM_ID);
+ 
       const itemWithModifiers = {
         Item_ID:item.ITEM_ID,
         "Item_Name": item.ITEM_NAME,
@@ -246,9 +277,9 @@ const RenderingCompletedOrders = (props) => {
         "comments":item.COMMENTS,
         selectedModifiers: item.MODIFIERS || [],
       };
-
+ 
       if (existingItem) {
-        updateCartItemQuantity(existingItem, existingItem.quantity + 1);
+        updateCartItemQuantity(existingItem, existingItem.quantity + item.QUANTITY);
       } else {
         addItemToCartBtnForReOrder(itemWithModifiers, item.QUANTITY);
       }
@@ -300,9 +331,7 @@ const RenderingCompletedOrders = (props) => {
                         alt="image"
                         source={require("@/assets/images/icons/ROdate.png")}
                       />
-                      <AccordionTitleText style={styles.roAccordionTitleText}>
-                        {`Ordered Date: ${item.ORDEREDDATE}`}
-                      </AccordionTitleText>
+                      <UI.Text style={styles.roAccordionTitleText}>{`Ordered Date: ${item.ORDEREDDATE}`}</UI.Text>
                     </UI.Box>
                     {isExpanded ? (
                       <AccordionIcon
@@ -351,10 +380,10 @@ const RenderingCompletedOrders = (props) => {
                 <UI.Box style={styles.pickUpSubContainer}>
                   <UI.Box>
                     <UI.Text style={styles.labelPickUpPoint}>
-                      Profit Center
+                      Pickup Location
                     </UI.Text>
                     <UI.Text style={styles.compPickUpLocation}>
-                      {item.PICKUPLOCATION}
+                      {item?.ProfitCenter}
                     </UI.Text>
                   </UI.Box>
                 </UI.Box>
@@ -366,7 +395,7 @@ const RenderingCompletedOrders = (props) => {
                   </UI.Box>
                 </UI.Box>
               </UI.Box>
-
+ 
               <UI.Box style={styles.orderSummaryContainer}>
                 <UI.Box>
                   <UI.Text style={styles.labelOrdSummary}>
@@ -383,7 +412,7 @@ const RenderingCompletedOrders = (props) => {
                 <UI.Box style={styles.pendingOrderContainer}>
                   {item?.ITEMS?.map((items, index) => {
                     return (
-                      <React.Fragment key={index}>
+                      <UI.TouchableOpacity key={index} onPress={() => editCommentBtn(props,items)}>
                         <UI.Box style={styles.pendingOrderBox}>
                           <UI.Text style={styles.labelItemName}>
                             {index + 1}. {items.ITEM_NAME}
@@ -409,7 +438,7 @@ const RenderingCompletedOrders = (props) => {
                               );
                             })}
                         </UI.Box>
-
+ 
                         {items?.COMMENTS && (
                           <UI.Box style={styles.commentBox}>
                             <UI.CbImage
@@ -426,7 +455,7 @@ const RenderingCompletedOrders = (props) => {
                             </UI.Text>
                           </UI.Box>
                         )}
-                      </React.Fragment>
+                      </UI.TouchableOpacity>
                     );
                   })}
                 </UI.Box>
@@ -438,7 +467,7 @@ const RenderingCompletedOrders = (props) => {
                 </UI.Box>
               </UI.Box>
               {
-                item?.ISREORDER === 1 && 
+                item?.ISREORDER === 1 &&
                 <UI.TouchableOpacity disabled={isDisabled}  style={[
                   styles.roReoderButton,
                   isDisabled
@@ -464,7 +493,6 @@ const RenderingCompletedOrders = (props) => {
 
 
 function RenderingFavoritesList({ props }) {
-  const [expandedItems, setExpandedItems] = useState({});
   const route = useRoute();
   const screenName = route.name;
 
@@ -485,24 +513,42 @@ function RenderingFavoritesList({ props }) {
     handleDecrement,
   } = useRecentOrderLogic();
 
-  const toggleReadMore = (index) => {
-    setExpandedItems((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
-  };
-
   const editCommentBtn = (props, item) => {
-    closePreviewModal()
-    storeSingleItem({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
-    increaseQuantity({
-      ...item,
-      quantityIncPrice: item?.TotalPrice
-    })
-    closePreviewModal()
+    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+      closePreviewModal();
+      storeSingleItem({
+        ...item,
+        quantityIncPrice: item?.TotalPrice,
+      });
+      increaseQuantity({
+        ...item,
+        quantityIncPrice: item?.TotalPrice,
+      });
+    }
+  }
+
+  const openItemDetails = async (box) => {
+    if (box.IsAvailable === 1 && box.IsDisable === 0) {
+      let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
+      storeSingleItem({ ...box, response: quantityInfo.response })
+      increaseQuantity(box)
+      closePreviewModal()
+    }
+  }
+
+  const addItemToCartBtnDetails = (itemsDetails) => {
+    if(itemsDetails?.Modifiers?.length > 0){
+      openItemDetails(itemsDetails)
+    }else{
+      addItemToCartBtn(itemsDetails)
+    }
+  }
+  const commonStyles = (isAvailable, IsDisable, primaryColor, secondaryColor) => {
+    if (isAvailable === 1 && IsDisable === 0) {
+      return primaryColor
+    } else {
+      return secondaryColor
+    }
   }
 
   return (
@@ -524,6 +570,8 @@ function RenderingFavoritesList({ props }) {
                
                 const cartItem = cartData && cartData?.find((cartItem) => cartItem?.Item_ID === item?.Item_ID);
                 const quantity = cartItem ? cartItem.quantity : 0;
+                const IsAvailable = item?.IsAvailable;
+                const IsDisable = item?.IsDisable
                 return (
                   <UI.TouchableOpacity
                     key={index}
@@ -544,25 +592,17 @@ function RenderingFavoritesList({ props }) {
                         <UI.Text style={styles.itemLables}>
                           ${item.Price?.toFixed(2)}
                         </UI.Text>
-                        { item.Description ?
-                        <>
-                        <UI.Text style={styles.showLessTxt}>
-                        {expandedItems[index]
-                          ? item.Description || ""
-                          : item.Description
-                            ? `${item.Description.substring(0, 35)}...`
-                            : ""}
-                      </UI.Text>
-                      <UI.TouchableOpacity
-                        onPress={() => toggleReadMore(index)}
-                      >
-                        <UI.Text style={styles.readLessTxt}>
-                          {expandedItems[index] ? "Read Less" : "Read More"}
-                        </UI.Text>
-                      </UI.TouchableOpacity>
-                      </>
-                      : ""}
-                        
+                        {item?.Modifiers && item.Modifiers?.length > 0 && (
+                          <UI.CbFlatList
+                            scrollEnabled={false}
+                            flatlistData={item.Modifiers}
+                            children={({ item }) => (
+                              <UI.Text style={styles.itemCategory}>
+                                {item.Modifier_Name}
+                              </UI.Text>
+                            )}
+                          />
+                        )}
                       </UI.Box>
                     </UI.Box>
 
@@ -607,10 +647,13 @@ function RenderingFavoritesList({ props }) {
                           </UI.TouchableOpacity>
                         </UI.Box>
                       : <UI.Box>
-                        <UI.TouchableOpacity  onPress={() => addItemToCartBtn(item)} style={styles.operationBtn2}>
+                        <UI.TouchableOpacity 
+                          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}  
+                          onPress={() => addItemToCartBtnDetails(item)}
+                          style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2" , "#ABABAB")}]}>
                         <Icon
                               as={AddIcon}
-                              color="#5773a2"
+                              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
                               size={"xl"}
                               style={[styles.addIcon,]}
                             />
@@ -635,7 +678,7 @@ function RenderingFavoritesList({ props }) {
 export default function RecentordersScreen(props) { 
 
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
-  const {loading,emptyOrderMessage,favItems,} = useRecentOrderLogic(props)
+  const {loading,emptyOrderMessage,handleModifierAddCart,handleCloseItemDetails} = useRecentOrderLogic(props)
   const { 
     cartData,
     itemDataVisible ,
@@ -649,8 +692,6 @@ export default function RecentordersScreen(props) {
     updateOrAddTxt,
     modifierCartItemData
   } =  useFormContext();
-  const {  orders, fetchRecentOrders } = useRecentOrderLogic(props);
-  const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
   const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -659,10 +700,6 @@ export default function RecentordersScreen(props) {
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
 
-
-  useEffect(() => {
-    fetchRecentOrders();
-  }, []);
   return (
     <UI.Box style={styles.mainContainer}>
       <UI.Box style={styles.subContainer}>
@@ -680,7 +717,7 @@ export default function RecentordersScreen(props) {
                 : styles.ButtonTextStyle,
             ]}
           >
-            Favorites
+            Favourite
           </UI.Text>
         </UI.TouchableOpacity>
         <UI.TouchableOpacity
@@ -715,7 +752,7 @@ export default function RecentordersScreen(props) {
                     <RenderingCompletedOrders />
                   </>
                 ) : (
-                  <UI.Text>{emptyOrderMessage}</UI.Text>
+                  <UI.Text style={styles.emptyFavList}>{emptyOrderMessage}</UI.Text>
                 )}
               </>
             )}
@@ -725,10 +762,6 @@ export default function RecentordersScreen(props) {
             <RenderingFavoritesList props={props} />
           </>
         )}
-      </UI.ScrollView>
-      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
-
-
       <Modal
           visible={itemDataVisible}
           transparent={true}
@@ -738,7 +771,7 @@ export default function RecentordersScreen(props) {
           <UI.Box style={styles.modalBackground}>
             {
               !isKeyboardVisible
-              && 
+              &&
               <UI.TouchableOpacity
               onPress={() =>
                 handleCloseItemDetails(
@@ -761,19 +794,21 @@ export default function RecentordersScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifier />
+              <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
               </UI.Box>
-              <UI.TouchableOpacity style={styles.addToCartBtn} onPress={() => handleModifierAddCart()}>
+              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
                 <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
               </UI.TouchableOpacity>
             </UI.Box>
           </UI.Box>
         </Modal>
+      </UI.ScrollView>
+      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
     </UI.Box>
   );
 }

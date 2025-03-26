@@ -6,27 +6,30 @@ import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
 import { Alert } from 'react-native';
 import { navigateToScreen } from '@/source/constants/Navigations';
-
-
+import { useRecentOrderLogic } from '../recentOrder/RecentOrder';
+ 
+ 
 const pageId = 'MenuOrder';
 export const useMenuOrderLogic = (props) => {
-
+ 
   const categoryRefs = useRef({});
   const scrollViewRef = useRef(null);
   const categoryScrollRef = useRef(null);
   const categoryPositions = useRef({});
-
+ 
   const [isRecentOrderOpen, setIsRecentOrderOpen] = useState(false)
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("")
   const [mealPeriods, setMealPeriods] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(newData);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedSubmenus, setExpandedSubmenus] = useState({});
   const [itemPositions, setItemPositions] = useState({});
   const [expandedIds, setExpandedIds] = useState([])
-
-
+  const [isAvailable, setIsAvailable] = useState(0);
+  const [IsModifierAvailable, setIsModifierAvailable] = useState(0);
+ 
+ 
   const {
     setMenuOrderData,
     setCartData,
@@ -47,18 +50,22 @@ export const useMenuOrderLogic = (props) => {
     setFormFieldData,
     setToastDetails,
     addItemToFavorites,
-    toggleFavoriteItems
+    setCartApiResponse,
+    addItemToCartBtn,
+    updateCartItemQuantity,
+    itemDataVisible
   } = useFormContext();
-
-
+ 
+  const  {getFavorites} = useRecentOrderLogic()
+ 
   const openRecentOrder = () => {
     setIsRecentOrderOpen(!isRecentOrderOpen)
   }
-
+ 
   const requiredDataFormat = (responseData) => {
     const groupedCategories = responseData?.filter((items) => items.MealPeriodIsSelect === 1).reduce((acc, item, index) => {
       let category = acc?.find(cat => cat.Category_ID === item.Category_ID);
-
+ 
       if (!category) {
         category = {
           Category_ID: item.Category_ID,
@@ -68,11 +75,11 @@ export const useMenuOrderLogic = (props) => {
         };
         acc.push(category);
       }
-
+ 
       let submenu = category.submenus.find(
         sub => sub.SubMenu_ID === item.SubMenu_ID
       );
-
+ 
       if (!submenu) {
         submenu = {
           SubMenu_ID: item.SubMenu_ID,
@@ -81,7 +88,7 @@ export const useMenuOrderLogic = (props) => {
         };
         category.submenus.push(submenu);
       }
-
+ 
       submenu.items.push({
         Item_ID: item.Item_ID,
         Item_Name: item.Item_Name,
@@ -92,10 +99,10 @@ export const useMenuOrderLogic = (props) => {
         IsDisable: item.IsDisable,
         IsFavourite:0
       });
-
+ 
       return acc;
     }, []);
-
+ 
     setSelectedCategory(groupedCategories)
   }
   const getCartData = async () => {
@@ -112,16 +119,18 @@ export const useMenuOrderLogic = (props) => {
       }
     } catch (error) { }
   };
-
+ 
 
     
 
   useEffect(() => {
     getMenuOrderList()
     getCartData()
+    getFavorites()
+    getCartPrice()
   }, [])
-
-
+ 
+ 
   const getMenuOrderList = async () => {
     setLoading(true)
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
@@ -133,7 +142,7 @@ export const useMenuOrderLogic = (props) => {
       "Search": ""
     }
     let menuOrderResponseData = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_LIST", params)
-
+ 
     if (menuOrderResponseData?.response?.ResponseCode === "Fail") {
       setErrorMessage(menuOrderResponseData?.response?.ResponseMessage)
     } else if (menuOrderResponseData === undefined) {
@@ -197,7 +206,7 @@ export const useMenuOrderLogic = (props) => {
       setMealPeriods(uniqueMealPeriods)
     }
   };
-
+ 
   const openItemDetails = async (box) => {
     if (box.IsAvailable === 1 && box.IsDisable === 0) {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
@@ -206,7 +215,7 @@ export const useMenuOrderLogic = (props) => {
       closePreviewModal()
     }
   }
-
+ 
   const handleReadMoreToggle = (id) => {
     setExpandedIds((prevExpandedIds) => {
       const isExpanded = prevExpandedIds.includes(id);
@@ -217,8 +226,8 @@ export const useMenuOrderLogic = (props) => {
   };
   
 //   const handleModifierAddCart = () => {
-//     let categoryData = typeof modifiersResponseData?.Categories === "string" 
-//         ? JSON.parse(modifiersResponseData?.Categories) 
+//     let categoryData = typeof modifiersResponseData?.Categories === "string"
+//         ? JSON.parse(modifiersResponseData?.Categories)
 //         : modifiersResponseData?.Categories;
     
 //     let isRequiredModifier = false;
@@ -272,8 +281,8 @@ export const useMenuOrderLogic = (props) => {
 //         }
 //     }
 // }
-
-
+ 
+ 
   const handleModifierAddCart = () => {
     let isItemAvailableInCart = false;
     cartData?.forEach((items) => {
@@ -281,11 +290,11 @@ export const useMenuOrderLogic = (props) => {
         isItemAvailableInCart = true;
       }
     });
-
+ 
     let categoryData = typeof modifiersResponseData?.Categories === "string"
     ? JSON.parse(modifiersResponseData?.Categories)
     : modifiersResponseData?.Categories;
-
+ 
     if (!isItemAvailableInCart) {
       let isRequiredModifier = false;
       let requiredModifier = ""
@@ -326,7 +335,7 @@ export const useMenuOrderLogic = (props) => {
           const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
           return modifier.isChecked && index === lastIndex;
         });
-
+ 
         getRequiredItem?.map((item) => {
           isRequiredModifier = true
           requiredModifier = item?.Category_Name
@@ -336,7 +345,7 @@ export const useMenuOrderLogic = (props) => {
             }
           })
         })
-
+ 
         if(isRequiredModifier){
           setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
           setTimeout(() => {
@@ -358,8 +367,8 @@ export const useMenuOrderLogic = (props) => {
     setModifierCartItemData([])
     await AsyncStorage.removeItem('cart_data')
   }
-
-
+ 
+ 
   const handleCategoryClick = (categoryId) => {
     const yPosition = itemPositions[categoryId];
     if (yPosition !== undefined && scrollViewRef.current) {
@@ -377,8 +386,8 @@ export const useMenuOrderLogic = (props) => {
     const { x } = event?.nativeEvent.layout;
     categoryPositions.current[categoryId] = x;
   };
-
-
+ 
+ 
   const updateCategorySelection = (visibleCategoryId) => {
     const updatedCategories = selectedCategory?.map(category => {
       return {
@@ -387,18 +396,18 @@ export const useMenuOrderLogic = (props) => {
       }
     });
     setSelectedCategory(updatedCategories);
-
+ 
     const xPosition = categoryPositions.current[visibleCategoryId];
     if (xPosition !== undefined) {
       categoryScrollRef.current?.scrollTo({ x: xPosition - 200, animated: true });
     }
   };
-
+ 
   const handleLayout = (categoryId, event) => {
     const layout = event?.nativeEvent.layout;
     categoryRefs.current[categoryId] = layout.y;
   };
-
+ 
   const handleCloseItemDetails = () => {
     setFormFieldData("ItemModifier", "", "Comments", "", false)
     if (selectedModifiers.length === 0) {
@@ -412,29 +421,137 @@ export const useMenuOrderLogic = (props) => {
       setIsVisible(true)
     }
   }
-
+ 
   const handleScroll = (event) => {
     const scrollY = event?.nativeEvent?.contentOffset.y;
     let visibleCategory = null;
-
+ 
     for (const [categoryId, y] of Object.entries(categoryRefs.current)) {
-      if (scrollY >= y - 50 && scrollY < y + 100) {
+      if (scrollY >= y - 50 && scrollY < y + 50) {
         visibleCategory = categoryId;
         break;
       }
     }
-
+ 
     if (visibleCategory) {
       updateCategorySelection(visibleCategory);
     }
   };
-
+ 
   const handleItemLayout = (categoryId, event) => {
     const layout = event?.nativeEvent?.layout;
     setItemPositions((prevPositions) => ({
       ...prevPositions,
       [categoryId]: layout.y,
     }));
+  };
+
+  const getCartPrice = async () => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
+      let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const cartItemIds = cartData?.map((item) => {
+        const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+        return{
+          Comments:"",
+          ItemId:item.Item_ID,
+          Quantity:item.quantity,
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
+        }
+      })
+      const params = {   
+         "Location_Id":`${getProfitCenterId?.LocationId}`,
+         "Items":cartItemIds,
+         "TipPercentage": "",
+         "TipCustom": "",
+      }
+      let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
+      setCartApiResponse(cartInfo.response?.Items)
+    } catch (err) { }
+  }
+  const handleAddToCartBtn = async (mealItemDetails) => {  
+    let quantityInfo = await postQuantityApiCall(1, mealItemDetails?.Item_ID);
+  
+    if (quantityInfo.statusCode === 200) {      
+      setIsAvailable(quantityInfo?.response.IsAvailable);
+      setIsModifierAvailable(quantityInfo?.response.IsModifierAvailable);
+      if (quantityInfo?.response?.IsModifierAvailable === 1) {
+        storeSingleItem(mealItemDetails);
+        if (itemDataVisible) {
+          increaseQuantity(mealItemDetails, false);
+        } else {
+          closePreviewModal();
+          increaseQuantity(mealItemDetails, false);
+        }
+      } else {
+        addItemToCartBtn(mealItemDetails);
+      }
+    } else {
+    }
+  };
+
+  const modifierIncDecBtn = async (
+    mealItemDetails,
+    cartQuantity,
+    modifierQuantity,
+    operation
+  ) => {
+    let isItemAvailableInCart = false;
+    cartData?.forEach((items) => {
+      if (items?.Item_ID === mealItemDetails.Item_ID) {
+        isItemAvailableInCart = true;
+      }
+    });
+  
+    let requiredQuantity = IsModifierAvailable === 1 ? modifierQuantity : cartQuantity;
+    let quantityInfo = await postQuantityApiCall(requiredQuantity, mealItemDetails?.Item_ID);
+  
+    if (quantityInfo.statusCode === 200) {
+      if (quantityInfo?.response.IsModifierAvailable === 1) {
+        if (operation === "decrement") {
+          if (isItemAvailableInCart) {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+            updateCartItemQuantity(mealItemDetails, cartQuantity - 1);
+          } else {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+          }
+        } else {
+          if (quantityInfo?.response?.IsAvailable === 1) {
+            if (isItemAvailableInCart) {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+              updateCartItemQuantity(mealItemDetails, cartQuantity + 1);
+            } else {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+            }
+          } else {
+            Alert.alert(quantityInfo?.response?.ResponseMessage);
+          }
+        }
+      } else {
+        if (operation === "decrement") {
+          if (itemDataVisible) {
+            updateModifierItemQuantity(mealItemDetails, modifierQuantity - 1);
+          } else {
+            updateCartItemQuantity(mealItemDetails, cartQuantity - 1);
+            updateModifierItemQuantity(mealItemDetails, cartQuantity - 1);
+          }
+        } else {
+          if (quantityInfo?.response?.IsAvailable === 1) {
+            if (itemDataVisible) {
+              updateModifierItemQuantity(mealItemDetails, modifierQuantity + 1);
+            } else {
+              updateCartItemQuantity(mealItemDetails, cartQuantity + 1);
+              updateModifierItemQuantity(mealItemDetails, cartQuantity + 1);
+            }
+          } else {
+            Alert.alert(quantityInfo?.response?.ResponseMessage);
+          }
+        }
+      }
+    }
   };
   return {
     isRecentOrderOpen,
@@ -466,6 +583,8 @@ export const useMenuOrderLogic = (props) => {
     handleLayout,
     handleCloseItemDetails,
     handleScroll,
-    handleItemLayout
+    handleItemLayout,
+    handleAddToCartBtn,
+    modifierIncDecBtn
   };
 };

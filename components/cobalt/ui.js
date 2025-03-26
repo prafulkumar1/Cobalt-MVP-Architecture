@@ -423,7 +423,7 @@ class CbAccordionlist extends React.Component {
                         <AccordionHeader
                           style={StyleProps?.subHeader ||  styles.subHeader}
                         >
-                          <AccordionTrigger>
+                          <AccordionTrigger style={{marginVertical:-4}}>
                             {({ isExpanded }) => {
                               return (
                                 <>
@@ -888,7 +888,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?3:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -1420,6 +1420,7 @@ class cbSearchbox extends React.Component {
           </Box>
         ) : (
           <TouchableOpacity
+            style={styles.searchBtn}
             onPress={() => {
               this.setState({ showSearchInput: true });
               if (this.props.onSearchPress) {
@@ -1429,9 +1430,10 @@ class cbSearchbox extends React.Component {
             {
           Searchsource ? <Image source={{ uri: Searchsource}} style={StyleProps? StyleProps?.SearchIconImage : styles.SearchIconImage}/>: <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
             }
+          <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Box>
+      </Pressable>
     );
   }
 }

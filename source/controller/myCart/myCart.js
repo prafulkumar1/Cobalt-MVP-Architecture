@@ -13,7 +13,7 @@ export const useMyCartLogic = () => {
     const scrollViewRef = useRef(null);
     const textInputRef = useRef(null);
  
-    const {setIsPrevCartScreen,setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
+    const {setCartApiResponse,setIsPrevCartScreen,setSelectedLocationId,increaseQuantity,selectedLocationId,selectedTime,setSelectedLocation,setSelectedTime,removeCartItems,cartData,menuOrderData,deleteCartItem,updateCartItemQuantity ,updateModifierItemQuantity,setSelectedModifiers,storeSingleItem,closePreviewModal}= useFormContext();
     const [tipData,setTipData] = useState([])
     const [cartConfigData,setCartCofigData] = useState(null)
     const [value,setValue]  =useState(0)
@@ -61,9 +61,12 @@ export const useMyCartLogic = () => {
       setLoading(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
+      const currentMealPeriodId = menuOrderData
+      ?.filter((item) => item?.MealPeriodIsSelect === 1)
+      ?.map((items) => items.MealPeriod_Id);
       const params = {   
         "Location_Id":`${getProfitCenterId?.LocationId}`,
-        "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id
+        "MealPeriod_Id":currentMealPeriodId[0]
       }
       let cartInfo = await postApiCall("CART", "GET_CART_CONFIG", params)
       const showTimeData = cartInfo?.response?.Pickup_Times?.map((item) => ({label:item.PickupTime,value:item.PickupTime}))
@@ -80,7 +83,7 @@ export const useMyCartLogic = () => {
       setTipData(tipDetails)
       setSelectedTime(showTimeData[0]?.value)
       setSelectedLocation(showPickLocationData[0]?.value)
-      setSelectedLocationId(showPickLocationData?.length === 1 && showPickLocationData[0]?.pickUpLocationId)
+      setSelectedLocationId(showPickLocationData[0]?.pickUpLocationId)
       setPickUpLocations(cartInfo?.response?.Pickup_Locations)
       setShowPickupTime(showTimeData)
       setShowPickupLocation(showPickLocationData)
@@ -116,6 +119,7 @@ export const useMyCartLogic = () => {
 
       let cartInfo = await postApiCall("CART", "GET_CART_PRICE",params)
       setMyCartData(cartInfo.response?.Items)
+      setCartApiResponse(cartInfo.response?.Items)
       setPriceBreakDownData(cartInfo.response?.Breakdown)
       setGrandTotal(cartInfo.response?.GrandTotal)
       setIsPriceLoaded(false)
@@ -204,7 +208,8 @@ export const useMyCartLogic = () => {
  
   const handleSaveTip = () => {
     if (customTip.current.length === 0) {
-      Alert.alert('Please select a custom tip');
+      Keyboard.dismiss()
+      getCartPrice()
     } else {
       const newTip = {
         id: uuid.v4(),
@@ -282,10 +287,13 @@ export const useMyCartLogic = () => {
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
       const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
+      const currentMealPeriodId = menuOrderData
+        ?.filter((item) => item?.MealPeriodIsSelect === 1)
+        ?.map((item) => item.MealPeriod_Id);
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
-          "MealPeriod_Id":menuOrderData?.[0]?.MealPeriod_Id,
+          "MealPeriod_Id":currentMealPeriodId[0],
           "PickupTime": selectedTime ? selectedTime :"",
           "PickupLocationId": selectedLocationId?selectedLocationId:"",
           "Instructions": orderInstruction,
@@ -317,9 +325,11 @@ export const useMyCartLogic = () => {
     }, 100);
   }
   const closeKeyBoard = () => {
+    tipSelection.current = ({"TipPercentage": "","TipCustom":"" })
     setIsCustomTipAdded(true)
     setCustomTipValue("")
     Keyboard.dismiss()
+    getCartPrice()
   }
   const handleContentSizeChange = (event) => {
     const newHeight = event?.nativeEvent?.contentSize.height;

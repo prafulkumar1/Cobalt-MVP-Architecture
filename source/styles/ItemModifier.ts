@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-
+ 
 export const styles = StyleSheet.create({
     itemNameContainer:{
         marginTop: 10
@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold',width:responsiveWidth(60) },
     foodItemPrice:{ fontSize: 18, color: "#4B5154",fontFamily: 'SourceSansPro_SemiBold'  },
     foodDiscripContainer:{},
-    foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
+    foodDiscripTxt:{ fontSize: 12,lineHeight:15, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_SemiBold"},
     commentContainer:{paddingBottom:100},
     allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_Italic", paddingVertical: 10 },
@@ -45,22 +45,22 @@ export const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.5)'
     },
-    modalNoYesBtn: {padding: 10,backgroundColor: "#fff",alignItems: 'center',borderWidth: 1,borderColor: "#5773A2",borderRadius: 32,width: responsiveWidth(37)}, 
+    modalNoYesBtn: {padding: 10,backgroundColor: "#fff",alignItems: 'center',borderWidth: 1,borderColor: "#5773A2",borderRadius: 32,width: responsiveWidth(37)},
     modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21,fontFamily:"SourceSansPro_SemiBold" },
     innerModalAlertTxt:{ fontSize: 24, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(50),marginTop:responsiveHeight(3) },
     innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
     innerModal:{   width: '100%', backgroundColor: "#fff", height: responsiveHeight(55), borderTopLeftRadius: 35, borderTopRightRadius: 35,   padding: 20,justifyContent: 'space-between'},
     confirmMdl:{ flex: 1,  justifyContent: 'flex-end',    alignItems: 'center'},
     rightItemContainer:{ flexDirection: 'row', alignItems: 'center',justifyContent:"space-between"},
-    addIconBtn:{ 
-        flexDirection: 'row', 
+    addIconBtn:{
+        flexDirection: 'row',
         alignItems: 'center',
-        width:responsiveWidth(17), 
+        width:responsiveWidth(17),
         justifyContent:"space-between",
         marginRight:responsiveWidth(5)
     },
-    favIconBtn:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
-    favIcon:{width:"100%",height:"100%"},
+    favIconBtn:{width:responsiveWidth(7),height:responsiveHeight(5),justifyContent:"center",alignItems:"center"},
+    favIcon:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
     itemMainContainer:{  },
