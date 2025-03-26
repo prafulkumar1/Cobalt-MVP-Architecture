@@ -323,7 +323,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
               cartData && cartData.length > 0 &&
               <UI.Box> 
                 {
-                  !isKeyboardVisible ? cartConfigData?.ShowTip ===1 &&
+                   cartConfigData?.ShowTip ===1 &&
                   <UI.Box style={styles.tipBox}>
                     <UI.Box style={styles.tipContainer}>
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
@@ -336,7 +336,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                         })
                       }
                     </UI.ScrollView>
-                  </UI.Box> : null
+                  </UI.Box>
                 }
  
                 {keyboardVisible && tipKeyboardOpen && (
