@@ -27,6 +27,7 @@ import SvgUri from 'react-native-svg-uri';
 import { handleSearchClick, handleClearClick, handleCloseClick } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { responsiveWidth } from 'react-native-responsive-dimensions';
 
 export const postQuantityApiCall = async (quantity, itemId) => {
   try {
@@ -139,7 +140,7 @@ class CbAccordionlist extends React.Component {
                         <AccordionHeader
                           style={styles.subHeader}
                         >
-                          <AccordionTrigger>
+                          <AccordionTrigger style={{marginVertical:-4}}>
                             {({ isExpanded }) => {
                               return (
                                 <>
@@ -594,7 +595,7 @@ class CbBackButton extends React.Component {
                 if (menuOrderData !== null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
                 } else {
-                  this.props.navigation?.goBack()
+                  navigateToScreen(this.props, "ProfitCenters", true, { profileCenterTile: this.state.profitCenterTitle })
                 }
               } else if (currentRoute === "Recentorders") {
                 if (isPrevCartScreen) {
@@ -653,7 +654,7 @@ class CbFloatingButton extends React.Component {
             <View style={styles.floatingContainer}>
               <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?3:10}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );
@@ -1004,7 +1005,25 @@ class CbAddToCartButton extends React.Component {
           <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
         </TouchableOpacity>
       );
-    } else {
+    } else if(IsDisable == 1)
+      {
+        return (
+          <TouchableOpacity
+            style={[this.style ? this.style : styles.addItemToCartBtn,
+            { borderColor: addButton?.borderColor ? this.commonStyles(IsAvailable, IsDisable, addButton?.borderColor, "#ABABAB") : this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#ABABAB") },
+            { backgroundColor: addButton?.backgroundColor ? addButton.backgroundColor : "#fff" },
+            { borderRadius: addButton?.borderRadius ? addButton?.borderRadius : 5 },
+            { borderWidth: addButton?.borderWidth ? addButton?.borderWidth : 1 }
+            ]}
+            activeOpacity={0.5}
+            onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+            disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
+          >
+            <Icon as={AddIcon} color={this.commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")} style={{ width: 25, height: 25 }} />
+          </TouchableOpacity>
+        );
+      }
+      else {
       return (
         <Box style={[this.cartStyle ? styles.operationBtn2 : styles.operationBtn]}>
           <TouchableOpacity
@@ -1101,16 +1120,21 @@ class cbSearchbox extends React.Component {
     const Backarrowsource = this.backarrow;
     const Closesource = this.close;
     return (
-      <Box
+      <Pressable
         style={{
-          width: showSearchInput ? "100%" : 40,
+          width: showSearchInput ? "100%" : responsiveWidth(60),
           height: 40,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          marginLeft: 9,
           borderRadius: 4,
           backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+        }}
+        onPress={() => {
+          this.setState({ showSearchInput: true });
+          if (this.props.onSearchPress) {
+            this.props.onSearchPress();
+          }
         }}
       >
         {showSearchInput ? (
@@ -1154,6 +1178,7 @@ class cbSearchbox extends React.Component {
           </Box>
         ) : (
           <TouchableOpacity
+            style={styles.searchBtn}
             onPress={() => {
               this.setState({ showSearchInput: true });
               if (this.props.onSearchPress) {
@@ -1162,10 +1187,11 @@ class cbSearchbox extends React.Component {
             }}          >
             {
               Searchsource ? <Image source={{ uri: Searchsource }} /> : <Image alt='image' source={require("@/assets/images/icons/Search.png")} />
-            }
+          }
+            <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Box>
+      </Pressable>
     );
   }
 }

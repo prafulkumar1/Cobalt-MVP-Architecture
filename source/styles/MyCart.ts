@@ -45,7 +45,7 @@ export const styles = StyleSheet.create({
   cardContainer: {
     padding: responsiveWidth(3),
     borderRadius: 10,
-    marginTop: responsiveHeight(1),
+    marginTop: responsiveHeight(0.2),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
@@ -74,8 +74,8 @@ export const styles = StyleSheet.create({
   emptyCartTxt: { fontSize: 18, padding: 10, fontFamily: "SourceSansPro_BoldItalic" },
   orderInstContainer: { borderWidth: 1, borderColor: "#C4C4C4", justifyContent: "flex-start", flexDirection: "row", alignItems: "center", width: 180,borderRadius: 4, paddingHorizontal: 10 },
   notesIcon: { width: 12, height: 18 },
-  noteIcon2: { width: 12, height: 18 ,alignSelf:"flex-start",marginTop:4},
-  orderInstTxt: { fontSize: 12, color: "#4B5154", paddingLeft: 10, fontFamily: "SourceSansPro_SemiBoldItalic" },
+  noteIcon2: { width: 12, height: 18 ,alignSelf:"flex-start",marginTop:6},
+  orderInstTxt: { fontSize: 15, color: "#4B5154", paddingLeft: 10, fontFamily: "SourceSansPro_SemiBoldItalic" },
   mainSubContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 20 },
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
   tipContainer: { justifyContent: "center", alignItems: "center", padding: 10 },
@@ -136,7 +136,7 @@ export const styles = StyleSheet.create({
     padding: 10, 
   },
   pickUpTimeTxt: { textAlign: "center", fontSize: 12, fontFamily: "SourceSansPro_BoldItalic" },
-  timeBtn: { borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 32, marginTop: 5, },
+  timeBtn: { borderRadius: 5, backgroundColor: "#fff", justifyContent: "center", alignItems: "center", width: 165, height: 36, marginTop: 5, },
   timeTxt: { color: "#4B5154", fontSize: 18, fontFamily: "SourceSansPro_BoldItalic" },
   pickUpPointTxt: { textAlign: "center", fontSize: 12, fontFamily: "SourceSansPro_BoldItalic" },
   plcOrdBtn: { width: 250, height: 45, paddingHorizontal: 25, flexDirection: "row", backgroundColor: "#5773A2", justifyContent: "space-between", alignItems: "center", alignSelf: "center", borderRadius: 23, margin: 20, zIndex: 0 },
@@ -199,7 +199,8 @@ export const styles = StyleSheet.create({
   inputBox: { fontFamily: "SourceSansPro_SemiBold", textAlign: "center" },
   enteredTxt: {
     color: "#4D4F50",
-    fontFamily: "SourceSansPro_SemiBold"
+    fontFamily: "SourceSansPro_SemiBold",
+    fontSize:16
   },
   loadingContainer: { alignSelf: "center", width: "100%" },
   modalContainer: {
@@ -209,7 +210,7 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)'
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   confirmMdl: {
     flex: 1,
@@ -218,19 +219,20 @@ export const styles = StyleSheet.create({
     margin: 10
   },
   modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21, fontFamily: "SourceSansPro_SemiBold" },
-  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: isPlatformIos()?responsiveWidth(100):responsiveWidth(50), paddingVertical: 5, marginTop: responsiveHeight(5), lineHeight: 30 },
-  timeAlertMsg: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', paddingVertical: 5 },
-  pickDetails: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', marginTop: responsiveHeight(5), paddingVertical: 5 },
+  innerModalAlertTxt: { fontSize: 24, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', width: isPlatformIos()?responsiveWidth(100):responsiveWidth(60), marginTop: responsiveHeight(3), lineHeight: 30 },
+  timeAlertMsg: { fontSize: 22, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', paddingTop: 10 },
+  pickDetails: { fontSize: 22, color: "#4B5154", fontFamily: "SourceSansPro_SemiBoldItalic", textAlign: 'center', marginTop: responsiveHeight(4), },
   innerModalMsgContainer: { width: "100%", justifyContent: 'space-between', alignItems: 'center', },
   innerModal: {
     width: '100%',
     backgroundColor: "#fff",
-    height: isPlatformIos()?responsiveHeight(68):responsiveHeight(65),
+    height: isPlatformIos()?responsiveHeight(68):responsiveHeight(70),
     padding: 20,
-    justifyContent: 'space-between',
+    justifyContent: "center", 
+    alignItems: "center", 
     borderRadius: 10,
   },
-  diningIcon: { width: responsiveWidth(25), height: responsiveHeight(8), resizeMode: "contain", marginTop: responsiveHeight(6) },
+  diningIcon: { width: responsiveWidth(25), height: responsiveHeight(8), resizeMode: "contain"},
   discardBtn: { flexDirection: 'row', justifyContent: "space-between", width: "85%", marginTop: responsiveHeight(6) },
   modalNoYesBtn: {
     padding: 10,
@@ -247,8 +249,8 @@ export const styles = StyleSheet.create({
     fontSize:responsiveFontSize(4),
     color:"#5773A2",
     fontFamily: "SourceSansPro_Bold",
-    marginTop:responsiveHeight(5),
-    lineHeight:50
+    marginTop:responsiveHeight(4),
+    lineHeight:35,
   },
   tipBox:{backgroundColor:"#F3F3F3",borderRadius:10,marginBottom:5,margin:10},
   modalBackground:{
@@ -314,4 +316,5 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     paddingTop:isPlatformAndroid()?8:10
   },
+  dividerLine:{ width: "60%", marginVertical: responsiveHeight(2) }
 }); 

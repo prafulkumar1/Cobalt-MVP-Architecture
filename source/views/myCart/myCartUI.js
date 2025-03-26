@@ -13,7 +13,7 @@ import { CbDottedLine } from '@/source/constants/dottedLine';
 import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
 import { isPlatformAndroid } from '@/source/constants/Matrices';
- 
+import { Divider } from '@/components/ui/divider';
  
 const pageId='MyCart';
 export default function MyCartScreen(props) {
@@ -136,17 +136,6 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                     children={renderModifierList}
                   />
                 }
-                {item?.Modifiers && item.Modifiers.length > 0 && (
-                <UI.CbFlatList
-                  scrollEnabled={false}
-                  flatlistData={item.Modifiers}
-                  children={({ item }) => (
-                    <UI.Text style={styles.modifierItem}>
-                      {item.Modifier_Name}
-                    </UI.Text>
-                  )}
-                />
-              )}
               </UI.Box>
  
               <UI.Box style={styles.rightContainer}>
@@ -221,7 +210,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
     return(
      <>
         <UI.TouchableOpacity style={containerStyle} onPress={() => addTip(tipDetails)}>
-          <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
+          <UI.Text style={[textStyle, {fontSize:16}]}>{`${item.tip}`}</UI.Text>
         </UI.TouchableOpacity>
        {
         (lastIndex === index && isCustomTipAdded) &&
@@ -295,6 +284,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             id={"addMorebtn"}
             showBtnName={"Add More"}
             screenName={"MenuOrder"}
+            isPlusIconAvailable = {true}
             onPress={()=>navigateToScreen(props, "MenuOrder", true,{profileCenterTile:props?.route?.params?.profileCenterTile})}
           />
         </UI.Box>
@@ -339,7 +329,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                       <UI.Text style={styles.tipTxt}>ADD OPTIONAL TIP</UI.Text>
                     </UI.Box>
                     <CbDottedLine length={46} dotSize={6} dotColor="#0000002B" />
-                    <UI.ScrollView scrollEnabled={false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
+                    <UI.ScrollView scrollEnabled={isPlatformAndroid()?true :false} style={{alignSelf:"center"}} bounces={false} keyboardShouldPersistTaps="handled" ref={scrollViewRef} horizontal={true} showsHorizontalScrollIndicator={false}>
                       {
                         tipData && tipData?.map((item, index) => {
                           return renderAddTip(item, index)
@@ -379,7 +369,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                       cartConfigData?.ShowPickupLocation ===1 &&
                       showPickupLocation.length > 0 && 
                       <UI.Box>
-                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Point</UI.Text>
+                        <UI.Text style={styles.pickUpPointTxt}>Select Pickup Location</UI.Text>
                         <UI.cbSelectTime
                           id={pageId}
                           selectItems={showPickupLocation}
@@ -438,6 +428,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                 source={require("@/assets/images/icons/dining3x.png")}
                 style={styles.diningIcon}
               />
+              <Divider style={styles.dividerLine} />
               <UI.Text style={styles.innerModalAlertTxt}>
                 {successResponse?.ResponseMessage}
               </UI.Text>
@@ -498,7 +489,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifier />
+            <ItemModifier isRecentOrder={false}/>
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>

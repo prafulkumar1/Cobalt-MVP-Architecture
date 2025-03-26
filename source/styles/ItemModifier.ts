@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 import { responsiveHeight, responsiveWidth } from "react-native-responsive-dimensions";
-
+ 
 export const styles = StyleSheet.create({
     iconBtn: {
         marginHorizontal: 10,
@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     foodItemName:{ fontSize: 20, color: "#4B5154", paddingBottom: 3, fontFamily: 'SourceSansPro_SemiBold',width:responsiveWidth(60) },
     foodItemPrice:{ fontSize: 18, color: "#4B5154",fontFamily: 'SourceSansPro_SemiBold'  },
     foodDiscripContainer:{},
-    foodDiscripTxt:{ fontSize: 12, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
+    foodDiscripTxt:{ fontSize: 12,lineHeight:15, color: "#6D6D6D",fontFamily:"SourceSansPro_SemiBoldItalic",paddingVertical:responsiveHeight(1) },
     modifierTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_SemiBold"},
     allergyInfoTxt:{ fontSize: 16, color: "#4B5154", fontFamily:"SourceSansPro_Italic", paddingVertical: 10 },
     commentsBox:{height: 110, borderColor: "#00000026",   borderRadius: 5,paddingTop:10},
@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
         borderColor: "#5773A2",
         borderRadius: 32,
         width: responsiveWidth(37)
-    }, 
+    },
     modalNoYesBtnTxt: { color: "#5773A2", fontSize: 21,fontFamily:"SourceSansPro_SemiBold" },
     innerModalAlertTxt:{ fontSize: 24, color: "#4B5154",fontFamily:"SourceSansPro_SemiBold", textAlign: 'center', lineHeight: 30,width:responsiveWidth(50),marginTop:responsiveHeight(3) },
     innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignItems: 'center',},
@@ -68,15 +68,15 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
     },
     rightItemContainer:{ flexDirection: 'row', alignItems: 'center',justifyContent:"space-between"},
-    addIconBtn:{ 
-        flexDirection: 'row', 
+    addIconBtn:{
+        flexDirection: 'row',
         alignItems: 'center',
-        width:responsiveWidth(17), 
+        width:responsiveWidth(17),
         justifyContent:"space-between",
         marginRight:responsiveWidth(5)
     },
-    favIconBtn:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
-    favIcon:{width:"100%",height:"100%"},
+    favIconBtn:{width:responsiveWidth(7),height:responsiveHeight(5),justifyContent:"center",alignItems:"center"},
+    favIcon:{width:responsiveWidth(5),height:responsiveHeight(2.5)},
     addBtn:{padding:responsiveWidth(1.2)},
     modifierContainer:{ paddingHorizontal: 7, width: "100%", backgroundColor: "#fff" },
     itemMainContainer:{  },

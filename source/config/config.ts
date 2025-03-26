@@ -1,25 +1,9 @@
-// import AsyncStorage from "@react-native-async-storage/async-storage"
-// import { useEffect, useState } from "react"
+import { isPlatformAndroid } from "../constants/Matrices";
 
-// const [baseUri, setBaseUri] = useState<string>("")
-
-// const getBaseUrl = async () => {
-//     try {
-//         let url = await AsyncStorage.getItem("baseUrl")
-//         if (url !== null) {
-//             setBaseUri(url)
-//         }
-//     } catch (error) {
-//         console.log(JSON.stringify(error))
-//     }
-// }
-
-// useEffect(() => {
-//     // getBaseUrl()
-// }, [])
-// https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
+// https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/  ---->>> BA Dev
 // https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/  ------->>>>>> Testing
-export const baseURL = global.apiURL;
+// https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/   ---------->>> Dev url
+export const baseURL = isPlatformAndroid()?"https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/":global.apiURL;
 
 export const endpoints = {
     UI_CONFIGURATIONS:{
