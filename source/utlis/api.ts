@@ -20,8 +20,8 @@ export default api;
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": isPlatformAndroid()?"EBC475B2-369A-496E-B8B2-AE7F4E846781":global.memberID,
-      "ID":isPlatformAndroid()?"EBC475B2-369A-496E-B8B2-AE7F4E846781": global.memberID,
+      "MemberID": global.memberID,
+      "ID": global.memberID,
       "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
         {
@@ -35,15 +35,15 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         }
       ],
       "IsAdmin": "0",
-      "UserName":isPlatformAndroid()?"Wesselman, Bob": global.username,
+      "UserName": global.username,
       "Role": "Full Access",
-      "UserId":isPlatformAndroid()?"00026 - 00": global.userID,
+      "UserId":global.userID,
     };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);
 
     let responseData = await api.post(
-      `${isPlatformAndroid()?baseURL:global.apiURL}${endpoints[screenName][endpoint]}`,
+      `${global.apiURL}${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {

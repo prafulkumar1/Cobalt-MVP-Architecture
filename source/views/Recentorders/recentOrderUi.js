@@ -692,7 +692,7 @@ export default function RecentordersScreen(props) {
     updateOrAddTxt,
     modifierCartItemData
   } =  useFormContext();
-  const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const totalQuantity = cartData?.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
