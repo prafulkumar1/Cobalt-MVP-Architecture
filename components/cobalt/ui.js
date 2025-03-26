@@ -1382,6 +1382,7 @@ class cbSearchbox extends React.Component {
     const Styles=ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles); 
     return (
+      
       <Box style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}>
         {showSearchInput ? (
           <Box style={StyleProps? StyleProps?.searchBarMainContainer : styles.searchBarMainContainer}>
@@ -1433,7 +1434,7 @@ class cbSearchbox extends React.Component {
           <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Pressable>
+      </Box>
     );
   }
 }

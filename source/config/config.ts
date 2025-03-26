@@ -17,9 +17,9 @@ import { isPlatformAndroid } from "../constants/Matrices";
 // useEffect(() => {
 //     // getBaseUrl()
 // }, [])
-// https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.CobaltDev/api/MobileOrdering/MO_Getprofitcenters   ---->>> BA Dev
-// https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/  ------->>>>>> Testing
-export const baseURL = global.apiURL;
+const DevsiteUrl = "https://cobaltportal.mycobaltsoftware.com/cssi.cobalt.member.wrapper.EngDev/api/"  
+const TestingUrl = "https://cobaltportal.mycobaltsoftware.com/MemberAppService.Wrapper.CobaltTest/API/ "
+export const baseURL = DevsiteUrl;
 
 export const endpoints = {
 UI_CONFIGURATIONS:{
