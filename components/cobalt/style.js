@@ -460,7 +460,7 @@ CheckIcon:{color:"#ffff"},
     borderRadius: 5,
     backgroundColor: "#f0f0f0"
   },
-  selectedLabelItem:{fontSize:responsiveFontSize(2.5),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154"},
+  selectedLabelItem:{fontSize:responsiveFontSize(2.5),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",marginTop:5},
   crossIcon:{
     width: 30,
     height: 30,
