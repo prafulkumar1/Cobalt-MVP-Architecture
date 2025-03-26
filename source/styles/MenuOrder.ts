@@ -48,8 +48,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     marginHorizontal: 5,
-    paddingTop:isPlatformAndroid()?12:responsiveHeight(1.2),
-    paddingBottom:isPlatformAndroid()? 2.5:responsiveHeight(0),
+    paddingTop:isPlatformAndroid()?12:8,
+    paddingBottom:isPlatformAndroid()? 2.5:2.5,
     paddingHorizontal:responsiveWidth(5)
   },
   inactiveMenuType: {
@@ -61,8 +61,8 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     opacity: 0.8,
     marginHorizontal: 5,
-    paddingTop:isPlatformAndroid()?12:responsiveHeight(1.2),
-    paddingBottom:isPlatformAndroid()? 2.5:responsiveHeight(0),
+    paddingTop:isPlatformAndroid()?12:8,
+    paddingBottom:isPlatformAndroid()? 2.5:2.5,
   },
   timeDurationTxt: {
     fontSize: 10,

@@ -285,7 +285,18 @@ export const useMyCartLogic = () => {
       setIsOrderPlaced(true)
       const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
       let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
-      const cartItemIds = cartData?.map((item) => ({Comments:item.comments,ItemId:item.Item_ID,Quantity:item.quantity,Modifiers:item?.selectedModifiers?.map((items) => ({ModifierId:items.Modifier_Id}))}))
+      const cartItemIds = cartData?.map((item) => {
+        const uniqueModifiers = item?.selectedModifiers?.filter((modifier, index, self) => {
+          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+          return modifier.isChecked && index === lastIndex;
+        });
+        return{
+          Comments:item.comments,
+          ItemId:item.Item_ID,
+          Quantity:item.quantity,
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id,Category_Id:items?.Category_Id})):[]
+        }
+      })
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
       const currentMealPeriodId = menuOrderData
         ?.filter((item) => item?.MealPeriodIsSelect === 1)
