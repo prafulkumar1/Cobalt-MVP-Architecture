@@ -15,8 +15,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.5),
+    width:isPlatformAndroid()?130:responsiveHeight(16),
+    height:isPlatformAndroid()?30:responsiveHeight(3.5),
     marginHorizontal:3
   },
   ButtonTextStyle: {
@@ -35,8 +35,8 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width:isPlatformAndroid()?responsiveWidth(30):responsiveHeight(16),
-    height:isPlatformAndroid()?responsiveHeight(3):responsiveHeight(3.5),
+    width:isPlatformAndroid()?130:responsiveHeight(16),
+    height:isPlatformAndroid()?30:responsiveHeight(3.5),
     marginHorizontal:3
   },
   ActiveButtonTextStyle: {
@@ -167,9 +167,9 @@ export const styles = StyleSheet.create({
   labelQty:{ fontSize: 14, color: "#5773A2", fontFamily: "SourceSansPro_SemiBoldItalic",  marginRight: 16 },
   labelAmount:{ fontSize: 14, color: "#5773A2", fontFamily: "SourceSansPro_SemiBoldItalic", },
   pendingOrderBox:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  labelItemName:{ fontSize: 15,color:"#4B5154",fontFamily:"SourceSansPro_SemiBold",width:responsiveWidth(65) },
-  labelQuantity:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",width:responsiveWidth(12),textAlign:"center" },
-  itemPrice:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",width:responsiveWidth(12),textAlign:"center" },
+  labelItemName:{ fontSize: 15,color:"#4B5154",fontFamily:"SourceSansPro_SemiBold",width:responsiveWidth(60), },
+  labelQuantity:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",width:45,textAlign:"center", },
+  itemPrice:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",width:70,textAlign:"center", },
   modifierName:{ fontSize: 12, color: "#3B87C1", fontFamily: "SourceSansPro_SemiBoldItalic", },
   commentBox:{ flexDirection: "row", alignItems: "flex-start", marginTop: 5 },
   commentIcon:{ width: horizontalScale(12), height: verticalScale(12), marginRight: 10, top: 5 },

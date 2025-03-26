@@ -122,7 +122,7 @@ export const styles = StyleSheet.create({
   categoryItem: { textAlign: "center", width: "100%" },
   mainBoxContainer: { backgroundColor: "#fff" },
   recentOrderTxt: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(1.9),
     fontFamily: "SourceSansPro_SemiBold",
     lineHeight: 20,
     marginLeft: 8,
