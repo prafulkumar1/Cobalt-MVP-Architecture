@@ -18,7 +18,7 @@ const ProfitCenters = (props) => {
     const RenderingProfitCenter = ({item},props) => {
         const isAvailable = item.STATUS === "Available";
         return (
-            <UI.cbImageBackground id="ProfitCenterBGImage" pageId={pageId}  source={{ uri:  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTatLiJAG6jse2XTu96VcidI8X5OYIvWzcenw&s" }} style={styles.profitCenterBGImage}>
+            <UI.cbImageBackground id="ProfitCenterBGImage" pageId={pageId}  source={{ uri: item?.ImageUrl ? item?.ImageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQE3CETL_OertJKScoHfblxs6CBrKGVCmVESw&s" }} style={styles.BGImage}>
                 <UI.CbBox id='BoxContainer' pageId={pageId} style={styles.blackShadow} />
                 <UI.TouchableOpacity style={styles.profitCenter_btn} activeOpacity={0.6} onPress={() => navigateToMenuOrder(props,item)}>
                     <UI.CbBox id='BoxTextContainer' pageId={pageId} style={styles.profitCenterOverlay}>

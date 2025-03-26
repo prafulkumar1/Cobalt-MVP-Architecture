@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
         paddingHorizontal: 5,
         flex:1
     },
-    profitCenterBGImage: {
+    BGImage: {
         width: "100%",
         height: responsiveHeight(15),
         marginTop: 8,

@@ -55,7 +55,6 @@ class CbActivityIndicator extends React.Component{
       this.state={
         ControlConfig:[]
       }
-      console.log("$$$$$",props)
   }
   async componentDidMount() {
     await this.loadPageConfig();
@@ -64,7 +63,6 @@ class CbActivityIndicator extends React.Component{
   loadPageConfig = async () => {
     try {
       const ControlConfig = await loadPageConfig(this.pageID, this.id);
-      console.log("!!!!###@",ControlConfig);
       this.setState({ ControlConfig });
     } catch (error) {
       console.error("Error loading config:", error);
@@ -72,7 +70,6 @@ class CbActivityIndicator extends React.Component{
   };
   render() {
     const { ControlConfig } = this.state;  
-    console.log("#@$#@$",ControlConfig)
      const Color = ControlConfig?.color || this.color;    
      const Size=ControlConfig?.size || this.size;
       return(
@@ -155,7 +152,7 @@ class CbBox extends React.Component {
     this.id=props.id;
     this.pageID=props.pageId;
     this.Conditionalstyle=props.Conditionalstyle || {};
-    this.styles= props.styles || {};
+    this.styles= props.style || {};
     this.state = {
       ControlConfig: [], 
     };
@@ -176,10 +173,9 @@ class CbBox extends React.Component {
 
   render() {
     const { ControlConfig } = this.state;  
-     const Styles=ControlConfig?.Styles || this.styles;
-     const StyleProps = transformStyles(Styles);
-     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
-     
+    const Styles = ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles);
+    const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
     return (
       <Box style={[dynamicStyle,this.Conditionalstyle]} >
          {this.props.children}
@@ -195,7 +191,7 @@ class CbView extends React.Component {
     this.id=props.id;
     this.pageID=props.pageId;
     this.Conditionalstyle=props.Conditionalstyle || {};
-    this.styles= props.styles || {};
+    this.styles= props.style || {};
     this.state = {
       ControlConfig: [], 
     };
@@ -218,7 +214,7 @@ class CbView extends React.Component {
     const { ControlConfig } = this.state;  
      const Styles=ControlConfig?.Styles || this.styles;
      const StyleProps = transformStyles(Styles);
-     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
+     const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
     return (
       <View style={[dynamicStyle,this.Conditionalstyle]} >
          {this.props.children}
@@ -234,6 +230,7 @@ class CbText extends React.Component {
     super(props);
     this.id=props.id;
     this.pageID=props.pageId;
+    this.styles= props.style || {};
     this.numberOfLines=props.numberOfLines || undefined;
     this.Conditionalstyle=props.Conditionalstyle || {};
     this.strikeThrough=props.strikeThrough || "false";
@@ -258,7 +255,7 @@ class CbText extends React.Component {
      const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
       const Styles=ControlConfig?.Styles;
       const StyleProps = transformStyles(Styles);  
-      const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
+      const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
       const LabelText=ControlConfig?.LabelText || this.props.children;
      return (
       <Text strikeThrough={StrikeThrough} style={[dynamicStyle,this.Conditionalstyle]} numberOfLines={this.numberOfLines}>
@@ -830,7 +827,7 @@ class CbImage extends React.Component {
     this.source = props.source || "";
     this.imageJsx = props.imageJsx;
     this.resizeMode=props.resizeMode || "";
-    this.style = props.style || "";
+    this.styles = props.style || "";
     this.state = {
       ControlConfig: [], 
     };
@@ -852,7 +849,7 @@ class CbImage extends React.Component {
     const source = ControlConfig?.ImageSource  || this.source;
     const Styles=ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles);  
-    const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {}; 
+    const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles; 
     const jsx = this.imageJsx;
     const ResizeMode= ControlConfig?.resizeMode || this.resizeMode;
     if (source) {
@@ -923,7 +920,6 @@ class CbRecentAddToCart extends React.Component {
 
 
   handleAddToCartBtn = async (quantity, storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible) => {
-    console.log("mealItemDetails:", this.mealItemDetails); // Debugging
 
     let quantityInfo = await postQuantityApiCall(quantity, this.mealItemDetails?.Item_ID);
 
@@ -1211,8 +1207,8 @@ class CbAddToCartButton extends React.Component {
   }
   renderIcons = (quantity, modifierQuantity,itemDataVisible) => {
     const{ ControlConfig }=this.state;
-    const RemoveIcon=ControlConfig.RemoveIconSource;
-    const TrashIcon=ControlConfig.DeleteIconSource;
+    const RemoveIcon=ControlConfig?.RemoveIconSource;
+    const TrashIcon=ControlConfig?.DeleteIconSource;
     const Styles=ControlConfig?.Styles;
      const StyleProps = transformStyles(Styles);
     if(itemDataVisible){
@@ -1244,12 +1240,12 @@ class CbAddToCartButton extends React.Component {
     const modifierCartItem = modifierCartItemData && modifierCartItemData?.find((item) => item?.Item_ID === this.mealItemDetails?.Item_ID);
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     const{ ControlConfig }=this.state;
-    const AddIcon=ControlConfig.AddIconSource;
+    const AddIcon=ControlConfig?.AddIconSource;
     const Styles=ControlConfig?.Styles;
     const PrimaryColor=ControlConfig?.PrimaryColor;
     const SecondaryColor=ControlConfig?.SecondaryColor;
      const StyleProps = transformStyles(Styles);
-    if ( quantity === 0 && modifierQuantity === 0) {
+    if ( quantity === 0 && modifierQuantity === 0 ) {
       return (
         <Box style={[StyleProps?.addItemToCartBtn || styles.addItemToCartBtn, 
           { borderColor: this.commonStyles(IsAvailable,IsDisable, PrimaryColor, SecondaryColor) },
@@ -1264,7 +1260,23 @@ class CbAddToCartButton extends React.Component {
         </TouchableOpacity>
         </Box>
       );
-    } else {
+    }else if(IsDisable == 1){
+      return (
+        <Box style={[StyleProps?.addItemToCartBtn || styles.addItemToCartBtn, 
+          { borderColor: this.commonStyles(IsAvailable,IsDisable, PrimaryColor, SecondaryColor) },
+          
+        ]}>
+        <TouchableOpacity          
+          activeOpacity={0.5}
+          onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
+          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
+        >
+          {AddIcon ? ( <Image source={{ uri: AddIcon}} style={[StyleProps?.addCartIcons || styles.addCartIcons,(IsAvailable === 0 && IsDisable === 1) ? { opacity: 1.2 } : {}]} /> ) : (<Image alt='image' source={require("@/assets/images/icons/Plus_Icon.png")} style={styles.addCartIcons} />)}
+        </TouchableOpacity>
+        </Box>
+      );
+    } 
+    else {
       return (
         <Box style={[this.cartStyle? (StyleProps?.operationBtn2 || styles.operationBtn2):(StyleProps?.operationBtn || styles.operationBtn)]}>
           <TouchableOpacity
@@ -1482,7 +1494,7 @@ class cbImageBackground extends React.Component {
     this.id=props.id;
     this.pageID=props.pageId;
     this.source = props.source || null;
-    this.styles= props.styles || null;
+    this.styles= props.style || null;
     this.state = {
       ControlConfig: [], 
     };
@@ -1504,10 +1516,12 @@ class cbImageBackground extends React.Component {
     const { ControlConfig }=this.state;
     const { children } = this.props;
     const sourceprop = ControlConfig?.source  || this.source;
-    const Styles = ControlConfig?.Styles ||  this.styles;
-    const StyleProps = transformStyles(Styles);
+    const Styles = ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles) ;
+    const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
+
     return (
-      <ImageBackground source={sourceprop} alt='login' style={StyleProps?.BGImage} >
+      <ImageBackground source={sourceprop} alt='login' style={dynamicStyle} >
         {children}
       </ImageBackground>
     );

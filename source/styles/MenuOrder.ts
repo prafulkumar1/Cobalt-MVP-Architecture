@@ -18,6 +18,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignItems: "center",
+    marginHorizontal:4
   },
   mainContainer: { flex: 1, backgroundColor: "#ECECEC" },
   scrollContent: {

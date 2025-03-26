@@ -440,7 +440,7 @@ export default function MyCartScreen(props) {
           animationType="fade"
           onRequestClose={closePreviewModal}
         >
-          <UI.Box id="ModalBackground" pageId="MyCart"  style={styles.modalBackground}>
+          <UI.CbBox id="ModalBackground" pageId="MyCart"  style={styles.modalBackground}>
             {
               !isKeyboardVisible
               && 
@@ -455,29 +455,27 @@ export default function MyCartScreen(props) {
                   singleItemDetails
                 )
               }
-              style={styles.crossIcon}
             >
-              <Icon
-                as={CloseIcon}
-                color="#fff"
-                size={"md"}
-                style={styles.closeIcon2}
-              />
+              <UI.CbBox id="CrossIconcontainer" pageId="MyCart" style={styles.crossIcon}>
+              <UI.CbImage id="CloseIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Modal_Close.png')} style={styles.closeIcon}/>}/> 
+              </UI.CbBox>
             </UI.TouchableOpacity>
             }
-            <UI.Box style={styles.modiferItems}>
+            <UI.CbBox id="ModiferItems" pageId="MyCart" style={styles.modiferItems}>
               <ItemModifier />
-            </UI.Box>
-            <UI.Box style={styles.footerContainer}>
+            </UI.CbBox>
+            <UI.CbBox id="FooterContainer" pageId="MyCart" style={styles.footerContainer}>
               <UI.Box>
-                <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
-                <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
+                <UI.CbText id="TotalAmountTxt" pageId="MyCart"  style={styles.totalAmountTxt}>Total Amount</UI.CbText>
+                <UI.CbText id="OrderAmount" pageId="MyCart"  style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.CbText>
               </UI.Box>
-              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
-                <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
+              <UI.TouchableOpacity  onPress={() => handleModifierAddCart()}>
+                <UI.CbBox id="addToCartBtn2" pageId="MyCart" style={styles.addToCartBtn2}>
+                <UI.CbText id="AddCartTxt" pageId="MyCart"  style={styles.addCartTxt}>{updateOrAddTxt}</UI.CbText>
+                </UI.CbBox>
               </UI.TouchableOpacity>
-            </UI.Box>
-          </UI.Box>
+            </UI.CbBox>
+          </UI.CbBox>
         </Modal>
     </KeyboardAvoidingView>
  
