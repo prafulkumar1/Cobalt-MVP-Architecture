@@ -279,7 +279,6 @@ export default function MenuOrderScreen(props) {
             {selectedCategory?.map((group) => renderMenuCategoryList(group))}
           </UI.ScrollView>
         )}
-         {/* <Divider style={styles.horizontalLineStyle}/> */}
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
           ref={scrollViewRef}
@@ -290,7 +289,9 @@ export default function MenuOrderScreen(props) {
         >
    {
             searchQuery.trim() !== "" && filteredItems.length === 0 ? (
-              <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
+              <UI.Box style={styles.emptyBoxContainer} >
+                <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
+              </UI.Box>
             ) : (
               filteredItems.length > 0 ? (
                 <UI.FlatList

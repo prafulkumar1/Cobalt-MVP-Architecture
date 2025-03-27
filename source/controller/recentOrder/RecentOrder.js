@@ -12,6 +12,7 @@ export const useRecentOrderLogic = () => {
   const [loaded, setLoaded] = useState(false);
   const [emptyOrderMessage, setEmptyOrderMessage] = useState("");
   const [favErrorMessage, setFavErrorMessage] = useState("");
+  const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
 
   const postQuantityApiCall = async (item,quantity) => {
     try {
@@ -51,7 +52,9 @@ export const useRecentOrderLogic = () => {
     updateItemToFavorites,
     addItemToCartForFavs,
     addItemToCartBtn,
-    itemDataVisible
+    itemDataVisible,
+    modifierCartItemData,
+    updateModifierCartItem
   } = useFormContext()
   
   
@@ -140,7 +143,7 @@ export const useRecentOrderLogic = () => {
     }, 300);
   }
 
-  const handleModifierAddCart = () => {
+  const recentOrderAddCart = () => {
     let isItemAvailableInCart = false;
     cartData?.forEach((items) => {
       if (items.Item_ID === singleItemDetails.Item_ID) {
@@ -155,25 +158,170 @@ export const useRecentOrderLogic = () => {
     if (!isItemAvailableInCart) {
       let isRequiredModifier = false;
       let requiredModifier = ""
-      const existingFavItem = favoriteItemsList?.find((items) => items.Item_ID === singleItemDetails?.Item_ID);
-      if(categoryData?.length > 0){
+      const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+      const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+        const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+        return modifier.isChecked && index === lastIndex;
+      });
+      if (getRequiredItem.length > 0) {
+        isRequiredModifier = true
+        getRequiredItem?.map((item) => {
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+      }
+      if (isRequiredModifier) {
+        setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+        setTimeout(() => {
+          setToastDetails({ isToastVisiable:false,toastMessage: "" })
+        }, 6000);
+      } else {
+        const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+        const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
+        if (categoryData?.length > 0) {
+          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
+          addItemToModifierForCart(singleItemDetails);
+          addItemToFavorites(singleItemDetails)
+          closePreviewModal();
+        } else {
+          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
+          addItemToModifierForCart(singleItemDetails);
+          addItemToFavorites(singleItemDetails)
+          closePreviewModal();
+        }
+      }
+    } else {
+      let isRequiredModifier = false
+      let requiredModifier = ""
+      const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
+      if (categoryData?.length > 0) {
+        const newAddedModifiers = [...existingCartItem?.selectedModifiers,...selectedModifiers]
         const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-        const updateModifiers = existingFavItem?.Modifiers?.map((items) => ({
-          "Modifier_Id": items?.Modifier_Id,
-          "Modifier_Name": items?.Modifier_Name,
-          "Price": items?.ModifierPrice,
-          "IsFavourite": 1,
-          "isChecked": true,
-          "Item_ID":existingFavItem?.Item_ID,
-          "Category_Id": ""
-        }))
-        const newAddedModifiers = [...updateModifiers,...selectedModifiers]
         const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
           const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
           return modifier.isChecked && index === lastIndex;
         });
-        if (getRequiredItem.length > 0) {
+ 
+        getRequiredItem?.map((item) => {
           isRequiredModifier = true
+          requiredModifier = item?.Category_Name
+          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+            if (item.Category_Id == modifierId.Category_Id) {
+              isRequiredModifier = false
+            }
+          })
+        })
+ 
+        if(isRequiredModifier){
+          setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+          setTimeout(() => {
+            setToastDetails({ isToastVisiable: false, toastMessage: "" })
+          }, 6000);
+        }else{
+          updateModifierCartItem(existingCartItem);
+          addItemToFavorites(existingCartItem)
+        }
+      } else {
+        updateWithoutModifierCartItem(existingCartItem);
+        addItemToFavorites(existingCartItem)
+      }
+    }
+}
+
+  const handleModifierAddCart = () => {
+    let isItemAvailableInCart = false;
+    cartData?.forEach((items) => {
+      if (items.Item_ID === singleItemDetails.Item_ID) {
+        isItemAvailableInCart = true;
+      }
+    });
+ 
+    let categoryData = typeof modifiersResponseData?.Categories === "string"
+    ? JSON.parse(modifiersResponseData?.Categories)
+    : modifiersResponseData?.Categories;
+    if(isRecentOrder){
+      recentOrderAddCart()
+    }else{
+       if (!isItemAvailableInCart) {
+        let isRequiredModifier = false;
+        let requiredModifier = ""
+        const existingFavItem = favoriteItemsList?.find((items) => items.Item_ID === singleItemDetails?.Item_ID);
+        if(categoryData?.length > 0){
+          const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+          const updateModifiers = existingFavItem?.Modifiers?.map((items) => ({
+            "Modifier_Id": items?.Modifier_Id,
+            "Modifier_Name": items?.Modifier_Name,
+            "Price": items?.ModifierPrice,
+            "IsFavourite": 1,
+            "isChecked": true,
+            "Item_ID":existingFavItem?.Item_ID,
+            "Category_Id": ""
+          }))
+          const newAddedModifiers = [...updateModifiers,...selectedModifiers]
+          const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+            return modifier.isChecked && index === lastIndex;
+          });
+          if (getRequiredItem.length > 0) {
+            isRequiredModifier = true
+            getRequiredItem?.map((item) => {
+              isRequiredModifier = true
+              requiredModifier = item?.Category_Name
+              return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+                return item?.Modifiers.forEach((modifier) => {
+                  if(modifier?.Modifier_Id === modifierId?.Modifier_Id){
+                    isRequiredModifier = false
+                  }
+                })
+              })
+            })
+          }
+          if (isRequiredModifier) {
+            setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+            setTimeout(() => {
+              setToastDetails({ isToastVisiable:false,toastMessage: "" })
+            }, 6000);
+          } else {
+            addItemToCartForFavs(existingFavItem);
+            addItemToFavorites(existingFavItem)
+            closePreviewModal();
+          }
+        }else{
+          if(itemDataVisible){
+            addItemToModifierForCart(existingFavItem)
+            closePreviewModal();
+          }else{
+            addItemToCartBtn(existingFavItem)
+            closePreviewModal();
+          }
+        }
+      } else {
+        let isRequiredModifier = false
+        let requiredModifier = ""
+        const existingFavItem = favoriteItemsList?.find((items) => items.Item_ID === singleItemDetails?.Item_ID);
+  
+        if (categoryData?.length > 0) {
+          const updateModifiers = existingFavItem?.Modifiers?.map((items) => ({
+            "Modifier_Id": items?.Modifier_Id,
+            "Modifier_Name": items?.Modifier_Name,
+            "Price": items?.ModifierPrice,
+            "IsFavourite": 1,
+            "isChecked": true,
+            "Item_ID":existingFavItem?.Item_ID,
+            "Category_Id": ""
+          }))
+    
+          const newAddedModifiers = [...updateModifiers,...selectedModifiers]
+          const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+          const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
+            const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+            return modifier.isChecked && index === lastIndex;
+          });
+   
           getRequiredItem?.map((item) => {
             isRequiredModifier = true
             requiredModifier = item?.Category_Name
@@ -185,73 +333,20 @@ export const useRecentOrderLogic = () => {
               })
             })
           })
-        }
-        if (isRequiredModifier) {
-          setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
-          setTimeout(() => {
-            setToastDetails({ isToastVisiable:false,toastMessage: "" })
-          }, 6000);
+   
+          if(isRequiredModifier){
+            setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
+            setTimeout(() => {
+              setToastDetails({ isToastVisiable: false, toastMessage: "" })
+            }, 6000);
+          }else{
+            updateModifierCartItemForFavs(existingFavItem);
+            updateItemToFavorites(existingFavItem)
+          }
         } else {
-          addItemToCartForFavs(existingFavItem);
-          addItemToFavorites(existingFavItem)
-          closePreviewModal();
-        }
-      }else{
-        if(itemDataVisible){
-          addItemToModifierForCart(existingFavItem)
-          closePreviewModal();
-        }else{
-          addItemToCartBtn(existingFavItem)
-          closePreviewModal();
-        }
-      }
-    } else {
-      let isRequiredModifier = false
-      let requiredModifier = ""
-      const existingFavItem = favoriteItemsList?.find((items) => items.Item_ID === singleItemDetails?.Item_ID);
-
-      if (categoryData?.length > 0) {
-        const updateModifiers = existingFavItem?.Modifiers?.map((items) => ({
-          "Modifier_Id": items?.Modifier_Id,
-          "Modifier_Name": items?.Modifier_Name,
-          "Price": items?.ModifierPrice,
-          "IsFavourite": 1,
-          "isChecked": true,
-          "Item_ID":existingFavItem?.Item_ID,
-          "Category_Id": ""
-        }))
-  
-        const newAddedModifiers = [...updateModifiers,...selectedModifiers]
-        const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-        const uniqueModifiers = newAddedModifiers?.filter((modifier, index, self) => {
-          const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-          return modifier.isChecked && index === lastIndex;
-        });
- 
-        getRequiredItem?.map((item) => {
-          isRequiredModifier = true
-          requiredModifier = item?.Category_Name
-          return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
-            return item?.Modifiers.forEach((modifier) => {
-              if(modifier?.Modifier_Id === modifierId?.Modifier_Id){
-                isRequiredModifier = false
-              }
-            })
-          })
-        })
- 
-        if(isRequiredModifier){
-          setToastDetails({ isToastVisiable: true, toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
-          setTimeout(() => {
-            setToastDetails({ isToastVisiable: false, toastMessage: "" })
-          }, 6000);
-        }else{
-          updateModifierCartItemForFavs(existingFavItem);
+          updateWithoutModifierCartItem(existingFavItem);
           updateItemToFavorites(existingFavItem)
         }
-      } else {
-        updateWithoutModifierCartItem(existingFavItem);
-        updateItemToFavorites(existingFavItem)
       }
     }
 }
@@ -269,5 +364,5 @@ const handleCloseItemDetails = () => {
   }
 }
  
-  return {handleCloseItemDetails,handleModifierAddCart,getFavorites, favErrorMessage,loading, orders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
+  return {isRecentOrder, setIsRecentOrderOpen,handleCloseItemDetails,handleModifierAddCart,getFavorites, favErrorMessage,loading, orders ,favItems,loaded, pendingOrders,emptyOrderMessage,toggleFavBtn,handleIncrement,handleDecrement};
 };

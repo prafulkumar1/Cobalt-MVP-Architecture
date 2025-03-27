@@ -1120,7 +1120,7 @@ class cbSearchbox extends React.Component {
     const Backarrowsource = this.backarrow;
     const Closesource = this.close;
     return (
-      <Pressable
+      <TouchableOpacity
         style={{
           width: showSearchInput ? "100%" : responsiveWidth(60),
           height: 40,
@@ -1141,15 +1141,12 @@ class cbSearchbox extends React.Component {
           <Box
             style={styles.searchBarMainContainer}
           >
-            <TouchableOpacity onPress={() => handleCloseClick(
-              this.setState.bind(this),
-              this.props.onSearchActivate,
-              this.props.onSearch, // handleClear function
-              this.props.onBackPress // New function to reset the list
-            )}
-              style={{ marginLeft: 10 }} >
+            <TouchableOpacity onPress={() =>{ 
+            this.setState({showSearchInput:false})
+          }}
+              style={styles.backSearch} >
               {
-                Backarrowsource ? <Image source={{ uri: Backarrowsource }} /> : <Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
+                Backarrowsource ? <Image source={{ uri: Backarrowsource }} style={styles.backArrowIcon}/> : <Image alt='image' source={require("@/assets/images/icons/BackArrow3x.png")} style={styles.backArrowIcon}/>
               }
             </TouchableOpacity>
             <Input
@@ -1169,9 +1166,10 @@ class cbSearchbox extends React.Component {
                   this.setState.bind(this),
                   this.props.onSearch // Reset search results & show default list
                 )}
+                style={styles.closeIconBtn}
               >
                 {
-                  Closesource ? <Image source={{ uri: Closesource }} /> : <Image alt='image' source={require("@/assets/images/icons/Close.png")} />
+                  Closesource ? <Image source={{ uri: Closesource }}  style={styles.closeIcon}/> : <Image alt='image' source={require("@/assets/images/icons/Close3x.png")}  style={styles.closeIcon}/>
                 }
               </TouchableOpacity>
             )}
@@ -1191,7 +1189,7 @@ class cbSearchbox extends React.Component {
             <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Pressable>
+      </TouchableOpacity>
     );
   }
 }

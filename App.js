@@ -96,10 +96,7 @@ global.location_id = location_id;
   }, []);
 
   const removeCartItems = async() => {
-    const {setCartData,setModifierCartItemData}  = useFormContext()
     await AsyncStorage.removeItem("cart_data");
-    setCartData([])
-    setModifierCartItemData([])
   }
 
   if (!fontsLoaded) {

@@ -4,9 +4,8 @@ import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { newData } from '@/source/constants/commonData';
 import { postQuantityApiCall } from '@/components/cobalt/ui';
-import { Alert } from 'react-native';
+import { Alert, BackHandler } from 'react-native';
 import { navigateToScreen } from '@/source/constants/Navigations';
-import { useRecentOrderLogic } from '../recentOrder/RecentOrder';
  
  
 const pageId = 'MenuOrder';
@@ -54,10 +53,30 @@ export const useMenuOrderLogic = (props) => {
     addItemToCartBtn,
     updateCartItemQuantity,
     itemDataVisible,
-    modifierCartItemData
+    modifierCartItemData,
+    setFavoriteItemsList
   } = useFormContext();
  
-  const  {getFavorites} = useRecentOrderLogic()
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        const state = props?.navigation?.getState();
+        const currentRoute = state?.routes[state?.index]?.name;
+        
+        if (currentRoute === "MenuOrder") {
+          if (cartData.length > 0) {
+            setIsExitProfitCenter(true)
+            return true;
+          }
+          return false;
+        }
+        return false;
+      }
+    );
+
+    return () => backHandler.remove();
+  }, [props?.navigation]);
  
   const openRecentOrder = () => {
     setIsRecentOrderOpen(!isRecentOrderOpen)
@@ -119,6 +138,26 @@ export const useMenuOrderLogic = (props) => {
         setCartData([])
       }
     } catch (error) { }
+  };
+
+  const getFavorites = async () => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+      const params = {  
+        "Location_Id": `${getProfitCenterId?.LocationId}`,
+      };
+      let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
+ 
+      if (favItemInfo.statusCode === 200 && favItemInfo?.response?.ResponseCode === "Success") {
+          setFavoriteItemsList(favItemInfo.response?.FavouriteItems)
+      }else if(favItemInfo.response?.ResponseCode == "Fail"){
+        setFavoriteItemsList([])
+      }
+    } catch (err) {
+      console.error("Error fetching favorites:", err);
+    } finally {
+    }
   };
  
   useEffect(() => {

@@ -33,7 +33,7 @@ export const useMyCartLogic = () => {
     const [grandTotal,setGrandTotal] = useState(0)
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
-    const [height, setHeight] = useState(29);
+    const [height, setHeight] = useState(44);
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
@@ -344,7 +344,7 @@ export const useMyCartLogic = () => {
   }
   const handleContentSizeChange = (event) => {
     const newHeight = event?.nativeEvent?.contentSize.height;
-    setHeight(newHeight > 30 ? newHeight : 29); 
+    setHeight(newHeight > 30 ? newHeight : 34); 
   };
   return {
     tipData,
