@@ -10,60 +10,63 @@ export const useProfitCenterLogic = (props) => {
   const [profitCenterData , setProfitCenterData] = useState(null)
   const [loading, setLoading] = useState(false);
   const { } = useFormContext();
-  const fetchTrigger = global.fetchTrigger 
-
+  const fetchTrigger = global.fetchTrigger
+  const locationId = global.location_id
   
   useEffect(() => {
     getProfitCenterList()
-    console.log(fetchTrigger)
   }, [])
 
   const getProfitCenterList = async () => {
-    setLoading(true)
+    setLoading(true);
+
     const params = {
-      "FilterDate": "",
-      "FilterTime": ""
-    }
-    let profitCenterResponseData = await postApiCall("PROFIT_CENTER","GET_PROFIT_CENTERS", params)
-    if(profitCenterResponseData.statusCode == 200){
-      if(profitCenterResponseData.response?.MealPeriodData.length === 1){
-        const responseData = profitCenterResponseData.response?.MealPeriodData[0]
-        if (responseData.Isnavigate == 1) {
-          if(props?.route?.params?.isCartItemsRemove){
-            setProfitCenterData(profitCenterResponseData.response)
-            setLoading(false)
-          }else{
-            await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
-            if (!fetchTrigger) {
-              console.log("🚀 Navigating to MenuOrder...");
-              navigateToScreen(props, "MenuOrder", true, {
-                profileCenterTile: responseData.LocationName,
-                LocationId: responseData?.LocationId,
-              });
-            }
-            setProfitCenterData(profitCenterResponseData.response)
-            setLoading(false)
-          }
-        }else{
-          setProfitCenterData(profitCenterResponseData.response)
-          setLoading(false)
-        }
-    }else{
-        setProfitCenterData(profitCenterResponseData.response)
-        setLoading(false)
+      FilterDate: "",
+      FilterTime: "",
+    };
+
+    let profitCenterResponseData = await postApiCall(
+      "PROFIT_CENTER",
+      "GET_PROFIT_CENTERS",
+      params
+    );
+
+    if (profitCenterResponseData.statusCode === 200) {
+      const mealPeriods = profitCenterResponseData.response?.MealPeriodData || [];
+
+      const matchedLocation = mealPeriods.find(
+        (location) => location.LocationId === locationId
+      );
+
+      console.log("Native Location ID:", locationId);
+      console.log("Matched Location:", matchedLocation);
+
+      if (matchedLocation?.LocationId && fetchTrigger) {
+        console.log("Navigating to Recentorders...");
+        navigateToScreen(props, "Recentorders", true, {
+          profileCenterTile: matchedLocation.LocationName,
+          LocationId: matchedLocation.LocationId,
+        });
+      } else if (mealPeriods.length === 1 && mealPeriods[0].Isnavigate === 1) {
+        await AsyncStorage.setItem("profit_center", JSON.stringify(mealPeriods[0]));
+
+        navigateToScreen(props, "MenuOrder", true, {
+          profileCenterTile: mealPeriods[0].LocationName,
+          LocationId: mealPeriods[0].LocationId,
+        });
       }
+
+      setProfitCenterData(profitCenterResponseData.response);
     }
-  }
+
+    setLoading(false);
+  };
 
   const navigateToMenuOrder = async (props, item) => {
     if (item.Isnavigate == 1) {
       await AsyncStorage.setItem("profit_center",JSON.stringify(item))
-      if (!fetchTrigger) {
-        navigateToScreen(props, "MenuOrder", true, {
-          profileCenterTile: item.LocationName,
-          LocationId: item.LocationId,
-        });
-      }    }
+      navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
+    }
   }
 
   return {
