@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '@/source/views/login/loginUI';
 import * as UI from '@/components/cobalt/importUI';
-import { UseFormContextProvider } from '@/components/cobalt/event';
+import { UseFormContextProvider, useFormContext } from '@/components/cobalt/event';
 import MenuOrderScreen from './source/views/menuOrder/menuOrderUI';
 import ProfitCenters from './source/views/ProfitCenters/ProfitCertersUI';
 import ItemModifier from './source/views/ItemModifier/ItemModifierUI';
@@ -60,20 +60,39 @@ const [headerTitle, setHeaderTitle] = useState({});
 
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const { NativeNavigationModule } = NativeModules; // iOS Native Module
+  const navigationRef = React.useRef(null); // ✅ UseRef for NavigationContainer
 
 
-// const {username,userID, apiURL,memberID} = props
-// global.username = username;
-// global.userID = userID;
-// global.memberID = memberID;
-// global.apiURL = props.apiURL; 
+const {username,userID, apiURL,memberID, fetchTrigger,location_id} = props
+global.username = username;
+global.userID = userID;
+global.memberID = memberID;
+global.apiURL = props.apiURL;
+global.fetchTrigger = fetchTrigger; 
 
-//   useEffect(() => {
-//     console.log("App started with username:", username);
-//     console.log("App started with password:", apiURL);
-
+  useEffect(() => {
+    console.log("App started with username:", username);
+    console.log("App started with password:", apiURL);
+    console.log("App fetch Trigger", fetchTrigger)
   
-//   }, [username, userID]);
+  }, [username, userID]);
+
+  useEffect(() => {
+    console.log("🔄 Received locationId:", location_id);
+    console.log("🔄 fetchTrigger:", fetchTrigger);
+
+    if (fetchTrigger && location_id) {
+      setTimeout(() => {
+        if (navigationRef.current) {
+          console.log(`🚀 Navigating to Recentorders with Location ID: ${location_id}`);
+          navigationRef.current.navigate("Recentorders", { location_id });
+        } else {
+          console.warn("⚠️ navigationRef is still null. Cannot navigate.");
+        }
+      }, 100);
+    }
+  }, [fetchTrigger, location_id]);
+
 
   const backAction = () => {
     console.log('tapped');
@@ -106,7 +125,10 @@ const [headerTitle, setHeaderTitle] = useState({});
   }, []);
 
   const removeCartItems = async() => {
+    const {setCartData,setModifierCartItemData}  = useFormContext()
     await AsyncStorage.removeItem("cart_data");
+    setCartData([])
+    setModifierCartItemData([])
   }
 
   if (!fontsLoaded) {
@@ -120,7 +142,7 @@ const [headerTitle, setHeaderTitle] = useState({});
     <GluestackUIProvider mode="light">
       <UseFormContextProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
               initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({

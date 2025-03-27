@@ -648,12 +648,11 @@ function RenderingFavoritesList({ props }) {
                         </UI.Box>
                       : <UI.Box>
                         <UI.TouchableOpacity 
-                          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}  
                           onPress={() => addItemToCartBtnDetails(item)}
-                          style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2" , "#ABABAB")}]}>
+                          style={[styles.operationBtn2]}>
                         <Icon
                               as={AddIcon}
-                              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+                              color={"#5773a2"}
                               size={"xl"}
                               style={[styles.addIcon,]}
                             />
@@ -692,7 +691,7 @@ export default function RecentordersScreen(props) {
     updateOrAddTxt,
     modifierCartItemData
   } =  useFormContext();
-  const totalQuantity = cartData.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  const totalQuantity = cartData?.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
   const cartItemDetails = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);

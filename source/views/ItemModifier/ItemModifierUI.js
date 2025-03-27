@@ -58,6 +58,7 @@ const ItemModifier = (props) => {
                   (quantity >= 1 || modifierQuantity >= 1)
                     ? responsiveWidth(25)
                     : responsiveWidth(17),
+                right:15
               },
             ]}
           >

@@ -10,9 +10,12 @@ export const useProfitCenterLogic = (props) => {
   const [profitCenterData , setProfitCenterData] = useState(null)
   const [loading, setLoading] = useState(false);
   const { } = useFormContext();
+  const fetchTrigger = global.fetchTrigger 
+
   
   useEffect(() => {
     getProfitCenterList()
+    console.log(fetchTrigger)
   }, [])
 
   const getProfitCenterList = async () => {
@@ -31,7 +34,13 @@ export const useProfitCenterLogic = (props) => {
             setLoading(false)
           }else{
             await AsyncStorage.setItem("profit_center",JSON.stringify(responseData))
-            navigateToScreen(props, "MenuOrder", true, { profileCenterTile: responseData.LocationName,LocationId:responseData?.LocationId })
+            if (!fetchTrigger) {
+              console.log("🚀 Navigating to MenuOrder...");
+              navigateToScreen(props, "MenuOrder", true, {
+                profileCenterTile: responseData.LocationName,
+                LocationId: responseData?.LocationId,
+              });
+            }
             setProfitCenterData(profitCenterResponseData.response)
             setLoading(false)
           }
@@ -49,9 +58,12 @@ export const useProfitCenterLogic = (props) => {
   const navigateToMenuOrder = async (props, item) => {
     // if (item.Isnavigate == 1) {
       await AsyncStorage.setItem("profit_center",JSON.stringify(item))
-     
-       navigateToScreen(props, "MenuOrder", true, { profileCenterTile: item.LocationName,LocationId:item.LocationId })
-    // }
+      if (!fetchTrigger) {
+        navigateToScreen(props, "MenuOrder", true, {
+          profileCenterTile: item.LocationName,
+          LocationId: item.LocationId,
+        });
+      }    }
   }
 
   return {

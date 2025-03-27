@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width:isPlatformAndroid()?130:responsiveHeight(16),
+    width:isPlatformAndroid()?130:responsiveHeight(19),
     height:isPlatformAndroid()?30:responsiveHeight(3.5),
     marginHorizontal:3
   },
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 5,
-    width:isPlatformAndroid()?130:responsiveHeight(16),
+    width:isPlatformAndroid()?130:responsiveHeight(19),
     height:isPlatformAndroid()?30:responsiveHeight(3.5),
     marginHorizontal:3
   },

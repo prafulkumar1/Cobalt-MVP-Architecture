@@ -301,7 +301,7 @@ export default function MyCartScreen(props) {
     
             {
               cartData && cartData.length > 0 &&
-              <UI.Box>
+              <UI.Box> 
                 {
                   cartConfigData?.ShowTip ===1 &&
                   <UI.CbBox id="TipBox" pageId="MyCart" style={styles.tipBox}>

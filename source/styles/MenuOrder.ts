@@ -51,8 +51,8 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 5,
     marginHorizontal: 5,
-    paddingTop:isPlatformAndroid()?12:responsiveHeight(1.2),
-    paddingBottom:isPlatformAndroid()? 2.5:responsiveHeight(0.6),
+    paddingTop:isPlatformAndroid()?12:8,
+    paddingBottom:isPlatformAndroid()? 2.5:2.5,
     paddingHorizontal:responsiveWidth(5)
   },
   inactiveMenuType: {
@@ -64,8 +64,8 @@ export const styles = StyleSheet.create({
     borderRadius: 5,
     opacity: 0.8,
     marginHorizontal: 5,
-    paddingTop:isPlatformAndroid()?12:responsiveHeight(1.2),
-    paddingBottom:isPlatformAndroid()? 2.5:responsiveHeight(0.6),
+    paddingTop:isPlatformAndroid()?12:8,
+    paddingBottom:isPlatformAndroid()? 2.5:2.5,
   },
   timeDurationTxt: {
     fontSize: 10,
@@ -308,7 +308,7 @@ innerModalMsgContainer:{ width: "100%", justifyContent: 'space-between', alignIt
 innerModal:{
     width: '100%',
     backgroundColor: "#fff",
-    height: responsiveHeight(35),
+    height: isPlatformAndroid()?responsiveHeight(35):responsiveHeight(40),
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
     padding: 20,
