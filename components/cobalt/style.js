@@ -502,7 +502,6 @@ CheckIcon:{color:"#ffff"},
     alignSelf:"center",
     shadowColor: '#000',
     width:responsiveWidth(85),
-    height:responsiveHeight(7),
     marginBottom:responsiveHeight(10),
     borderColor:"#3B87C1",
     borderWidth:2

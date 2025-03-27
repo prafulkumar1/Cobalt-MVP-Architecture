@@ -648,12 +648,11 @@ function RenderingFavoritesList({ props }) {
                         </UI.Box>
                       : <UI.Box>
                         <UI.TouchableOpacity 
-                          disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}  
                           onPress={() => addItemToCartBtnDetails(item)}
-                          style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2" , "#ABABAB")}]}>
+                          style={[styles.operationBtn2]}>
                         <Icon
                               as={AddIcon}
-                              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+                              color={"#5773a2"}
                               size={"xl"}
                               style={[styles.addIcon,]}
                             />

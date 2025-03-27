@@ -53,7 +53,8 @@ export const useMenuOrderLogic = (props) => {
     setCartApiResponse,
     addItemToCartBtn,
     updateCartItemQuantity,
-    itemDataVisible
+    itemDataVisible,
+    modifierCartItemData
   } = useFormContext();
  
   const  {getFavorites} = useRecentOrderLogic()
@@ -317,9 +318,19 @@ export const useMenuOrderLogic = (props) => {
           setToastDetails({ isToastVisiable:false,toastMessage: "" })
         }, 6000);
       } else {
-        addItemToModifierForCart(singleItemDetails);
-        addItemToFavorites(singleItemDetails)
-        closePreviewModal();
+        const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
+        const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
+        if (categoryData?.length > 0) {
+          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
+          addItemToModifierForCart(singleItemDetails);
+          addItemToFavorites(singleItemDetails)
+          closePreviewModal();
+        } else {
+          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
+          addItemToModifierForCart(singleItemDetails);
+          addItemToFavorites(singleItemDetails)
+          closePreviewModal();
+        }
       }
     } else {
       let isRequiredModifier = false
