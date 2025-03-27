@@ -701,42 +701,44 @@ export default function RecentordersScreen(props) {
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
 
   return (
-    <UI.Box style={styles.mainContainer}>
-      <UI.Box style={styles.subContainer}>
+    <UI.CbBox id="ROMainContainer" pageId="RecentOrder" style={styles.mainContainer}>
+      <UI.CbBox id="ROSubContainer" pageId="RecentOrder"  style={styles.subContainer}>
         <UI.TouchableOpacity
           activeOpacity={1}
           onPress={() => setIsRecentOrderOpen(false)}
-          style={[
-            !isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
-          ]}
+          
         >
-          <UI.Text
+          <UI.Box id="ROFavButton" pageId="RecentOrder"  style={[
+            !isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
+          ]}>
+          <UI.Text id="ROFavText" pageId="RecentOrder"  
             style={[
               !isRecentOrder
                 ? styles.ActiveButtonTextStyle
                 : styles.ButtonTextStyle,
             ]}
           >
-            Favourite
+           Favorites
           </UI.Text>
+          </UI.Box>
         </UI.TouchableOpacity>
         <UI.TouchableOpacity
           onPress={() => setIsRecentOrderOpen(true)}
-          style={[
-            isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
-          ]}
         >
-          <UI.Text
+           <UI.Box id="ROButton" pageId="RecentOrder"  style={[
+            isRecentOrder ? styles.ActiveButtonStyle : styles.ButtonStyle,
+          ]}>
+          <UI.Text id="ROText" pageId="RecentOrder" 
             style={[
               isRecentOrder
                 ? styles.ActiveButtonTextStyle
                 : styles.ButtonTextStyle,
             ]}
-          >
-            Recent Orders
+          >  Recent Orders         
           </UI.Text>
+          </UI.Box>
         </UI.TouchableOpacity>
-      </UI.Box>
+      </UI.CbBox>
       <UI.ScrollView contentContainerStyle={{ paddingBottom: 200 }}>
         {isRecentOrder ? (
           <>
@@ -752,7 +754,7 @@ export default function RecentordersScreen(props) {
                     <RenderingCompletedOrders />
                   </>
                 ) : (
-                  <UI.Text style={styles.emptyFavList}>{emptyOrderMessage}</UI.Text>
+                  <UI.CbText id="EmptyOrderMessage" pageId="RecentOrder" style={styles.emptyFavList}>{emptyOrderMessage}</UI.CbText>
                 )}
               </>
             )}
@@ -809,6 +811,6 @@ export default function RecentordersScreen(props) {
         </Modal>
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
-    </UI.Box>
+    </UI.CbBox>
   );
 }

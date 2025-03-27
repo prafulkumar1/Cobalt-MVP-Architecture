@@ -564,49 +564,7 @@ export default function MenuOrderScreen(props) {
     );
   };
 
-  const OnRecentOrderPress = () => {
-    const RenderingRecentOrders = ({ item }) => {
-      const itemDetails = menuOrderData?.find((value)=> value.Item_ID == item?.Item_ID )
-      return (
-        <UI.Box style={{ marginRight: 30, }}>
-          <UI.Box style={{ alignItems: "center", justifyContent: "center" }}>
-            <UI.CbImage imageJsx={<Image alt='image' id="recentOrderImage" source={{ uri: recentOrderImage?.ImageUrl ? recentOrderImage?.ImageUrl : item.ImageUrl }} style={[recentOrderImage?.borderRadius ? { borderRadius: recentOrderImage.borderRadius } : styles.recentOrderImage
-            ]} />} />
-            <UI.CbAddToCartButton mealItemDetails={itemDetails}
-            />
-          </UI.Box>
-          <UI.Box style={styles.recentMainList}>
-            <UI.Text id="recentOrderName"
-              style={[
-                recentOrderName?.styles ? recentOrderName?.styles : styles.recentOrderName,
-              ]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >{item.Item_Name}
-            </UI.Text>
-
-          </UI.Box>
-        </UI.Box>
-      );
-    };
-
-    return (
-      <UI.Box style={styles.recentContainer}>
-        <UI.CbFlatList
-          flatlistData={menuOrderData}
-          horizontal
-          children={({ item }) => <RenderingRecentOrders item={item} />}
-        />
-        <UI.TouchableOpacity onPress={() => navigateToScreen(props, "Recentorders", true)}>
-          <UI.Text
-            style={[
-              seeAllRecentOrders?.styles ? seeAllRecentOrders?.styles : styles.seeAllRecentOrders,
-            ]}
-          >Show All</UI.Text>
-        </UI.TouchableOpacity>
-      </UI.Box>
-    );
-  };
+  
 
   const renderMenuOrderItems = () => {
     if (errorMessage === "") {
@@ -631,7 +589,7 @@ export default function MenuOrderScreen(props) {
 
             {renderCategoryMainList()}
 
-            {cartData?.length > 0 && <UI.CbFloatingButton props={props} />}
+            {cartData?.length > 0 && <UI.CbFloatingButton id="CartButton" pageId="MenuOrder"  props={props} />}
           </>
         )
       }
@@ -729,7 +687,7 @@ export default function MenuOrderScreen(props) {
         !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch" pageId={'MenuOrder'} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
       }
       {!isSearchActive && (
-        <UI.TouchableOpacity style={[styles.recentOrderContainer,{width:isRecentOrderOpen?"100%":"90%"}]} onPress={() => openRecentOrder()}>
+        <UI.TouchableOpacity style={[styles.recentOrderContainer]} onPress={() => navigateToScreen(props, "Recentorders", true)}>
           <UI.CbBox id="RecentOrderBox" pageId={'MenuOrder'} style={styles.recentOrderBox}>
              <UI.CbImage id="RecentOrderIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
              <UI.CbText id="ROText" pageId={'MenuOrder'}  style={styles.recentOrderTxt}/>
@@ -738,7 +696,7 @@ export default function MenuOrderScreen(props) {
         </UI.TouchableOpacity>
       )}
     </UI.CbBox>
-      {isRecentOrderOpen && <OnRecentOrderPress />}
+     
 
       {renderMenuOrderItems()}
 

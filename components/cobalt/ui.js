@@ -29,6 +29,7 @@ import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { remapProps } from 'react-native-css-interop';
 import { loadPageConfig } from '@/source/constants/ConfigLoad';
+import { GalleryThumbnails } from 'lucide-react-native';
 
 export const postQuantityApiCall = async (quantity, itemId) => {
   try {
@@ -875,20 +876,45 @@ class CbImage extends React.Component {
 class CbFloatingButton extends React.Component {
   constructor(props) {
     super(props);
+    this.id=props.id;
+     this.pageID=props.pageId;
     this.cartQuantity = props.cartQuantity
     this.screenProps = props.props
+    this.state={
+      ControlConfig:[]
+    }
   }
+  async componentDidMount() {
+    await this.loadPageConfig2();
+  }
+  loadPageConfig2 = async () => {
+    try {
+      const ControlConfig = await loadPageConfig(this.pageID,this.id);
+      this.setState({ ControlConfig });
+    } catch (error) {
+      console.error("Error loading config:", error);
+    }
+  };
+
   render() {
+    const { ControlConfig }= this.state;
+    console.log("My cart12345555",ControlConfig)
+    const Styles=ControlConfig?.Styles;
+    const StyleProps = transformStyles(Styles); 
+    const CartSource= ControlConfig?.CartSource
     return (
       <FormContext.Consumer>
         {({ cartData, modifierCartItemData }) => {
           
           const getFinalQuantity = cartData && cartData.reduce((total, prev) => total + prev.quantity, 0)
           return (
-            <View style={styles.floatingContainer}>
-              <TouchableOpacity style={styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
-                <Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
-                <Text style={[styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+            <View style={StyleProps? StyleProps?.floatingContainer : styles.floatingContainer}>
+              <TouchableOpacity style={StyleProps? StyleProps?.floatingBtn : styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
+                
+                {
+                CartSource? <Image source={{ uri: CartSource}} style={StyleProps? StyleProps?.cartIcon : styles.cartIcon}/>:<Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
+                }
+                <Text style={[StyleProps? StyleProps?.cartCountTxt : styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );

@@ -224,11 +224,7 @@ export const styles = StyleSheet.create({
   roReordertext:{ fontFamily: "SourceSansPro_Bold", fontSize: 16, fontWeight: "bold", textAlign: "center", flexShrink: 1,color:"#2A4E7D"},
   roReoderButton:{alignSelf:"center", width:116, borderRadius: 19,height: 38, backgroundColor: "#fff",borderColor:"#2A4E7D", justifyContent: "center", alignItems: "center",borderWidth:1.5,marginTop:20,marginBottom:15 },
   reorderBox:{ marginTop: 12, marginBottom: 6 },
-  emptyFavList:{   
-  fontFamily:"SourceSansPro_SemiBoldItalic",
-  alignSelf:"center",
-  marginTop:responsiveHeight(3)
-},
+  emptyFavList:{ fontFamily:"SourceSansPro_SemiBoldItalic",alignSelf:"center",marginTop:responsiveHeight(3)},
 divider:{marginTop:14,marginBottom:8,width:"95%",alignSelf:"center"},
 modalBackground:{
   flex: 1,
