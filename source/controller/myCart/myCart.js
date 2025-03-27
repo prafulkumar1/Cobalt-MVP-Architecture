@@ -392,6 +392,7 @@ export const useMyCartLogic = () => {
     closeKeyBoard,
     handleContentSizeChange,
     height,
-    postQuantityApiCall
+    postQuantityApiCall,
+    setLoading
   };
 };
