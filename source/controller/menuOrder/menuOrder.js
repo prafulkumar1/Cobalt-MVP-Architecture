@@ -37,6 +37,7 @@ export const useMenuOrderLogic = (props) => {
     storeSingleItem,
     increaseQuantity,
     closePreviewModal,
+    setSelectedModifiers,
     cartData,
     singleItemDetails,
     modifiersResponseData,
@@ -291,7 +292,8 @@ export const useMenuOrderLogic = (props) => {
     let categoryData = typeof modifiersResponseData?.Categories === "string"
     ? JSON.parse(modifiersResponseData?.Categories)
     : modifiersResponseData?.Categories;
- 
+    // const allModifiers = categoryData.flatMap(category => category.Modifiers);
+    // console.log("====>",allModifiers);
     if (!isItemAvailableInCart) {
       let isRequiredModifier = false;
       let requiredModifier = ""

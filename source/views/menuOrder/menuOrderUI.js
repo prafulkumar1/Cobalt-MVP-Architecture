@@ -15,6 +15,7 @@ import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { CbDottedLine } from "@/source/constants/dottedLine";
 import { Divider } from "@/components/ui/divider";
+import ItemDetails from "../ItemModifier/ItemDetails";
 
 const pageId = "MenuOrder";
 export default function MenuOrderScreen(props) {
@@ -598,7 +599,8 @@ export default function MenuOrderScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-            <ItemModifier isRecentOrder={false}/>
+              <ItemDetails isRecentOrder={false}/>
+            {/* <ItemModifier isRecentOrder={false}/> */}
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>

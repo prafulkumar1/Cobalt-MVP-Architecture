@@ -20,30 +20,31 @@ export default api;
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
     const commonParams = {
-      "MemberID": global.memberID,
-      "ID": global.memberID,
-      "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "DeviceInfo": [
-        {
-          "DeviceType": DeviceInfo.deviceType,
-          "OSVersion": DeviceInfo.osVersion,
-          "OriginatingIP": "183.82.116.84",
-          "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
-          "Browser": DeviceInfo.osName,
-          "HostName": "183.82.116.84.actcorp.in",
-          "SourcePortNo": "50189"
-        }
+          {
+              "Browser": "iPadOS",
+              "DeviceType": 1,
+              "HostName": "183.82.116.84.actcorp.in",
+              "OSVersion": "17.6.1",
+              "OriginatingIP": "183.82.116.84",
+              "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
+              "SourcePortNo": "50189"
+          }
       ],
+      "ID": "57987FB5-35B6-4025-8D94-31076D833A56",
       "IsAdmin": "0",
-      "UserName": global.username,
+      "MemberID": "57987FB5-35B6-4025-8D94-31076D833A56",
+      "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
       "Role": "Full Access",
-      "UserId":global.userID,
-    };
+      "UserId": "1438",
+      "UserName": "Abraham, Mr. James",
+      //  "Location_Id": "1F2E7D4E-2C13-4B19-845E-1FC7ED532BBF",
+      // "MealPeriod_Id": "16855B79-8BC7-4CE7-A24A-F56F60A979F8"
+  }
     const finalParams = { ...commonParams, ...params };
-    console.log('Params', commonParams);
-
+ 
     let responseData = await api.post(
-      `${global.apiURL}${endpoints[screenName][endpoint]}`,
+      `${baseURL}${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {
@@ -52,7 +53,7 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
         },
       }
     );
-
+ 
     return {
       response: responseData.data,
       statusCode: responseData.status,
