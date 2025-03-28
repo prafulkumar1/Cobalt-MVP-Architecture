@@ -107,7 +107,7 @@ export const useMyCartLogic = () => {
           Comments:item.comments,
           ItemId:item.Item_ID,
           Quantity:item.quantity,
-          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id,Category_Id:items?.Category_Id})):[]
         }
       })
       const params = {   
@@ -294,7 +294,7 @@ export const useMyCartLogic = () => {
           Comments:item.comments,
           ItemId:item.Item_ID,
           Quantity:item.quantity,
-          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id,Category_Id:items?.Category_Id})):[]
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items?.Modifier_Id,Category_Id:items?.Category_Id})):[]
         }
       })
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");

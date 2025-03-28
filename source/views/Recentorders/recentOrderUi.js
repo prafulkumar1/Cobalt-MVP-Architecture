@@ -575,7 +575,10 @@ function RenderingFavoritesList({ props }) {
                 return (
                   <UI.TouchableOpacity
                     key={index}
-                    style={styles.favItem}
+                    style={[styles.favItem,
+                      {
+                      opacity: (IsAvailable === 1 && IsDisable === 0) ? 1 : 0.8,
+                    }]}
                     onPress={() => editCommentBtn(props, item)}
                   >
                     <UI.Box style={{ flexDirection: "row" }}>
@@ -647,12 +650,13 @@ function RenderingFavoritesList({ props }) {
                           </UI.TouchableOpacity>
                         </UI.Box>
                       : <UI.Box>
-                        <UI.TouchableOpacity 
+                        <UI.TouchableOpacity
+                          disabled={(IsAvailable === 1 && IsDisable === 0) ? false : true} 
                           onPress={() => addItemToCartBtnDetails(item)}
-                          style={[styles.operationBtn2]}>
+                          style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")}]}>
                         <Icon
                               as={AddIcon}
-                              color={"#5773a2"}
+                              color={commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")}
                               size={"xl"}
                               style={[styles.addIcon,]}
                             />
