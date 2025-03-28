@@ -274,6 +274,7 @@ export default function MenuOrderScreen(props) {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoryListContainer}
+            keyboardShouldPersistTaps="handled"
             ref={categoryScrollRef}
           >
             {selectedCategory?.map((group) => renderMenuCategoryList(group))}
@@ -285,6 +286,7 @@ export default function MenuOrderScreen(props) {
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.mainContainerList}
         >
    {
