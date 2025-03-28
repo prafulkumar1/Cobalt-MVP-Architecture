@@ -39,7 +39,8 @@ global.username = username;
 global.userID = userID;
 global.memberID = memberID;
 global.apiURL = props.apiURL;
-global.fetchTrigger = fetchTrigger; 
+global.fetchTrigger = fetchTrigger;
+global.location_id = location_id;
 
   useEffect(() => {
     console.log("App started with username:", username);
@@ -48,7 +49,7 @@ global.fetchTrigger = fetchTrigger;
   
   }, [username, userID]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log("🔄 Received locationId:", location_id);
     console.log("🔄 fetchTrigger:", fetchTrigger);
 
@@ -62,7 +63,7 @@ global.fetchTrigger = fetchTrigger;
         }
       }, 100);
     }
-  }, [fetchTrigger, location_id]);
+  }, [fetchTrigger, location_id]);*/
 
 
   const backAction = () => {
@@ -96,10 +97,7 @@ global.fetchTrigger = fetchTrigger;
   }, []);
 
   const removeCartItems = async() => {
-    const {setCartData,setModifierCartItemData}  = useFormContext()
     await AsyncStorage.removeItem("cart_data");
-    setCartData([])
-    setModifierCartItemData([])
   }
 
   if (!fontsLoaded) {
@@ -112,7 +110,7 @@ global.fetchTrigger = fetchTrigger;
     <GluestackUIProvider mode="light">
       <UseFormContextProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer ref={navigationRef}>
+          <NavigationContainer >
             <Stack.Navigator
               initialRouteName="ProfitCenters"
               screenOptions={({ route, navigation }) => ({

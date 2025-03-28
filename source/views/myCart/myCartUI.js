@@ -61,7 +61,8 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
      closeSuccessModal,
      closeKeyBoard,
      handleContentSizeChange,
-     height
+     height,
+     setLoading
    } = useMyCartLogic();
    const { 
     cartData,
@@ -496,7 +497,13 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
                 <UI.Text style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.Text>
               </UI.Box>
-              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => handleModifierAddCart()}>
+              <UI.TouchableOpacity style={styles.addToCartBtn2} onPress={() => {
+                setLoading(true)
+                handleModifierAddCart()
+                setTimeout(() => {
+                  setLoading(false)
+                },1000)
+              }}>
                 <UI.Text style={styles.addCartTxt}>{updateOrAddTxt}</UI.Text>
               </UI.TouchableOpacity>
             </UI.Box>

@@ -374,4 +374,5 @@ addIcon: { width: 25, height: 25 },
     right: -22,
     backgroundColor:"#fff"
   },
+  emptyBoxContainer:{ flex: 1, justifyContent: "center", alignItems: "center" }
 });
