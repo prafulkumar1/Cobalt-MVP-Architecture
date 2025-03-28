@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, AddIcon, TrashIcon, RemoveIcon } from '@/components/ui/icon';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, AddIcon, TrashIcon, RemoveIcon,ChevronRightIcon } from '@/components/ui/icon';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '@/components/ui/checkbox';
 import { Select, SelectIcon, SelectInput, SelectTrigger, SelectPortal, SelectBackdrop, SelectContent, SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
@@ -178,7 +178,7 @@ class CbAccordionlist extends React.Component {
                                     />
                                   ) : (
                                     <AccordionIcon
-                                      as={ChevronUpIcon}
+                                      as={ChevronRightIcon}
                                       size={"md"}
                                       color='#4B5154'
                                       style={styles.collapseIcon}
@@ -1142,7 +1142,11 @@ class cbSearchbox extends React.Component {
             style={styles.searchBarMainContainer}
           >
             <TouchableOpacity onPress={() =>{ 
-            this.setState({showSearchInput:false})
+              handleClearClick(
+                this.setState.bind(this),
+                this.props.onSearch
+              )
+              this.setState({ showSearchInput: false })
           }}
               style={styles.backSearch} >
               {

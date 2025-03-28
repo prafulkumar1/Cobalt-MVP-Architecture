@@ -201,8 +201,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: responsiveHeight(1.5),
-    marginTop: 10,
+    paddingVertical: responsiveHeight(1),
+    marginTop: 8,
   },
   bottomMiddleContainer: {
     marginHorizontal: responsiveWidth(2),
@@ -344,7 +344,7 @@ mainContainerList:{paddingBottom:responsiveHeight(80)},
 horizontalLineStyle:{width:"95%",alignSelf:"center"},
 operationBtn: {
   position: 'absolute',
-  right: -18,
+  right: -20,
   borderColor: '#5773a2',
   borderWidth: 1,
   backgroundColor: '#fff',
@@ -371,7 +371,7 @@ addIcon: { width: 25, height: 25 },
   },
   operationBtn3:{
     position:"absolute",
-    right: -22,
+    right: -20,
     backgroundColor:"#fff"
   },
   emptyBoxContainer:{ flex: 1, justifyContent: "center", alignItems: "center" }
