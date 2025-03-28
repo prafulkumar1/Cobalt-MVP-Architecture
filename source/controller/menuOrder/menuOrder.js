@@ -54,7 +54,8 @@ export const useMenuOrderLogic = (props) => {
     updateCartItemQuantity,
     itemDataVisible,
     modifierCartItemData,
-    setFavoriteItemsList
+    setFavoriteItemsList,
+    setItemDataVisible
   } = useFormContext();
  
   useEffect(() => {
@@ -249,7 +250,7 @@ export const useMenuOrderLogic = (props) => {
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
       storeSingleItem({ ...box, response: quantityInfo.response })
       increaseQuantity(box)
-      closePreviewModal()
+      setItemDataVisible(true)
     }
   }
  
@@ -360,10 +361,14 @@ export const useMenuOrderLogic = (props) => {
         const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
         const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
         if (categoryData?.length > 0) {
-          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
-          addItemToModifierForCart(singleItemDetails);
-          addItemToFavorites(singleItemDetails)
-          closePreviewModal();
+          if(modifierQuantity === 1){
+            Alert.alert("Please increase the quantity")
+          }else{
+            updateModifierItemQuantity(singleItemDetails,modifierQuantity)
+            addItemToModifierForCart(singleItemDetails);
+            addItemToFavorites(singleItemDetails)
+            closePreviewModal();
+          }
         } else {
           updateModifierItemQuantity(singleItemDetails,modifierQuantity)
           addItemToModifierForCart(singleItemDetails);
@@ -552,8 +557,7 @@ export const useMenuOrderLogic = (props) => {
         isItemAvailableInCart = true;
       }
     });
-  
-    let requiredQuantity = IsModifierAvailable === 1 ? modifierQuantity : cartQuantity;
+    let requiredQuantity = categoryData.length > 0 ? operation === "decrement" ? modifierQuantity-1: modifierQuantity+1 : operation === "decrement" ? cartQuantity-1: cartQuantity+1;
     let quantityInfo = await postQuantityApiCall(requiredQuantity, mealItemDetails?.Item_ID);
   
     if (quantityInfo.statusCode === 200) {

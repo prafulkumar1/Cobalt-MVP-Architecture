@@ -607,6 +607,7 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartForFavs,
       cartApiResponse,
       setCartApiResponse,
+      setItemDataVisible
     }
     return (
       <FormContext.Provider
