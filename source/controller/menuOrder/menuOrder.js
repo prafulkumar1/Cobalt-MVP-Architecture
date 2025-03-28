@@ -65,7 +65,7 @@ export const useMenuOrderLogic = (props) => {
         const currentRoute = state?.routes[state?.index]?.name;
         
         if (currentRoute === "MenuOrder") {
-          if (cartData.length > 0) {
+          if (cartData?.length > 0) {
             setIsExitProfitCenter(true)
             return true;
           }
@@ -75,7 +75,7 @@ export const useMenuOrderLogic = (props) => {
       }
     );
 
-    return () => backHandler.remove();
+    return () => backHandler?.remove();
   }, [props?.navigation]);
  
   const openRecentOrder = () => {
