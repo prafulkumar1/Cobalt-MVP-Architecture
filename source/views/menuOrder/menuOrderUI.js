@@ -580,16 +580,7 @@ export default function MenuOrderScreen(props) {
               !isKeyboardVisible
               && 
               <UI.TouchableOpacity
-              onPress={() =>
-                handleCloseItemDetails(
-                  setIsVisible,
-                  updateModifierItemQuantity,
-                  closePreviewModal,
-                  selectedModifiers,
-                  setSelectedModifiers,
-                  singleItemDetails
-                )
-              }
+              onPress={() =>handleCloseItemDetails()}
               style={styles.crossIcon}
             >
               <Icon

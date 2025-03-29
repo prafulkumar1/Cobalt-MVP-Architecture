@@ -110,7 +110,7 @@ function RenderingPendingOrders(props) {
                           <UI.Box style={styles.detailsContainer}>
                             <UI.Box>
                               <UI.Text style={styles.labelOrderId}>
-                                Order Id #: {Order.ORDERID}
+                                Order#: {Order.ORDERID}
                               </UI.Text>
                               <UI.Text style={styles.labelOrderId}>
                                 Date: {Order.ORDEREDDATE}
@@ -720,7 +720,7 @@ export default function RecentordersScreen(props) {
                 : styles.ButtonTextStyle,
             ]}
           >
-            Favourite
+            Fevorite
           </UI.Text>
         </UI.TouchableOpacity>
         <UI.TouchableOpacity

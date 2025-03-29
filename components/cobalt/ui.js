@@ -919,10 +919,19 @@ class CbAddToCartButton extends React.Component {
         if (this.state.IsModifierAvailable === 1) {
           if (operation === "decrement") {
             if (isItemAvailableInCart) {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+               if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              }
             } else {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              }
             }
           } else {
             if (this.state.isAvailable === 1) {
