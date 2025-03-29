@@ -207,6 +207,31 @@ export const UseFormContextProvider = ({children}) => {
     };
     
  
+    // const updateModifierItemQuantity = async (mealItemDetails, newValue) => {
+    //   try {
+    //     setModifierCartItemData((prevCartData) => {
+    //       let updatedCartData;
+    //       const newQuantity = newValue === 0 ? 1 : newValue
+    //       const modifiePrice = selectedModifiers.length === 1
+    //         ? parseFloat(selectedModifiers[0].Price)
+    //         : selectedModifiers?.reduce((total, modifier) => {
+    //           return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
+    //         }, 0);
+    //         updatedCartData = prevCartData.map((item) =>
+    //           item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+(modifiePrice*newQuantity),basePrice :(mealItemDetails.Price * newQuantity)+(modifiePrice*newQuantity)} : item
+    //         );
+           
+    //       const getCurrentItemDetails = updatedCartData?.find(
+    //         (item) => item.Item_ID === singleItemDetails.Item_ID
+    //       );
+    //       singleModifierData.current = {
+    //         quantity: getCurrentItemDetails?.quantity,
+    //         quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+    //       };
+    //       return updatedCartData;
+    //     });
+    //   } catch (error) {}
+    // };
     const updateModifierItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
         setModifierCartItemData((prevCartData) => {

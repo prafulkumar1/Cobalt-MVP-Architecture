@@ -361,14 +361,10 @@ export const useMenuOrderLogic = (props) => {
         const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
         const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
         if (categoryData?.length > 0) {
-          if(modifierQuantity === 1){
-            Alert.alert("Please increase the quantity")
-          }else{
-            updateModifierItemQuantity(singleItemDetails,modifierQuantity)
-            addItemToModifierForCart(singleItemDetails);
-            addItemToFavorites(singleItemDetails)
-            closePreviewModal();
-          }
+          updateModifierItemQuantity(singleItemDetails, modifierQuantity);
+          addItemToModifierForCart(singleItemDetails);
+          addItemToFavorites(singleItemDetails);
+          closePreviewModal();
         } else {
           updateModifierItemQuantity(singleItemDetails,modifierQuantity)
           addItemToModifierForCart(singleItemDetails);

@@ -911,7 +911,8 @@ class CbAddToCartButton extends React.Component {
         isItemAvailableInCart = true
       }
     })
-    let requiredQuantity = this.state.IsModifierAvailable === 1 ? operation === "decrement" ? modifierQuantity-1: modifierQuantity+1 : operation === "decrement" ? cartQuantity-1: cartQuantity+1
+    let requiredQuantity = operation === "decrement" ? modifierQuantity-1: modifierQuantity+1
+    // let requiredQuantity = this.state.IsModifierAvailable === 1 ? operation === "decrement" ? modifierQuantity-1: modifierQuantity+1 : operation === "decrement" ? cartQuantity-1: cartQuantity+1
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if (quantityInfo.statusCode == 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
@@ -938,7 +939,11 @@ class CbAddToCartButton extends React.Component {
         } else {
           if (operation === "decrement") {
             if (itemDataVisible) {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+              }
             } else {
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
               updateModifierItemQuantity(this.mealItemDetails, cartQuantity - 1);
