@@ -661,37 +661,68 @@ export default function MenuOrderScreen(props) {
       }
     };
 
-    return (
-      <>
-        {cartQuantity === 0 && modifierQuantity === 0 ? (
+    const renderAddCartUi = () => {
+      if(cartQuantity === 0 && modifierQuantity === 0){
+        return(
           <UI.Box style={styles.operationBtn3}>
-            <UI.TouchableOpacity
-              disabled={
-                item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
-              }
-              onPress={() => handleAddToCartBtn(item)}
-              style={[
-                styles.operationBtn2,
-                {
-                  borderColor: commonStyles(
-                    item.IsAvailable,
-                    item.IsDisable,
-                    "#5773a2",
-                    "#ABABAB"
-                  ),
-                },
-              ]}
-            >
-              <Icon
-                as={AddIcon}
-                color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
-                size={"xl"}
-                style={[styles.addIcon]}
-              />
-            </UI.TouchableOpacity>
-          </UI.Box>
-        ) : (
-           <UI.Box style={styles.operationBtn}>
+          <UI.TouchableOpacity
+            disabled={
+              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
+            }
+            onPress={() => handleAddToCartBtn(item)}
+            style={[
+              styles.operationBtn2,
+              {
+                borderColor: commonStyles(
+                  item.IsAvailable,
+                  item.IsDisable,
+                  "#5773a2",
+                  "#ABABAB"
+                ),
+              },
+            ]}
+          >
+            <Icon
+              as={AddIcon}
+              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+              size={"xl"}
+              style={[styles.addIcon]}
+            />
+          </UI.TouchableOpacity>
+        </UI.Box>
+        )
+      }else if(item.IsDisable === 1){
+        return(
+          <UI.Box style={styles.operationBtn3}>
+          <UI.TouchableOpacity
+            disabled={
+              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
+            }
+            onPress={() => handleAddToCartBtn(item)}
+            style={[
+              styles.operationBtn2,
+              {
+                borderColor: commonStyles(
+                  item.IsAvailable,
+                  item.IsDisable,
+                  "#5773a2",
+                  "#ABABAB"
+                ),
+              },
+            ]}
+          >
+            <Icon
+              as={AddIcon}
+              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+              size={"xl"}
+              style={[styles.addIcon]}
+            />
+          </UI.TouchableOpacity>
+        </UI.Box>
+        )
+      }else{
+        return(
+          <UI.Box style={styles.operationBtn}>
             <UI.TouchableOpacity
               style={styles.iconBtn}
               onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}
@@ -718,7 +749,13 @@ export default function MenuOrderScreen(props) {
               />
             </UI.TouchableOpacity>
           </UI.Box>
-        )}
+        )
+      }
+    }
+
+    return (
+      <>
+        {renderAddCartUi()}
       </>
     );
   };
