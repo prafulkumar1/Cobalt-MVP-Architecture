@@ -21,14 +21,14 @@ import ItemModifierUIFavs from '../ItemModifier/ItemModifierUIFavs';
 function RenderingPendingOrders(props) {
   const { pendingOrders } = useRecentOrderLogic(props);
   const PriceRow = ({ label, value }) => (
-    <UI.Box style={styles.splitPriceContainer}>
-      <UI.Box style={styles.priceLabelContainer}>
-        <UI.Text style={styles.priceLabel}>{label}</UI.Text>
-      </UI.Box>
-      <UI.Box style={styles.valueMainContainer}>
+    <UI.CbBox id="splitPriceContainer" pageId="RecentOrder"  style={styles.splitPriceContainer}>
+      <UI.CbBox id="PriceLabelContainer" pageId="RecentOrder" style={styles.priceLabelContainer}>
+        <UI.CbText id="PriceLabel" pageId="RecentOrder" style={styles.priceLabel}>{label}</UI.CbText>
+      </UI.CbBox>
+      <UI.CbBox id="ValueMainContainer" pageId="RecentOrder" style={styles.valueMainContainer}>
         <UI.Text style={styles.priceLabel}>${value}</UI.Text>
-      </UI.Box>
-    </UI.Box>
+      </UI.CbBox>
+    </UI.CbBox>
   );
   const PriceDetails = (ordersPrice) => (
     <UI.Box style={styles.priceContainer}>

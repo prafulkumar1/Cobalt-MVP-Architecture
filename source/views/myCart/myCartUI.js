@@ -292,9 +292,9 @@ export default function MyCartScreen(props) {
                   return renderCartItems(items);
                 })
               ) : (
-                <UI.CbView id="CartEmptyContainer" pageId="MyCart" style={styles.cartEmptyContainer}>
+                <UI.View id="CartEmptyContainer" pageId="MyCart" style={styles.cartEmptyContainer}>
                   <UI.CbText id="EmptyCartTxt" pageId="MyCart" style={styles.emptyCartTxt}></UI.CbText>
-                </UI.CbView>
+                </UI.View>
               )}
               {myCartData && myCartData.length > 0 && renderCartPriceCalculations()}
             </UI.ScrollView>

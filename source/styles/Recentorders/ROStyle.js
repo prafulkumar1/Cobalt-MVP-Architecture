@@ -209,7 +209,7 @@ export const styles = StyleSheet.create({
   splitPriceContainer: { marginTop: 2, flexDirection: "row", width: responsiveWidth(55), justifyContent: "space-between", alignItems: "center" },
   priceLabelContainer: { alignSelf: "flex-end", width: responsiveWidth(30) },
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
-  valueMainContainer: { flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end", },
+  valueMainContainer: { flexDirection: "row", alignItems: "flex-end", justifyContent: "flex-end"},
   itemDetailsSubContainer:{
     borderWidth: 0.3,
     borderRadius: 5,
