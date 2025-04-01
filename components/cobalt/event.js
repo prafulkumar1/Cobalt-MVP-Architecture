@@ -247,6 +247,31 @@ export const UseFormContextProvider = ({children}) => {
     };
     
  
+    // const updateModifierItemQuantity = async (mealItemDetails, newValue) => {
+    //   try {
+    //     setModifierCartItemData((prevCartData) => {
+    //       let updatedCartData;
+    //       const newQuantity = newValue === 0 ? 1 : newValue
+    //       const modifiePrice = selectedModifiers.length === 1
+    //         ? parseFloat(selectedModifiers[0].Price)
+    //         : selectedModifiers?.reduce((total, modifier) => {
+    //           return modifier.isChecked ? (total + parseFloat(modifier.Price)) : (total - parseFloat(modifier.Price));
+    //         }, 0);
+    //         updatedCartData = prevCartData.map((item) =>
+    //           item.Item_ID === mealItemDetails.Item_ID ? { ...item, quantity: newQuantity,quantityIncPrice:(mealItemDetails.Price * newQuantity)+(modifiePrice*newQuantity),basePrice :(mealItemDetails.Price * newQuantity)+(modifiePrice*newQuantity)} : item
+    //         );
+           
+    //       const getCurrentItemDetails = updatedCartData?.find(
+    //         (item) => item.Item_ID === singleItemDetails.Item_ID
+    //       );
+    //       singleModifierData.current = {
+    //         quantity: getCurrentItemDetails?.quantity,
+    //         quantityIncPrice: getCurrentItemDetails?.quantityIncPrice,
+    //       };
+    //       return updatedCartData;
+    //     });
+    //   } catch (error) {}
+    // };
     const updateModifierItemQuantity = async (mealItemDetails, newQuantity) => {
       try {
         setModifierCartItemData((prevCartData) => {
@@ -400,26 +425,32 @@ export const UseFormContextProvider = ({children}) => {
   }
 
   const addItemToFavorites = async(Items) => {
-    const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
-      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-      return modifier.isChecked && index === lastIndex;
-    });
-    const updatedFavData = [
-      {
-          "ItemId": Items.Item_ID,
-          "IsFavourite":isItemFavorite,
-          "Modifiers":uniqueModifiers?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
-      }
-  ]
     const getProfitCenterItem = await AsyncStorage.getItem("profit_center")
     let getProfitCenterId = getProfitCenterItem !==null && JSON.parse(getProfitCenterItem)
     const currentMealPeriodId = menuOrderData
     ?.filter((item) => item?.MealPeriodIsSelect === 1)
     ?.map((items) => items.MealPeriod_Id);
+    const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
+      const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
+      return modifier.isChecked && index === lastIndex;
+    });
+
+    let requiredModifier = []
+    if(Items?.selectedModifiers?.length > 0){
+      requiredModifier = [...Items?.selectedModifiers,...uniqueModifiers]
+    }else{
+      requiredModifier = uniqueModifiers
+    }
     const params = {
       "Location_Id": getProfitCenterId?.LocationId,
       "MealPeriod_Id":currentMealPeriodId[0],
-      "Items": updatedFavData
+      "Items": [
+        {
+            "ItemId": Items.Item_ID,
+            "IsFavourite":isItemFavorite,
+            "Modifiers":requiredModifier?.map((modifiers) => ({ModifierId:modifiers.Modifier_Id}))
+        }
+      ]
     }
     let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
     if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
@@ -647,6 +678,7 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartForFavs,
       cartApiResponse,
       setCartApiResponse,
+      setItemDataVisible
     }
     return (
       <FormContext.Provider

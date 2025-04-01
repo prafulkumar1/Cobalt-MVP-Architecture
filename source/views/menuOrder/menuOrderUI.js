@@ -230,23 +230,26 @@ export default function MenuOrderScreen(props) {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.categoryListContainer}
+            keyboardShouldPersistTaps="handled"
             ref={categoryScrollRef}
           >
             {selectedCategory?.map((group) => renderMenuCategoryList(group))}
           </UI.ScrollView>
         )}
-         {/* <Divider style={styles.horizontalLineStyle}/> */}
 
         <UI.ScrollView style={styles.bottomMiddleContainer}
           ref={scrollViewRef}
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.mainContainerList}
         >
    {
             searchQuery.trim() !== "" && filteredItems.length === 0 ? (
-              <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
+              <UI.Box style={styles.emptyBoxContainer} >
+                <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
+              </UI.Box>
             ) : (
               filteredItems.length > 0 ? (
                 <UI.FlatList
@@ -525,17 +528,9 @@ export default function MenuOrderScreen(props) {
             {
               !isKeyboardVisible
               && 
-              <UI.TouchableOpacity style={styles.crossIcon}
-              onPress={() =>
-                handleCloseItemDetails(
-                  setIsVisible,
-                  updateModifierItemQuantity,
-                  closePreviewModal,
-                  selectedModifiers,
-                  setSelectedModifiers,
-                  singleItemDetails
-                )
-              }         
+              <UI.TouchableOpacity
+              onPress={() =>handleCloseItemDetails()}
+              style={styles.crossIcon}
             >
               <UI.CbBox id="CloseIconContainer" pageId="MenuOrder"  style={styles.CloseIconContainer} >
                <UI.CbImage id="CloseIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/Modal_Close.png')} style={styles.closeIcon}/>}/>    

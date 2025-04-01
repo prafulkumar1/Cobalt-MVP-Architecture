@@ -68,16 +68,18 @@ global.username = username;
 global.userID = userID;
 global.memberID = memberID;
 global.apiURL = props.apiURL;
-global.fetchTrigger = fetchTrigger; 
+global.fetchTrigger = fetchTrigger;
+global.location_id = location_id;
 
   useEffect(() => {
     console.log("App started with username:", username);
     console.log("App started with password:", apiURL);
+    console.log("App fetch Trigger", fetchTrigger)    
     console.log("App fetch Trigger", fetchTrigger)
   
   }, [username, userID]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log("🔄 Received locationId:", location_id);
     console.log("🔄 fetchTrigger:", fetchTrigger);
 
@@ -91,7 +93,7 @@ global.fetchTrigger = fetchTrigger;
         }
       }, 100);
     }
-  }, [fetchTrigger, location_id]);
+  }, [fetchTrigger, location_id]);*/
 
 
   const backAction = () => {

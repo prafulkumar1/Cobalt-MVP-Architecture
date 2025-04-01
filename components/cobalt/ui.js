@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/form-control';
 import { Input, InputField } from '@/components/ui/input';
 import { Button, ButtonText } from '@/components/ui/button';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, AddIcon, TrashIcon, RemoveIcon } from '@/components/ui/icon';
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, AddIcon, TrashIcon, RemoveIcon,ChevronRightIcon } from '@/components/ui/icon';
 import { Checkbox, CheckboxIcon, CheckboxIndicator, CheckboxLabel } from '@/components/ui/checkbox';
 import { Select, SelectIcon, SelectInput, SelectTrigger, SelectPortal, SelectBackdrop, SelectContent, SelectItem } from '../ui/select';
 import { Box } from '@/components/ui/box';
@@ -462,7 +462,7 @@ class CbAccordionlist extends React.Component {
                                     />
                                   ) : (
                                     <AccordionIcon
-                                      as={ChevronUpIcon}
+                                      as={ChevronRightIcon}
                                       size={"md"}
                                       color='#4B5154'
                                       style={styles.collapseIcon}
@@ -1183,17 +1183,27 @@ class CbAddToCartButton extends React.Component {
         isItemAvailableInCart = true
       }
     })
-    let requiredQuantity = this.state.IsModifierAvailable === 1 ? modifierQuantity : cartQuantity
+    let requiredQuantity = operation === "decrement" ? modifierQuantity-1: modifierQuantity+1
+    // let requiredQuantity = this.state.IsModifierAvailable === 1 ? operation === "decrement" ? modifierQuantity-1: modifierQuantity+1 : operation === "decrement" ? cartQuantity-1: cartQuantity+1
     let quantityInfo = await postQuantityApiCall(requiredQuantity, this.mealItemDetails?.Item_ID)
     if (quantityInfo.statusCode == 200) {
       this.setState({ isAvailable: quantityInfo?.response.IsAvailable, IsModifierAvailable: quantityInfo?.response.IsModifierAvailable }, () => {
         if (this.state.IsModifierAvailable === 1) {
           if (operation === "decrement") {
             if (isItemAvailableInCart) {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
-              updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+               if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+                updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
+              }
             } else {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              }
             }
           } else {
             if (this.state.isAvailable === 1) {
@@ -1210,7 +1220,11 @@ class CbAddToCartButton extends React.Component {
         } else {
           if (operation === "decrement") {
             if (itemDataVisible) {
-              updateModifierItemQuantity(this.mealItemDetails, modifierQuantity - 1)
+              if(modifierQuantity ===1){
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity)
+              }else{
+                updateModifierItemQuantity(this.mealItemDetails, modifierQuantity-1)
+              }
             } else {
               updateCartItemQuantity(this.mealItemDetails, cartQuantity - 1);
               updateModifierItemQuantity(this.mealItemDetails, cartQuantity - 1);
@@ -1408,8 +1422,24 @@ class cbSearchbox extends React.Component {
     const Styles=ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles); 
     return (
-      
-      <Box style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}>
+      <TouchableOpacity
+        style={{
+          width: showSearchInput ? "100%" : responsiveWidth(60),
+          height: 40,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          borderRadius: 4,
+          backgroundColor: showSearchInput ? "#f0f0f0" : "white",
+        }}
+        onPress={() => {
+          this.setState({ showSearchInput: true });
+          if (this.props.onSearchPress) {
+            this.props.onSearchPress();
+          }
+        }}
+      >
+        <Box style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}>
         {showSearchInput ? (
           <Box style={StyleProps? StyleProps?.searchBarMainContainer : styles.searchBarMainContainer}>
             <TouchableOpacity   onPress={() => handleCloseClick(
@@ -1438,6 +1468,7 @@ class cbSearchbox extends React.Component {
                   this.setState.bind(this),
                   this.props.onSearch // Reset search results & show default list
                 )}
+                style={styles.closeIconBtn}
               >
                 {
                 Closesource? <Image source={{ uri: Closesource}} style={StyleProps? StyleProps?.CloseIcon : styles.CloseIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Close.png")} />
@@ -1460,7 +1491,8 @@ class cbSearchbox extends React.Component {
           <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Box>
+        </Box>
+      </TouchableOpacity>
     );
   }
 }
