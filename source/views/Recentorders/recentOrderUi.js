@@ -263,6 +263,17 @@ const RenderingCompletedOrders = (props) => {
     }
     itemDetails.forEach((item) => {
       const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item?.ITEM_ID);
+       let updatedModifiers = item?.MODIFIERS?.map((items) => {
+        return{
+          "Modifier_Id": items?.MODIFIER_ID,
+          "Modifier_Name": items?.MODIFIER_NAME,
+          "Price": item?.Price,
+          "IsFavourite": null,
+          "isChecked": true,
+          "Item_ID": item?.Item_ID,
+          "Category_Id": item?.Category_Id
+        }
+      })
  
       const itemWithModifiers = {
         Item_ID:item.ITEM_ID,
@@ -275,7 +286,7 @@ const RenderingCompletedOrders = (props) => {
         "quantity": item.QUANTITY,
         "quantityIncPrice":item?.TOTALPRICE,
         "comments":item.COMMENTS,
-        selectedModifiers: item.MODIFIERS || [],
+        selectedModifiers: item?.MODIFIERS?.length > 0 ? updatedModifiers : [],
       };
  
       if (existingItem) {
