@@ -42,6 +42,7 @@ function RenderingPendingOrders(props) {
   const ITEM_HEIGHT = 100
   return (
     <UI.FlatList
+      scrollEnabled={false}
       data={pendingOrders}
       removeClippedSubviews={true}
       windowSize={21}
@@ -318,6 +319,7 @@ const RenderingCompletedOrders = (props) => {
   return(
     <UI.FlatList
     data={ordersData}
+    scrollEnabled={false}
     contentContainerStyle={{marginTop:10}}
     renderItem={({ item, index }) => {
       const isDisabled = item?.ITEMS?.some(order => order.IsDisable === 1);
@@ -576,6 +578,7 @@ function RenderingFavoritesList({ props }) {
              <>
               <Divider style={styles.divider} />
               <UI.FlatList 
+              scrollEnabled={false}
               data={favItems}
               renderItem={({item, index}) =>{
                

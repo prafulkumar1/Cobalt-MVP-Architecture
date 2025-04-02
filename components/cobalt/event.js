@@ -193,9 +193,12 @@ export const UseFormContextProvider = ({children}) => {
         setModifierCartItemData((prevModifierCartItemData) => {
           const updatedModifierData = [...prevModifierCartItemData];
           const itemIndex = updatedModifierData?.findIndex((modifierItem) => modifierItem.Item_ID === item.Item_ID);
+          const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
           if (itemIndex !== -1) {
+            if( cartItem ==undefined){
             updatedModifierData[itemIndex].quantity += 1;
             updatedModifierData[itemIndex].quantityIncPrice = updatedModifierData[itemIndex].Price * updatedModifierData[itemIndex].quantity;
+            }
           } else {
             updatedModifierData.push({ ...item, quantity: 1, quantityIncPrice: item.Price });
           }

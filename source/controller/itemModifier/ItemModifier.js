@@ -63,6 +63,7 @@ export const useItemModifierLogic = () => {
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
+              const cartItem = cartData?.find(item => item.Item_ID === singleItemDetails?.Item_ID);
               const item = modifiersResponse.response
  
               let categoryData = typeof item?.Categories === "string" ? JSON.parse(item?.Categories) : item?.Categories;
@@ -72,19 +73,18 @@ export const useItemModifierLogic = () => {
                   ...category,
                   Modifiers: category.Modifiers.map(modifier => ({
                         ...modifier,
-                        isChecked: cartData?.some(cartItem =>{
+                        isChecked: cartItem === undefined ? false : cartData?.some(cartItem =>{
                           const uniqueModifiers = cartItem?.selectedModifiers?.filter((modifier, index, self) => {
                             const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
                             return modifier.isChecked && index === lastIndex;
                           });
-                         return uniqueModifiers?.some(value => value.Modifier_Id === modifier.Modifier_Id)
+                         return uniqueModifiers?.some(value => value?.Category_Id===category?.Category_Id && value.Modifier_Id === modifier.Modifier_Id)
                         }
                         )
                       }))
                 }))
               };
                setModifiersResponseData(updatedData)
-              const cartItem = cartData.find(item => item.Item_ID === singleItemDetails?.Item_ID);
               setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
               if(cartItem !==undefined){
                 setUpdateOrAddTxt("Update Cart")
