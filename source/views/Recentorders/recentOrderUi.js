@@ -731,7 +731,7 @@ export default function RecentordersScreen(props) {
                 : styles.ButtonTextStyle,
             ]}
           >
-            Fevorite
+            Favorite
           </UI.Text>
         </UI.TouchableOpacity>
         <UI.TouchableOpacity

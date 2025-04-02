@@ -172,7 +172,7 @@ export const styles = StyleSheet.create({
   itemPrice:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",width:70,textAlign:"center", },
   modifierName:{ fontSize: 12, color: "#3B87C1", fontFamily: "SourceSansPro_SemiBoldItalic", },
   commentBox:{ flexDirection: "row", alignItems: "flex-start", marginTop: 5 },
-  commentIcon:{ width: horizontalScale(12), height: verticalScale(12), marginRight: 10, top: 5 },
+  commentIcon:{ width: 15, height: 15, marginRight: 5, top: 5,resizeMode:"contain" },
   labelComment: {
     fontSize: 12,
     fontFamily: "SourceSansPro_SemiBoldItalic",
