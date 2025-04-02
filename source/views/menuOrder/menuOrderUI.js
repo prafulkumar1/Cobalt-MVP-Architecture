@@ -745,7 +745,7 @@ export default function MenuOrderScreen(props) {
           animationType="fade"
           onRequestClose={() => setIsExitProfitCenter(false)}
         >
-          <UI.CbView id="Modalview" pageId={'MenuOrder'}
+          <UI.View id="Modalview" pageId={'MenuOrder'}
             style={styles.modalContainer}
             onPress={() => setIsExitProfitCenter(false)}
           />
