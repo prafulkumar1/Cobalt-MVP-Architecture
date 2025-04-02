@@ -21,7 +21,7 @@ const ItemModifierUIFavs = (props) => {
     const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 0;
     const value = getFormFieldData(pageId,"Comments")
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
-    const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierFavsLogic()
+    const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierFavsLogic(props)
     const scrollY = useRef(new Animated.Value(0)).current;
     if(loading){
       return(

@@ -230,7 +230,7 @@ function RenderingPendingOrders(props) {
 
 const RenderingCompletedOrders = (props) => {
   const { orders} = useRecentOrderLogic(props);
-  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
+  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder,setItemDataVisible} = useFormContext()
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
  
   const editCommentBtn = (props, item) => {
@@ -246,7 +246,7 @@ const RenderingCompletedOrders = (props) => {
         "Price": item?.PRICE,
         "Comments":item?.COMMENTS,
       }
-      closePreviewModal()
+      setItemDataVisible(true)
       storeSingleItem({
         ...updatedItems,
         quantityIncPrice: item?.TOTALPRICE
@@ -811,7 +811,11 @@ export default function RecentordersScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
+              {
+                isRecentOrder ? 
+                <ItemModifier isRecentOrder={isRecentOrder ? true:false}/> : 
+                <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
+              }
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
@@ -823,7 +827,7 @@ export default function RecentordersScreen(props) {
               </UI.TouchableOpacity>
             </UI.Box>
           </UI.Box>
-        </Modal>
+      </Modal>
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
     </UI.Box>
