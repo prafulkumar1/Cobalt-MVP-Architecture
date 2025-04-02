@@ -267,7 +267,7 @@ export default function MenuOrderScreen(props) {
                             onPress={() => toggleSubmenu(category?.Category_ID)}
                           >
                              <UI.CbText id="ItemCategoryLabel" pageId="MenuOrder" style={styles.itemCategoryLabel}>
-                            {item?.SubMenu_Name}
+                            {submenu?.SubMenu_Name}
                           </UI.CbText>
                             {searchQuery.trim() !== "" || expandedSubmenus[category.Category_ID] ? (
                              <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"} />
