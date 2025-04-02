@@ -190,7 +190,7 @@ export default function MenuOrderScreen(props) {
                 {item.Category_Name?.toUpperCase()}
             </UI.CbText>
           {item.CategoryIsSelect === 1 && (
-             <UI.CbBox id="BottomStyle" pageId="MenuOrder"
+             <UI.Box id="BottomStyle" pageId="MenuOrder"
              style={[styles.bottomStyle]} />
           )}
         </UI.TouchableOpacity>

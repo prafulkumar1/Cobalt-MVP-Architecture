@@ -37,23 +37,24 @@ const fetchConfig = async () => {
   await loadAppConfigurations();
   setConfigLoaded(true);
 };
+
 const [headerStyle, setHeaderStyle] = useState({});
-const [headerTitle, setHeaderTitle] = useState({});
+
 
   const fetchHeaderStyle = async () => {
+    console.log("@!@#$%%%$##@","122222321");
     const style = await UI.CbHeaderBackground("HeaderBackground", "Header");
     setHeaderStyle(style);
   };
-  const fetchHeaderTitle = async () => {
-    const style = await UI.CbHeaderTitle("HeaderTitle",route.name === "MenuOrder" ? route?.params?.profileCenterTile : route.name,"Header");
-    setHeaderTitle(style);
-  };
+ 
   
 
   useEffect(() => {
     const init = async () => {
-      await fetchConfig();
-      await Promise.all([fetchHeaderStyle(), fetchHeaderTitle()]);
+      await fetchConfig();    
+    const fetchStylePromise = fetchHeaderStyle();
+      await Promise.all([fetchStylePromise]);
+    
     };
     init();
   }, [])
@@ -153,7 +154,17 @@ global.location_id = location_id;
                   <UI.CbBackButton id='BackButton' pageID="Header"  controlsConfigJson={controlsConfigJson} navigation={navigation} />
                 ),
                 headerTitleAlign: 'left',
-                 ...headerTitle,
+                headerTitle: () => {
+                  return(
+                    <UI.View id="HeaderTitleContainer" pageId="Header" style={styles.headerTitle}>
+                      <UI.CbText id="HeadermenuTitle" pageId="Header" style={styles.menuTitle}>
+                        {route.name === "MenuOrder" 
+                          ? route?.params?.profileCenterTile
+                          : route.name === "Recentorders"?"Order Again":route.name}
+                      </UI.CbText>
+                    </UI.View>
+                  )
+                },
                 headerRight: () => {
                   const showHomeButton = route.params?.showHomeButton;
                   if (route.name === "ProfitCenters" || showHomeButton) {
@@ -162,8 +173,8 @@ global.location_id = location_id;
                   return null;
                 },
                 detachPreviousScreen: true
-               
-              })}
+              })
+            }
             >
               <Stack.Screen
                 name="Login"
@@ -229,16 +240,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuTitle: {
-    fontSize: 22,
-    color: "#4B5154",
-    fontWeight: "500",
-
-  },
+  menuTitle: { fontSize: 22, color: "#4B5154", fontWeight: "500", fontFamily: 'SourceSansPro_SemiBold'},
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle:{ flex: 1, alignItems: 'flex-start' }
+  headerTitle:{ alignItems: 'flex-start' }
 });

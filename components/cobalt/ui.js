@@ -216,9 +216,9 @@ class CbView extends React.Component {
 
   render() {
     const { ControlConfig } = this.state;  
-     const Styles=ControlConfig?.Styles || this.styles;
+     const Styles=ControlConfig?.Styles;
      const StyleProps = transformStyles(Styles);
-     const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
+     const dynamicStyle =  StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
     return (
       <View style={[dynamicStyle,this.Conditionalstyle]} >
          {this.props.children}
@@ -315,6 +315,7 @@ class CbHomeButton extends React.Component {
     };
   };
   const CbHeaderTitle = async (ControlId,Title,PageId) => {
+    console.log("this is my wish ",ControlId,Title,PageId);
     const ControlConfig  = await loadPageConfig(PageId,ControlId);        
     const Styles=ControlConfig?.Styles?.menuTitle || {};
       return {

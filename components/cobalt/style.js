@@ -497,7 +497,7 @@ CheckIcon:{color:"#ffff"},
   },
   SearchIcon:{
     width: responsiveWidth(60),
-    height:responsiveHeight(4.5),
+    height: 40,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

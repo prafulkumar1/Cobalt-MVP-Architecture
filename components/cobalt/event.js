@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
 import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions";
+import { responsiveWidth, responsiveHeight, responsiveFontSize } from "react-native-responsive-dimensions";
 
 export const transformStyles = (styles) => {
   if (!styles || typeof styles !== "object") return {};
@@ -16,6 +16,7 @@ export const transformStyles = (styles) => {
       if (typeof value === "string") {
         const widthMatch = value.match(/^responsiveWidth\(([\d.]+)\)$/);
         const heightMatch = value.match(/^responsiveHeight\(([\d.]+)\)$/);
+        const fontSizeMatch = value.match(/^responsiveFontSize\(([\d.]+)\)$/);
 
         if (widthMatch) {
           const num = parseFloat(widthMatch[1]); // Extract number from parentheses
@@ -23,6 +24,9 @@ export const transformStyles = (styles) => {
         } else if (heightMatch) {
           const num = parseFloat(heightMatch[1]); // Extract number from parentheses
           acc[key] = isNaN(num) ? value : responsiveHeight(num);
+        } else if (fontSizeMatch) {
+          const num = parseFloat(fontSizeMatch[1]); // Extract number from parentheses
+          acc[key] = isNaN(num) ? value : responsiveFontSize(num);
         } else {
           acc[key] = value;
         }
@@ -38,6 +42,7 @@ export const transformStyles = (styles) => {
     Object.entries(styles).map(([className, styleObject]) => [className, applyResponsive(styleObject)])
   );
 };
+
 
 
 
