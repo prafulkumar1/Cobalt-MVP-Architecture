@@ -57,7 +57,8 @@ export default function MyCartScreen(props) {
      closeSuccessModal,
      closeKeyBoard,
      handleContentSizeChange,
-     height
+     height,
+     setLoading
    } = useMyCartLogic();
    const { 
     cartData,
@@ -472,7 +473,13 @@ export default function MyCartScreen(props) {
                 <UI.CbText id="TotalAmountTxt" pageId="MyCart"  style={styles.totalAmountTxt}>Total Amount</UI.CbText>
                 <UI.CbText id="OrderAmount" pageId="MyCart"  style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.CbText>
               </UI.Box>
-              <UI.TouchableOpacity  onPress={() => handleModifierAddCart()}>
+              <UI.TouchableOpacity  onPress={() => {
+                setLoading(true)
+                handleModifierAddCart()
+                setTimeout(() => {
+                  setLoading(false)
+                },1000)
+              }}>
                 <UI.CbBox id="addToCartBtn2" pageId="MyCart" style={styles.addToCartBtn2}>
                 <UI.CbText id="AddCartTxt" pageId="MyCart"  style={styles.addCartTxt}>{updateOrAddTxt}</UI.CbText>
                 </UI.CbBox>

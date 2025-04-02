@@ -33,7 +33,7 @@ export const useMyCartLogic = () => {
     const [grandTotal,setGrandTotal] = useState(0)
     const [isPriceLoaded,setIsPriceLoaded]= useState(0)
     const [orderInstruction,setOrderInstruction]= useState("")
-    const [height, setHeight] = useState(29);
+    const [height, setHeight] = useState(44);
     const [orderSuccessModal,setOrderSuccessModal] = useState(false)
     const [successResponse,setSuccessResponse] =useState(null)
     const [pickUpLocations,setPickUpLocations] =useState(null)
@@ -107,7 +107,7 @@ export const useMyCartLogic = () => {
           Comments:item.comments,
           ItemId:item.Item_ID,
           Quantity:item.quantity,
-          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id})):[]
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id,Category_Id:items?.Category_Id})):[]
         }
       })
       const params = {   
@@ -298,9 +298,7 @@ export const useMyCartLogic = () => {
         }
       })
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
-      const currentMealPeriodId = menuOrderData
-        ?.filter((item) => item?.MealPeriodIsSelect === 1)
-        ?.map((item) => item.MealPeriod_Id);
+      const currentMealPeriodId = menuOrderData?.filter((item) => item?.MealPeriodIsSelect === 1)?.map((item) => item.MealPeriod_Id);
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
@@ -344,7 +342,7 @@ export const useMyCartLogic = () => {
   }
   const handleContentSizeChange = (event) => {
     const newHeight = event?.nativeEvent?.contentSize.height;
-    setHeight(newHeight > 30 ? newHeight : 29); 
+    setHeight(newHeight > 30 ? newHeight : 34); 
   };
   return {
     tipData,
@@ -392,6 +390,7 @@ export const useMyCartLogic = () => {
     closeKeyBoard,
     handleContentSizeChange,
     height,
-    postQuantityApiCall
+    postQuantityApiCall,
+    setLoading
   };
 };
