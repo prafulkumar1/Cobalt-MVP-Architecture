@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createContext,  useContext } from 'react';
+import { NativeModules } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { responsiveWidth, responsiveHeight } from "react-native-responsive-dimensions";
 
@@ -659,7 +660,21 @@ export const UseFormContextProvider = ({children}) => {
   };
   
   UseFormContextProvider.displayName='UseFormContextProvider';
+
+
+ const { NativeNavigationModule } = NativeModules;
+ export const backAction = () => {
+  console.log('tapped');
+  if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
+      NativeNavigationModule.navigateToNative(); // Call native iOS navigation
+  }
+  return true; // Prevent default back behavior
+};
  
+
+
+
+
   export const handleSearchClick = (setState, onSearchActivate) => {
     setState({ showSearchInput: true });
     if (onSearchActivate) {

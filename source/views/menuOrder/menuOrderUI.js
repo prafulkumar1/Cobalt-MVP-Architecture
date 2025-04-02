@@ -245,10 +245,12 @@ export default function MenuOrderScreen(props) {
           contentContainerStyle={styles.mainContainerList}
         >
    {
-            searchQuery.trim() !== "" && filteredItems.length === 0 ? (
-              <UI.Box style={{ flex: 1, justifyContent: "center", alignItems: "center" }} />
+            searchQuery.trim() !== "" && filteredItems?.length === 0 ? (
+              <UI.Box style={styles.emptyBoxContainer} >
+                <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
+              </UI.Box>
             ) : (
-              filteredItems.length > 0 ? (
+              filteredItems?.length > 0 ? (
                 <UI.FlatList
                   data={filteredItems}
                   keyExtractor={(category, index) => `category-${category.Category_ID}-${searchQuery}-${index}`} // 🔥 Unique key changes on search
@@ -261,10 +263,10 @@ export default function MenuOrderScreen(props) {
                           <UI.TouchableOpacity
                             activeOpacity={0.5}
                             style={styles.cardMainContainer}
-                            onPress={() => toggleSubmenu(category.Category_ID)}
+                            onPress={() => toggleSubmenu(category?.Category_ID)}
                           >
                              <UI.CbText id="ItemCategoryLabel" pageId="MenuOrder" style={styles.itemCategoryLabel}>
-                            {item.SubMenu_Name}
+                            {item?.SubMenu_Name}
                           </UI.CbText>
                             {searchQuery.trim() !== "" || expandedSubmenus[category.Category_ID] ? (
                              <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"} />
@@ -275,7 +277,7 @@ export default function MenuOrderScreen(props) {
 
                           {(searchQuery.trim() !== "" || expandedSubmenus[category.Category_ID]) && (
                             <UI.CbFlatList
-                              flatlistData={submenu.items}
+                              flatlistData={submenu?.items}
                               customStyles={{ backgroundColor: "#fff" }}
                               children={({ item: box, index }) => {
                                 const isExpanded = expandedIds.includes(box?.Item_ID);
@@ -617,37 +619,68 @@ export default function MenuOrderScreen(props) {
       }
     };
 
-    return (
-      <>
-        {cartQuantity === 0 && modifierQuantity === 0 ? (
+    const renderAddCartUi = () => {
+      if(cartQuantity === 0 && modifierQuantity === 0){
+        return(
           <UI.Box style={styles.operationBtn3}>
-            <UI.TouchableOpacity
-              disabled={
-                item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
-              }
-              onPress={() => handleAddToCartBtn(item)}
-              style={[
-                styles.operationBtn2,
-                {
-                  borderColor: commonStyles(
-                    item.IsAvailable,
-                    item.IsDisable,
-                    "#5773a2",
-                    "#ABABAB"
-                  ),
-                },
-              ]}
-            >
-              <Icon
-                as={AddIcon}
-                color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
-                size={"xl"}
-                style={[styles.addIcon]}
-              />
-            </UI.TouchableOpacity>
-          </UI.Box>
-        ) : (
-           <UI.Box style={styles.operationBtn}>
+          <UI.TouchableOpacity
+            disabled={
+              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
+            }
+            onPress={() => handleAddToCartBtn(item)}
+            style={[
+              styles.operationBtn2,
+              {
+                borderColor: commonStyles(
+                  item.IsAvailable,
+                  item.IsDisable,
+                  "#5773a2",
+                  "#ABABAB"
+                ),
+              },
+            ]}
+          >
+            <Icon
+              as={AddIcon}
+              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+              size={"xl"}
+              style={[styles.addIcon]}
+            />
+          </UI.TouchableOpacity>
+        </UI.Box>
+        )
+      }else if(item.IsDisable === 1){
+        return(
+          <UI.Box style={styles.operationBtn3}>
+          <UI.TouchableOpacity
+            disabled={
+              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
+            }
+            onPress={() => handleAddToCartBtn(item)}
+            style={[
+              styles.operationBtn2,
+              {
+                borderColor: commonStyles(
+                  item.IsAvailable,
+                  item.IsDisable,
+                  "#5773a2",
+                  "#ABABAB"
+                ),
+              },
+            ]}
+          >
+            <Icon
+              as={AddIcon}
+              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
+              size={"xl"}
+              style={[styles.addIcon]}
+            />
+          </UI.TouchableOpacity>
+        </UI.Box>
+        )
+      }else{
+        return(
+          <UI.Box style={styles.operationBtn}>
             <UI.TouchableOpacity
               style={styles.iconBtn}
               onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}
@@ -674,7 +707,13 @@ export default function MenuOrderScreen(props) {
               />
             </UI.TouchableOpacity>
           </UI.Box>
-        )}
+        )
+      }
+    }
+
+    return (
+      <>
+        {renderAddCartUi()}
       </>
     );
   };
@@ -683,12 +722,12 @@ export default function MenuOrderScreen(props) {
     <UI.CbBox id="MenuorderContainer" pageId={'MenuOrder'} style={styles.mainContainer}>
     <UI.CbBox id="MainHeaderContainer" pageId={'MenuOrder'} Conditionalstyle={isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}} styles={[styles.mainHeaderContainer,isRecentOrderOpen ? {marginTop:6}:{marginVertical: 6}]}>
       {
-        !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch" pageId={'MenuOrder'} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
+        !isRecentOrderOpen && <UI.cbSearchbox id="ItemSearch"   onSearch={setSearchQuery}  pageId={'MenuOrder'} onSearchActivate={() => handleChangeState()} isRecentOrderOpen={isRecentOrderOpen && true}/>
       }
       {!isSearchActive && (
         <UI.TouchableOpacity style={[styles.recentOrderContainer]} onPress={() => navigateToScreen(props, "Recentorders", true)}>
           <UI.CbBox id="RecentOrderBox" pageId={'MenuOrder'} style={styles.recentOrderBox}>
-             <UI.CbImage id="RecentOrderIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/>
+             {/* <UI.CbImage id="RecentOrderIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/> */}
              <UI.CbText id="ROText" pageId={'MenuOrder'}  style={styles.recentOrderTxt}/>
           </UI.CbBox> 
           <UI.CbImage id="RoNavIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/RONav.png')} style={styles.dropdownIcon}/>}/>          

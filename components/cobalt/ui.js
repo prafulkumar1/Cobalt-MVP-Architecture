@@ -24,7 +24,7 @@ import { styles } from './style';
 import { FormContext } from './event';
 import { navigateToScreen } from '@/source/constants/Navigations';
 import SvgUri from 'react-native-svg-uri';
-import { handleSearchClick, handleClearClick, handleCloseClick,transformStyles } from "./event";
+import { handleSearchClick, handleClearClick, handleCloseClick,transformStyles,backAction } from "./event";
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { remapProps } from 'react-native-css-interop';
@@ -119,7 +119,10 @@ class CbBackButton extends React.Component {
         {({ AppConfigJson,setIsExitProfitCenter,menuOrderData,cartData,isPrevCartScreen }) => {
           return (
             <TouchableOpacity onPress={()=>{
-              if(currentRoute === "MenuOrder"){
+              if(currentRoute === "ProfitCenters"){
+                backAction()
+              }
+              else if(currentRoute === "MenuOrder"){
                 if(menuOrderData !==null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
                 }else{
@@ -293,7 +296,7 @@ class CbHomeButton extends React.Component {
      const ImageSource = ControlConfig?.ImageSource || this.source;
      const Styles=ControlConfig?.Styles;
     return (
-      <TouchableOpacity onPress={()=>navigateToScreen(this.props,'ProfitCenters')}>
+      <TouchableOpacity onPress={()=>backAction()}>
         {
           ImageSource ? <Image source={{ uri: ImageSource}} style={Styles? Styles?.HomeIcon : styles.HomeIcon}/>:<Image alt='image' source={require("@/assets/images/icons/Home.png")} style={Styles? Styles?.HomeIcon : styles.HomeIcon} />
         }
@@ -1367,12 +1370,12 @@ class cbSearchbox extends React.Component {
 
   handleSearch = (value) => {
     this.setState({ searchValue: value });
-    this.props.onSearch(value); // Notify parent
+    this.props?.onSearch(value); // Notify parent
   };
 
   handleClear = () => {
     this.setState({ searchValue: "" });
-    this.props.onSearch(""); // Reset search results
+    this.props?.onSearch(""); // Reset search results
   };
 
   componentDidUpdate(prevProps) {
@@ -1381,8 +1384,8 @@ class cbSearchbox extends React.Component {
       this.props.isRecentOrderOpen
     ) {
       this.setState({ showSearchInput: true }, () => {
-        if (this.inputRef.current) {
-          this.inputRef.current.focus();
+        if (this.inputRef?.current) {
+          this.inputRef?.current?.focus();
         }
       });
     }
@@ -1409,34 +1412,45 @@ class cbSearchbox extends React.Component {
     const StyleProps = transformStyles(Styles); 
     return (
       
-      <Box style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}>
+      <TouchableOpacity style={ showSearchInput ? (StyleProps?.SearchExpand || styles.SearchExpand) : (StyleProps?.SearchIcon || styles.SearchIcon)}  onPress={() => {
+
+        this.setState({ showSearchInput: true });
+
+        if (this.props.onSearchPress) {
+
+          this.props?.onSearchPress();
+
+        }
+
+      }}>
         {showSearchInput ? (
           <Box style={StyleProps? StyleProps?.searchBarMainContainer : styles.searchBarMainContainer}>
-            <TouchableOpacity   onPress={() => handleCloseClick(
-  this.setState.bind(this), 
-  this.props.onSearchActivate, 
-  this.props.onSearch, // handleClear function
-  this.props.onBackPress // New function to reset the list
-)}
+            <TouchableOpacity   onPress={() =>{ 
+              handleClearClick(
+                this.setState.bind(this),
+                this.props?.onSearch
+              )
+              this.setState({ showSearchInput: false })
+          }}
  style={{ marginLeft: 10 }} >
               {
                 Backarrowsource ? <Image source={{ uri: Backarrowsource}} style={StyleProps? StyleProps?.BackArrowIcon : styles.BackArrowIcon}/>:<Image alt='image' source={require("@/assets/images/icons/BackArrow.png")} />
               }
             </TouchableOpacity>
-            <Input  style={StyleProps? StyleProps?.SearchinputBox : styles.SearchinputBox}>
+            <Input style={StyleProps? StyleProps?.SearchinputBox : styles.SearchinputBox}>
               <InputField
-  ref={this.inputRef}
-  value={searchValue}
-  placeholder={placeholderprop}
-  onChangeText={(value) => this.handleSearch(value)}
-  autoFocus={true} // Ensure autoFocus is enabled
+                  ref={this.inputRef}
+                  value={searchValue}
+                  placeholder={placeholderprop}
+                  onChangeText={(value) => this.handleSearch(value)}
+                  autoFocus={true} // Ensure autoFocus is enabled
               />
             </Input>
             {searchValue && (
               <TouchableOpacity
                 onPress={() => handleClearClick(
                   this.setState.bind(this),
-                  this.props.onSearch // Reset search results & show default list
+                  this.props?.onSearch // Reset search results & show default list
                 )}
               >
                 {
@@ -1450,7 +1464,7 @@ class cbSearchbox extends React.Component {
             style={styles.searchBtn}
             onPress={() => {
               this.setState({ showSearchInput: true });
-              if (this.props.onSearchPress) {
+              if (this.props?.onSearchPress) {
                 this.props.onSearchPress(); // Notify MenuOrderUI.js
               }
             }}          >
@@ -1460,7 +1474,7 @@ class cbSearchbox extends React.Component {
           <Text style={styles.searchTxt}>Search</Text>
           </TouchableOpacity>
         )}
-      </Box>
+       </TouchableOpacity>
     );
   }
 }

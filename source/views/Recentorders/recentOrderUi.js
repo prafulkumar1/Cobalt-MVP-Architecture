@@ -26,18 +26,18 @@ function RenderingPendingOrders(props) {
         <UI.CbText id="PriceLabel" pageId="RecentOrder" style={styles.priceLabel}>{label}</UI.CbText>
       </UI.CbBox>
       <UI.CbBox id="ValueMainContainer" pageId="RecentOrder" style={styles.valueMainContainer}>
-        <UI.Text style={styles.priceLabel}>${value}</UI.Text>
+        <UI.CbText id="PriceLabel" pageId="RecentOrder"  style={styles.priceLabel}>${value}</UI.CbText>
       </UI.CbBox>
     </UI.CbBox>
   );
   const PriceDetails = (ordersPrice) => (
-    <UI.Box style={styles.priceContainer}>
-      <UI.Box style={styles.priceSubContainer}>
+    <UI.CbBox id="priceContainer" pageId="RecentOrder"  style={styles.priceContainer}>
+      <UI.CbBox id="priceSubContainer" pageId="RecentOrder"  style={styles.priceSubContainer}>
         {ordersPrice && ordersPrice?.BREAKDOWN?.map((item, index) => (
           <PriceRow key={index} label={item.LABEL} value={item.VALUE} />
         ))}
-      </UI.Box>
-    </UI.Box>
+      </UI.CbBox>
+    </UI.CbBox>
   );
   const ITEM_HEIGHT = 100
   return (
@@ -59,8 +59,8 @@ function RenderingPendingOrders(props) {
                 <AccordionTrigger>
                   {({ isExpanded }) => {
                     return (
-                      <UI.Box style={styles.headerContainer}>
-                        <UI.Box style={styles.recentStatusContainer}>
+                      <UI.CbBox id="POHeaderContainer" pageId="RecentOrder"  style={styles.headerContainer}>
+                        <UI.CbBox id="POrecentStatusContainer" pageId="RecentOrder"  style={styles.recentStatusContainer}>
                           <UI.CbImage
                             imageJsx={
                               <Image
@@ -69,19 +69,19 @@ function RenderingPendingOrders(props) {
                               />
                             }
                           />
-                          <UI.Text style={styles.labelStatus}>Order Status</UI.Text>
-                          <UI.Text style={styles.statusValTxt}>
+                          <UI.CbText id="POlabelStatus" pageId="RecentOrder" style={styles.labelStatus}>Order Status</UI.CbText>
+                          <UI.CbText id="POstatusValTxt" pageId="RecentOrder" style={styles.statusValTxt}>
                             {Order.ORDERSTATUS}
-                          </UI.Text>
-                        </UI.Box>
+                          </UI.CbText>
+                        </UI.CbBox>
 
-                        <UI.Box style={styles.dottedLine}>
+                        <UI.CbBox id="POdottedLine" pageId="RecentOrder" style={styles.dottedLine}>
                           <CbDottedLine
                             length={isPlatformAndroid() ? 50 : 90}
                             dotSize={6}
                             dotColor="#0000002B"
                           />
-                        </UI.Box>
+                        </UI.CbBox>
 
                         <UI.Box style={styles.pickUpDetailsContainer}>
                           <UI.Box style={styles.pickUpSubContainer}>
@@ -145,7 +145,7 @@ function RenderingPendingOrders(props) {
                             </UI.Box> : null
                         }
 
-                      </UI.Box>
+                      </UI.CbBox>
                     );
                   }}
                 </AccordionTrigger>

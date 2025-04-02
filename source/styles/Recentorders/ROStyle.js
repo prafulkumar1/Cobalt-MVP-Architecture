@@ -195,11 +195,7 @@ export const styles = StyleSheet.create({
   pendingOrderContainer:{},
   tipVal:{ fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",fontSize:14,},
   loaderContainer:{height:responsiveHeight(80),alignItems:"center",justifyContent:"center"},
-  priceContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
+  priceContainer: { flexDirection: "row",alignItems: "center",justifyContent: "flex-end"},
   priceSubContainer: { alignSelf: "flex-end" },
   totalPriceContainer: {
     alignSelf: "flex-end",
