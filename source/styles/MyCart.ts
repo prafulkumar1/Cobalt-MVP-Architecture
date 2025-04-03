@@ -37,21 +37,7 @@ export const styles = StyleSheet.create({
   priceLabel: { textAlign: "right", color: "#4B5154", fontSize: 12, fontFamily: "SourceSansPro_SemiBold" },
   tipContainer: { justifyContent: "center", alignItems: "center", padding: 10 },
   tipTxt: { color: "#4B5154",fontSize: 14,fontFamily: "SourceSansPro_SemiBold"},
-  tipMainContainer: {
-    width: isPlatformIos()?80:83,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    marginHorizontal: 5,
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
-    alignSelf: "center"
-  },
+  tipMainContainer: { width: 80, height: 40, justifyContent: "center", alignItems: "center", borderRadius: 10,marginHorizontal: 5, marginVertical: 10,shadowColor: '#000',shadowOffset: { width: 0, height: 1 },shadowOpacity: 0.2,shadowRadius: 2, elevation: 3, alignSelf: "center"},
   customTipItem: {
     width: 90,
     height: 40,
@@ -124,11 +110,7 @@ export const styles = StyleSheet.create({
   addIcon: { width: 25, height: 25 },
   commentBtn: { flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start" },
   inputBox: { fontFamily: "SourceSansPro_SemiBold", textAlign: "center" },
-  enteredTxt: {
-    color: "#4D4F50",
-    fontFamily: "SourceSansPro_SemiBold",
-    fontSize:16
-  },
+  enteredTxt: { color: "#4D4F50",fontFamily: "SourceSansPro_SemiBold", fontSize:16},
   loadingContainer: { alignSelf: "center", width: "100%" },
   modalContainer: {flex: 1, position: 'absolute',top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)'},
   confirmMdl: { flex: 1,justifyContent: 'center',alignItems: 'center',margin: 10},

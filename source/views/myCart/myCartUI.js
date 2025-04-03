@@ -14,7 +14,9 @@ import { useMenuOrderLogic } from '@/source/controller/menuOrder/menuOrder';
 import ItemModifier from '../ItemModifier/ItemModifierUI';
 import { isPlatformAndroid } from '@/source/constants/Matrices';
 import { Divider } from '@/components/ui/divider';
- 
+import { loadPageConfig } from '@/source/constants/ConfigLoad';
+import { useState,useEffect } from "react";
+import {transformStyles } from '@/components/cobalt/event'
 const pageId='MyCart';
 export default function MyCartScreen(props) {
 
@@ -82,7 +84,23 @@ export default function MyCartScreen(props) {
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
   const {handleModifierAddCart,handleCloseItemDetails} = useMenuOrderLogic()
-
+  const [tipContainerConfig, setTipContainerConfig] = useState(null);
+  const [tipTextConfig, setTipTextConfig] = useState(null);
+  const [customTipConfig, setCustomTipConfig] = useState(null);
+  
+  useEffect(() => {
+      const loadConfig = async () => {
+          const containerConfig = await loadPageConfig("MyCart", "TipcontainerStyle");
+          const textConfig = await loadPageConfig("MyCart", "TiptextStyle");
+          const customTipInput = await loadPageConfig("MyCart", "CustomTipInput");
+  
+          setTipContainerConfig(containerConfig);
+          setTipTextConfig(textConfig);
+          setCustomTipConfig(customTipInput);
+      };
+  
+      loadConfig();
+  }, []);
  
  
   const renderModifierList = ({ item }) => {
@@ -177,34 +195,40 @@ export default function MyCartScreen(props) {
     let lastIndex = tipData.length - 1;
     let item = tipDetails
     const isCustomAdded = item.isCustomAdded === 1;
+
+     const TipContainerConfigStyles=transformStyles(tipContainerConfig?.Styles);
   
     const containerStyle = isCustomAdded
-      ? styles.customTipItem
+      ? (TipContainerConfigStyles ? TipContainerConfigStyles.customTipItem :styles.customTipItem)
       : [
-          styles.tipMainContainer,
-          { backgroundColor: item.isSelected ? '#00BFF6' : '#fff' },
+          (TipContainerConfigStyles ? TipContainerConfigStyles.tipMainContainer : styles.tipMainContainer),
+          {backgroundColor: item.isSelected ? (tipContainerConfig ? tipContainerConfig.Activecolor : "#00BFF6") : (tipContainerConfig ? tipContainerConfig.Inactivecolor : "#fff")},
         ];
+        const TipTextConfigStyles=transformStyles(tipTextConfig?.Styles);
   
     const textStyle = isCustomAdded
-      ? [styles.tipCount, { color: '#000' }]
-      : [styles.tipCount, { color: item.isSelected ? '#fff' : '#00BFF6' }];
-    return(
+      ? [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: (tipTextConfig ? tipTextConfig.Customcolor :  '#0000') }]
+      : [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: item.isSelected ? (tipTextConfig ? tipTextConfig.Activecolor :  '#ffff') : (tipTextConfig ? tipTextConfig.Inactivecolor : "#00BFF6") }];
+    
+      const CustomTipConfigStyles= transformStyles(customTipConfig?.Styles);  
+        console.log("12334",CustomTipConfigStyles,customTipConfig);
+      return(
      <>
-        <UI.TouchableOpacity  onPress={() => addTip(tipDetails)}>
+        <UI.TouchableOpacity activeOpacity={0} onPress={() => addTip(tipDetails)}>
           <UI.Box style={containerStyle}>
-            <UI.Text style={textStyle}>{`${item.tip}`}</UI.Text>
+            <UI.Text style={textStyle} >{`${item.tip}`}</UI.Text>
           </UI.Box>
         </UI.TouchableOpacity>
        {
         (lastIndex === index && isCustomTipAdded) &&
-        <UI.Box style={[styles.tipMainContainer,{ backgroundColor:"#fff",}]} >
+        <UI.Box style={[(CustomTipConfigStyles ? CustomTipConfigStyles.tipMainContainer : styles.tipMainContainer),{backgroundColor: (customTipConfig? customTipConfig.ContainerBG :"#fff")}]} >
             <TextInput
               ref={textInputRef}
-              placeholder='Custom'
-              placeholderTextColor="#00BFF6"
-              placeholderStyle={styles.inputBox}
-              keyboardType='phone-pad'
-              style={styles.enteredTxt}
+              placeholder= {(customTipConfig? customTipConfig.placeholder : "Custom")}
+              placeholderTextColor={(customTipConfig? customTipConfig.placeholderTextColor : "#00BFF6")}
+              placeholderStyle={CustomTipConfigStyles ? CustomTipConfigStyles.inputBox : styles.inputBox}
+              keyboardType={(customTipConfig? customTipConfig.keyboardType : 'phone-pad')}
+              style={CustomTipConfigStyles ? CustomTipConfigStyles.enteredTxt : styles.enteredTxt}
               onFocus={() => handleResetTip()}
               onBlur={() => handleResetTip()}
               onChangeText={(value) => getCustomTip(value)}

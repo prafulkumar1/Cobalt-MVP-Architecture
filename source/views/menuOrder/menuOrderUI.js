@@ -352,10 +352,10 @@ export default function MenuOrderScreen(props) {
                                             ]}
                                           />
                                         </UI.Box>
-                                        {
+                                        {/* {
                                             renderAddToCartBtn(box)
-                                        }
-                                        {/* <UI.CbAddToCartButton mealItemDetails={box} /> */}
+                                        } */}
+                                        <UI.CbAddToCartButton mealItemDetails={box} />
                                       </UI.Box>
                                     </UI.CbBox>
                                   </UI.TouchableOpacity>
@@ -493,10 +493,10 @@ export default function MenuOrderScreen(props) {
                                               ]}
                                             />
                                           </UI.Box>
-                                          {
+                                          {/* {
                                             renderAddToCartBtn(box)
-                                          }
-                                          {/* <UI.CbAddToCartButton mealItemDetails={box} /> */}
+                                          } */}
+                                          <UI.CbAddToCartButton mealItemDetails={box} />
                                         </UI.Box>
                                       </UI.CbBox>
                                       {!lastItem && (
