@@ -77,7 +77,9 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
     setSelectedModifiers,
     singleItemDetails,
     updateOrAddTxt,
-    modifierCartItemData
+    modifierCartItemData,
+    setKeyBoard,
+    keyBoard
   }= useFormContext();
    
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -275,8 +277,8 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
               placeholderTextColor={"#4B5154"}
               onChangeText={(text)=>orderInstructions(text)}
               value={orderInstruction}
-              onFocus={() =>setTipKeyboardOpen(false)}
-              onBlur={() =>setTipKeyboardOpen(false)}
+              onFocus={() =>{setTipKeyboardOpen(false),setKeyBoard(false)}}
+              onBlur={() =>{setTipKeyboardOpen(false),setKeyBoard(true)}}
               multiline={true}
               onContentSizeChange={handleContentSizeChange}
             />
@@ -321,7 +323,7 @@ global.controlsConfigJson = pageConfigJson && pageConfigJson.Controlls ? pageCon
             </UI.ScrollView>
  
             {
-              cartData && cartData.length > 0 &&
+              cartData && cartData.length > 0 && keyBoard &&
               <UI.Box> 
                 {
                    cartConfigData?.ShowTip ===1 &&
