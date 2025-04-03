@@ -352,10 +352,10 @@ export default function MenuOrderScreen(props) {
                                             ]}
                                           />
                                         </UI.Box>
-                                        {/* {
+                                        {
                                             renderAddToCartBtn(box)
-                                        } */}
-                                        <UI.CbAddToCartButton mealItemDetails={box} />
+                                        }
+                                        {/* <UI.CbAddToCartButton mealItemDetails={box} /> */}
                                       </UI.Box>
                                     </UI.CbBox>
                                   </UI.TouchableOpacity>
@@ -411,6 +411,7 @@ export default function MenuOrderScreen(props) {
                       {expandedSubmenus[subMenuItem.SubMenu_ID] && (
                         item?.items?.map((item,index) => {
                           let box = item;
+                          console.log("@#$$$$",box);
                           const lastItem =
                             index === subMenuItem.items?.length - 1;
                           const isExpanded = expandedIds.includes(box?.Item_ID);
@@ -493,10 +494,10 @@ export default function MenuOrderScreen(props) {
                                               ]}
                                             />
                                           </UI.Box>
-                                          {/* {
+                                          {
                                             renderAddToCartBtn(box)
-                                          } */}
-                                          <UI.CbAddToCartButton mealItemDetails={box} />
+                                          }
+                                          {/* <UI.CbAddToCartButton mealItemDetails={box} /> */}
                                         </UI.Box>
                                       </UI.CbBox>
                                       {!lastItem && (
