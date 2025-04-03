@@ -42,6 +42,7 @@ function RenderingPendingOrders(props) {
   const ITEM_HEIGHT = 100
   return (
     <UI.FlatList
+      scrollEnabled={false}
       data={pendingOrders}
       removeClippedSubviews={true}
       windowSize={21}
@@ -229,7 +230,7 @@ function RenderingPendingOrders(props) {
 
 const RenderingCompletedOrders = (props) => {
   const { orders} = useRecentOrderLogic(props);
-  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder} = useFormContext()
+  const  {closePreviewModal,storeSingleItem,increaseQuantity, cartData, updateCartItemQuantity ,addItemToCartBtnForReOrder,setItemDataVisible} = useFormContext()
   const ordersData = typeof orders === "string" ? JSON.parse(orders) : orders;
  
   const editCommentBtn = (props, item) => {
@@ -245,7 +246,7 @@ const RenderingCompletedOrders = (props) => {
         "Price": item?.PRICE,
         "Comments":item?.COMMENTS,
       }
-      closePreviewModal()
+      setItemDataVisible(true)
       storeSingleItem({
         ...updatedItems,
         quantityIncPrice: item?.TOTALPRICE
@@ -263,6 +264,17 @@ const RenderingCompletedOrders = (props) => {
     }
     itemDetails.forEach((item) => {
       const existingItem = cartData?.find(cartItem => cartItem.Item_ID === item?.ITEM_ID);
+       let updatedModifiers = item?.MODIFIERS?.map((items) => {
+        return{
+          "Modifier_Id": items?.MODIFIER_ID,
+          "Modifier_Name": items?.MODIFIER_NAME,
+          "Price": item?.Price,
+          "IsFavourite": null,
+          "isChecked": true,
+          "Item_ID": item?.Item_ID,
+          "Category_Id": item?.Category_Id
+        }
+      })
  
       const itemWithModifiers = {
         Item_ID:item.ITEM_ID,
@@ -275,7 +287,7 @@ const RenderingCompletedOrders = (props) => {
         "quantity": item.QUANTITY,
         "quantityIncPrice":item?.TOTALPRICE,
         "comments":item.COMMENTS,
-        selectedModifiers: item.MODIFIERS || [],
+        selectedModifiers: item?.MODIFIERS?.length > 0 ? updatedModifiers : [],
       };
  
       if (existingItem) {
@@ -307,6 +319,7 @@ const RenderingCompletedOrders = (props) => {
   return(
     <UI.FlatList
     data={ordersData}
+    scrollEnabled={false}
     contentContainerStyle={{marginTop:10}}
     renderItem={({ item, index }) => {
       const isDisabled = item?.ITEMS?.some(order => order.IsDisable === 1);
@@ -565,6 +578,7 @@ function RenderingFavoritesList({ props }) {
              <>
               <Divider style={styles.divider} />
               <UI.FlatList 
+              scrollEnabled={false}
               data={favItems}
               renderItem={({item, index}) =>{
                
@@ -721,7 +735,7 @@ export default function RecentordersScreen(props) {
                 : styles.ButtonTextStyle,
             ]}
           >
-            Fevorite
+            Favorite
           </UI.Text>
           </UI.Box>
         </UI.TouchableOpacity>
@@ -799,7 +813,11 @@ export default function RecentordersScreen(props) {
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>
-              <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
+              {
+                isRecentOrder ? 
+                <ItemModifier isRecentOrder={isRecentOrder ? true:false}/> : 
+                <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
+              }
             </UI.Box>
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
@@ -811,7 +829,7 @@ export default function RecentordersScreen(props) {
               </UI.TouchableOpacity>
             </UI.Box>
           </UI.Box>
-        </Modal>
+      </Modal>
       </UI.ScrollView>
       {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
     </UI.CbBox>

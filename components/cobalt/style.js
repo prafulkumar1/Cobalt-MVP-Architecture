@@ -464,7 +464,7 @@ CheckIcon:{color:"#ffff"},
     borderWidth: 0,
     borderRadius: 5,
     backgroundColor: "#f0f0f0",
-    height:40,
+    height:50,
   },
   selectedLabelItem:{fontSize:responsiveFontSize(2),fontFamily: "SourceSansPro_SemiBold",color:"#4B5154",marginTop:5,marginTop:5},
   crossIcon:{
