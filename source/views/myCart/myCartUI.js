@@ -75,7 +75,9 @@ export default function MyCartScreen(props) {
     setSelectedModifiers,
     singleItemDetails,
     updateOrAddTxt,
-    modifierCartItemData
+    modifierCartItemData,
+    setKeyBoard,
+      keyBoard
   }= useFormContext();
    
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -282,8 +284,8 @@ export default function MyCartScreen(props) {
               placeholderTextColor={"#4B5154"}
               onChangeText={(text)=>orderInstructions(text)}
               value={orderInstruction}
-              onFocus={() =>setTipKeyboardOpen(false)}
-              onBlur={() =>setTipKeyboardOpen(false)}
+              onFocus={() =>{setTipKeyboardOpen(false),setKeyBoard(false)}}
+              onBlur={() =>{setTipKeyboardOpen(false),setKeyBoard(true)}}
               multiline={true}
               onContentSizeChange={handleContentSizeChange}
             />
@@ -325,7 +327,7 @@ export default function MyCartScreen(props) {
             </UI.ScrollView>
     
             {
-              cartData && cartData.length > 0 &&
+              cartData && cartData.length > 0 && keyBoard &&
               <UI.Box> 
                 {
                   cartConfigData?.ShowTip ===1 &&

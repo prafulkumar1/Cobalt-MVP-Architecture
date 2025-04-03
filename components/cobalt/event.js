@@ -59,7 +59,7 @@ export const useFormContext = () => {
 export const UseFormContextProvider = ({children}) => {
   const [AppConfigJson , setAppConfigJsonData] = useState(null);
  
-    
+  const [keyBoard , setKeyBoard] = useState(true)
     const [menuOrderData,setMenuOrderData] = useState(null)
     const [modifiersResponseData,setModifiersResponseData] = useState(null)
     const [formData, setFormData] = useState({});
@@ -112,6 +112,7 @@ export const UseFormContextProvider = ({children}) => {
         'keyboardDidHide',
         () => {
           setIsKeyboardVisible(false);
+          setKeyBoard(true);
         }
       );
   
@@ -684,7 +685,9 @@ export const UseFormContextProvider = ({children}) => {
       addItemToCartForFavs,
       cartApiResponse,
       setCartApiResponse,
-      setItemDataVisible
+      setItemDataVisible,
+      setKeyBoard,
+      keyBoard
     }
     return (
       <FormContext.Provider
