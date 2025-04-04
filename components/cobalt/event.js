@@ -87,8 +87,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isItemFavorite,setIsItemFavorite] = useState(0)
     const [favoriteItemsList,setFavoriteItemsList] = useState(null)
     const [cartApiResponse,setCartApiResponse] = useState(null)
-    const [keyBoard , setKeyBoard] = useState(true)
-
+  
     const commentValue = useRef("")
     const modifiersData = useRef(null)
     const singleModifierData = useRef(null)
@@ -119,7 +118,6 @@ export const UseFormContextProvider = ({children}) => {
  
       return () => {
         keyboardDidHideListener.remove();
-        keyboardDidShowListener.remove();
       };
     }, []);
  

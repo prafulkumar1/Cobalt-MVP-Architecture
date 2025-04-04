@@ -4,6 +4,11 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from "react-nat
  
 export const styles = StyleSheet.create({
   mainContainer:{ backgroundColor: "#fff",flex:1 },
+  addCartIcons:{
+    width: 15, 
+    height: 15,
+    resizeMode: 'contain'
+  },
   subContainer:{ flexDirection: "row",marginTop:responsiveHeight(1), marginLeft: 8,height:responsiveHeight(5),alignItems:"center"},
   ButtonStyle: {
     backgroundColor: '#FFFFFF',

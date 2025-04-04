@@ -641,12 +641,17 @@ function RenderingFavoritesList({ props }) {
                             style={styles.iconBtn}
                             onPress={() => handleDecrement(item, quantity)}
                           >
-                            <Icon
+                             {
+                                            quantity === 1 ?
+                                            <Image source={require('@/assets/images/icons/Trash_Icon3x.png')} style={styles.addCartIcons}/> :
+                                            <Image source={require('@/assets/images/icons/Minus_Icon3x.png')} style={styles.addCartIcons}/>
+                                          }
+                            {/* <Icon
                               as={quantity === 1 ? TrashIcon : RemoveIcon}
                               color="#5773a2"
                               size={"md"}
                               style={styles.trashIcon}
-                            />
+                            /> */}
                           </UI.TouchableOpacity>
 
                           <UI.Text style={styles.quantityTxt}>{quantity}</UI.Text>
@@ -655,12 +660,13 @@ function RenderingFavoritesList({ props }) {
                             style={styles.iconBtn}
                             onPress={() => handleIncrement(item, quantity)}
                           >
-                            <Icon
+                            {/* <Icon
                               as={AddIcon}
                               color="#5773a2"
                               size={"xl"}
                               style={styles.addIcon}
-                            />
+                            /> */}
+                            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
                           </UI.TouchableOpacity>
                         </UI.Box>
                       : <UI.Box>
@@ -668,12 +674,13 @@ function RenderingFavoritesList({ props }) {
                           disabled={(IsAvailable === 1 && IsDisable === 0) ? false : true} 
                           onPress={() => addItemToCartBtnDetails(item)}
                           style={[styles.operationBtn2,{borderColor:commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")}]}>
-                        <Icon
+                        {/* <Icon
                               as={AddIcon}
                               color={commonStyles(IsAvailable, IsDisable, "#5773a2", "#4B515469")}
                               size={"xl"}
                               style={[styles.addIcon,]}
-                            />
+                            /> */}
+                            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
                         </UI.TouchableOpacity>
                         
                         </UI.Box>}

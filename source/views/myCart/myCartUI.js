@@ -160,9 +160,9 @@ export default function MyCartScreen(props) {
                   <UI.TouchableOpacity onPress={() => handleDecrement(item)}>
                     <UI.CbBox id="DecrementButton" pageId="MyCart" style={styles.iconBtn}>
                           {item.quantity === 1 ? (
-                            <UI.CbImage key="trash" id="TrashIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Trash_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/>  
+                           <Image source={require('@/assets/images/icons/Trash_Icon3x.png')} resizeMode='contain' style={styles.addCartIcons}/>  
                           ) : (
-                            <UI.CbImage key="minu" id="MinusIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Minus_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/> 
+                            <Image source={require('@/assets/images/icons/Minus_Icon3x.png')} resizeMode='contain' style={styles.addCartIcons}/> 
                           )}
                     </UI.CbBox>
                   </UI.TouchableOpacity>
@@ -171,7 +171,7 @@ export default function MyCartScreen(props) {
  
                   <UI.TouchableOpacity  onPress={() => handleIncrement(item)} >
                     <UI.CbBox id="IncrementButton" pageId="MyCart" style={styles.iconBtn}>
-                    <UI.CbImage key="minu" id="PlusIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/Plus_Icon.png')} resizeMode='contain' style={styles.addCartIcons}/>}/>       
+                          <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} resizeMode='contain' style={styles.addCartIcons}/>      
                     </UI.CbBox>
                   </UI.TouchableOpacity>                  
                 </UI.CbBox>

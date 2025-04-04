@@ -79,7 +79,7 @@ const ItemModifierUIFavs = (props) => {
             </UI.TouchableOpacity>
             {
               props?.isRecentOrder ? null :
-              <UI.CbAddToCartButton
+              <UI.CbAddToCartButton id="AddtoCartButton" pageId="ItemModifier"
               mealItemDetails={singleItemDetails}
               style={styles.addBtn}
             />
@@ -156,7 +156,7 @@ const ItemModifierUIFavs = (props) => {
                   </UI.TouchableOpacity>
                   {
                     props?.isRecentOrder ? null :
-                      <UI.CbAddToCartButton
+                      <UI.CbAddToCartButton id="AddtoCartButton" pageId="ItemModifier"
                         mealItemDetails={singleItemDetails}
                         style={styles.addBtn}
                       />
