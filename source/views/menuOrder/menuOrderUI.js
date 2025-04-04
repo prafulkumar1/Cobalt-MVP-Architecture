@@ -34,9 +34,9 @@ export default function MenuOrderScreen(props) {
       const lowerCaseQuery = searchQuery.toLowerCase().trim();
       const searchTerms = lowerCaseQuery.split(" ").filter(Boolean); // Split into words for multi-word search
 
-      let allItems = selectedCategory.flatMap(category =>
-        (category.submenus || []).flatMap(submenu =>
-          (submenu.items || []).map(item => ({
+      let allItems = selectedCategory?.length > 0&& selectedCategory?.flatMap(category =>
+        (category.submenus || [])?.flatMap(submenu =>
+          (submenu.items || [])?.map(item => ({
             ...item,
             categoryName: category.Category_Name || "",
             subMenuName: submenu.SubMenu_Name || ""
