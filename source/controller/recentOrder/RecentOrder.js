@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { postApiCall } from '@/source/utlis/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFormContext } from '@/components/cobalt/event';
+import { BackHandler } from 'react-native';
+import { navigateToScreen } from '@/source/constants/Navigations';
 let recentOrderData = [];
 let pendingOrderData = [];
  
-export const useRecentOrderLogic = () => {
+export const useRecentOrderLogic = (props) => {
   const [loading, setLoading] = useState(false);
   const {pendingOrders, setPendingOrders} = useFormContext();
   const [favItems, setFavItems] = useState();
@@ -13,6 +15,7 @@ export const useRecentOrderLogic = () => {
   const [emptyOrderMessage, setEmptyOrderMessage] = useState("");
   const [favErrorMessage, setFavErrorMessage] = useState("");
   const [isRecentOrder, setIsRecentOrderOpen] = useState(true);
+  const headerName = useRef(null)
 
   const postQuantityApiCall = async (item,quantity) => {
     try {
@@ -54,15 +57,48 @@ export const useRecentOrderLogic = () => {
     addItemToCartBtn,
     itemDataVisible,
     modifierCartItemData,
-    updateModifierCartItem
+    updateModifierCartItem,
+    isPrevCartScreen
   } = useFormContext()
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener(
+        'hardwareBackPress',
+        () => {
+          const state = props?.navigation?.getState();
+          const currentRoute = state?.routes[state?.index]?.name;
+          if (currentRoute === "Recentorders") {
+            if (isPrevCartScreen) {
+              navigateToScreen(props, "MenuOrder", true, { profileCenterTile: headerName.current })
+              return true;
+            }else{
+              props?.navigation?.goBack()
+              return true;
+            }
+          }
+          return false;
+        }
+      );
+  
+      return () => backHandler?.remove();
+    }, [props?.navigation]);
   
   
   useEffect(() => {
+    getRouteName()
     fetchRecentOrders();
     getFavorites();
- 
   }, []);
+
+  const getRouteName = async() => {
+    try {
+      const getProfitCenterItem = await AsyncStorage.getItem("profit_center");
+      let getProfitCenterId = getProfitCenterItem !== null ? JSON.parse(getProfitCenterItem) : null;
+      headerName.current = getProfitCenterId?.LocationName
+    } catch (err) {
+    } finally {
+    }
+  }
  
   const fetchRecentOrders = async () => {
     setLoading(true);

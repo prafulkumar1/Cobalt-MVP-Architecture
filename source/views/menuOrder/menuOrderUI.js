@@ -151,7 +151,8 @@ export default function MenuOrderScreen(props) {
       handleScroll,
       handleItemLayout,
       handleAddToCartBtn,
-      modifierIncDecBtn
+      modifierIncDecBtn,
+      apiLoader
     } = useMenuOrderLogic(props)
 
   const modifierCartItem = modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
@@ -260,7 +261,7 @@ export default function MenuOrderScreen(props) {
                       data={category.submenus}
                       keyExtractor={(submenu) => `submenu-${submenu.SubMenu_ID}`}
                       renderItem={({ item: submenu }) => (
-                        <>
+                        <UI.Box style={{opacity:apiLoader?0.5:1}}>
                           <UI.TouchableOpacity
                             activeOpacity={0.5}
                             style={styles.cardMainContainer}
@@ -363,7 +364,7 @@ export default function MenuOrderScreen(props) {
                               }}
                             />
                           )}
-                        </>
+                        </UI.Box>
                       )}
                     />
                   )}
@@ -382,7 +383,7 @@ export default function MenuOrderScreen(props) {
                 renderItem={({ item }) => {
                   const subMenuItem = item
                   return (
-                    <>
+                    <UI.Box style={{opacity:apiLoader?0.5:1}}>
                       {item.SubMenu_Name !== null && (
                         <UI.TouchableOpacity
                           activeOpacity={0.5}
@@ -511,12 +512,17 @@ export default function MenuOrderScreen(props) {
 
                               )}
                             </UI.Box>
-                          </>
+                          </UI.Box>
                         );
                       }}
                     />
                   );
                 })))}
+          {
+            apiLoader ? <UI.Box style={styles.loaderTrans}>
+              <CbLoader />
+            </UI.Box> : null
+          }
         </UI.ScrollView>
 
         <Modal

@@ -27,7 +27,7 @@ export const useMenuOrderLogic = (props) => {
   const [expandedIds, setExpandedIds] = useState([])
   const [isAvailable, setIsAvailable] = useState(0);
   const [IsModifierAvailable, setIsModifierAvailable] = useState(0);
- 
+  const [apiLoader,setApiLoader] = useState(false)
  
   const {
     setMenuOrderData,
@@ -247,10 +247,14 @@ export const useMenuOrderLogic = (props) => {
  
   const openItemDetails = async (box) => {
     if (box.IsAvailable === 1 && box.IsDisable === 0) {
+      setApiLoader(true)
       let quantityInfo = await postQuantityApiCall(1, box?.Item_ID)
-      storeSingleItem({ ...box, response: quantityInfo.response })
-      increaseQuantity(box)
-      setItemDataVisible(true)
+      if(quantityInfo.response){
+        storeSingleItem({ ...box, response: quantityInfo.response })
+        increaseQuantity(box)
+        setItemDataVisible(true)
+        setApiLoader(false)
+      }
     }
   }
  
@@ -531,6 +535,7 @@ export const useMenuOrderLogic = (props) => {
     } catch (err) { }
   }
   const handleAddToCartBtn = async (mealItemDetails) => {  
+    setApiLoader(true)
     let quantityInfo = await postQuantityApiCall(1, mealItemDetails?.Item_ID);
   
     if (quantityInfo.statusCode === 200) {      
@@ -547,6 +552,7 @@ export const useMenuOrderLogic = (props) => {
       } else {
         addItemToCartBtn(mealItemDetails);
       }
+      setApiLoader(false)
     } else {
     }
   };
@@ -642,6 +648,7 @@ export const useMenuOrderLogic = (props) => {
     handleScroll,
     handleItemLayout,
     handleAddToCartBtn,
-    modifierIncDecBtn
+    modifierIncDecBtn,
+    apiLoader
   };
 };

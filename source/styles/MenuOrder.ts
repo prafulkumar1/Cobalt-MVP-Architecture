@@ -371,5 +371,6 @@ addIcon: { width: 25, height: 25 },
     right: -20,
     backgroundColor:"#fff"
   },
-  emptyBoxContainer:{ flex: 1, justifyContent: "center", alignItems: "center" }
+  emptyBoxContainer:{ flex: 1, justifyContent: "center", alignItems: "center" },
+  loaderTrans:{ position: "absolute", alignSelf: "center", flex: 1, top: responsiveHeight(30) }
 });

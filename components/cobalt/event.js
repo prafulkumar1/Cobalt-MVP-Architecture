@@ -87,6 +87,7 @@ export const UseFormContextProvider = ({children}) => {
     const [isItemFavorite,setIsItemFavorite] = useState(0)
     const [favoriteItemsList,setFavoriteItemsList] = useState(null)
     const [cartApiResponse,setCartApiResponse] = useState(null)
+    const [keyBoard , setKeyBoard] = useState(true)
 
     const commentValue = useRef("")
     const modifiersData = useRef(null)
@@ -112,10 +113,10 @@ export const UseFormContextProvider = ({children}) => {
         'keyboardDidHide',
         () => {
           setIsKeyboardVisible(false);
-          setKeyBoard(true);
+          setKeyBoard(true)
         }
       );
-  
+ 
       return () => {
         keyboardDidHideListener.remove();
         keyboardDidShowListener.remove();
@@ -689,8 +690,8 @@ export const UseFormContextProvider = ({children}) => {
       cartApiResponse,
       setCartApiResponse,
       setItemDataVisible,
-      setKeyBoard,
-      keyBoard
+      keyBoard ,
+      setKeyBoard
     }
     return (
       <FormContext.Provider
