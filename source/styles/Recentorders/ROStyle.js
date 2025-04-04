@@ -19,6 +19,21 @@ export const styles = StyleSheet.create({
     height:isPlatformAndroid()?30:responsiveHeight(3.5),
     marginHorizontal:3
   },
+  CloseIconContainer:{
+    alignSelf: "center",
+    opacity: 1,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#000",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  crossIcon: {
+    position: "absolute",
+    top: 60,
+    zIndex: 1000,
+  },
   ButtonTextStyle: {
     color: "#4B5154",
     fontFamily: "SourceSansPro_SemiBold",
@@ -229,19 +244,7 @@ modalBackground:{
   width: "100%",
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
 },
-crossIcon: {
-  width: 30,
-  height: 30,
-  borderRadius: 15,
-  backgroundColor: "#000",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "absolute",
-  top: horizontalScale(60),
-  alignSelf: "center",
-  opacity: 1,
-  zIndex: 1000,
-},
+
 closeIcon:{ width: 32, height: 32 },
 modiferItems:{height:responsiveHeight(85),width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
 footerContainer: {

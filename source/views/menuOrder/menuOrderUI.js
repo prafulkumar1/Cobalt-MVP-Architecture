@@ -434,7 +434,7 @@ export default function MenuOrderScreen(props) {
                             >
                               <UI.CbBox id="ItemrowContainer" pageId="MenuOrder" style={styles.rowContainer}>
                               <UI.CbBox id="ItemtextContainer" pageId="MenuOrder" style={[styles.textContainer]}>
-                              <UI.CbText id="Itemnametext" pageId="MenuOrder"
+                              <UI.Text id="Itemnametext" pageId="MenuOrder"
                                           numberOfLines={1}
                                           style={[
                                             styles.mealTypeTitle,
@@ -444,13 +444,13 @@ export default function MenuOrderScreen(props) {
                                           Conditionalstyle={showActiveAvailableColor(box?.IsAvailable, box?.IsDisable)}
                                         >
                                     {box?.Item_Name}
-                                  </UI.CbText>
-                                  <UI.CbText id="Itempricetext" pageId="MenuOrder" numberOfLines={isExpanded ? undefined : 2}
+                                  </UI.Text>
+                                  <UI.Text id="Itempricetext" pageId="MenuOrder" numberOfLines={isExpanded ? undefined : 2}
                                     style={[styles.priceTxt,showActiveAvailableColor(box.IsAvailable,box.IsDisable)]}
                                     Conditionalstyle={showActiveAvailableColor(box?.IsAvailable, box?.IsDisable)}
                                   >
                                     {`$${box?.Price != null? box?.Price: 0}`}
-                                  </UI.CbText>
+                                  </UI.Text>
                                   <UI.Text id="Itemdescriptiontext" pageId="MenuOrder"
                                     numberOfLines={isExpanded ? undefined : 2}
                                     style={[styles.descriptionTxt,showActiveAvailableColor( box.IsAvailable,box.IsDisable),
@@ -634,13 +634,14 @@ export default function MenuOrderScreen(props) {
               },
             ]}
           >
-            <Icon
+            {/* <Icon
               as={AddIcon}
               color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
               size={"xl"}
               style={[styles.addIcon]}
-            />
-          </UI.TouchableOpacity>
+            /> */}
+            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
+                      </UI.TouchableOpacity>
         </UI.Box>
         )
       }else if(item.IsDisable === 1){
@@ -663,12 +664,13 @@ export default function MenuOrderScreen(props) {
               },
             ]}
           >
-            <Icon
+            {/* <Icon
               as={AddIcon}
               color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
               size={"xl"}
               style={[styles.addIcon]}
-            />
+            /> */}
+            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
           </UI.TouchableOpacity>
         </UI.Box>
         )
@@ -679,12 +681,17 @@ export default function MenuOrderScreen(props) {
               style={styles.iconBtn}
               onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}
             >
-              <Icon
+              {
+                cartQuantity === 1 ?
+                <Image source={require('@/assets/images/icons/Trash_Icon3x.png')} style={styles.addCartIcons}/> :
+                <Image source={require('@/assets/images/icons/Minus_Icon3x.png')} style={styles.addCartIcons}/>
+              }
+              {/* <Icon
                 as={cartQuantity === 1 ? TrashIcon : RemoveIcon}
                 color="#5773a2"
                 size={"md"}
                 style={styles.trashIcon}
-              />
+              /> */}
             </UI.TouchableOpacity>
 
             <UI.Text style={styles.quantityTxt}>{cartQuantity}</UI.Text>
@@ -693,12 +700,13 @@ export default function MenuOrderScreen(props) {
               style={styles.iconBtn}
               onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"increment")}
             >
-              <Icon
+              {/* <Icon
                 as={AddIcon}
                 color="#5773a2"
                 size={"xl"}
                 style={styles.addIcon}
-              />
+              /> */}
+              <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
             </UI.TouchableOpacity>
           </UI.Box>
         )

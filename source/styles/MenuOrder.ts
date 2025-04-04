@@ -15,6 +15,11 @@ export const styles = StyleSheet.create({
     height: 40,
     alignItems: "center",
   },
+  addCartIcons:{
+    width: 15, 
+    height: 15,
+    resizeMode: 'contain'
+  },
   mealTypeContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",

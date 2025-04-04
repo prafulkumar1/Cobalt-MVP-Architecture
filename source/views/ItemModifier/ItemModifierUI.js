@@ -63,29 +63,19 @@ const ItemModifier = (props) => {
             ]}
           >
             <UI.TouchableOpacity style={styles.favIconBtn} onPress={() => toggleFavoriteItems()}>
-              {isItemFavorite === 1 ? (
-                <UI.CbImage id="FavIcon" pageId="ItemModifier"
-                imageJsx={
-                  <Image
-                source={require("@/assets/images/icons/Fav3x.png")}
-                style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
-                resizeMode='contain'
-              />
-                }
-              />
-                
-              ) : (
-                <UI.CbImage id="NotFavIcon" pageId="ItemModifier"
-                imageJsx={
-                  <Image
-                source={require("@/assets/images/icons/Notfav3x.png")}
-                style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
-                resizeMode='contain'
-              />
-                }
-              />
-                
-              )}
+            {isItemFavorite === 1 ? (
+                      <Image
+                      source={require("@/assets/images/icons/Fav3x.png")}
+                      style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                      resizeMode='contain'
+                    />
+                    ) : (
+                      <Image
+                      source={require("@/assets/images/icons/Notfav3x.png")}
+                      style={[styles.favIcon,{right:(quantity >= 10 || modifierQuantity >= 10)&&8}]}
+                      resizeMode='contain'
+                    />
+                    )}
             </UI.TouchableOpacity>
             {
               props?.isRecentOrder ? null :

@@ -209,7 +209,7 @@ export default function MyCartScreen(props) {
         const TipTextConfigStyles=transformStyles(tipTextConfig?.Styles);
   
     const textStyle = isCustomAdded
-      ? [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: (tipTextConfig ? tipTextConfig.Customcolor :  '#0000') }]
+      ? [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: (tipTextConfig ? tipTextConfig.Customcolor :  '#000') }]
       : [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: item.isSelected ? (tipTextConfig ? tipTextConfig.Activecolor :  '#ffff') : (tipTextConfig ? tipTextConfig.Inactivecolor : "#00BFF6") }];
     
       const CustomTipConfigStyles= transformStyles(customTipConfig?.Styles);  

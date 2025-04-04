@@ -179,6 +179,7 @@ class CbBox extends React.Component {
     const { ControlConfig } = this.state;  
     const Styles = ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles);
+    console.log("&*&*&*&*&*",StyleProps)
     const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
     return (
       <Box style={[dynamicStyle,this.Conditionalstyle]} >
@@ -259,7 +260,7 @@ class CbText extends React.Component {
      const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
       const Styles=ControlConfig?.Styles;
       const StyleProps = transformStyles(Styles);  
-      console.log("$$$$$$$$This is my ",StyleProps)
+      console.log("$$$$$$$$This is my ",ControlConfig,StyleProps)
       const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
       const LabelText=ControlConfig?.LabelText || this.props.children;
      return (
@@ -1686,6 +1687,7 @@ class cbInput extends React.Component {
    
     this.id = props.id;
     this.pageID=props.pageId;
+    this.styles=props.style;
     this.labelText = props.labelText || "";
     this.variant = props.variant || "outline";
     this.input = props.input || 'text';
@@ -1720,9 +1722,9 @@ class cbInput extends React.Component {
   render() {
     const { ControlConfig } = this.state; 
    
-     const Styles=ControlConfig?.Styles || this.styles;
-     const StyleProps = transformStyles(Styles);
-     const dynamicStyle = StyleProps ? Object.values(StyleProps)[0] : {};
+     const Styles=ControlConfig?.Styles;
+     const StyleProps = transformStyles(Styles);  
+     const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
      const variantprop = ControlConfig?.variant || this.variant;
      const multiline = (ControlConfig?.multiline === "true") || this.multiline;
     const numberOfLines= ControlConfig?.numberOfLines || this.numberOfLines;
