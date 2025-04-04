@@ -181,7 +181,7 @@ export default function MyCartScreen(props) {
               <UI.CbBox id="NotesContainer" pageId="MyCart" style={styles.notesContainer}>
                 <UI.TouchableOpacity  onPress={() => editCommentBtn(props,item)}  >
                   <UI.CbBox id="CommentBtn" pageId="MyCart" style={styles.commentBtn}>
-                  <UI.CbImage  id="NoteIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/messageIcon2x.png')} resizeMode='contain' style={styles.noteIcon}/>}/>       
+                  <UI.CbImage  id="NoteIcon" pageId="MyCart" imageJsx={<Image source={require('@/assets/images/icons/ROComment3x.png')} resizeMode='contain' style={styles.noteIcon}/>}/>       
                    <UI.CbText id="ItemNotes" pageId="MyCart" style={styles.itemNotes}>{item.comments}</UI.CbText>
                   </UI.CbBox>
                 </UI.TouchableOpacity>

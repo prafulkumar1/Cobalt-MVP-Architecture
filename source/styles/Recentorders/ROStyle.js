@@ -242,7 +242,7 @@ crossIcon: {
   opacity: 1,
   zIndex: 1000,
 },
-closeIcon:{ width: 20, height: 20 },
+closeIcon:{ width: 32, height: 32 },
 modiferItems:{height:responsiveHeight(85),width:"100%",position:'absolute',borderTopLeftRadius:35,borderTopRightRadius:35,bottom:0,right:0,left:0},
 footerContainer: {
   backgroundColor: "#fff",

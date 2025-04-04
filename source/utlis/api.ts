@@ -19,29 +19,9 @@ export default api;
  
 export const postApiCall = async (screenName: string, endpoint: string, params: any) => {
   try {
-    const commonParams = {
-      "MemberID": global.memberID,
-      "ID": global.memberID,
-      "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
-      "DeviceInfo": [
-        {
-          "DeviceType": DeviceInfo.deviceType,
-          "OSVersion": DeviceInfo.osVersion,
-          "OriginatingIP": "183.82.116.84",
-          "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
-          "Browser": DeviceInfo.osName,
-          "HostName": "183.82.116.84.actcorp.in",
-          "SourcePortNo": "50189"
-        }
-      ],
-      "IsAdmin": "0",
-      "UserName": global.username,
-      "Role": "Full Access",
-      "UserId":global.userID,
-    };
     // const commonParams = {
-    //   "MemberID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
-    //   "ID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
+    //   "MemberID": global.memberID,
+    //   "ID": global.memberID,
     //   "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
     //   "DeviceInfo": [
     //     {
@@ -55,16 +35,36 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
     //     }
     //   ],
     //   "IsAdmin": "0",
-    //   "UserName": "Wesselman, Bob",
+    //   "UserName": global.username,
     //   "Role": "Full Access",
-    //   "UserId":"00026 - 00",
+    //   "UserId":global.userID,
     // };
+    const commonParams = {
+      "MemberID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
+      "ID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
+      "ParentID": "78F8EE9D-CF86-441D-86F8-29F8B9161B9F",
+      "DeviceInfo": [
+        {
+          "DeviceType": DeviceInfo.deviceType,
+          "OSVersion": DeviceInfo.osVersion,
+          "OriginatingIP": "183.82.116.84",
+          "SessionID": "iedtpmh83f860p0daqq75bhf76kbmmlt",
+          "Browser": DeviceInfo.osName,
+          "HostName": "183.82.116.84.actcorp.in",
+          "SourcePortNo": "50189"
+        }
+      ],
+      "IsAdmin": "0",
+      "UserName": "Wesselman, Bob",
+      "Role": "Full Access",
+      "UserId":"00026 - 00",
+    };
     const finalParams = { ...commonParams, ...params };
     console.log('Params', commonParams);
  
     let responseData = await api.post(
-       `${global.apiURL}${endpoints[screenName][endpoint]}`,
-      //`${baseURL}${endpoints[screenName][endpoint]}`,
+      // `${global.apiURL}${endpoints[screenName][endpoint]}`,
+      `${baseURL}${endpoints[screenName][endpoint]}`,
       finalParams,
       {
         headers: {

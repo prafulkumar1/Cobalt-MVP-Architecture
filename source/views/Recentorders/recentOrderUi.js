@@ -802,14 +802,10 @@ export default function RecentordersScreen(props) {
                 singleItemDetails
                 )
               }
-              style={styles.crossIcon}
-            >
-              <Icon
-                as={CloseIcon}
-                color="#fff"
-                size={"md"}
-                style={styles.closeIcon}
-              />
+               >
+              <UI.CbBox id="CloseIconContainer" pageId="RecentOrder"  style={styles.crossIcon} >
+                     <UI.CbImage id="CloseIcon" pageId={'RecentOrder'} imageJsx={<Image source={require('@/assets/images/icons/Modal_Close.png')} style={styles.closeIcon}/>}/>    
+            </UI.CbBox>
             </UI.TouchableOpacity>
             }
             <UI.Box style={styles.modiferItems}>

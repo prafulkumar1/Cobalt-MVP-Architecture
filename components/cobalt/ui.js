@@ -259,6 +259,7 @@ class CbText extends React.Component {
      const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
       const Styles=ControlConfig?.Styles;
       const StyleProps = transformStyles(Styles);  
+      console.log("$$$$$$$$This is my ",StyleProps)
       const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
       const LabelText=ControlConfig?.LabelText || this.props.children;
      return (
@@ -1257,19 +1258,19 @@ class CbAddToCartButton extends React.Component {
      const StyleProps = transformStyles(Styles);
     if(itemDataVisible){
       if(quantity > 1){
-        return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon.png")} style={styles.addCartIcons} />
+        return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon3x.png")} style={styles.addCartIcons} />
       }else{
         if(modifierQuantity === 1){
-          return TrashIcon ? <Image source={{ uri: TrashIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Trash_Icon.png")} style={styles.addCartIcons} />
+          return TrashIcon ? <Image source={{ uri: TrashIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Trash_Icon3x.png")} style={styles.addCartIcons} />
         }else{
-          return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon.png")} style={styles.addCartIcons} />
+          return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon3x.png")} style={styles.addCartIcons} />
         }
       }
     }else{
       if(quantity === 1){
-        return TrashIcon ? <Image source={{ uri: TrashIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Trash_Icon.png")} style={styles.addCartIcons} />
+        return TrashIcon ? <Image source={{ uri: TrashIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons} />:<Image alt='image' source={require("@/assets/images/icons/Trash_Icon3x.png")} style={styles.addCartIcons} />
       } else{
-        return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons}/>:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon.png")} style={styles.addCartIcons} />
+        return RemoveIcon ? <Image source={{ uri: RemoveIcon}} style={StyleProps?.addCartIcons || styles.addCartIcons}/>:<Image alt='image' source={require("@/assets/images/icons/Minus_Icon3x.png")} style={styles.addCartIcons} />
       }
     }
   };
@@ -1300,7 +1301,7 @@ class CbAddToCartButton extends React.Component {
           onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
           disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
         >
-          {AddIcon ? ( <Image source={{ uri: AddIcon}} style={[StyleProps?.addCartIcons || styles.addCartIcons,(IsAvailable === 0 && IsDisable === 1) ? { opacity: 1.2 } : {}]} /> ) : (<Image alt='image' source={require("@/assets/images/icons/Plus_Icon.png")} style={styles.addCartIcons} />)}
+          {AddIcon ? ( <Image source={{ uri: AddIcon}} style={[StyleProps?.addCartIcons || styles.addCartIcons,(IsAvailable === 0 && IsDisable === 1) ? { opacity: 1.2 } : {}]} /> ) : (<Image alt='image' source={require("@/assets/images/icons/Plus_Icon3x.png")} style={styles.addCartIcons} />)}
         </TouchableOpacity>
         </Box>
       );
@@ -1315,7 +1316,7 @@ class CbAddToCartButton extends React.Component {
           onPress={() => this.handleAddToCartBtn("1", storeSingleItem, closePreviewModal, addItemToCartBtn, increaseQuantity, itemDataVisible)}
           disabled={IsAvailable === 1 && IsDisable === 0 ? false : true}
         >
-          {AddIcon ? ( <Image source={{ uri: AddIcon}} style={[StyleProps?.addCartIcons || styles.addCartIcons,(IsAvailable === 0 && IsDisable === 1) ? { opacity: 1.2 } : {}]} /> ) : (<Image alt='image' source={require("@/assets/images/icons/Plus_Icon.png")} style={styles.addCartIcons} />)}
+          {AddIcon ? ( <Image source={{ uri: AddIcon}} style={[StyleProps?.addCartIcons || styles.addCartIcons,(IsAvailable === 0 && IsDisable === 1) ? { opacity: 1.2 } : {}]} /> ) : (<Image alt='image' source={require("@/assets/images/icons/Plus_Icon3x.png")} style={styles.addCartIcons} />)}
         </TouchableOpacity>
         </Box>
       );
