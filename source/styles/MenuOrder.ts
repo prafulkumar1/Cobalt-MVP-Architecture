@@ -7,19 +7,15 @@ export const styles = StyleSheet.create({
   mainHeaderContainer: { display: "flex", flexDirection: "row" },
   recentOrderContainer: {
     flexDirection: "row",
-    width: "40%",
+    width: responsiveWidth(40),
     justifyContent: "space-between",
-    marginLeft: 4,
+    marginLeft: 2,
     borderBottom: 1,
     backgroundColor: "#fff",
     height: 40,
     alignItems: "center",
   },
-  addCartIcons:{
-    width: 15, 
-    height: 15,
-    resizeMode: 'contain'
-  },
+  addCartIcons:{ width: 15, height: 15, resizeMode: 'contain'},
   mealTypeContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",
@@ -36,30 +32,12 @@ export const styles = StyleSheet.create({
     color: "#4B5154",
     fontFamily: "SourceSansPro_Bold",
   },
-  mealTypeLabel: {
-    fontSize: 18,
-    fontFamily: "SourceSansPro_Bold",
-  },
-  bottomStyle: {
-    width: "100%",
-    borderRadius: 4,
-    marginTop:isPlatformAndroid()?4:7,
-    backgroundColor:"#00c6ff",
-    height:4
-  },
+  mealTypeLabel: { fontSize: 18,fontFamily: "SourceSansPro_Bold"},
+  bottomStyle: {  width: "100%", borderRadius: 4, marginTop:isPlatformAndroid()?4:7, backgroundColor:"#00c6ff", height:4},
   categoryBtn: {
     marginRight: responsiveWidth(6),
   },
-  MenuMealType: {
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    borderRadius: 5,
-    marginHorizontal: 5,
-    paddingTop:isPlatformAndroid()?12:8,
-    paddingBottom:isPlatformAndroid()? 2.5:2.5,
-    paddingHorizontal:responsiveWidth(5)
-  },
+  MenuMealType: {justifyContent: "center", alignSelf: "center", borderRadius: 5, marginHorizontal: 5,paddingTop:isPlatformAndroid()?12:8, paddingBottom:isPlatformAndroid()? 2.5:2.5, paddingHorizontal:responsiveWidth(5)},
   inactiveMenuType: {
     backgroundColor: "#ECECEC",
     justifyContent: "center",
@@ -72,11 +50,7 @@ export const styles = StyleSheet.create({
     paddingTop:isPlatformAndroid()?12:8,
     paddingBottom:isPlatformAndroid()? 2.5:2.5,
   },
-  timeDurationTxt: {
-    fontSize: 10,
-    marginTop: -5,
-    fontFamily: "SourceSansPro_SemiBoldItalic",
-  },
+  timeDurationTxt: { fontSize: 10,marginTop: -5,fontFamily: "SourceSansPro_SemiBoldItalic"},
   topContainer: {
     paddingVertical: 10,
     width: "100%",
@@ -122,11 +96,7 @@ export const styles = StyleSheet.create({
     alignSelf: "center",
     height: responsiveHeight(10),
   },
-  emptyMealTxt: {
-    fontFamily: "SourceSansPro_SemiBoldItalic",
-    alignSelf: "center",
-    marginTop: responsiveHeight(3),
-  },
+  emptyMealTxt: { fontFamily: "SourceSansPro_SemiBoldItalic", alignSelf: "center", marginTop: responsiveHeight(3)},
   categoryItem: { textAlign: "center", width: "100%" },
   mainBoxContainer: { backgroundColor: "#fff" },
   recentOrderTxt: {
@@ -140,7 +110,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginLeft: 2,
+    
   },
   recentOrderIcon: { width: 20, height: 20, resizeMode: "contain" },
   loadingContainer: {
@@ -148,11 +118,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  subContainer: {
-    width: "94%",
-    marginVertical: responsiveHeight(1),
-    backgroundColor: "#fff",
-  },
+  subContainer: { width: "94%", marginVertical: responsiveHeight(1),backgroundColor: "#fff"},
   rowContainer: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -161,38 +127,11 @@ export const styles = StyleSheet.create({
   textContainer: {
     flex: 1,
   },
-  mealTypeTitle: {
-    fontSize: 20,
-    lineHeight: 20,
-    fontFamily: "SourceSansPro_SemiBold",
-    width: responsiveWidth(55),
-    color: "#4B5154",
-  },
-  priceTxt: {
-    fontSize: 18,
-    lineHeight: 20,
-    marginVertical: 1.5,
-    fontFamily: "SourceSansPro_SemiBold",
-    color: "#4B5154",
-  },
-  descriptionTxt: {
-    fontSize: 12,
-    lineHeight: 16,
-    color: "#6D6D6D",
-    fontFamily: "SourceSansPro_SemiBold",
-    width: responsiveWidth(40),
-  },
-  underLineTxt: {
-    color: "#00C6FF",
-    fontSize: 12,
-    fontFamily: "SourceSansPro_SemiBoldItalic",
-  },
-  mealTypeImg: {
-    width: responsiveWidth(30),
-    height: responsiveHeight(9.5),
-    borderRadius: 5,
-    resizeMode: "cover",
-  },
+  mealTypeTitle: {  fontSize: 20, lineHeight: 20, fontFamily: "SourceSansPro_SemiBold", width: responsiveWidth(55), color: "#4B5154", textAlign: "justify"},
+  priceTxt: { fontSize: 18, lineHeight: 20, marginVertical: 1.5, fontFamily: "SourceSansPro_SemiBold", color: "#4B5154"},
+  descriptionTxt: { fontSize: 12, lineHeight: 16, color: "#6D6D6D", fontFamily: "SourceSansPro_SemiBold", width: responsiveWidth(40), textAlign: "left", letterSpacing: -0.5},
+  underLineTxt: { color: "#00C6FF", fontSize: 12, fontFamily: "SourceSansPro_SemiBoldItalic"},
+  mealTypeImg: { width: responsiveWidth(30), height: responsiveHeight(9.5), borderRadius: 5, resizeMode: "cover"},
   horizontalLine: {
     width: responsiveWidth(95),
     marginTop: responsiveHeight(2),
@@ -204,26 +143,11 @@ export const styles = StyleSheet.create({
     fontFamily: "SourceSansPro_SemiBold",
     paddingVertical: 8,
   },
-  cardMainContainer: {
-    backgroundColor: "#fff",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: responsiveHeight(1),
-    marginTop: 8,
-  },
-  bottomMiddleContainer: {
-    marginHorizontal: responsiveWidth(2),
-    backgroundColor: "#F4F6FB",
-  },
-  imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  icon: {
-    width: 22,
-    height: 22,
-  },
+  cardMainContainer: { backgroundColor: "#fff",flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: responsiveHeight(1), marginTop: 8},
+  bottomMiddleContainer: { marginHorizontal: responsiveWidth(2),backgroundColor: "#F4F6FB"},
+  imageContainer: { alignItems: "center", justifyContent: "center"},
+  itemImage:{backgroundColor: "rgba(255, 255, 255, 0.2)" },
+  icon: { width: 22, height: 22},
   crossIcon: {
     position: "absolute",
     top: 60,
@@ -339,38 +263,13 @@ modalNoYesBtn: {
 closeIcon:{ width: 32, height: 32 },
 mainContainerList:{paddingBottom:responsiveHeight(80)},
 horizontalLineStyle:{width:"95%",alignSelf:"center"},
-operationBtn: {
-  position: 'absolute',
-  right: -20,
-  borderColor: '#5773a2',
-  borderWidth: 1,
-  backgroundColor: '#fff',
-  borderRadius: 5,
-  justifyContent: "space-between",
-  flexDirection: "row",
-  alignItems: "center",
-},
+operationBtn: {position: 'absolute',right: -20,borderColor: '#5773a2',borderWidth: 1,backgroundColor: '#fff', borderRadius: 5, justifyContent: "space-between", flexDirection: "row",alignItems: "center"},
 iconBtn: { width: responsiveWidth(7.9), height: responsiveHeight(5), justifyContent: "center", alignItems: 'center', alignSelf: "center" },
 trashIcon: { width: 23, height: 23 },
 addIcon: { width: 25, height: 25 },
- quantityTxt: {
-    fontSize: responsiveFontSize(2.8),
-    fontFamily: "SourceSansPro_Regular",
-    paddingLeft: responsiveWidth(1.2),
-    paddingRight: responsiveWidth(0.8),
-    paddingTop: 4
-  },
-  operationBtn2:{
-    borderWidth:1,
-    borderColor:"#5773a2",
-    borderRadius:5,
-    padding: responsiveWidth(2),
-  },
-  operationBtn3:{
-    position:"absolute",
-    right: -20,
-    backgroundColor:"#fff"
-  },
+ quantityTxt: { fontSize: 22,fontFamily: "SourceSansPro_Regular", paddingLeft: responsiveWidth(1.2),paddingRight: responsiveWidth(0.8),paddingTop: 4},
+  operationBtn2:{  borderWidth:1,borderColor:"#5773a2",borderRadius:5,padding: responsiveWidth(2)},
+  operationBtn3:{ position:"absolute",right: -20,backgroundColor:"#fff"},
   emptyBoxContainer:{ flex: 1, justifyContent: "center", alignItems: "center" },
   loaderTrans:{ position: "absolute", alignSelf: "center", flex: 1, top: responsiveHeight(30) }
 });

@@ -15,7 +15,7 @@ import { postQuantityApiCall } from "@/components/cobalt/ui";
 import ItemModifier from "../ItemModifier/ItemModifierUI";
 import { CbDottedLine } from "@/source/constants/dottedLine";
 import { loadPageConfig } from '@/source/constants/ConfigLoad';
-
+import {transformStyles } from '@/components/cobalt/event'
 import { Divider } from "@/components/ui/divider";
 
 let controlsConfigJson=[]; 
@@ -25,7 +25,22 @@ export default function MenuOrderScreen(props) {
   const [filteredItems, setFilteredItems] = useState([]);
   const [isSearchTriggered, setIsSearchTriggered] = useState(false); // New local state
   const [searchTrigger, setSearchTrigger] = useState(false); // New state to force re-render
+  const [mealperiodButtonConfig, setMealperiodButtonConfig] = useState(null);
+  const [mOAddtoCartButtonConfig, setmOAddtoCartButtonConfig] = useState(null);
+  const [categoryMainListConfig, setcategoryMainListConfig] = useState(null); 
 
+  useEffect(() => {
+    const loadConfig = async () => {
+        const containerConfig = await loadPageConfig("MenuOrder", "MealperiodButton");
+        const mOAddtoCartButton = await loadPageConfig("MenuOrder", "MOAddtoCartButton");
+        const categoryMainList = await loadPageConfig("MenuOrder", "CategoryMainList");
+
+         setMealperiodButtonConfig(containerConfig);
+         setmOAddtoCartButtonConfig(mOAddtoCartButton);
+         setcategoryMainListConfig(categoryMainList);
+    };
+    loadConfig();
+}, []);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -34,7 +49,7 @@ export default function MenuOrderScreen(props) {
       const lowerCaseQuery = searchQuery.toLowerCase().trim();
       const searchTerms = lowerCaseQuery.split(" ").filter(Boolean); // Split into words for multi-word search
 
-      let allItems = selectedCategory?.length > 0&& selectedCategory?.flatMap(category =>
+      let allItems = selectedCategory?.length > 0 ? selectedCategory?.flatMap(category =>
         (category.submenus || [])?.flatMap(submenu =>
           (submenu.items || [])?.map(item => ({
             ...item,
@@ -42,15 +57,15 @@ export default function MenuOrderScreen(props) {
             subMenuName: submenu.SubMenu_Name || ""
           }))
         )
-      );
+      ) : [];
 
       // **1️⃣ Exact Match Priority (Only Show This If Fully Typed)**
-      const exactMatches = allItems.filter(item =>
+      const exactMatches = allItems?.filter(item =>
         item?.Item_Name?.toLowerCase() === lowerCaseQuery
       );
 
       // **If an exact match exists, return only that item**
-      if (exactMatches.length > 0) {
+      if (exactMatches?.length > 0) {
         setFilteredItems([{
           Category_Name: exactMatches[0].categoryName,
           submenus: [{
@@ -162,15 +177,25 @@ export default function MenuOrderScreen(props) {
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
  
   const renderMealTypeList = (mealTypeItem,index) => {
+    const MealperiodButtonConfigStyles=transformStyles(mealperiodButtonConfig?.Styles);
+      const BgActivecolor =mealperiodButtonConfig?.BgActivecolor  ||  "#00C6FF";
+      const BgInactivecolor =mealperiodButtonConfig?.BgInActivecolor  ||  "#ECECEC";
+      const TextActivecolor =mealperiodButtonConfig?.TextActivecolor  ||  "#ffffff";
+      const TextInctivecolor =mealperiodButtonConfig?.TextInactivecolor  ||  "#717171";
+      const Bgopacity= mealperiodButtonConfig?.opacity  ||  0.8;
+      const MenuMealType=MealperiodButtonConfigStyles?.MenuMealType || styles.MenuMealType; 
+      const MealTypeLabel=MealperiodButtonConfigStyles?.mealTypeLabel || styles.mealTypeLabel;
+      const TimeDurationTxt=MealperiodButtonConfigStyles?.timeDurationTxt || styles.timeDurationTxt;
+
     const lastIndex = mealPeriods.length -1 === index
     return (
       <UI.CbBox id="MealTypeContainer" pageId={'MenuOrder'} style={styles.mealTypeContainer}>
         <UI.TouchableOpacity activeOpacity={0.6}  onPress={() => {setMealType(mealTypeItem,mealTypeItem.IsEnabled)}}>
-        <UI.Box id="MenuMealType" pageId={'MenuOrder'} style={[styles.MenuMealType,mealTypeItem.IsSelect === 1 ? { backgroundColor: "#00C6FF"}:{ backgroundColor: "#ECECEC",opacity: 0.8}]}  >
-        <UI.Text id="MealTypeLabel" pageId={'MenuOrder'}  style={[styles.mealTypeLabel,{ color: mealTypeItem.IsSelect === 1 ? "#ffffff" : "#717171" },]}  >
+        <UI.Box  style={[MenuMealType,mealTypeItem.IsSelect === 1 ? { backgroundColor: BgActivecolor}:{ backgroundColor: BgInactivecolor,opacity: Bgopacity}]}  >
+        <UI.Text   style={[MealTypeLabel,{ color: mealTypeItem.IsSelect === 1 ? TextActivecolor : TextInctivecolor }]}  >
             {mealTypeItem.MealPeriod_Name?.toUpperCase()}
         </UI.Text>
-          <UI.Text id="MealTimeDuration" pageId={'MenuOrder'}   style={[styles.timeDurationTxt,{ color: mealTypeItem.IsSelect === 1 ? "#fff" : "#717171" }]}          >
+          <UI.Text style={[TimeDurationTxt,{ color: mealTypeItem.IsSelect === 1 ? TextActivecolor : TextInctivecolor }]}          >
             {mealTypeItem.Time}
           </UI.Text>
           </UI.Box>
@@ -180,6 +205,8 @@ export default function MenuOrderScreen(props) {
   }
 
   const renderMenuCategoryList = (item) => {
+    const MealperiodButtonConfigStyles=transformStyles(mealperiodButtonConfig?.Styles);
+    const ActiveBottomStyle=MealperiodButtonConfigStyles?.bottomStyle || styles.bottomStyle;
     return (
       <UI.Box onLayout={(e) => handleCategoryLayout(e, item.Category_ID)}>
         <UI.TouchableOpacity
@@ -192,7 +219,7 @@ export default function MenuOrderScreen(props) {
             </UI.CbText>
           {item.CategoryIsSelect === 1 && (
              <UI.Box id="BottomStyle" pageId="MenuOrder"
-             style={[styles.bottomStyle]} />
+             style={ActiveBottomStyle} />
           )}
         </UI.TouchableOpacity>
       </UI.Box>
@@ -212,8 +239,37 @@ export default function MenuOrderScreen(props) {
 
   const renderCategoryMainList = () => {
 
+    const CategoryMainListConfigStyles=transformStyles(categoryMainListConfig?.Styles);
+    const Activecolor =categoryMainListConfig?.Activecolor  ||  "#4B5154";
+    const InActivecolor =categoryMainListConfig?.InActivecolor  ||  "#4B515469";
+    const EmptyLabeltext=categoryMainListConfig?.EmptyLabeltext  ||  "No items available";
+    const ChevronIconColor=categoryMainListConfig?.ChevronIconColor  ||  "#5773a2";
+    const ChevronIconSize=categoryMainListConfig?.ChevronIconSize  ||  "xl";
+    const Activeopacity=categoryMainListConfig?.Activeopacity  ||  1;
+    const InActiveopacity=categoryMainListConfig?.InActiveopacity  ||  0.8;
+    const Descmore=categoryMainListConfig?.Descmore ||  "Read More";
+    const Descless=categoryMainListConfig?.Descless || "Show Less";
+    const Imageopacity=categoryMainListConfig?.Imageopacity || 0.4;
+    const MainBoxContainer=CategoryMainListConfigStyles?.mainBoxContainer || styles.mainBoxContainer; 
+    const BottomMiddleContainer=CategoryMainListConfigStyles?.bottomMiddleContainer || styles.bottomMiddleContainer; 
+    const MainContainerList=CategoryMainListConfigStyles?.mainContainerList || styles.mainContainerList; 
+    const EmptyBoxContainer=CategoryMainListConfigStyles?.emptyBoxContainer || styles.emptyBoxContainer; 
+    const EmptyMealTxt=CategoryMainListConfigStyles?.emptyMealTxt || styles.emptyMealTxt; 
+    const CardMainContainer=CategoryMainListConfigStyles?.cardMainContainer || styles.cardMainContainer; 
+    const Chevronicon=CategoryMainListConfigStyles?.Chevronicon || styles.icon;
+    const SubContainer=CategoryMainListConfigStyles?.subContainer || styles.subContainer;
+  const MealTypeTitle=CategoryMainListConfigStyles?.mealTypeTitle || styles.mealTypeTitle;
+    const PriceTxt=CategoryMainListConfigStyles?.priceTxt || styles.priceTxt;
+    const DescriptionTxt=CategoryMainListConfigStyles?.descriptionTxt || styles.descriptionTxt;
+    const UnderLineTxt=CategoryMainListConfigStyles?.underLineTxt || styles.underLineTxt;
+    const ImageContainer=CategoryMainListConfigStyles?.imageContainer || styles.imageContainer;
+    const Itemimage=CategoryMainListConfigStyles?.itemImage || styles.itemImage;
+    const MealTypeImg=CategoryMainListConfigStyles?.mealTypeImg || styles.mealTypeImg;
+    
+
+
     const showActiveAvailableColor = (isAvailable,IsDisable) => {
-      return { color: isAvailable === 1 &&IsDisable===0  ? "#4B5154" : "#4B515469" };
+      return { color: isAvailable === 1 &&IsDisable===0  ? Activecolor : InActivecolor };
     };
    
     if (isCategoryEmpty) {
@@ -225,7 +281,7 @@ export default function MenuOrderScreen(props) {
     }
 
     return (
-      <UI.Box style={styles.mainBoxContainer}>
+      <UI.Box style={MainBoxContainer}>
       {searchQuery.trim() === "" && (
           <UI.ScrollView
             horizontal
@@ -238,18 +294,18 @@ export default function MenuOrderScreen(props) {
           </UI.ScrollView>
         )}
 
-        <UI.ScrollView style={styles.bottomMiddleContainer}
+        <UI.ScrollView style={BottomMiddleContainer}
           ref={scrollViewRef}
           onScroll={handleScroll}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={styles.mainContainerList}
+          contentContainerStyle={MainContainerList}
         >
    {
             searchQuery.trim() !== "" && filteredItems?.length === 0 ? (
-              <UI.Box style={styles.emptyBoxContainer} >
-                <UI.Text style={styles.emptyMealTxt}>No items available</UI.Text>
+              <UI.Box style={EmptyBoxContainer} >
+                <UI.Text style={EmptyMealTxt}>{EmptyLabeltext}</UI.Text>
               </UI.Box>
             ) : (
               filteredItems?.length > 0 ? (
@@ -258,22 +314,22 @@ export default function MenuOrderScreen(props) {
                   keyExtractor={(category, index) => `category-${category.Category_ID}-${searchQuery}-${index}`} // 🔥 Unique key changes on search
                   renderItem={({ item: category }) => (
                     <UI.FlatList
-                      data={category.submenus}
+                      data={category?.submenus}
                       keyExtractor={(submenu) => `submenu-${submenu.SubMenu_ID}`}
                       renderItem={({ item: submenu }) => (
                         <UI.Box style={{opacity:apiLoader?0.5:1}}>
                           <UI.TouchableOpacity
                             activeOpacity={0.5}
-                            style={styles.cardMainContainer}
+                            style={CardMainContainer}
                             onPress={() => toggleSubmenu(category?.Category_ID)}
                           >
                              <UI.CbText id="ItemCategoryLabel" pageId="MenuOrder" style={styles.itemCategoryLabel}>
                             {submenu?.SubMenu_Name}
                           </UI.CbText>
                             {searchQuery.trim() !== "" || expandedSubmenus[category.Category_ID] ? (
-                             <ChevronUpIcon style={styles.icon} color="#5773a2" size={"xl"} />
+                             <ChevronUpIcon style={Chevronicon} color={ChevronIconColor} size={ChevronIconSize} />
                             ) : (
-                              <ChevronDownIcon style={styles.icon} color="#5773a2" size={"xl"} />
+                              <ChevronDownIcon style={Chevronicon} color={ChevronIconColor} size={ChevronIconSize} />
                               )}
                           </UI.TouchableOpacity>
 
@@ -290,73 +346,43 @@ export default function MenuOrderScreen(props) {
                                     onPress={() => openItemDetails(box)}
                                     key={box?.Item_ID}
                                     style={[
-                                      styles.subContainer,
+                                      SubContainer,
                                       {
-                                        opacity: box?.IsAvailable === 1 && box?.IsDisable === 0 ? 1 : 0.8,
+                                        opacity: box?.IsAvailable === 1 && box?.IsDisable === 0 ? Activeopacity : InActiveopacity,
                                       },
                                     ]}
                                   >
                                     <UI.CbBox id="ItemrowContainer" pageId="MenuOrder" style={styles.rowContainer}>
                                       <UI.CbBox id="ItemtextContainer" pageId="MenuOrder" style={[styles.textContainer]}>
-                                        <UI.CbText id="Itemnametext" pageId="MenuOrder"
-                                          numberOfLines={1}
-                                          style={[
-                                            styles.mealTypeTitle,
-                                            showActiveAvailableColor(box?.IsAvailable, box?.IsDisable),
-                                            { textAlign: "justify" },
-                                          ]}
-                                          Conditionalstyle={showActiveAvailableColor(box?.IsAvailable, box?.IsDisable)}
-                                        >
+                                        <UI.Text  numberOfLines={1} style={[ MealTypeTitle,showActiveAvailableColor(box?.IsAvailable, box?.IsDisable) ]} >
                                           {box?.Item_Name}
-                                        </UI.CbText>
-                                        <UI.Text
-                                          numberOfLines={isExpanded ? undefined : 2}
-                                          style={[
-                                            styles.priceTxt,
-                                            showActiveAvailableColor(box.IsAvailable, box.IsDisable),
-                                          ]}
-                                        >
+                                        </UI.Text>
+                                        <UI.Text  numberOfLines={isExpanded ? undefined : 2} style={[ PriceTxt, showActiveAvailableColor(box.IsAvailable, box.IsDisable) ]} >
                                           {`$${box?.Price != null ? box?.Price : 0}`}
                                         </UI.Text>
-                                        <UI.Text
-                                          numberOfLines={isExpanded ? undefined : 2}
-                                          style={[
-                                            styles.descriptionTxt,
-                                            showActiveAvailableColor(box.IsAvailable, box.IsDisable),
-                                            { textAlign: "left", letterSpacing: -0.5 },
-                                          ]}
-                                        >
+                                        <UI.Text numberOfLines={isExpanded ? undefined : 2}   style={[ DescriptionTxt,showActiveAvailableColor(box.IsAvailable, box.IsDisable) ]} >
                                           {box?.Description}
                                         </UI.Text>
                                         {box?.Description?.length > 68 && (
                                           <UI.Text
                                             onPress={() => handleReadMoreToggle(box.Item_ID)}
-                                            style={styles.underLineTxt}
+                                            style={UnderLineTxt}
                                           >
-                                            {isExpanded ? "Show Less" : "Read More"}
+                                            {isExpanded ? Descmore : Descless}
                                           </UI.Text>
                                         )}
                                       </UI.CbBox>
 
-                                      <UI.Box style={styles.imageContainer}>
+                                      <UI.Box style={ImageContainer}>
                                         <UI.Box
-                                          style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+                                          style={Itemimage}
                                           disabled={box.IsAvailable === 0 && box.IsDisable === 1}
                                         >
-                                          <Image
-                                            source={{ uri: box.ImageUrl }}
-                                            style={[
-                                              styles.mealTypeImg,
-                                              box.IsAvailable === 0 && box.IsDisable === 1 && {
-                                                opacity: 0.4,
-                                              },
-                                            ]}
-                                          />
+                                          <Image source={{ uri: box.ImageUrl }}   style={[MealTypeImg, box.IsAvailable === 0 && box.IsDisable === 1 && { opacity: Imageopacity}]}/>
                                         </UI.Box>
                                         {
                                             renderAddToCartBtn(box)
                                         }
-                                        {/* <UI.CbAddToCartButton mealItemDetails={box} /> */}
                                       </UI.Box>
                                     </UI.CbBox>
                                   </UI.TouchableOpacity>
@@ -379,7 +405,7 @@ export default function MenuOrderScreen(props) {
                   handleItemLayout(category.Category_ID, e);
                 }}
                 scrollEnabled={false}
-                data={category.submenus}
+                data={category?.submenus}
                 renderItem={({ item }) => {
                   const subMenuItem = item
                   return (
@@ -412,7 +438,6 @@ export default function MenuOrderScreen(props) {
                       {expandedSubmenus[subMenuItem.SubMenu_ID] && (
                         item?.items?.map((item,index) => {
                           let box = item;
-                          console.log("@#$$$$",box);
                           const lastItem =
                             index === subMenuItem.items?.length - 1;
                           const isExpanded = expandedIds.includes(box?.Item_ID);
@@ -620,99 +645,53 @@ export default function MenuOrderScreen(props) {
     };
 
     const renderAddCartUi = () => {
+      const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Styles);
+      const Activecolor =mOAddtoCartButtonConfig?.Activecolor  ||  "#5773a2";
+      const InActivecolor =mOAddtoCartButtonConfig?.InActivecolor  ||  "#ABABAB";
+      const AddIconSource =mOAddtoCartButtonConfig?.AddIconSource ;
+      const RemoveIconSource =mOAddtoCartButtonConfig?.RemoveIconSource ;
+      const DeleteIconSource= mOAddtoCartButtonConfig?.DeleteIconSource ;
+      const OperationBtn3=MOAddtoCartButtonConfigStyles?.operationBtn3 || styles.operationBtn3; 
+      const OperationBtn2=MOAddtoCartButtonConfigStyles?.operationBtn2 || styles.operationBtn2;
+      const OperationBtn=MOAddtoCartButtonConfigStyles?.operationBtn || styles.operationBtn;
+      const AddCartIcons=MOAddtoCartButtonConfigStyles?.addCartIcons || styles.addCartIcons;
+      const IconBtn=MOAddtoCartButtonConfigStyles?.iconBtn || styles.iconBtn;
+      const QuantityTxt=MOAddtoCartButtonConfigStyles?.quantityTxt || styles.quantityTxt;
+     
       if(cartQuantity === 0 && modifierQuantity === 0){
         return(
-          <UI.Box style={styles.operationBtn3}>
+          <UI.Box style={OperationBtn3}>
           <UI.TouchableOpacity
-            disabled={
-              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
-            }
+            disabled={ item.IsAvailable === 1 && item.IsDisable === 0 ? false : true}
             onPress={() => handleAddToCartBtn(item)}
-            style={[
-              styles.operationBtn2,
-              {
-                borderColor: commonStyles(
-                  item.IsAvailable,
-                  item.IsDisable,
-                  "#5773a2",
-                  "#ABABAB"
-                ),
-              },
-            ]}
-          >
-            {/* <Icon
-              as={AddIcon}
-              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
-              size={"xl"}
-              style={[styles.addIcon]}
-            /> */}
-            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
-                      </UI.TouchableOpacity>
+            style={[OperationBtn2,{ borderColor: commonStyles(item.IsAvailable, item.IsDisable, Activecolor,InActivecolor)}]} >
+              { AddIconSource ? <Image source={{ uri: AddIconSource}} style={AddCartIcons} /> : <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={AddCartIcons}/> }
+          </UI.TouchableOpacity>
         </UI.Box>
         )
       }else if(item.IsDisable === 1){
         return(
-          <UI.Box style={styles.operationBtn3}>
+          <UI.Box style={OperationBtn3}>
           <UI.TouchableOpacity
-            disabled={
-              item.IsAvailable === 1 && item.IsDisable === 0 ? false : true
-            }
+            disabled={ item.IsAvailable === 1 && item.IsDisable === 0 ? false : true}
             onPress={() => handleAddToCartBtn(item)}
-            style={[
-              styles.operationBtn2,
-              {
-                borderColor: commonStyles(
-                  item.IsAvailable,
-                  item.IsDisable,
-                  "#5773a2",
-                  "#ABABAB"
-                ),
-              },
-            ]}
-          >
-            {/* <Icon
-              as={AddIcon}
-              color={commonStyles(item.IsAvailable,item.IsDisable,"#5773a2","#ABABAB")}
-              size={"xl"}
-              style={[styles.addIcon]}
-            /> */}
-            <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
+            style={[ OperationBtn2,{ borderColor: commonStyles(item.IsAvailable,item.IsDisable, Activecolor,InActivecolor)}]}>
+              { AddIconSource ? <Image source={{ uri: AddIconSource}} style={AddCartIcons} /> : <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={AddCartIcons}/> }
           </UI.TouchableOpacity>
         </UI.Box>
         )
       }else{
         return(
-          <UI.Box style={styles.operationBtn}>
-            <UI.TouchableOpacity
-              style={styles.iconBtn}
-              onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}
-            >
+          <UI.Box style={OperationBtn}>
+            <UI.TouchableOpacity style={IconBtn}  onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"decrement")}>
               {
-                cartQuantity === 1 ?
-                <Image source={require('@/assets/images/icons/Trash_Icon3x.png')} style={styles.addCartIcons}/> :
-                <Image source={require('@/assets/images/icons/Minus_Icon3x.png')} style={styles.addCartIcons}/>
+                cartQuantity === 1 ? ( DeleteIconSource ? (<Image source={{ uri: DeleteIconSource}} style={AddCartIcons} />) :(<Image source={require('@/assets/images/icons/Trash_Icon3x.png')} style={AddCartIcons}/>))
+                : (RemoveIconSource ? (<Image source={{ uri: RemoveIconSource}} style={AddCartIcons} />) : (<Image source={require('@/assets/images/icons/Minus_Icon3x.png')} style={AddCartIcons}/>))
               }
-              {/* <Icon
-                as={cartQuantity === 1 ? TrashIcon : RemoveIcon}
-                color="#5773a2"
-                size={"md"}
-                style={styles.trashIcon}
-              /> */}
             </UI.TouchableOpacity>
-
-            <UI.Text style={styles.quantityTxt}>{cartQuantity}</UI.Text>
-
-            <UI.TouchableOpacity
-              style={styles.iconBtn}
-              onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"increment")}
-            >
-              {/* <Icon
-                as={AddIcon}
-                color="#5773a2"
-                size={"xl"}
-                style={styles.addIcon}
-              /> */}
-              <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={styles.addCartIcons}/>
+            <UI.Text style={QuantityTxt}>{cartQuantity}</UI.Text>
+            <UI.TouchableOpacity  style={IconBtn} onPress={() => modifierIncDecBtn(item, cartQuantity,modifierQuantity,"increment")}>
+                 { AddIconSource ? <Image source={{ uri: AddIconSource}} style={AddCartIcons} /> : <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={AddCartIcons}/> }
             </UI.TouchableOpacity>
           </UI.Box>
         )
@@ -735,10 +714,9 @@ export default function MenuOrderScreen(props) {
       {!isSearchActive && (
         <UI.TouchableOpacity style={[styles.recentOrderContainer]} onPress={() => navigateToScreen(props, "Recentorders", true)}>
           <UI.CbBox id="RecentOrderBox" pageId={'MenuOrder'} style={styles.recentOrderBox}>
-             {/* <UI.CbImage id="RecentOrderIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/ROCart3x.png')} style={styles.recentOrderIcon}/>}/> */}
-             <UI.CbText id="ROText" pageId={'MenuOrder'}  style={styles.recentOrderTxt}/>
-          </UI.CbBox> 
-          <UI.CbImage id="RoNavIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/RONav.png')} style={styles.dropdownIcon}/>}/>          
+             <UI.CbText id="ROText" pageId={'MenuOrder'}  style={styles.recentOrderTxt}>Recent Order</UI.CbText>    
+          </UI.CbBox>  
+          <UI.CbImage id="RoNavIcon" pageId={'MenuOrder'} imageJsx={<Image source={require('@/assets/images/icons/RONav.png')} style={styles.dropdownIcon}/>}/>        
         </UI.TouchableOpacity>
       )}
     </UI.CbBox>
@@ -753,7 +731,7 @@ export default function MenuOrderScreen(props) {
           animationType="fade"
           onRequestClose={() => setIsExitProfitCenter(false)}
         >
-          <UI.View id="Modalview" pageId={'MenuOrder'}
+          <UI.CbView id="Modalview" pageId={'MenuOrder'}
             style={styles.modalContainer}
             onPress={() => setIsExitProfitCenter(false)}
           />

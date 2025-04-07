@@ -213,7 +213,6 @@ export default function MyCartScreen(props) {
       : [(TipTextConfigStyles ? TipTextConfigStyles.tipCount : styles.tipCount), { color: item.isSelected ? (tipTextConfig ? tipTextConfig.Activecolor :  '#ffff') : (tipTextConfig ? tipTextConfig.Inactivecolor : "#00BFF6") }];
     
       const CustomTipConfigStyles= transformStyles(customTipConfig?.Styles);  
-        console.log("12334",CustomTipConfigStyles,customTipConfig);
       return(
      <>
         <UI.TouchableOpacity activeOpacity={0} onPress={() => addTip(tipDetails)}>

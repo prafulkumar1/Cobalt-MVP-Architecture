@@ -42,7 +42,7 @@ const [headerStyle, setHeaderStyle] = useState({});
 
 
   const fetchHeaderStyle = async () => {
-    console.log("@!@#$%%%$##@","122222321");
+  
     const style = await UI.CbHeaderBackground("HeaderBackground", "Header");
     setHeaderStyle(style);
   };
@@ -153,7 +153,7 @@ global.location_id = location_id;
                 headerLeft: () => (
                   <UI.CbBackButton id='BackButton' pageID="Header"  controlsConfigJson={controlsConfigJson} navigation={navigation} />
                 ),
-                headerTitleAlign: 'left',
+                //headerTitleAlign: 'left',
                 headerTitle: () => {
                   return(
                     <UI.View id="HeaderTitleContainer" pageId="Header" style={styles.headerTitle}>
@@ -191,7 +191,15 @@ global.location_id = location_id;
                 component={ProfitCenters}
                 options={{
                   headerShown: true,
-                  headerTitle: "Food Ordering",
+                  headerTitle: () => {
+                    return(
+                      <UI.View id="HeaderTitleContainer" pageId="Header" style={styles.headerTitle}>
+                        <UI.CbText id="HeadermenuTitle" pageId="Header" style={styles.menuTitle}>
+                        Food Ordering
+                        </UI.CbText>
+                      </UI.View>
+                    )
+                  },
                 }}
               />
               <Stack.Screen
@@ -221,7 +229,17 @@ global.location_id = location_id;
               <Stack.Screen
                 name="MyCart"
                 component={MyCartScreen}
-                options={{ headerShown: true, headerTitle: "My Cart" }}
+                options={{ headerShown: true, 
+                  headerTitle: () => {
+                    return(
+                      <UI.View id="HeaderTitleContainer" pageId="Header" style={styles.headerTitle}>
+                        <UI.CbText id="HeadermenuTitle" pageId="Header" style={styles.menuTitle}>
+                        My Cart
+                        </UI.CbText>
+                      </UI.View>
+                    )
+                  },
+                 }}
               />
   
           </Stack.Navigator>
@@ -240,11 +258,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuTitle: { fontSize: 22, color: "#4B5154", fontWeight: "500", fontFamily: 'SourceSansPro_SemiBold'},
+  menuTitle: {
+    fontSize: 22,
+    color: "#4B5154",
+    fontFamily: 'SourceSansPro_SemiBold',
+    paddingTop: 4,
+    lineHeight: 28,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle:{ alignItems: 'flex-start' }
+  headerTitle:{ width: '100%',
+    alignItems: 'flex-start',
+    paddingLeft: 0,
+    bottom : 1 }
 });

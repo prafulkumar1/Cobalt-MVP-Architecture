@@ -110,16 +110,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  operationBtn: {
-    borderColor: '#5773a2',
-    borderWidth: 1,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    justifyContent: "space-between",
-    flexDirection: "row",
-    alignItems: "center",
-    left:-20
-  },
+  operationBtn: { borderColor: '#5773a2',borderWidth: 1,backgroundColor: '#fff', borderRadius: 5, justifyContent: "space-between", flexDirection: "row", alignItems: "center", left:-20},
   operationBtn2:{
     borderWidth:1,borderColor:"#5773a2",borderRadius:5,left:-20,padding: responsiveWidth(1.8)
   },

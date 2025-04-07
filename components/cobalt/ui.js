@@ -179,7 +179,6 @@ class CbBox extends React.Component {
     const { ControlConfig } = this.state;  
     const Styles = ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles);
-    console.log("&*&*&*&*&*",StyleProps)
     const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
     return (
       <Box style={[dynamicStyle,this.Conditionalstyle]} >
@@ -260,7 +259,6 @@ class CbText extends React.Component {
      const StrikeThrough = ControlConfig?.StrikeThrough || this.strikeThrough;
       const Styles=ControlConfig?.Styles;
       const StyleProps = transformStyles(Styles);  
-      console.log("$$$$$$$$This is my ",ControlConfig,StyleProps)
       const dynamicStyle = StyleProps && Object.keys(StyleProps).length > 0  ? Object.values(StyleProps)[0] : this.styles;
       const LabelText=ControlConfig?.LabelText || this.props.children;
      return (
@@ -317,7 +315,6 @@ class CbHomeButton extends React.Component {
     };
   };
   const CbHeaderTitle = async (ControlId,Title,PageId) => {
-    console.log("this is my wish ",ControlId,Title,PageId);
     const ControlConfig  = await loadPageConfig(PageId,ControlId);        
     const Styles=ControlConfig?.Styles?.menuTitle || {};
       return {
@@ -904,7 +901,6 @@ class CbFloatingButton extends React.Component {
 
   render() {
     const { ControlConfig }= this.state;
-    console.log("My cart12345555",ControlConfig)
     const Styles=ControlConfig?.Styles;
     const StyleProps = transformStyles(Styles); 
     const CartSource= ControlConfig?.CartSource
