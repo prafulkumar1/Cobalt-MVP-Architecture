@@ -369,11 +369,13 @@ export const useMenuOrderLogic = (props) => {
           addItemToModifierForCart(singleItemDetails);
           addItemToFavorites(singleItemDetails);
           closePreviewModal();
+          getFavorites()
         } else {
           updateModifierItemQuantity(singleItemDetails,modifierQuantity)
           addItemToModifierForCart(singleItemDetails);
           addItemToFavorites(singleItemDetails)
           closePreviewModal();
+          getFavorites()
         }
       }
     } else {
@@ -406,10 +408,12 @@ export const useMenuOrderLogic = (props) => {
         }else{
           updateModifierCartItem(existingCartItem);
           addItemToFavorites(existingCartItem)
+          getFavorites()
         }
       } else {
         updateWithoutModifierCartItem(existingCartItem);
         addItemToFavorites(existingCartItem)
+        getFavorites()
       }
     }
 }
