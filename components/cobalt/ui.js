@@ -392,7 +392,7 @@ class CbAccordionlist extends React.Component {
     }
 
     setModifiersResponseData(updatedModifiersResponseData);
-
+    console.log("@@@@@@@@@121211212",modifiersResponseData);
     this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID, Category_Id });
   };
 
@@ -400,10 +400,11 @@ class CbAccordionlist extends React.Component {
     const { ControlConfig } = this.state; 
      const Styles=ControlConfig?.Styles;
      const StyleProps = transformStyles(Styles); 
-      
+  
     return (
       <FormContext.Consumer>
         {({ modifiersResponseData, setModifiersResponseData, cartData, singleItemDetails }) => {
+          
           let categoryData = typeof modifiersResponseData?.Categories == "string" ? JSON.parse(modifiersResponseData?.Categories) : modifiersResponseData?.Categories
           const defaultOpenItems = categoryData?.map((_, index) => `item-${index}`); 
           return (

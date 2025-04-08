@@ -294,11 +294,13 @@ export const useMyCartLogic = () => {
           Comments:item.comments,
           ItemId:item.Item_ID,
           Quantity:item.quantity,
-          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items.Modifier_Id,Category_Id:items?.Category_Id})):[]
+          Modifiers:item?.selectedModifiers ? uniqueModifiers?.map((items) => ({ModifierId:items?.Modifier_Id,Category_Id:items?.Category_Id})):[]
         }
       })
       let customTipVal = tipSelection.current?.TipCustom?.replace("$", "");
-      const currentMealPeriodId = menuOrderData?.filter((item) => item?.MealPeriodIsSelect === 1)?.map((item) => item.MealPeriod_Id);
+      const currentMealPeriodId = menuOrderData
+        ?.filter((item) => item?.MealPeriodIsSelect === 1)
+        ?.map((item) => item.MealPeriod_Id);
       const params = {
         "OrderDetails": {
           "Location_Id": `${getProfitCenterId?.LocationId}`,
@@ -312,9 +314,9 @@ export const useMyCartLogic = () => {
         },
         "Items": cartItemIds,
       }
-      console.log(params,"=============>>>>>catrssshsh")
+      console.log(JSON.stringify(params),"=============>>>>>catrssshsh")
       let placeOrderDetails = await postApiCall("CART", "PLACE_ORDER", params)
-      console.log(JSON.stringify(placeOrderDetails),"=============>>>>>response")
+ 
       if(placeOrderDetails?.response?.ResponseCode === "Success"){
         setSuccessResponse(placeOrderDetails?.response)
         removeCartItems()

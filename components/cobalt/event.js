@@ -461,6 +461,7 @@ export const UseFormContextProvider = ({children}) => {
         }
       ]
     }
+    console.log(params,"this is fav params")
     let postFavResponse = await postApiCall("FAVORITES", "SAVE_FAVORITES",params);
     if (postFavResponse.statusCode === 200 && postFavResponse.response?.ResponseCode === "Success") {
     }else if(response.response?.ResponseCode == "Fail"){
@@ -468,7 +469,8 @@ export const UseFormContextProvider = ({children}) => {
   }
 
   const toggleFavoriteItems = () => {
-    setIsItemFavorite(isItemFavorite === 0?1:0)
+    setIsItemFavorite(isItemFavorite === 0 ? 1 : 0)
+    console.log("this is fav",isItemFavorite)
   }
   const removeFavoriteItems = async(Items) => {
     const updatedFavData = [
@@ -702,20 +704,6 @@ export const UseFormContextProvider = ({children}) => {
   };
   
   UseFormContextProvider.displayName='UseFormContextProvider';
-
-
- const { NativeNavigationModule } = NativeModules;
- export const backAction = () => {
-  console.log('tapped');
-  if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
-      NativeNavigationModule.navigateToNative(); // Call native iOS navigation
-  }
-  return true; // Prevent default back behavior
-};
- 
-
-
-
 
   export const handleSearchClick = (setState, onSearchActivate) => {
     setState({ showSearchInput: true });

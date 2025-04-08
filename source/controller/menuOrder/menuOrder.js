@@ -149,8 +149,9 @@ export const useMenuOrderLogic = (props) => {
         "Location_Id": `${getProfitCenterId?.LocationId}`,
       };
       let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
- 
+        console.log("1232!@#$$",favItemInfo.response?.FavouriteItems);
       if (favItemInfo.statusCode === 200 && favItemInfo?.response?.ResponseCode === "Success") {
+
           setFavoriteItemsList(favItemInfo.response?.FavouriteItems)
       }else if(favItemInfo.response?.ResponseCode == "Fail"){
         setFavoriteItemsList([])
@@ -332,7 +333,7 @@ export const useMenuOrderLogic = (props) => {
         isItemAvailableInCart = true;
       }
     });
- 
+ console.log("modifier response data 1232132",modifiersResponseData)
     let categoryData = typeof modifiersResponseData?.Categories === "string"
     ? JSON.parse(modifiersResponseData?.Categories)
     : modifiersResponseData?.Categories;
@@ -340,52 +341,53 @@ export const useMenuOrderLogic = (props) => {
     if (!isItemAvailableInCart) {
       let isRequiredModifier = false;
       let requiredModifier = ""
+      console.log("modifers ",categoryData)
       const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
+      console.log(selectedModifiers,"---->>>selected modifiers")
       const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
         const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
         return modifier.isChecked && index === lastIndex;
       });
+      console.log(JSON.stringify(uniqueModifiers),"---------------1234")
       if (getRequiredItem?.length > 0) {
+        
         isRequiredModifier = true
         getRequiredItem?.map((item) => {
           requiredModifier = item?.Category_Name
+          //  console.log("!2343ashiuagb",item.Category_Id,modifierId.Category_Id)
           return uniqueModifiers?.length > 0 && uniqueModifiers?.forEach((modifierId) => {
+           
             if (item.Category_Id == modifierId.Category_Id) {
               isRequiredModifier = false
             }
           })
         })
       }
+      console.log("SHiavas----------------------",isRequiredModifier);
+
       if (isRequiredModifier) {
         setToastDetails({ isToastVisiable:true,toastMessage: `Please select the required ${requiredModifier} to proceed with your order` })
         setTimeout(() => {
           setToastDetails({ isToastVisiable:false,toastMessage: "" })
         }, 6000);
       } else {
+        console.log("SHiavas----------------------`1111");
         const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
         const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
-        if (categoryData?.length > 0) {
-          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
-          addItemToModifierForCart(singleItemDetails);
-          addItemToFavorites(singleItemDetails)
-          closePreviewModal();
-        } else {
-          updateModifierItemQuantity(singleItemDetails,modifierQuantity)
-          const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
-        const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
-        if (categoryData?.length > 0) {
+        if (categoryData?.length > 0) {          
           updateModifierItemQuantity(singleItemDetails, modifierQuantity);
           addItemToModifierForCart(singleItemDetails);
           addItemToFavorites(singleItemDetails);
           closePreviewModal();
+          getFavorites();
         } else {
           updateModifierItemQuantity(singleItemDetails,modifierQuantity)
           addItemToModifierForCart(singleItemDetails);
             addItemToFavorites(singleItemDetails)
             closePreviewModal();
+            getFavorites();
         }
         }
-      }
     } else {
       let isRequiredModifier = false
       let requiredModifier = ""
@@ -416,10 +418,12 @@ export const useMenuOrderLogic = (props) => {
         }else{
           updateModifierCartItem(existingCartItem);
           addItemToFavorites(existingCartItem)
+          getFavorites();
         }
       } else {
         updateWithoutModifierCartItem(existingCartItem);
         addItemToFavorites(existingCartItem)
+        getFavorites();
       }
     }
 }
@@ -476,6 +480,7 @@ export const useMenuOrderLogic = (props) => {
       setIsVisible(false)
       updateModifierItemQuantity(singleItemDetails, 0)
       setModifiersResponseData([])
+      console.log("$$$$$$$$$$$$",modifiersResponseData)
       setTimeout(() => {
         closePreviewModal()
       }, 100)

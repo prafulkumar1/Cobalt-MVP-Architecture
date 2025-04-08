@@ -37,6 +37,7 @@ export const useItemModifierLogic = () => {
     }, []);
  
     useEffect(() => {
+      console.log("favoriteItemsList12334",favoriteItemsList,singleItemDetails);
       const updateFavList = favoriteItemsList.find((itemDetails)=>itemDetails?.Item_ID === singleItemDetails?.Item_ID)
       if(updateFavList){
         setIsItemFavorite(1)
@@ -61,6 +62,7 @@ export const useItemModifierLogic = () => {
         }
         console.log('Item Modifiers Request', params);          
         let modifiersResponse = await postApiCall("ITEM_MODIFIERS","GET_ITEM_MODIFIERS", params)
+        console.log("response--------------",modifiersResponse)
         if(modifiersResponse.statusCode ===200){
             if(modifiersResponse.response.ResponseCode == "Success"){
               const cartItem = cartData?.find(item => item.Item_ID === singleItemDetails?.Item_ID);
@@ -85,6 +87,7 @@ export const useItemModifierLogic = () => {
                 }))
               };
                setModifiersResponseData(updatedData)
+               console.log("responseupdate--1212323232121",modifiersResponseData)
               setFormFieldData("ItemModifier","","Comments",cartItem?.comments?cartItem?.comments:"",false)
               if(cartItem !==undefined){
                 setUpdateOrAddTxt("Update Cart")
@@ -126,6 +129,7 @@ export const useItemModifierLogic = () => {
     }
  
     const getAllSelectedModifiers = (modifiers) => {
+      //console.log("__========1234",modifiers)
       setSelectedModifiers((prevState) => {
         let updatedModifiers = [...prevState];
         updatedModifiers.push({
