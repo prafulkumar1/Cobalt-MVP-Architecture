@@ -379,13 +379,13 @@ export const useMenuOrderLogic = (props) => {
           addItemToModifierForCart(singleItemDetails);
           addItemToFavorites(singleItemDetails);
           closePreviewModal();
-          getFavorites();
+          getFavorites()
         } else {
           updateModifierItemQuantity(singleItemDetails,modifierQuantity)
           addItemToModifierForCart(singleItemDetails);
-            addItemToFavorites(singleItemDetails)
-            closePreviewModal();
-            getFavorites();
+          addItemToFavorites(singleItemDetails)
+          closePreviewModal();
+          getFavorites()
         }
         }
     } else {
@@ -418,12 +418,12 @@ export const useMenuOrderLogic = (props) => {
         }else{
           updateModifierCartItem(existingCartItem);
           addItemToFavorites(existingCartItem)
-          getFavorites();
+          getFavorites()
         }
       } else {
         updateWithoutModifierCartItem(existingCartItem);
         addItemToFavorites(existingCartItem)
-        getFavorites();
+        getFavorites()
       }
     }
 }
