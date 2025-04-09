@@ -43,7 +43,15 @@ export const transformStyles = (styles) => {
   );
 };
 
-
+const { NativeNavigationModule } = NativeModules; // iOS Native Module
+ 
+export const backAction = () => {
+  console.log('tapped');
+  if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
+      NativeNavigationModule.navigateToNative(); // Call native iOS navigation
+  }
+  return true; // Prevent default back behavior
+};
 
 
 
@@ -691,7 +699,7 @@ export const UseFormContextProvider = ({children}) => {
       setCartApiResponse,
       setItemDataVisible,
       keyBoard ,
-      setKeyBoard
+      setKeyBoard,
     }
     return (
       <FormContext.Provider
