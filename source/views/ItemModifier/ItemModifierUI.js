@@ -23,7 +23,7 @@ const ItemModifier = (props) => {
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
-    console.log("this is my fav icon1232445#####",modifiersResponseData)
+   // console.log("this is my fav icon1232445#####",modifiersResponseData)
     if(loading){
       return(
         <CbLoader />
@@ -31,7 +31,7 @@ const ItemModifier = (props) => {
     }
     return (
       <>
-        {/* <Animated.View
+        <Animated.View
           style={[
            styles.stickyHeader,
             {
@@ -86,16 +86,16 @@ const ItemModifier = (props) => {
             />
             }
           </UI.Box>
-        </Animated.View> */}
+        </Animated.View>
         
-        <UI.ScrollView
+        <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
           contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
-          // onScroll={Animated.event(
-          //   [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          //   { useNativeDriver: false }
-          // )}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
          >
           <UI.CbBox id="ItemModifierContainer" pageId="ItemModifier" style={[styles.mainContainer, styles.itemMainContainer]}>
             {
@@ -240,7 +240,7 @@ const ItemModifier = (props) => {
               </UI.CbBox>
             </UI.CbBox>
           </Modal>
-        </UI.ScrollView>
+        </Animated.ScrollView>
         {
           toastDetails?.isToastVisiable &&
           <UI.CbToastMessage

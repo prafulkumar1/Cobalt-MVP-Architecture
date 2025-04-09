@@ -392,7 +392,7 @@ const handleCloseItemDetails = () => {
     setIsVisible(false)
     updateModifierItemQuantity(singleItemDetails, 0)
     setModifiersResponseData([])
-    console.log("$$$$$$$$$$$$11232345",modifiersResponseData)
+    //console.log("$$$$$$$$$$$$11232345",modifiersResponseData)
     setTimeout(() => {
       closePreviewModal()
     }, 100)

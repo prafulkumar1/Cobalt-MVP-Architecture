@@ -470,7 +470,7 @@ export const UseFormContextProvider = ({children}) => {
 
   const toggleFavoriteItems = () => {
     setIsItemFavorite(isItemFavorite === 0 ? 1 : 0)
-    console.log("this is fav",isItemFavorite)
+    //console.log("this is fav",isItemFavorite)
   }
   const removeFavoriteItems = async(Items) => {
     const updatedFavData = [

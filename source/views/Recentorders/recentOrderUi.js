@@ -521,7 +521,7 @@ function RenderingFavoritesList({ props }) {
 
 
 const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Styles);
-console.log("@!@#$Recentorders",MOAddtoCartButtonConfigStyles,mOAddtoCartButtonConfig);
+//console.log("@!@#$Recentorders",MOAddtoCartButtonConfigStyles,mOAddtoCartButtonConfig);
       const Activecolor =mOAddtoCartButtonConfig?.Activecolor  ||  "#5773a2";
       const InActivecolor =mOAddtoCartButtonConfig?.InActivecolor  ||  "#ABABAB";
       const AddIconSource =mOAddtoCartButtonConfig?.AddIconSource ;
