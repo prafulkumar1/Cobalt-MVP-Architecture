@@ -105,7 +105,7 @@ export const styles = StyleSheet.create({
   operationBtn: { borderColor: '#5773a2', borderWidth: 1, backgroundColor: '#fff', borderRadius: 5,justifyContent: "space-between",flexDirection: "row",alignItems: "center"},
   iconBtn: { width: responsiveWidth(8), height: responsiveHeight(5), justifyContent: "center", alignItems: 'center', alignSelf: "center" },
   addCartIcons:{ width: 15,  height: 15},
-  quantityTxt: { fontSize: responsiveFontSize(2.5),fontFamily: "SourceSansPro_Regular", paddingLeft: responsiveWidth(1.2), paddingRight: responsiveWidth(0.8), paddingTop:2  },
+  quantityTxt: { fontSize: 22,fontFamily: "SourceSansPro_Regular", paddingLeft: responsiveWidth(1.2), paddingRight: responsiveWidth(0.8), paddingTop:2  },
   trashIcon: { width: 23, height: 23 },
   addIcon: { width: 25, height: 25 },
   commentBtn: { flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-start" },

@@ -255,6 +255,7 @@ export const useMenuOrderLogic = (props) => {
         increaseQuantity(box)
         setItemDataVisible(true)
         setApiLoader(false)
+       
       }
     }
   }

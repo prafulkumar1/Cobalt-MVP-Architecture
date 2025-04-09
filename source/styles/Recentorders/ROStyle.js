@@ -118,7 +118,7 @@ export const styles = StyleSheet.create({
    trashIcon: { width: 23, height: 23 },
    addIcon: { width: 25, height: 25 },
     quantityTxt: {
-       fontSize: responsiveFontSize(2.8),
+       fontSize: 22,
        fontFamily: "SourceSansPro_Regular",
        paddingLeft: responsiveWidth(1.2),
        paddingRight: responsiveWidth(0.8),
@@ -168,9 +168,7 @@ export const styles = StyleSheet.create({
   labelPickUpPoint:{ fontSize: 10, color: "#4F4F4F", fontFamily: "SourceSansPro_SemiBoldItalic",  },
   detailsContainer:{ justifyContent:"center",flexDirection:"row",alignItems:"center" },
   labelOrderId:{ fontSize: 14, color: "#4F4F4F", fontFamily: "SourceSansPro_BoldItalic" },
-  orderSummaryContainer: {
-    backgroundColor: "#ffffff",
-  },
+  orderSummaryContainer: { backgroundColor: "#ffffff"},
   labelOrdSummary:{ fontSize: 15, fontFamily: "SourceSansPro_SemiBold",marginBottom:10 },
   itemContainer:{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 8 },
   labelItem:{ fontSize: 14, color: "#5773A2", fontFamily: "SourceSansPro_SemiBoldItalic", },

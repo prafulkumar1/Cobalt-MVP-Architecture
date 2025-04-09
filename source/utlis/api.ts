@@ -38,7 +38,7 @@ export const postApiCall = async (screenName: string, endpoint: string, params: 
       "UserName": global.username,
       "Role": "Full Access",
       "UserId":global.userID,
-    };
+     };
     // const commonParams = {
     //   "MemberID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
     //   "ID": "EBC475B2-369A-496E-B8B2-AE7F4E846781",
