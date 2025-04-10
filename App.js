@@ -80,31 +80,6 @@ global.location_id = location_id;
   
   }, [username, userID]);
 
-  /*useEffect(() => {
-    console.log("🔄 Received locationId:", location_id);
-    console.log("🔄 fetchTrigger:", fetchTrigger);
-
-    if (fetchTrigger && location_id) {
-      setTimeout(() => {
-        if (navigationRef.current) {
-          console.log(`🚀 Navigating to Recentorders with Location ID: ${location_id}`);
-          navigationRef.current.navigate("Recentorders", { location_id });
-        } else {
-          console.warn("⚠️ navigationRef is still null. Cannot navigate.");
-        }
-      }, 100);
-    }
-  }, [fetchTrigger, location_id]);*/
-
-
-  const backAction = () => {
-    console.log('tapped');
-    if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
-        NativeNavigationModule.navigateToNative(); // Call native iOS navigation
-    }
-    return true; // Prevent default back behavior
-};
-
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({

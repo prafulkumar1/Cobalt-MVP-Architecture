@@ -46,7 +46,6 @@ export const transformStyles = (styles) => {
 const { NativeNavigationModule } = NativeModules; // iOS Native Module
  
 export const backAction = () => {
-  console.log('tapped');
   if (NativeNavigationModule && NativeNavigationModule.navigateToNative) {
       NativeNavigationModule.navigateToNative(); // Call native iOS navigation
   }
@@ -478,7 +477,6 @@ export const UseFormContextProvider = ({children}) => {
 
   const toggleFavoriteItems = () => {
     setIsItemFavorite(isItemFavorite === 0 ? 1 : 0)
-    //console.log("this is fav",isItemFavorite)
   }
   const removeFavoriteItems = async(Items) => {
     const updatedFavData = [
@@ -611,7 +609,7 @@ export const UseFormContextProvider = ({children}) => {
         selectedModifiers: [...updateModifiers,...modifiersData.current],
         profitCenterId: getProfitCenterId?.LocationId,
       });
-    
+      console.log( JSON.stringify(updatedModifierData),"-0------2222")
       await AsyncStorage.setItem("cart_data", JSON.stringify(updatedModifierData));
       setFormFieldData("ItemModifier","","Comments","",false)
       setCartData(updatedModifierData);

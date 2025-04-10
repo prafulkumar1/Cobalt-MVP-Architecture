@@ -13,7 +13,7 @@ if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 const ItemModifier = (props) => {
-    const {isItemFavorite,toggleFavoriteItems,toastDetails,setToastDetails, singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData} = useFormContext()
+    const {isItemFavorite,toggleFavoriteItems,toastDetails,setToastDetails, singleItemDetails,setFormFieldData,getFormFieldData,cartData,modifiersResponseData,isVisible,setIsVisible,modifierCartItemData,isKeyboardVisible} = useFormContext()
     const {ImageUrl,Item_Name,Price,Description} = singleItemDetails
     const cartItem = cartData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
     const quantity = cartItem ? cartItem.quantity : 0;
@@ -23,7 +23,6 @@ const ItemModifier = (props) => {
     let categoryData = typeof modifiersResponseData?.Categories == "string"? JSON.parse(modifiersResponseData?.Categories): modifiersResponseData?.Categories
     const { handleDiscardChanges,loading,getAllSelectedModifiers} = useItemModifierLogic()
     const scrollY = useRef(new Animated.Value(0)).current;
-   // console.log("this is my fav icon1232445#####",modifiersResponseData)
     if(loading){
       return(
         <CbLoader />
@@ -91,7 +90,7 @@ const ItemModifier = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
+          contentContainerStyle={[styles.modifierScroll,(categoryData?.length === 0) ? {flex:1} : {minHeight: responsiveHeight(80)}]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
@@ -179,14 +178,14 @@ const ItemModifier = (props) => {
               }
 
               <UI.CbBox id="ModifierSubContainer" pageId="ItemModifier"  style={styles.modifierSubContainer}>
-                <UI.Box>
+              <UI.Box>
                   {Array.isArray(categoryData) && categoryData.length > 0 && (
                     <>
                     <UI.CbText id="ModifierText" pageId="ItemModifier" style={styles.modifierTxt}></UI.CbText>
                     <UI.CbAccordionlist id="ModifiersList" pageId="ItemModifier" screenName="Modifiers" props={props} getAllSelectedModifiers={getAllSelectedModifiers}/>
                     </>
                   )}
-                </UI.Box>
+                </UI.Box>              
                   <UI.CbBox id="CommentContainer" pageId="ItemModifier" style={styles.commentContainer} >
                     <UI.CbText id="AllergyInfoTxt" pageId="ItemModifier" style={styles.allergyInfoTxt}>          </UI.CbText>
                     <UI.cbForm

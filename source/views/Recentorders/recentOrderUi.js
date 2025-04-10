@@ -521,7 +521,6 @@ function RenderingFavoritesList({ props }) {
 
 
 const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Styles);
-//console.log("@!@#$Recentorders",MOAddtoCartButtonConfigStyles,mOAddtoCartButtonConfig);
       const Activecolor =mOAddtoCartButtonConfig?.Activecolor  ||  "#5773a2";
       const InActivecolor =mOAddtoCartButtonConfig?.InActivecolor  ||  "#ABABAB";
       const AddIconSource =mOAddtoCartButtonConfig?.AddIconSource ;
@@ -543,7 +542,8 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
     closePreviewModal,
     increaseQuantity,
     cartData,
-    addItemToCartBtn 
+    addItemToCartBtn,
+    modifiersResponseData 
   } = useFormContext();
   const {
     favItems,
@@ -555,7 +555,7 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
   } = useRecentOrderLogic();
 
   const editCommentBtn = (props, item) => {
-    if(item?.IsAvailable ===1 && item.IsDisable === 0){
+    if(item?.IsAvailable ===1 && item?.IsDisable === 0){
       closePreviewModal();
       storeSingleItem({
         ...item,
@@ -600,7 +600,7 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
             <CbLoader />
           </UI.Box>
           :
-          <UI.Box style={styles.favMainContainer}>
+          <UI.Box style={[styles.favMainContainer]}>
             {
               favItems && favItems?.length > 0 ? 
              <>
@@ -619,7 +619,7 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
                     key={index}
                     style={[styles.favItem,
                       {
-                      opacity: (IsAvailable === 1 && IsDisable === 0) ? 1 : 0.8,
+                      opacity: (IsAvailable === 1 && IsDisable === 0) ? 1 : 0.4,
                     }]}
                     onPress={() => editCommentBtn(props, item)}
                   >
@@ -631,10 +631,10 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
                         />
                       </UI.Box>
                       <UI.Box style={styles.labelContainer}>
-                        <UI.Text style={styles.itemLables}>
+                        <UI.Text style={[styles.itemLables]}>
                           {item.Item_Name}
                         </UI.Text>
-                        <UI.Text style={styles.itemLables}>
+                        <UI.Text style={[styles.itemLables]}>
                           ${item.Price?.toFixed(2)}
                         </UI.Text>
                         {item?.Modifiers && item.Modifiers?.length > 0 && (
@@ -677,8 +677,8 @@ const MOAddtoCartButtonConfigStyles=transformStyles(mOAddtoCartButtonConfig?.Sty
                         </UI.Box>
                       :<UI.Box style={OperationBtn3}>
                                   <UI.TouchableOpacity
-                                    disabled={(IsAvailable === 1 && IsDisable === 0) ? false : true}
-                                    onPress={() => addItemToCartBtnDetails(item)}
+                                   disabled={(IsAvailable === 1 && IsDisable === 0) ? false : true} 
+                                   onPress={() => addItemToCartBtnDetails(item)}
                                     style={[ OperationBtn2,{ borderColor: commonStyles(item.IsAvailable,item.IsDisable, Activecolor,InActivecolor)}]}>
                                       { AddIconSource ? <Image source={{ uri: AddIconSource}} style={AddCartIcons} /> : <Image source={require('@/assets/images/icons/Plus_Icon3x.png')} style={AddCartIcons}/> }
                                   </UI.TouchableOpacity>
@@ -723,7 +723,6 @@ export default function RecentordersScreen(props) {
   const quantity = cartItemDetails ? cartItemDetails?.quantity : 0;
   const totalCartPrice = cartItemDetails ?  Math.floor(cartItemDetails?.quantityIncPrice * 100) / 100 : 0;
   const singleItemPrice = modifierCartItem ?   Math.floor(modifierCartItem?.quantityIncPrice * 100) / 100 : 0;
-
   return (
     <UI.CbBox id="ROMainContainer" pageId="RecentOrder" style={styles.mainContainer}>
       <UI.CbBox id="ROSubContainer" pageId="RecentOrder"  style={styles.subContainer}>
@@ -823,6 +822,7 @@ export default function RecentordersScreen(props) {
                 <ItemModifierUIFavs isRecentOrder={isRecentOrder ? true:false}/>
               }
             </UI.Box>
+            
             <UI.Box style={styles.footerContainer}>
               <UI.Box>
                 <UI.Text style={styles.totalAmountTxt}>Total Amount</UI.Text>
@@ -835,7 +835,9 @@ export default function RecentordersScreen(props) {
           </UI.Box>
       </Modal>
       </UI.ScrollView>
-      {totalQuantity > 0 && <UI.CbFloatingButton props={props} />}
+      {totalQuantity > 0 && 
+      <UI.CbFloatingButton id="CartButton" pageId="RecentOrder" props={props} />
+       }
     </UI.CbBox>
   );
 }

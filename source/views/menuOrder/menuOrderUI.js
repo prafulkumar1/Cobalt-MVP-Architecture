@@ -572,7 +572,9 @@ export default function MenuOrderScreen(props) {
             <UI.CbBox id="ModiferItems" pageId="MenuOrder" style={styles.modiferItems}>
               <ItemModifier />
             </UI.CbBox>
-            <UI.CbBox id="FooterContainer" pageId="MenuOrder" style={styles.footerContainer}>
+            {!isKeyboardVisible
+              && 
+              <UI.CbBox id="FooterContainer" pageId="MenuOrder" style={styles.footerContainer}>
               <UI.Box>
                 <UI.CbText id="TotalAmountText" pageId="MenuOrder"  style={styles.totalAmountTxt}>Total Amount</UI.CbText>
                 <UI.CbText id="OrderAmount" pageId="MenuOrder" style={styles.orderAmount}>{`$${quantity >= 1 ?itemDataVisible ? singleItemPrice :  totalCartPrice : singleItemPrice}`}</UI.CbText>
@@ -583,7 +585,7 @@ export default function MenuOrderScreen(props) {
                 btnTextStyle={styles.addCartTxt}
                 onPress={() => handleModifierAddCart()} 
               />
-            </UI.CbBox>
+            </UI.CbBox>}
           </UI.CbBox>
         </Modal>
       </UI.Box>

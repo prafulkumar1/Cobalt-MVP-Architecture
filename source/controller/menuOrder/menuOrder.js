@@ -149,7 +149,6 @@ export const useMenuOrderLogic = (props) => {
         "Location_Id": `${getProfitCenterId?.LocationId}`,
       };
       let favItemInfo = await postApiCall("FAVORITES", "GET_FAVORITES", params);
-        //console.log("Favlist Intial",favItemInfo.response?.FavouriteItems);
       if (favItemInfo.statusCode === 200 && favItemInfo?.response?.ResponseCode === "Success") {
 
           setFavoriteItemsList(favItemInfo.response?.FavouriteItems)
@@ -180,6 +179,7 @@ export const useMenuOrderLogic = (props) => {
       "Category_Id": "",
       "Search": ""
     }
+    console.log("Menu order params",params);
     let menuOrderResponseData = await postApiCall("MENU_ORDER", "GET_MENU_ORDER_LIST", params)
  
     if (menuOrderResponseData?.response?.ResponseCode === "Fail") {
@@ -267,65 +267,7 @@ export const useMenuOrderLogic = (props) => {
         ? prevExpandedIds.filter((expandedId) => expandedId !== id)
         : [...prevExpandedIds, id];
     });
-  };
-  
-//   const handleModifierAddCart = () => {
-//     let categoryData = typeof modifiersResponseData?.Categories === "string"
-//         ? JSON.parse(modifiersResponseData?.Categories)
-//         : modifiersResponseData?.Categories;
-    
-//     let isRequiredModifier = false;
-//     let requiredModifier = ""
-//     const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-//     const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
-//       const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
-//       return modifier.isChecked && index === lastIndex;
-//     });
-//     if(getRequiredItem.length>0){
-//       isRequiredModifier = true
-//       getRequiredItem?.map((item) => {
-//         requiredModifier = item?.Category_Name
-//         return uniqueModifiers.length > 0 && uniqueModifiers?.forEach((modifierId) => {
-//           if (item.Category_Id == modifierId.Category_Id) {
-//             isRequiredModifier = false
-//           }
-//         })
-//       })
-//     }
-//     if (isRequiredModifier) {
-//         setToastDetails({isToastVisiable:true,toastMessage:`Please select the required ${requiredModifier} to proceed with your order`})
-//         setTimeout(() => {
-//           setToastDetails({isToastVisiable:false,toastMessage:""})
-//         }, 6000);
-//     } else {
-//         let isItemAvailableInCart = false;
-//         cartData?.forEach((items) => {
-//             if (items.Item_ID === singleItemDetails.Item_ID) {
-//                 isItemAvailableInCart = true;
-//             }
-//         });
-//         const existingCartItem = cartData?.find((items) => items.Item_ID === singleItemDetails.Item_ID);
-//         if (isItemAvailableInCart) {
-//             if (categoryData?.length > 0) {
-//               const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-//               console.log(existingCartItem,"---->>>editititiititi")
-//                 updateModifierCartItem(existingCartItem);
-//                 addItemToFavorites(existingCartItem)
-//                 toggleFavoriteItems()
-//             } else {
-//                 updateWithoutModifierCartItem(existingCartItem);
-//                 addItemToFavorites(existingCartItem)
-//                 toggleFavoriteItems()
-//             }
-//         } else {
-//             addItemToModifierForCart(singleItemDetails);
-//             addItemToFavorites(singleItemDetails)
-//             closePreviewModal();
-//             toggleFavoriteItems()
-//         }
-//     }
-// }
- 
+  }; 
  
   const handleModifierAddCart = () => {
     let isItemAvailableInCart = false;
@@ -334,7 +276,6 @@ export const useMenuOrderLogic = (props) => {
         isItemAvailableInCart = true;
       }
     });
-//  console.log("modifier response data 1232132",modifiersResponseData)
     let categoryData = typeof modifiersResponseData?.Categories === "string"
     ? JSON.parse(modifiersResponseData?.Categories)
     : modifiersResponseData?.Categories;
@@ -342,9 +283,7 @@ export const useMenuOrderLogic = (props) => {
     if (!isItemAvailableInCart) {
       let isRequiredModifier = false;
       let requiredModifier = ""
-      // console.log("modifers ",categoryData)
       const getRequiredItem = categoryData?.filter((items) => items.DisplayOption === "Mandatory")
-      // console.log(selectedModifiers,"---->>>selected modifiers")
       const uniqueModifiers = selectedModifiers?.filter((modifier, index, self) => {
         const lastIndex = self.map(item => item.Modifier_Id).lastIndexOf(modifier.Modifier_Id);
         return modifier.isChecked && index === lastIndex;
@@ -354,7 +293,6 @@ export const useMenuOrderLogic = (props) => {
         isRequiredModifier = true
         getRequiredItem?.map((item) => {
           requiredModifier = item?.Category_Name
-          //  console.log("!2343ashiuagb",item.Category_Id,modifierId.Category_Id)
           return uniqueModifiers?.length > 0 && uniqueModifiers?.forEach((modifierId) => {
            
             if (item.Category_Id == modifierId.Category_Id) {
@@ -369,7 +307,6 @@ export const useMenuOrderLogic = (props) => {
           setToastDetails({ isToastVisiable:false,toastMessage: "" })
         }, 6000);
       } else {
-        // console.log("SHiavas----------------------`1111");
         const modifierCartItem = modifierCartItemData&& modifierCartItemData?.find((item) => item.Item_ID === singleItemDetails?.Item_ID);
         const modifierQuantity = modifierCartItem ? modifierCartItem?.quantity : 1;
         if (categoryData?.length > 0) {          
@@ -478,7 +415,6 @@ export const useMenuOrderLogic = (props) => {
       setIsVisible(false)
       updateModifierItemQuantity(singleItemDetails, 0)
       setModifiersResponseData([])
-     // console.log("$$$$$$$$$$$$",modifiersResponseData)
       setTimeout(() => {
         closePreviewModal()
       }, 100)

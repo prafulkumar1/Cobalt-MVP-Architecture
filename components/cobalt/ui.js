@@ -126,7 +126,8 @@ class CbBackButton extends React.Component {
                 if(menuOrderData !==null && cartData.length > 0) {
                   setIsExitProfitCenter(true)
                 }else{
-                  this.props.navigation?.goBack()
+                  //this.props.navigation?.goBack()
+                  navigateToScreen(this.props,"ProfitCenters",true)
                 }
               }else if(currentRoute === "Recentorders"){
                 if(isPrevCartScreen){
@@ -392,7 +393,6 @@ class CbAccordionlist extends React.Component {
     }
 
     setModifiersResponseData(updatedModifiersResponseData);
-    console.log("@@@@@@@@@121211212",modifiersResponseData);
     this.getAllSelectedModifiers({ ...item, isChecked: value, Item_ID, Category_Id });
   };
 
@@ -903,21 +903,21 @@ class CbFloatingButton extends React.Component {
   render() {
     const { ControlConfig }= this.state;
     const Styles=ControlConfig?.Styles;
-    const StyleProps = transformStyles(Styles); 
-    const CartSource= ControlConfig?.CartSource
+    const StyleProps =Styles ? (transformStyles(Styles)) : styles;    
+    const CartSource= ControlConfig?.CartSource;    
     return (
       <FormContext.Consumer>
         {({ cartData, modifierCartItemData }) => {
           
           const getFinalQuantity = cartData && cartData.reduce((total, prev) => total + prev.quantity, 0)
           return (
-            <View style={StyleProps? StyleProps?.floatingContainer : styles.floatingContainer}>
-              <TouchableOpacity style={StyleProps? StyleProps?.floatingBtn : styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
+            <View style={StyleProps ? StyleProps?.floatingContainer : styles.floatingContainer}>
+              <TouchableOpacity style={StyleProps ? StyleProps?.floatingBtn : styles.floatingBtn} onPress={() => navigateToScreen(this.screenProps, "MyCart", true, { profileCenterTile: this.screenProps?.route?.params?.profileCenterTile })}>
                 
                 {
-                CartSource? <Image source={{ uri: CartSource}} style={StyleProps? StyleProps?.cartIcon : styles.cartIcon}/>:<Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
+                CartSource ? <Image source={{ uri: CartSource}} style={StyleProps ? StyleProps?.cartIcon : styles.cartIcon}/>:<Image source={require("@/assets/images/icons/cartIcon2x.png")} style={styles.cartIcon} />
                 }
-                <Text style={[StyleProps? StyleProps?.cartCountTxt : styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity? getFinalQuantity:0}</Text>
+                <Text style={[StyleProps ? StyleProps?.cartCountTxt : styles.cartCountTxt,{right:getFinalQuantity >= 10?10:12}]}>{getFinalQuantity ? getFinalQuantity:0}</Text>
               </TouchableOpacity>
             </View>
           );

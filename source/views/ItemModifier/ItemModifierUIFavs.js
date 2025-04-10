@@ -90,7 +90,7 @@ const ItemModifierUIFavs = (props) => {
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           bounces={false}
-          contentContainerStyle={[styles.modifierScroll,categoryData?.length === 0 && {flex:1}]}
+          contentContainerStyle={[styles.modifierScroll,(categoryData?.length === 0) ? {flex:1} : {minHeight: responsiveHeight(80)}]}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: false }
